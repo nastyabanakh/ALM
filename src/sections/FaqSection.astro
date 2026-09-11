@@ -1,0 +1,535 @@
+---
+/**
+ * FaqSection.astro — Section 14: Common Questions (FAQ)
+ * Figma node 213:1430 / Frame 539 / Spacer 213:1122
+ *
+ * Requirements:
+ * — Dark theme background (#131313 with pattern)
+ * — Top gap: 120rem spacer (var(--space-l))
+ * — Side padding: strictly 40rem (var(--gap-r))
+ * — Sub-bar: Common questions / 14//
+ * — Left column: Blueprint drawing photo (350rem x 196rem) + H2 title + CTA button ("SCHEDULE A CONSULTATION")
+ * — Right column: 8-item interactive FAQ accordion with dividers & plus/minus toggle icons
+ * — Fluid REM Scaling & Longhand CSS box model
+ */
+import ButtonComposite from '../components/ButtonComposite.astro';
+
+interface FaqItem {
+  question: string;
+  answer: string;
+  isOpen?: boolean;
+}
+
+const faqItems: FaqItem[] = [
+  {
+    question: 'Do I need to own land before contacting ALM?',
+    answer: 'No. You can contact ALM while you are still looking. The team can discuss potential lots or teardown properties, but a specific property still needs project-level review.',
+    isOpen: true
+  },
+  {
+    question: 'Can ALM work with plans I already have?',
+    answer: 'Yes. If you already have architectural drawings, engineering, or conceptual plans, ALM can review them, assess site feasibility, and provide an accurate construction quote.',
+    isOpen: false
+  },
+  {
+    question: 'What happens if there is an older home on the property?',
+    answer: 'ALM handles full teardown, site preparation, utility disconnections, and grading as part of the overall build agreement.',
+    isOpen: false
+  },
+  {
+    question: 'How is the construction cost determined?',
+    answer: 'Pricing is based on your specific property conditions, selected architectural plans, finish levels, and approved engineering specifications—locked in before groundbreaking.',
+    isOpen: false
+  },
+  {
+    question: 'Who handles permits and city inspections?',
+    answer: 'ALM manages all municipal filings, architectural submissions, structural reviews, inspections, and final occupancy certificate closeout.',
+    isOpen: false
+  },
+  {
+    question: 'Can I change materials or finishes?',
+    answer: 'Yes. Any finish or scope adjustment is formally quoted, timeline-verified, and signed off in writing prior to execution on site.',
+    isOpen: false
+  },
+  {
+    question: 'What is included in the finished home?',
+    answer: 'Every agreed interior and exterior finish—flooring, cabinetry, countertops, fixtures, appliances, mechanical connections, and paint—is fully resolved for move-in.',
+    isOpen: false
+  },
+  {
+    question: 'Does ALM provide a builder warranty?',
+    answer: 'Yes. All structural, mechanical, and workmanship warranty terms are clearly detailed in your signed project contract.',
+    isOpen: false
+  }
+];
+---
+
+<section class="faq" id="faq" aria-label="Common Questions and Answers">
+  <!-- Top 120rem Spacer -->
+  <div class="faq__top-spacer" aria-hidden="true"></div>
+
+  <div class="faq__container">
+
+    <!-- 1. SUB-HEADER BAR -->
+    <div class="faq__bar">
+      <div class="faq__bar-main">
+        <span class="faq__bullet" aria-hidden="true"></span>
+        <span class="faq__bar-label text-m">Common questions</span>
+      </div>
+      <span class="faq__bar-index text-m">14//</span>
+    </div>
+    <div class="faq__divider" aria-hidden="true"></div>
+
+    <!-- 2. MAIN LAYOUT GRID -->
+    <div class="faq__layout">
+
+      <!-- Left Column: Media + Heading + Button -->
+      <div class="faq__left">
+        <div class="faq__media-box">
+          <img
+            src="/assets/section-14/faq-blueprint.webp"
+            alt="Architectural drawing and blueprints for custom single-family construction"
+            class="faq__photo"
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+
+        <h2 class="faq__title h2">
+          What to Know Before You Build
+        </h2>
+
+        <div class="faq__cta-box">
+          <ButtonComposite
+            text="SCHEDULE A CONSULTATION"
+            href="#contact"
+            variant="white"
+            fullWidth={true}
+          />
+        </div>
+      </div>
+
+      <!-- Right Column: Interactive Accordion List -->
+      <div class="faq__right">
+        <div class="faq__accordion-list" id="faq-accordion">
+          {faqItems.map((item, index) => (
+            <div
+              class:list={[
+                'faq__item',
+                { 'is-open': item.isOpen }
+              ]}
+              data-index={index}
+            >
+              <div class="faq__item-divider-top" aria-hidden="true"></div>
+
+              <button
+                type="button"
+                class="faq__item-header"
+                aria-expanded={item.isOpen ? 'true' : 'false'}
+                aria-controls={`faq-answer-${index}`}
+                id={`faq-header-${index}`}
+              >
+                <span class="faq__item-question">
+                  {item.question}
+                </span>
+
+                <span class="faq__item-icon" aria-hidden="true">
+                  <span class="faq__icon-bar faq__icon-bar--h"></span>
+                  <span class="faq__icon-bar faq__icon-bar--v"></span>
+                </span>
+              </button>
+
+              <div
+                class="faq__item-body"
+                id={`faq-answer-${index}`}
+                role="region"
+                aria-labelledby={`faq-header-${index}`}
+              >
+                <div class="faq__item-content">
+                  <p class="faq__item-answer text-m">
+                    {item.answer}
+                  </p>
+                </div>
+              </div>
+            </div>
+          ))}
+          <div class="faq__item-divider-bottom" aria-hidden="true"></div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<script>
+  function initFaqAccordion() {
+    const accordion = document.getElementById('faq-accordion');
+    if (!accordion) return;
+
+    const items = accordion.querySelectorAll<HTMLElement>('.faq__item');
+
+    items.forEach((item) => {
+      const headerBtn = item.querySelector<HTMLButtonElement>('.faq__item-header');
+      if (!headerBtn) return;
+
+      headerBtn.addEventListener('click', () => {
+        const isOpen = item.classList.contains('is-open');
+
+        // Close all other items for a clean accordion experience
+        items.forEach((otherItem) => {
+          if (otherItem !== item && otherItem.classList.contains('is-open')) {
+            otherItem.classList.remove('is-open');
+            const otherBtn = otherItem.querySelector<HTMLButtonElement>('.faq__item-header');
+            if (otherBtn) otherBtn.setAttribute('aria-expanded', 'false');
+          }
+        });
+
+        // Toggle current item
+        if (isOpen) {
+          item.classList.remove('is-open');
+          headerBtn.setAttribute('aria-expanded', 'false');
+        } else {
+          item.classList.add('is-open');
+          headerBtn.setAttribute('aria-expanded', 'true');
+        }
+      });
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initFaqAccordion);
+  } else {
+    initFaqAccordion();
+  }
+</script>
+
+<style>
+  /* ============================================================
+     COMMON QUESTIONS (FAQ) — SECTION 14
+     Fluid REM Scaling: 1px Figma = 1rem CSS. Zero-px rule.
+     Atomic longhand box model & positioning properties only.
+     ============================================================ */
+
+  .faq {
+    background-color: var(--bg-brand);
+    background-image: var(--bg-pattern-dark);
+    background-repeat: repeat;
+    background-size: 30rem 30rem;
+    background-attachment: fixed;
+    position: relative;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: var(--gap-2xl);
+    padding-left: 0;
+    overflow-x: clip;
+  }
+
+  /* ─── 120rem Top Spacer (Figma node 213:1122 Space/S) ─── */
+  .faq__top-spacer {
+    width: 100%;
+    height: 120rem;
+  }
+
+  .faq__container {
+    width: 100%;
+    max-width: 1440rem;
+    margin-top: 0;
+    margin-right: auto;
+    margin-bottom: 0;
+    margin-left: auto;
+    padding-top: 0;
+    padding-right: 40rem;
+    padding-bottom: 0;
+    padding-left: 40rem;
+  }
+
+  /* ─── 1. Sub-Header Bar ─── */
+  .faq__bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: var(--gap-2xs);
+    padding-left: 0;
+  }
+
+  .faq__bar-main {
+    display: flex;
+    align-items: center;
+    column-gap: 9rem;
+  }
+
+  .faq__bullet {
+    display: block;
+    width: 6rem;
+    height: 6rem;
+    background-color: var(--color-white);
+    flex-shrink: 0;
+  }
+
+  .faq__bar-label {
+    color: var(--color-white);
+    opacity: 0.5;
+  }
+
+  .faq__bar-index {
+    color: var(--color-white);
+    opacity: 0.5;
+  }
+
+  .faq__divider {
+    width: 100%;
+    height: 1rem;
+    background-color: rgba(255, 255, 255, 0.15);
+    margin-top: var(--gap-2xs);
+    margin-right: 0;
+    margin-bottom: 99rem;
+    margin-left: 0;
+  }
+
+  /* ─── 2. Main Layout Grid ─── */
+  .faq__layout {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+    column-gap: 120rem;
+    width: 100%;
+  }
+
+  /* Left Column */
+  .faq__left {
+    width: 350rem;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .faq__media-box {
+    width: 350rem;
+    height: 196rem;
+    background-color: var(--bg-white);
+    overflow: hidden;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 34rem;
+    margin-left: 0;
+  }
+
+  .faq__photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+  }
+
+  .faq__title {
+    color: var(--color-white);
+    text-transform: uppercase;
+    line-height: 1.1;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 40rem;
+    margin-left: 0;
+  }
+
+  .faq__cta-box {
+    width: 100%;
+  }
+
+  /* Right Column: Accordion */
+  .faq__right {
+    flex: 1 1 0;
+    min-width: 0;
+    max-width: 774rem;
+  }
+
+  .faq__accordion-list {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .faq__item {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .faq__item-divider-top {
+    width: 100%;
+    height: 1rem;
+    background-color: rgba(255, 255, 255, 0.15);
+  }
+
+  .faq__item-divider-bottom {
+    width: 100%;
+    height: 1rem;
+    background-color: rgba(255, 255, 255, 0.15);
+  }
+
+  .faq__item-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding-top: 24rem;
+    padding-right: 0;
+    padding-bottom: 24rem;
+    padding-left: 0;
+    background-color: transparent;
+    border-top-width: 0;
+    border-right-width: 0;
+    border-bottom-width: 0;
+    border-left-width: 0;
+    cursor: pointer;
+    text-align: left;
+    column-gap: 24rem;
+    outline: none;
+  }
+
+  .faq__item-question {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 18rem;
+    line-height: 1.2;
+    text-transform: uppercase;
+    color: var(--color-white);
+    transition: opacity 0.2s ease;
+  }
+
+  .faq__item-header:hover .faq__item-question {
+    opacity: 0.85;
+  }
+
+  /* Plus / Minus Icon */
+  .faq__item-icon {
+    position: relative;
+    width: 23rem;
+    height: 24rem;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .faq__icon-bar {
+    position: absolute;
+    background-color: var(--color-white);
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
+
+  .faq__icon-bar--h {
+    width: 23rem;
+    height: 2rem;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+  }
+
+  .faq__icon-bar--v {
+    width: 2rem;
+    height: 24rem;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  /* When open: vertical bar rotates to 0 / collapses to minus */
+  .faq__item.is-open .faq__icon-bar--v {
+    transform: translateX(-50%) rotate(90deg);
+    opacity: 0;
+  }
+
+  /* Accordion Body */
+  .faq__item-body {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.35s ease;
+  }
+
+  .faq__item.is-open .faq__item-body {
+    grid-template-rows: 1fr;
+  }
+
+  .faq__item-content {
+    overflow: hidden;
+  }
+
+  .faq__item-answer {
+    color: var(--color-white);
+    opacity: 0.5;
+    line-height: 1.5;
+    max-width: 538rem;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 24rem;
+    padding-left: 0;
+  }
+
+  /* ─── MOBILE ADAPTATION (max-width: 479px) ─── */
+  @media (max-width: 479px) {
+    .faq {
+      padding-bottom: var(--gap-xl);
+    }
+
+    .faq__top-spacer {
+      height: 60rem;
+    }
+
+    .faq__container {
+      padding-right: var(--gap-p);
+      padding-left: var(--gap-p);
+    }
+
+    .faq__divider {
+      margin-bottom: var(--gap-l);
+    }
+
+    .faq__layout {
+      flex-direction: column;
+      row-gap: var(--gap-l);
+    }
+
+    .faq__left {
+      width: 100%;
+    }
+
+    .faq__media-box {
+      width: 100%;
+      height: 55vw;
+      margin-bottom: var(--gap-s);
+    }
+
+    .faq__title {
+      margin-bottom: var(--gap-s);
+    }
+
+    .faq__cta-box {
+      margin-bottom: var(--gap-m);
+    }
+
+    .faq__right {
+      width: 100%;
+      max-width: 100%;
+    }
+
+    .faq__item-header {
+      padding-top: var(--gap-s);
+      padding-bottom: var(--gap-s);
+    }
+
+    .faq__item-question {
+      font-size: 16rem;
+    }
+
+    .faq__item-answer {
+      max-width: 100%;
+      padding-bottom: var(--gap-s);
+    }
+  }
+</style>
