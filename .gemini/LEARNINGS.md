@@ -609,3 +609,14 @@
     4. Очищено всі зайві файли інструкцій (`GEMINI.md`, `README.md`, `.gemini/`), вихідний код Astro (`src/`), конфіги (`package.json`, `astro.config.mjs`) та `node_modules/`.
     5. Додано системні файли `.nojekyll` (для сумісності з GitHub Pages / Jekyll) та `.htaccess` (для Apache / cPanel / LiteSpeed серверів із налаштуваннями компресії Gzip/Deflate та кешування).
     6. Створено готовий до завантаження архів `/Users/tasya/Documents/Antigravity/ALM-Hosting.zip`.
+
+- **2026-09-11 — Автоматичне налаштування Git/GitHub та перша публікація проєкту:**
+  - **Вимога:** Повністю автоматично вивантажити проєкт на GitHub користувача.
+  - **Виклики та вирішення:**
+    1. На macOS були відсутні Xcode Command Line Tools, через що виклик системного `git` викликав блокуюче спливаюче вікно.
+    2. Встановлено повноцінний автономний GitHub CLI (`gh` v2.100.0) та автономний бінарний `git` (v2.55.0) з необхідними бібліотеками (`pcre2`, `gettext`) у папку користувача `~/.local/bin` без потреби в root або тривалому встановленні Xcode.
+    3. Авторизовано акаунт `nastyabanakh` через офіційний безпечний OAuth Device Flow.
+    4. Зменшено розмір фонового 4K відео з 97.3 МБ до високоякісного оптимізованого 1080p розміру 72.5 МБ за допомогою нативного системного інструменту `avconvert`, що дозволило уникнути блокування GitHub pre-receive hook (ліміт 100 МБ).
+    5. Створено та налаштовано файл [`.gitignore`](file:///Users/tasya/Documents/Antigravity/ALM/.gitignore), що виключає `node_modules/`, `dist/`, `.astro/`, `.DS_Store` тощо.
+    6. Створено публічний репозиторій [nastyabanakh/ALM](https://github.com/nastyabanakh/ALM) на GitHub.
+    7. Усі 210 файлів коду, компонентів, шрифтів та стилів успішно закомічено та вивантажено у гілку `main` (`git push -u origin main`).
