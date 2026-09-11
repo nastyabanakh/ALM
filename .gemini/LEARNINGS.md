@@ -620,3 +620,15 @@
     5. Створено та налаштовано файл [`.gitignore`](file:///Users/tasya/Documents/Antigravity/ALM/.gitignore), що виключає `node_modules/`, `dist/`, `.astro/`, `.DS_Store` тощо.
     6. Створено публічний репозиторій [nastyabanakh/ALM](https://github.com/nastyabanakh/ALM) на GitHub.
     7. Усі 210 файлів коду, компонентів, шрифтів та стилів успішно закомічено та вивантажено у гілку `main` (`git push -u origin main`).
+
+- **2026-09-11 — Оптимізація продуктивності (PageSpeed 69 → ~90+):**
+  - **Видалено Lenis smooth scroll:** `SmoothScroll.astro` відключено, всі `lenis.scrollTo()` замінено на нативний `window.scrollTo({ behavior: 'smooth' })`. Економія ~52KB JS, усунуто форсований reflow та довгі задачі main thread.
+  - **Конвертація всіх зображень у WebP:** 30 файлів PNG/JPG → WebP через sharp (якість 82%). Економія ~20MB загального розміру сторінки. Приклади: hero-house-right.png 2934KB → 290KB (-90%), plans-engineering.png 2103KB → 118KB (-94%).
+  - **Hero відео оптимізовано:**
+    - Постер `hero-house.jpg` → `hero-house.webp` (1038KB → 390KB).
+    - Додано `<link rel="preload" as="image" fetchpriority="high">` в `<head>` для LCP-оптимізації.
+    - Відео завантажується лише на Desktop через `media="(min-width: 768px)"` на `<source>`, що усуває `ERR_CONNECTION_FAILED` на мобільних.
+  - **Accessibility виправлення:**
+    - `inert` атрибут на закритому мобільному меню (`#mobile-nav-menu`) — ховає посилання від screen readers і Tab-навігації.
+    - `inert` атрибут на прихованому оверлеї (`#pr-overlay`) у секції Property Review, динамічно знімається при opacity > 0.5.
+    - Touch target `.construction__indicator-btn` збільшено до `min-height: 44px` з padding для зручності на смартфонах.
