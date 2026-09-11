@@ -572,6 +572,44 @@ export function initGlobalGsapAnimations() {
     );
   }
 
+  // -------------------------------------------------------------
+  // 10. SECTION 16: FOOTER SLIDE-OVER OVERLAY ANIMATION
+  // -------------------------------------------------------------
+  const footer = document.querySelector<HTMLElement>('.site-footer');
+  const prevSection = document.querySelector<HTMLElement>('.start-conversation');
+
+  if (footer && prevSection) {
+    ScrollTrigger.matchMedia({
+      // Desktop & Tablet (> 768px): Smooth curtain slide-over
+      '(min-width: 769px)': function () {
+        ScrollTrigger.create({
+          trigger: prevSection,
+          start: 'bottom bottom',
+          end: () => `+=${footer.offsetHeight}`,
+          pin: prevSection,
+          pinSpacing: false
+        });
+      },
+      // Mobile: Clean responsive entrance
+      '(max-width: 768px)': function () {
+        gsap.fromTo(
+          footer,
+          { opacity: 0.9, y: 25 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.8,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: footer,
+              start: 'top 92%'
+            }
+          }
+        );
+      }
+    });
+  }
+
   // Ensure all triggers recalculate accurate offsets once images and fonts are loaded
   ScrollTrigger.refresh();
   if (document.readyState !== 'complete') {
