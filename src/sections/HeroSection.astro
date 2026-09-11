@@ -12,9 +12,10 @@ import GlassCard from '../components/GlassCard.astro';
       muted
       loop
       playsinline
-      poster="/assets/images/hero-house.jpg"
+      preload="none"
+      poster="/assets/images/hero-house.webp"
     >
-      <source src="/assets/video/a1b54a75-926d-4ee7-95db-ec5462efbb29.mp4" type="video/mp4" />
+      <source src="/assets/video/a1b54a75-926d-4ee7-95db-ec5462efbb29.mp4" type="video/mp4" media="(min-width: 768px)" />
     </video>
     <div class="hero__overlay"></div>
   </div>

@@ -13,7 +13,6 @@ import '../styles/variables.css';
 import '../styles/reset.css';
 import '../styles/base.css';
 import '../styles/typography.css';
-import SmoothScroll from '../components/SmoothScroll.astro';
 ---
 
 <!DOCTYPE html>
@@ -24,11 +23,11 @@ import SmoothScroll from '../components/SmoothScroll.astro';
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta name="generator" content={Astro.generator} />
+    <link rel="preload" as="image" href="/assets/images/hero-house.webp" fetchpriority="high" />
   </head>
   <body>
     <div class="page-wrapper">
       <slot />
     </div>
-    <SmoothScroll />
   </body>
 </html>

@@ -59,7 +59,7 @@ const navItems: NavItem[] = [
   </div>
 
   <!-- Mobile Dropdown Menu -->
-  <div class="header-nav__mobile-menu u-hide-pc" id="mobile-nav-menu" aria-hidden="true">
+  <div class="header-nav__mobile-menu u-hide-pc" id="mobile-nav-menu" aria-hidden="true" inert>
     <ul class="header-nav__mobile-list">
       {navItems.map((item) => (
         <li class="header-nav__mobile-item">
@@ -83,9 +83,15 @@ const navItems: NavItem[] = [
   if (toggleBtn && menu) {
     toggleBtn.addEventListener('click', () => {
       const isExpanded = toggleBtn.getAttribute('aria-expanded') === 'true';
-      toggleBtn.setAttribute('aria-expanded', String(!isExpanded));
-      menu.classList.toggle('header-nav__mobile-menu--open');
-      menu.setAttribute('aria-hidden', String(isExpanded));
+      const willOpen = !isExpanded;
+      toggleBtn.setAttribute('aria-expanded', String(willOpen));
+      menu.classList.toggle('header-nav__mobile-menu--open', willOpen);
+      menu.setAttribute('aria-hidden', String(!willOpen));
+      if (willOpen) {
+        menu.removeAttribute('inert');
+      } else {
+        menu.setAttribute('inert', '');
+      }
     });
   }
 </script>

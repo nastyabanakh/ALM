@@ -69,7 +69,7 @@ import GlassCard from '../components/GlassCard.astro';
         <div class="property-review__media-shadow" aria-hidden="true"></div>
 
         <!-- Full-Screen Interactive Overlay (Figma Node 125:556) -->
-        <div class="property-review__overlay" id="pr-overlay" aria-hidden="true">
+        <div class="property-review__overlay" id="pr-overlay" aria-hidden="true" inert>
           <!-- 4 Navigation Indicator Lines on the Left Middle -->
           <nav class="property-review__indicator" id="pr-indicator" aria-label="Review steps navigation">
             <button
@@ -237,12 +237,7 @@ import GlassCard from '../components/GlassCard.astro';
       const targetOverallProgress = EXPAND_END + stepScrubProgress * (1 - EXPAND_END);
       const targetScrollY = trackTop + targetOverallProgress * scrollDist;
 
-      const lenis = (window as any).__lenis;
-      if (lenis) {
-        lenis.scrollTo(targetScrollY, { duration: 1.0 });
-      } else {
-        window.scrollTo({ top: targetScrollY, behavior: 'smooth' });
-      }
+      window.scrollTo({ top: targetScrollY, behavior: 'smooth' });
     });
   });
 
@@ -420,6 +415,8 @@ import GlassCard from '../components/GlassCard.astro';
         if (overlay) {
           overlay.style.opacity = '0';
           overlay.style.pointerEvents = 'none';
+          overlay.setAttribute('aria-hidden', 'true');
+          overlay.setAttribute('inert', '');
         }
         updateStep(0);
 
@@ -446,7 +443,14 @@ import GlassCard from '../components/GlassCard.astro';
         if (overlay) {
           const overlayFade = Math.min(1, Math.max(0, (currentProgress - EXPAND_END) / 0.03));
           overlay.style.opacity = String(overlayFade);
-          overlay.style.pointerEvents = overlayFade > 0.5 ? 'auto' : 'none';
+          const isVisible = overlayFade > 0.5;
+          overlay.style.pointerEvents = isVisible ? 'auto' : 'none';
+          overlay.setAttribute('aria-hidden', String(!isVisible));
+          if (isVisible) {
+            overlay.removeAttribute('inert');
+          } else {
+            overlay.setAttribute('inert', '');
+          }
         }
 
         const scrubProgress = (currentProgress - EXPAND_END) / (1 - EXPAND_END);
