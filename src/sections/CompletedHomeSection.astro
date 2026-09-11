@@ -8,9 +8,9 @@
  * — Side padding: strictly 40rem on desktop (var(--gap-r))
  * — Sticky Collage viewport: calc(100vh - 100rem), top: 50rem (50rem top & bottom margin)
  * — Top clip: overflow: hidden on the sticky window ensures scrolling content never bleeds above
- * — Left column: Bathroom + Bedroom & Kitchen stack (no button)
+ * — Left column: Bathroom + Office & Kitchen stack (no button)
  * — Right column: Living room photo -> scrolls up to reveal 5 specs rows + full-width CTA button (40rem gap)
- * — Perfect bottom alignment: When fully scrolled, bottom CTA aligns exactly with bottom edge of left column
+ * — Pin behavior: Pinned at top: 50rem until the bottom CTA button aligns perfectly with the bottom edge, then unlocks to scroll further.
  * — Smooth 60/120fps direct scroll synchronization (no lag jitter)
  */
 import ButtonComposite from '../components/ButtonComposite.astro';
@@ -77,7 +77,7 @@ const specs: SpecItem[] = [
     <div class="completed-home__sticky-window" id="completed-home-sticky">
       <div class="completed-home__collage-grid">
 
-        <!-- LEFT COLUMN: Bathroom + (Bedroom & Kitchen stack) -->
+        <!-- LEFT COLUMN: Bathroom + (Office & Kitchen stack) -->
         <div class="completed-home__left">
           <!-- Bathroom (Full Height) -->
           <div class="completed-home__bathroom-box">
@@ -90,12 +90,12 @@ const specs: SpecItem[] = [
             />
           </div>
 
-          <!-- Stack: Bedroom (top) + Kitchen (bottom) — No Button -->
+          <!-- Stack: Office (top) + Kitchen (bottom) — No Button -->
           <div class="completed-home__stack-box">
             <div class="completed-home__stack-top">
               <img
-                src="/assets/section-10/bedroom.webp"
-                alt="Custom home primary bedroom with modern chandelier"
+                src="/assets/section-10/office.webp"
+                alt="Luxury custom home private office with large windows"
                 class="completed-home__photo"
                 loading="lazy"
                 decoding="async"
@@ -167,27 +167,48 @@ const specs: SpecItem[] = [
 
     let ticking = false;
 
+    function getTopOffsetPx() {
+      // 50rem offset from top of viewport
+      const rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+      return 50 * (rem / 16) * 16;
+    }
+
+    function calculate() {
+      if (window.innerWidth <= 479) {
+        track.style.height = 'auto';
+        rightContent.style.transform = '';
+        return;
+      }
+
+      const stickyHeight = sticky.offsetHeight;
+      const contentHeight = rightContent.offsetHeight;
+      const maxTranslate = Math.max(0, contentHeight - stickyHeight);
+
+      // Track height ensures the sticky window stays pinned until maxTranslate is reached
+      const scrollDistance = maxTranslate * 1.35;
+      track.style.height = `${stickyHeight + scrollDistance}px`;
+    }
+
     function update() {
       ticking = false;
 
-      // Disabled on mobile viewports
       if (window.innerWidth <= 479) {
         rightContent.style.transform = '';
         return;
       }
 
-      const rect = track.getBoundingClientRect();
-      const trackHeight = track.offsetHeight;
+      const topOffset = getTopOffsetPx();
       const stickyHeight = sticky.offsetHeight;
-      const scrollableDistance = trackHeight - stickyHeight;
+      const contentHeight = rightContent.offsetHeight;
+      const maxTranslate = Math.max(0, contentHeight - stickyHeight);
+      const scrollDistance = Math.max(1, track.offsetHeight - stickyHeight);
 
-      if (scrollableDistance <= 0) return;
+      const rect = track.getBoundingClientRect();
+      const scrolledPastTop = topOffset - rect.top;
 
-      const scrolled = -rect.top;
-      const progress = Math.max(0, Math.min(1, scrolled / scrollableDistance));
-
-      const maxTranslate = rightContent.scrollHeight - stickyHeight;
-      const translateY = -progress * Math.max(0, maxTranslate);
+      // Exact 0 -> 1 progress only while pinned
+      const progress = Math.max(0, Math.min(1, scrolledPastTop / scrollDistance));
+      const translateY = -progress * maxTranslate;
 
       rightContent.style.transform = `translate3d(0, ${translateY.toFixed(2)}px, 0)`;
     }
@@ -200,8 +221,18 @@ const specs: SpecItem[] = [
     }
 
     window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll, { passive: true });
+    window.addEventListener('resize', () => {
+      calculate();
+      update();
+    }, { passive: true });
+
+    calculate();
     update();
+
+    window.addEventListener('load', () => {
+      calculate();
+      update();
+    });
   }
 
   if (document.readyState === 'loading') {
@@ -325,8 +356,6 @@ const specs: SpecItem[] = [
   .completed-home__track {
     position: relative;
     width: 100%;
-    /* Extra scroll height for smooth translation of specs and button */
-    height: calc((100vh - 100rem) + 480rem);
   }
 
   .completed-home__sticky-window {
