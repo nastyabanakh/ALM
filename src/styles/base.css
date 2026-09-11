@@ -87,7 +87,7 @@ body {
   background-attachment: fixed;
   padding-top: var(--gap-xs);
   padding-right: var(--grid-margin);
-  padding-bottom: var(--gap-t);
+  padding-bottom: 0;
   padding-left: var(--grid-margin);
 }
 
