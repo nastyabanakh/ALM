@@ -87,7 +87,7 @@ body {
   background-attachment: scroll;
   padding-top: var(--gap-xs);
   padding-right: var(--grid-margin);
-  padding-bottom: 0;
+  padding-bottom: var(--gap-xs);
   padding-left: var(--grid-margin);
 }
 
@@ -109,6 +109,7 @@ body {
   .u-hide-pc {
     display: flex !important;
   }
+
   .u-hide-phone {
     display: none !important;
   }
