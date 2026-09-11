@@ -1,16 +1,19 @@
 ---
 /**
  * FinalCtaFormSection.astro — Section 15: Start the conversation
- * Figma node 216:1678 / Frame 216:1678
+ * Figma node 216:1678 / Frame 216:1678 & 2-Step Consultation Flow
  *
  * Requirements:
  * — Dark background (#131313 with dot pattern)
- * — Top spacer: 120rem (var(--space-l))
+ * — Top & bottom spacers: 120rem (var(--space-l))
  * — Side padding: strictly 40rem (var(--gap-r))
  * — Sub-bar: Start the conversation / 15//
  * — Centered H2 title + description
- * — Left column (675rem): STEP 1 — REQUIRED FIELDS, underline inputs, NEXT STEP ButtonComposite
- * — Right column (562rem): 3 specification lines with bottom dividers + Patio photo (520rem height)
+ * — Left column (675rem):
+ *     - Step 1: Required fields (Name, Email, Phone, Location, Starting point, Project message) -> NEXT STEP
+ *     - Step 2: Optional project details (Existing home, Home size, Architectural style, Budget, Timeline, Plans status) -> SCHEDULE A CONSULTATION
+ *     - Compact vertical gaps between fields (24-26rem)
+ * — Right column (562rem): 3 specification lines + Large full-height Patio photo
  * — Fluid REM Scaling & Longhand CSS box model
  */
 import ButtonComposite from '../components/ButtonComposite.astro';
@@ -45,127 +48,249 @@ import ButtonComposite from '../components/ButtonComposite.astro';
     <!-- 3. TWO-COLUMN LAYOUT -->
     <div class="start-conversation__layout">
 
-      <!-- LEFT COLUMN: FORM -->
+      <!-- LEFT COLUMN: 2-STEP INTERACTIVE FORM -->
       <div class="start-conversation__col-left">
-        <div class="start-conversation__form-header">
-          <div class="start-conversation__form-titles">
-            <h3 class="start-conversation__step-title">
-              Step 1 — Required fields
-            </h3>
-            <p class="start-conversation__step-desc text-m">
-              Your contact details and current starting point
-            </p>
-          </div>
-          <span class="start-conversation__step-bullet" aria-hidden="true"></span>
-        </div>
 
         <form class="start-conversation__form" id="consultation-flow-form" novalidate>
-          <div class="start-conversation__fields">
 
-            <!-- Field: Name -->
-            <div class="start-conversation__field">
-              <label for="flow-name" class="start-conversation__label">Name</label>
-              <input
-                type="text"
-                id="flow-name"
-                name="name"
-                class="start-conversation__input"
-                placeholder="First and last name"
-                required
-              />
+          <!-- ─── STEP 1: REQUIRED FIELDS ─── -->
+          <div class="start-conversation__step is-active" id="flow-step-1">
+            <div class="start-conversation__form-header">
+              <div class="start-conversation__form-titles">
+                <h3 class="start-conversation__step-title">
+                  Step 1 — Required fields
+                </h3>
+                <p class="start-conversation__step-desc text-m">
+                  Your contact details and current starting point
+                </p>
+              </div>
+              <span class="start-conversation__step-bullet" aria-hidden="true"></span>
             </div>
 
-            <!-- Field: Email -->
-            <div class="start-conversation__field">
-              <label for="flow-email" class="start-conversation__label">Email</label>
-              <input
-                type="email"
-                id="flow-email"
-                name="email"
-                class="start-conversation__input"
-                placeholder="you@example.com"
-                required
-              />
-            </div>
+            <div class="start-conversation__fields">
+              <!-- Field: Name -->
+              <div class="start-conversation__field">
+                <label for="flow-name" class="start-conversation__label">Name</label>
+                <input
+                  type="text"
+                  id="flow-name"
+                  name="name"
+                  class="start-conversation__input"
+                  placeholder="First and last name"
+                  required
+                />
+              </div>
 
-            <!-- Field: Phone -->
-            <div class="start-conversation__field">
-              <label for="flow-phone" class="start-conversation__label">Phone</label>
-              <input
-                type="tel"
-                id="flow-phone"
-                name="phone"
-                class="start-conversation__input"
-                placeholder="Phone number"
-                required
-              />
-            </div>
+              <!-- Field: Email -->
+              <div class="start-conversation__field">
+                <label for="flow-email" class="start-conversation__label">Email</label>
+                <input
+                  type="email"
+                  id="flow-email"
+                  name="email"
+                  class="start-conversation__input"
+                  placeholder="you@example.com"
+                  required
+                />
+              </div>
 
-            <!-- Field: Preferred Project Location -->
-            <div class="start-conversation__field">
-              <label for="flow-location" class="start-conversation__label">Preferred Project Location</label>
-              <input
-                type="text"
-                id="flow-location"
-                name="location"
-                class="start-conversation__input"
-                placeholder="City or area"
-                required
-              />
-            </div>
+              <!-- Field: Phone -->
+              <div class="start-conversation__field">
+                <label for="flow-phone" class="start-conversation__label">Phone</label>
+                <input
+                  type="tel"
+                  id="flow-phone"
+                  name="phone"
+                  class="start-conversation__input"
+                  placeholder="Phone number"
+                  required
+                />
+              </div>
 
-            <!-- Field: Where are you starting? -->
-            <div class="start-conversation__field">
-              <label for="flow-starting-point" class="start-conversation__label">Where are you starting?</label>
-              <div class="start-conversation__select-wrapper">
-                <select id="flow-starting-point" name="startingPoint" class="start-conversation__select" required>
-                  <option value="" disabled selected>Select starting point...</option>
-                  <option value="looking-for-property">Looking for property</option>
-                  <option value="own-vacant-lot">Own a vacant lot</option>
-                  <option value="own-teardown-home">Own a teardown home</option>
-                  <option value="have-plans">Have plans</option>
-                  <option value="have-reference">Have a reference or early idea</option>
-                  <option value="other">Other</option>
-                </select>
-                <span class="start-conversation__select-arrow" aria-hidden="true"></span>
+              <!-- Field: Preferred Project Location -->
+              <div class="start-conversation__field">
+                <label for="flow-location" class="start-conversation__label">Preferred Project Location</label>
+                <input
+                  type="text"
+                  id="flow-location"
+                  name="location"
+                  class="start-conversation__input"
+                  placeholder="City or area"
+                  required
+                />
+              </div>
+
+              <!-- Field: Where are you starting? -->
+              <div class="start-conversation__field">
+                <label for="flow-starting-point" class="start-conversation__label">Where are you starting?</label>
+                <div class="start-conversation__select-wrapper">
+                  <select id="flow-starting-point" name="startingPoint" class="start-conversation__select" required>
+                    <option value="" disabled selected>Select starting point...</option>
+                    <option value="looking-for-property">Looking for property</option>
+                    <option value="own-vacant-lot">Own a vacant lot</option>
+                    <option value="own-teardown-home">Own a teardown home</option>
+                    <option value="have-plans">Have plans</option>
+                    <option value="have-reference">Have a reference or early idea</option>
+                    <option value="other">Other</option>
+                  </select>
+                  <span class="start-conversation__select-arrow" aria-hidden="true"></span>
+                </div>
+              </div>
+
+              <!-- Field: Project Message -->
+              <div class="start-conversation__field">
+                <label for="flow-message" class="start-conversation__label">Project Message</label>
+                <input
+                  type="text"
+                  id="flow-message"
+                  name="message"
+                  class="start-conversation__input"
+                  placeholder="What would you like to build, and what do you already have in place?"
+                />
               </div>
             </div>
 
-            <!-- Field: Project Message -->
-            <div class="start-conversation__field">
-              <label for="flow-message" class="start-conversation__label">Project Message</label>
-              <input
-                type="text"
-                id="flow-message"
-                name="message"
-                class="start-conversation__input"
-                placeholder="What would you like to build, and what do you already have in place?"
-              />
+            <!-- Next Step Action -->
+            <div class="start-conversation__btn-wrap">
+              <button type="button" class="start-conversation__action-btn" id="flow-next-btn">
+                <ButtonComposite
+                  text="NEXT STEP"
+                  variant="white"
+                  fullWidth={true}
+                />
+              </button>
+            </div>
+          </div>
+
+          <!-- ─── STEP 2: OPTIONAL PROJECT DETAILS ─── -->
+          <div class="start-conversation__step" id="flow-step-2">
+            <div class="start-conversation__form-header">
+              <div class="start-conversation__form-titles">
+                <h3 class="start-conversation__step-title">
+                  Step 2 — Optional project details
+                </h3>
+                <p class="start-conversation__step-desc text-m">
+                  Add what you know. “Not sure” is a valid answer.
+                </p>
+              </div>
+              <span class="start-conversation__step-bullet" aria-hidden="true"></span>
             </div>
 
+            <div class="start-conversation__fields">
+              <!-- Field: Existing home on property? -->
+              <div class="start-conversation__field">
+                <label for="flow-existing-home" class="start-conversation__label">Existing home on property? (optional)</label>
+                <div class="start-conversation__select-wrapper">
+                  <select id="flow-existing-home" name="existingHome" class="start-conversation__select">
+                    <option value="" disabled selected>Select an option...</option>
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                    <option value="not-sure">Not sure</option>
+                    <option value="no-property-yet">I do not own property yet</option>
+                  </select>
+                  <span class="start-conversation__select-arrow" aria-hidden="true"></span>
+                </div>
+              </div>
+
+              <!-- Field: Approximate Home Size -->
+              <div class="start-conversation__field">
+                <label for="flow-home-size" class="start-conversation__label">Approximate Home Size (optional)</label>
+                <input
+                  type="text"
+                  id="flow-home-size"
+                  name="homeSize"
+                  class="start-conversation__input"
+                  placeholder="Square footage, if known"
+                />
+              </div>
+
+              <!-- Field: Architectural Style -->
+              <div class="start-conversation__field">
+                <label for="flow-arch-style" class="start-conversation__label">Architectural Style (optional)</label>
+                <input
+                  type="text"
+                  id="flow-arch-style"
+                  name="architecturalStyle"
+                  class="start-conversation__input"
+                  placeholder="Modern, transitional, traditional, or another direction"
+                />
+              </div>
+
+              <!-- Field: Estimated Budget -->
+              <div class="start-conversation__field">
+                <label for="flow-budget" class="start-conversation__label">Estimated Budget (optional)</label>
+                <div class="start-conversation__select-wrapper">
+                  <select id="flow-budget" name="budget" class="start-conversation__select">
+                    <option value="" disabled selected>Select an option...</option>
+                    <option value="under-1-5m">Under $1.5M</option>
+                    <option value="1-5m-2-5m">$1.5M - $2.5M</option>
+                    <option value="2-5m-plus">$2.5M+</option>
+                    <option value="prefer-to-discuss">Prefer to discuss</option>
+                    <option value="not-sure-yet">Not sure yet</option>
+                  </select>
+                  <span class="start-conversation__select-arrow" aria-hidden="true"></span>
+                </div>
+              </div>
+
+              <!-- Field: Desired Timeline -->
+              <div class="start-conversation__field">
+                <label for="flow-timeline" class="start-conversation__label">Desired Timeline (optional)</label>
+                <div class="start-conversation__select-wrapper">
+                  <select id="flow-timeline" name="timeline" class="start-conversation__select">
+                    <option value="" disabled selected>Select an option...</option>
+                    <option value="exploring">Exploring</option>
+                    <option value="planning-soon">Planning soon</option>
+                    <option value="target-start-date">Target start date</option>
+                    <option value="not-sure-yet">Not sure yet</option>
+                  </select>
+                  <span class="start-conversation__select-arrow" aria-hidden="true"></span>
+                </div>
+              </div>
+
+              <!-- Field: Plans Status -->
+              <div class="start-conversation__field">
+                <label for="flow-plans-status" class="start-conversation__label">Plans Status (optional)</label>
+                <div class="start-conversation__select-wrapper">
+                  <select id="flow-plans-status" name="plansStatus" class="start-conversation__select">
+                    <option value="" disabled selected>Select an option...</option>
+                    <option value="completed">Completed</option>
+                    <option value="preliminary">Preliminary</option>
+                    <option value="in-development">In development</option>
+                    <option value="no-plans">No plans</option>
+                    <option value="reference-only">Reference only</option>
+                  </select>
+                  <span class="start-conversation__select-arrow" aria-hidden="true"></span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 2 Actions (Back & Submit) -->
+            <div class="start-conversation__step-actions">
+              <button type="button" class="start-conversation__back-btn" id="flow-back-btn">
+                ← Back to Step 1
+              </button>
+              <button type="submit" class="start-conversation__action-btn" id="flow-submit-btn">
+                <ButtonComposite
+                  text="SCHEDULE A CONSULTATION"
+                  variant="white"
+                  fullWidth={true}
+                />
+              </button>
+            </div>
           </div>
 
-          <!-- Submit / Next Step Action -->
-          <div class="start-conversation__btn-wrap">
-            <button type="submit" class="start-conversation__submit-btn" id="flow-submit-btn">
-              <ButtonComposite
-                text="NEXT STEP"
-                variant="white"
-                fullWidth={true}
-              />
-            </button>
-          </div>
-
-          <!-- Success Alert Card -->
+          <!-- ─── SUCCESS ALERT CARD ─── -->
           <div class="start-conversation__success-box" id="flow-success-box" role="alert">
+            <p class="start-conversation__success-title">Thank you!</p>
             <p class="start-conversation__success-text text-m">
-              Thank you! ALM will review your project details and contact you to arrange the consultation.
+              ALM will review your project details and contact you to arrange the consultation.
             </p>
           </div>
+
         </form>
       </div>
 
-      <!-- RIGHT COLUMN: SPECS + PHOTO -->
+      <!-- RIGHT COLUMN: SPECS + ENLARGED PHOTO -->
       <div class="start-conversation__col-right">
 
         <!-- 3 Specification Lines -->
@@ -195,7 +320,7 @@ import ButtonComposite from '../components/ButtonComposite.astro';
           </div>
         </div>
 
-        <!-- Photo Box -->
+        <!-- Large Photo Box -->
         <div class="start-conversation__photo-box">
           <img
             src="/assets/section-15-patio.webp"
@@ -219,18 +344,44 @@ import ButtonComposite from '../components/ButtonComposite.astro';
 <script>
   function initFlowForm() {
     const form = document.getElementById('consultation-flow-form') as HTMLFormElement | null;
+    const step1 = document.getElementById('flow-step-1') as HTMLElement | null;
+    const step2 = document.getElementById('flow-step-2') as HTMLElement | null;
+    const nextBtn = document.getElementById('flow-next-btn') as HTMLElement | null;
+    const backBtn = document.getElementById('flow-back-btn') as HTMLElement | null;
     const successBox = document.getElementById('flow-success-box') as HTMLElement | null;
 
-    if (!form || !successBox) return;
+    if (!form || !step1 || !step2 || !nextBtn || !backBtn || !successBox) return;
 
+    // Step 1 -> Step 2 validation & transition
+    nextBtn.addEventListener('click', () => {
+      const step1Inputs = step1.querySelectorAll<HTMLInputElement | HTMLSelectElement>('input, select');
+      let isValid = true;
+
+      step1Inputs.forEach((input) => {
+        if (!input.checkValidity()) {
+          input.reportValidity();
+          isValid = false;
+        }
+      });
+
+      if (isValid) {
+        step1.classList.remove('is-active');
+        step2.classList.add('is-active');
+      }
+    });
+
+    // Step 2 -> Step 1 back navigation
+    backBtn.addEventListener('click', () => {
+      step2.classList.remove('is-active');
+      step1.classList.add('is-active');
+    });
+
+    // Form Submit
     form.addEventListener('submit', (e) => {
       e.preventDefault();
 
-      if (!form.checkValidity()) {
-        form.reportValidity();
-        return;
-      }
-
+      step1.classList.remove('is-active');
+      step2.classList.remove('is-active');
       successBox.classList.add('is-visible');
       form.reset();
       successBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -265,7 +416,7 @@ import ButtonComposite from '../components/ButtonComposite.astro';
     overflow-x: clip;
   }
 
-  /* ─── 120rem Top & Bottom Spacer (Figma node 213:1660 / Space/S) ─── */
+  /* ─── 120rem Top & Bottom Spacer (Figma Space/S) ─── */
   .start-conversation__top-spacer,
   .start-conversation__bottom-spacer {
     width: 100%;
@@ -358,7 +509,7 @@ import ButtonComposite from '../components/ButtonComposite.astro';
     max-width: 287rem;
   }
 
-  /* ─── 3. Two-Column Layout (100vh - 80rem) ─── */
+  /* ─── 3. Two-Column Layout ─── */
   .start-conversation__layout {
     display: flex;
     flex-direction: row;
@@ -366,8 +517,6 @@ import ButtonComposite from '../components/ButtonComposite.astro';
     justify-content: space-between;
     column-gap: 99rem;
     width: 100%;
-    height: calc(100vh - 80rem);
-    min-height: calc(100vh - 80rem);
   }
 
   /* Left Column: Form */
@@ -376,8 +525,36 @@ import ButtonComposite from '../components/ButtonComposite.astro';
     flex-shrink: 0;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    height: 100%;
+    position: relative;
+  }
+
+  .start-conversation__form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  /* Multi-Step Transitions */
+  .start-conversation__step {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .start-conversation__step.is-active {
+    display: flex;
+    animation: fadeIn 0.3s ease;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(6rem);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   .start-conversation__form-header {
@@ -386,14 +563,14 @@ import ButtonComposite from '../components/ButtonComposite.astro';
     align-items: flex-start;
     justify-content: space-between;
     width: 100%;
-    margin-bottom: 24rem;
+    margin-bottom: 32rem;
   }
 
   .start-conversation__form-titles {
     display: flex;
     flex-direction: column;
     row-gap: 9rem;
-    max-width: 372rem;
+    max-width: 420rem;
   }
 
   .start-conversation__step-title {
@@ -420,21 +597,12 @@ import ButtonComposite from '../components/ButtonComposite.astro';
     margin-top: 6rem;
   }
 
-  .start-conversation__form {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    flex: 1 1 0;
-    min-height: 0;
-    width: 100%;
-  }
-
+  /* Compact Fields Vertical Spacing */
   .start-conversation__fields {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    flex: 1 1 0;
-    margin-bottom: 32rem;
+    row-gap: 26rem;
+    margin-bottom: 36rem;
     width: 100%;
   }
 
@@ -526,10 +694,9 @@ import ButtonComposite from '../components/ButtonComposite.astro';
 
   .start-conversation__btn-wrap {
     width: 100%;
-    flex-shrink: 0;
   }
 
-  .start-conversation__submit-btn {
+  .start-conversation__action-btn {
     background: transparent;
     border-top-width: 0;
     border-right-width: 0;
@@ -545,6 +712,38 @@ import ButtonComposite from '../components/ButtonComposite.astro';
     display: block;
   }
 
+  /* Step 2 Action Buttons */
+  .start-conversation__step-actions {
+    display: flex;
+    flex-direction: column;
+    row-gap: 16rem;
+    width: 100%;
+  }
+
+  .start-conversation__back-btn {
+    background-color: transparent;
+    border-top-width: 0;
+    border-right-width: 0;
+    border-bottom-width: 0;
+    border-left-width: 0;
+    color: var(--color-white);
+    opacity: 0.6;
+    font-family: var(--font-body);
+    font-size: 13rem;
+    cursor: pointer;
+    text-align: left;
+    padding-top: 4rem;
+    padding-right: 0;
+    padding-bottom: 4rem;
+    padding-left: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  .start-conversation__back-btn:hover {
+    opacity: 1;
+  }
+
+  /* Success Alert Card */
   .start-conversation__success-box {
     display: none;
     background-color: rgba(255, 255, 255, 0.08);
@@ -560,30 +759,40 @@ import ButtonComposite from '../components/ButtonComposite.astro';
     border-left-width: 1rem;
     border-left-style: solid;
     border-left-color: rgba(255, 255, 255, 0.2);
-    padding-top: 18rem;
-    padding-right: 20rem;
-    padding-bottom: 18rem;
-    padding-left: 20rem;
-    margin-top: 12rem;
+    padding-top: 24rem;
+    padding-right: 28rem;
+    padding-bottom: 24rem;
+    padding-left: 28rem;
   }
 
   .start-conversation__success-box.is-visible {
-    display: block;
+    display: flex;
+    flex-direction: column;
+    row-gap: 8rem;
+    animation: fadeIn 0.3s ease;
+  }
+
+  .start-conversation__success-title {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 20rem;
+    color: var(--color-white);
+    text-transform: uppercase;
   }
 
   .start-conversation__success-text {
     color: var(--color-white);
-    line-height: 1.4;
+    opacity: 0.8;
+    line-height: 1.5;
   }
 
-  /* Right Column: Specs + Photo (Full-Height Stretch) */
+  /* Right Column: Specs + Large Photo */
   .start-conversation__col-right {
     width: 562rem;
     flex-shrink: 0;
     display: flex;
     flex-direction: column;
     row-gap: 21rem;
-    height: 100%;
   }
 
   .start-conversation__specs {
@@ -630,10 +839,10 @@ import ButtonComposite from '../components/ButtonComposite.astro';
     background-color: rgba(255, 255, 255, 0.15);
   }
 
+  /* Large Photo Box (Enlarged to match column height) */
   .start-conversation__photo-box {
     width: 562rem;
-    flex: 1 1 0;
-    min-height: 0;
+    height: 650rem;
     position: relative;
     overflow: hidden;
     background-color: #f5f5f5;
@@ -677,14 +886,10 @@ import ButtonComposite from '../components/ButtonComposite.astro';
     .start-conversation__layout {
       flex-direction: column;
       row-gap: var(--gap-xl);
-      height: auto;
-      min-height: auto;
     }
 
     .start-conversation__col-left {
       width: 100%;
-      height: auto;
-      row-gap: var(--gap-m);
     }
 
     .start-conversation__fields {
@@ -694,13 +899,11 @@ import ButtonComposite from '../components/ButtonComposite.astro';
 
     .start-conversation__col-right {
       width: 100%;
-      height: auto;
     }
 
     .start-conversation__photo-box {
       width: 100%;
       height: 70vw;
-      flex: none;
     }
 
     .start-conversation__spec-inner {
