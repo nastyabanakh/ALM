@@ -632,3 +632,15 @@
     - `inert` атрибут на закритому мобільному меню (`#mobile-nav-menu`) — ховає посилання від screen readers і Tab-навігації.
     - `inert` атрибут на прихованому оверлеї (`#pr-overlay`) у секції Property Review, динамічно знімається при opacity > 0.5.
     - Touch target `.construction__indicator-btn` збільшено до `min-height: 44px` з padding для зручності на смартфонах.
+
+- **2026-09-11 — Верстка Секції 15 «Final CTA & Form» (Figma node 213:1526):**
+  - **Створено компонент:** `src/sections/FinalCtaFormSection.astro`.
+  - **Специфікація:**
+    1. **Геометрія:** Верхній відступ 120rem (`Space/S`), бічні відступи строго по 40rem (`padding-left: 40rem; padding-right: 40rem;`), біле тло (`var(--bg-white)`).
+    2. **Хедер:** Eyebrow `START THE CONVERSATION`, заголовок H2 `Tell Us What You Have. We’ll Tell You What Comes Next.` (Syne Bold 36rem), опис проєкту.
+    3. **Form Benefits (3 check items):** `✓ No completed plans required`, `✓ Start with a lot, teardown property, plan, or reference`, `✓ Project pricing is reviewed individually`.
+    4. **2-Step Consultation Form:**
+       - **Step 1 — Required fields:** Name, Email, Phone, Preferred Project Location, Where are you starting? (select dropdown), Project Message (textarea).
+       - **Step 2 — Optional project details:** Existing home on property? (select), Approximate Home Size, Architectural Style, Estimated Budget (select), Desired Timeline (select), Plans Status (select).
+    5. **Форма та кнопка відправки:** Кнопка `Schedule a Consultation` з темним тлом та інтерактивним JS-обробником (валідація полів + стан успішного надсилання з карткою зворотного зв'язку).
+    6. Підключено до `src/pages/index.astro` та перевірено продакшен-білд Astro SSG.
