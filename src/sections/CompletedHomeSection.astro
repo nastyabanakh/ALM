@@ -1,15 +1,15 @@
 ---
 /**
  * CompletedHomeSection.astro — Section 11: The Completed Home
- * Figma node 70:2431 / Frame 500
+ * Figma node 70:2431 / Frame 500 / Spacer node 203:265
  *
- * Layout:
- * — White header: sub-bar (The completed home / 11//), centered H2 title, centered description
- * — Sticky Split Collage:
- *     - Height of view frame: calc(100vh - 80rem) with top: 40rem sticky offset
- *     - Left part (737rem): Bathroom photo (362.5rem) + Stacked Office/Kitchen photos with CTA (362.5rem) — STICKY
- *     - Right part (667rem): Living Room panorama (height: 100vh - 80rem) + 5-row specification table + full-width CTA — SCROLLS
- *     - Once the user scrolls past the full specification list & CTA button, the section finishes and moves to the next block.
+ * Requirements:
+ * — Top gap between sections: 120rem (var(--space-l))
+ * — Sticky Collage viewport: calc(100vh - 100rem), top: 50rem (50rem top & bottom margin)
+ * — Top clip: overflow: hidden on the sticky window ensures scrolling content never bleeds above
+ * — Left column: Bathroom (362.5rem) + Bedroom & Kitchen stack (362.5rem, no button)
+ * — Right column: Living room photo -> scrolls up to reveal 5 specs rows + full-width CTA button
+ * — Perfect bottom alignment: When fully scrolled, bottom CTA aligns exactly with bottom edge of left column
  */
 import ButtonComposite from '../components/ButtonComposite.astro';
 
@@ -43,9 +43,12 @@ const specs: SpecItem[] = [
 ---
 
 <section class="completed-home" id="completed-home" aria-label="The Completed Home">
+  <!-- Top 120rem Spacer -->
+  <div class="completed-home__top-spacer" aria-hidden="true"></div>
+
   <div class="completed-home__container">
 
-    <!-- 1. TOP SUB-BAR -->
+    <!-- 1. SUB-HEADER BAR -->
     <div class="completed-home__bar">
       <div class="completed-home__bar-main">
         <span class="completed-home__bullet" aria-hidden="true"></span>
@@ -65,89 +68,149 @@ const specs: SpecItem[] = [
       </p>
     </div>
 
-    <!-- 3. STICKY SPLIT COLLAGE & SPECS -->
-    <div class="completed-home__layout">
-      <!-- LEFT COLUMN: Sticky 3-Photo Collage with CTA -->
-      <div class="completed-home__left">
-        <!-- Bathroom (Full Height) -->
-        <div class="completed-home__bathroom-box">
-          <img
-            src="/assets/section-10/bathroom.webp"
-            alt="Designer custom bathroom with vanity and ambient lighting"
-            class="completed-home__photo"
-            loading="lazy"
-            decoding="async"
-          />
-        </div>
+  </div>
 
-        <!-- Center Stack: Office (top) + Kitchen (bottom) + Button -->
-        <div class="completed-home__stack-box">
-          <div class="completed-home__stack-top">
+  <!-- 3. SCROLL TRACK & STICKY CLIPPED COLLAGE -->
+  <div class="completed-home__track" id="completed-home-track">
+    <div class="completed-home__sticky-window" id="completed-home-sticky">
+      <div class="completed-home__collage-grid">
+
+        <!-- LEFT COLUMN: Bathroom + (Bedroom & Kitchen stack) -->
+        <div class="completed-home__left">
+          <!-- Bathroom (Full Height) -->
+          <div class="completed-home__bathroom-box">
             <img
-              src="/assets/section-10/office.webp"
-              alt="Luxury custom home private office with large windows"
+              src="/assets/section-10/bathroom.webp"
+              alt="Designer custom bathroom with vanity and ambient lighting"
               class="completed-home__photo"
               loading="lazy"
               decoding="async"
             />
           </div>
-          <div class="completed-home__stack-bottom">
-            <img
-              src="/assets/section-10/kitchen.webp"
-              alt="High-end modern kitchen with integrated appliances"
-              class="completed-home__photo"
-              loading="lazy"
-              decoding="async"
-            />
-          </div>
-          <div class="completed-home__left-cta">
-            <ButtonComposite
-              text="SCHEDULE A CONSULTATION"
-              href="#contact"
-              variant="dark"
-              fullWidth={true}
-            />
-          </div>
-        </div>
-      </div>
 
-      <!-- RIGHT COLUMN: Living Room Photo (Top) + Specifications (Bottom) + CTA -->
-      <div class="completed-home__right">
-        <!-- Living Room Panorama (100vh - 80rem) -->
-        <div class="completed-home__living-box">
-          <img
-            src="/assets/section-10/living-room.webp"
-            alt="Spacious living room with high ceilings and custom finishes"
-            class="completed-home__photo"
-            loading="lazy"
-            decoding="async"
-          />
-        </div>
-
-        <!-- Specification Rows -->
-        <div class="completed-home__specs">
-          {specs.map((item) => (
-            <div class="completed-home__spec-row">
-              <span class="completed-home__spec-label text-m">{item.label}</span>
-              <span class="completed-home__spec-value text-m">{item.value}</span>
+          <!-- Stack: Bedroom (top) + Kitchen (bottom) — No Button -->
+          <div class="completed-home__stack-box">
+            <div class="completed-home__stack-top">
+              <img
+                src="/assets/section-10/bedroom.webp"
+                alt="Custom home primary bedroom with modern chandelier"
+                class="completed-home__photo"
+                loading="lazy"
+                decoding="async"
+              />
             </div>
-          ))}
-
-          <!-- Right Bottom Full-Width CTA -->
-          <div class="completed-home__right-cta">
-            <ButtonComposite
-              text="SCHEDULE A CONSULTATION"
-              href="#contact"
-              variant="dark"
-              fullWidth={true}
-            />
+            <div class="completed-home__stack-bottom">
+              <img
+                src="/assets/section-10/kitchen.webp"
+                alt="High-end modern kitchen with integrated appliances"
+                class="completed-home__photo"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
           </div>
         </div>
+
+        <!-- RIGHT COLUMN: Clipped window with scrolling content inside -->
+        <div class="completed-home__right-window">
+          <div class="completed-home__right-content" id="completed-home-right-content">
+            <!-- Living Room Panorama (Exact viewport height) -->
+            <div class="completed-home__living-box">
+              <img
+                src="/assets/section-10/living-room.webp"
+                alt="Spacious living room with high ceilings and custom finishes"
+                class="completed-home__photo"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+
+            <!-- Specifications List -->
+            <div class="completed-home__specs-box">
+              <div class="completed-home__specs">
+                {specs.map((item) => (
+                  <div class="completed-home__spec-row">
+                    <span class="completed-home__spec-label text-m">{item.label}</span>
+                    <span class="completed-home__spec-value text-m">{item.value}</span>
+                  </div>
+                ))}
+              </div>
+
+              <!-- Right Bottom Full-Width CTA (aligns with bottom edge on complete scroll) -->
+              <div class="completed-home__right-cta">
+                <ButtonComposite
+                  text="SCHEDULE A CONSULTATION"
+                  href="#contact"
+                  variant="dark"
+                  fullWidth={true}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
-
   </div>
+
 </section>
+
+<script>
+  (function initCompletedHomeScroll() {
+    const track = document.getElementById('completed-home-track');
+    const sticky = document.getElementById('completed-home-sticky');
+    const rightContent = document.getElementById('completed-home-right-content');
+
+    if (!track || !sticky || !rightContent) return;
+
+    let rafId: number | null = null;
+    let targetY = 0;
+    let currentY = 0;
+
+    function lerp(start: number, end: number, factor: number) {
+      return start + (end - start) * factor;
+    }
+
+    function update() {
+      // Disabled on mobile viewport
+      if (window.innerWidth <= 479) {
+        rightContent.style.transform = '';
+        return;
+      }
+
+      const rect = track.getBoundingClientRect();
+      const trackHeight = track.offsetHeight;
+      const stickyHeight = sticky.offsetHeight;
+      const scrollableDistance = trackHeight - stickyHeight;
+
+      if (scrollableDistance <= 0) return;
+
+      const scrolled = -rect.top;
+      const progress = Math.min(1, Math.max(0, scrolled / scrollableDistance));
+
+      const maxTranslate = rightContent.scrollHeight - stickyHeight;
+      targetY = -progress * Math.max(0, maxTranslate);
+
+      if (rafId === null) {
+        rafId = requestAnimationFrame(tick);
+      }
+    }
+
+    function tick() {
+      rafId = null;
+      currentY = lerp(currentY, targetY, 0.12);
+      rightContent.style.transform = `translate3d(0, ${currentY.toFixed(2)}px, 0)`;
+
+      if (Math.abs(currentY - targetY) > 0.1) {
+        rafId = requestAnimationFrame(tick);
+      }
+    }
+
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update, { passive: true });
+    update();
+  })();
+</script>
 
 <style>
   /* ============================================================
@@ -159,11 +222,18 @@ const specs: SpecItem[] = [
   .completed-home {
     background-color: var(--bg-white);
     position: relative;
-    padding-top: var(--gap-r);
+    padding-top: 0;
     padding-right: 0;
-    padding-bottom: var(--gap-xl);
+    padding-bottom: var(--gap-2xl);
     padding-left: 0;
     overflow-x: clip;
+  }
+
+  /* ─── 120rem Top Spacer (Figma node 203:265 Space/S) ─── */
+  .completed-home__top-spacer {
+    width: 100%;
+    height: 120rem;
+    background-color: var(--bg-white);
   }
 
   .completed-home__container {
@@ -252,22 +322,45 @@ const specs: SpecItem[] = [
     max-width: 291rem;
   }
 
-  /* ─── 3. Layout Grid (Sticky Left + Scrolling Right) ─── */
-  .completed-home__layout {
+  /* ─── 3. Scroll Track & Sticky Clipped Viewport ─── */
+  .completed-home__track {
+    position: relative;
+    width: 100%;
+    /* Extra scroll height for smooth translation of specs and button */
+    height: calc((100vh - 100rem) + 480rem);
+  }
+
+  .completed-home__sticky-window {
+    position: sticky;
+    top: 50rem;
+    height: calc(100vh - 100rem);
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .completed-home__collage-grid {
     display: flex;
     flex-direction: row;
     align-items: flex-start;
     column-gap: 12rem;
-    width: 100%;
+    width: 1416rem;
+    max-width: 100%;
+    height: 100%;
+    margin-top: 0;
+    margin-right: auto;
+    margin-bottom: 0;
+    margin-left: auto;
+    padding-top: 0;
+    padding-right: var(--gap-xs);
+    padding-bottom: 0;
+    padding-left: var(--gap-xs);
   }
 
-  /* ─── Left Column (Sticky at top: 40rem) ─── */
+  /* ─── Left Column (Fixed in the sticky window) ─── */
   .completed-home__left {
-    position: sticky;
-    top: 40rem;
     width: 737rem;
     flex-shrink: 0;
-    height: calc(100vh - 80rem);
+    height: 100%;
     display: flex;
     flex-direction: row;
     column-gap: 12rem;
@@ -305,23 +398,25 @@ const specs: SpecItem[] = [
     background-color: #8b8b8b;
   }
 
-  .completed-home__left-cta {
-    width: 100%;
-    flex-shrink: 0;
-  }
-
-  /* ─── Right Column (Scrolls smoothly) ─── */
-  .completed-home__right {
+  /* ─── Right Column: Clipped Window & Scrolling Content ─── */
+  .completed-home__right-window {
     width: 667rem;
     flex-shrink: 0;
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .completed-home__right-content {
+    width: 100%;
     display: flex;
     flex-direction: column;
-    row-gap: 40rem;
+    will-change: transform;
   }
 
   .completed-home__living-box {
     width: 100%;
-    height: calc(100vh - 80rem);
+    height: calc(100vh - 100rem);
     overflow: hidden;
     background-color: #8b8b8b;
     flex-shrink: 0;
@@ -335,17 +430,23 @@ const specs: SpecItem[] = [
     display: block;
   }
 
-  /* ─── Specifications List ─── */
-  .completed-home__specs {
+  /* ─── Specifications Box ─── */
+  .completed-home__specs-box {
     width: 628rem;
     max-width: 100%;
     display: flex;
     flex-direction: column;
+    padding-top: 40rem;
+    padding-right: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+  }
+
+  .completed-home__specs {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
     row-gap: 12rem;
-    margin-top: 0;
-    margin-right: 0;
-    margin-bottom: var(--gap-r);
-    margin-left: 0;
   }
 
   .completed-home__spec-row {
@@ -378,14 +479,18 @@ const specs: SpecItem[] = [
 
   .completed-home__right-cta {
     width: 100%;
-    margin-top: var(--gap-s);
+    margin-top: 24rem;
   }
 
   /* ─── MOBILE ADAPTATION (max-width: 479px) ─── */
   @media (max-width: 479px) {
     .completed-home {
-      padding-top: var(--gap-l);
+      padding-top: 0;
       padding-bottom: var(--gap-l);
+    }
+
+    .completed-home__top-spacer {
+      height: 60rem;
     }
 
     .completed-home__container {
@@ -404,13 +509,25 @@ const specs: SpecItem[] = [
       max-width: 100%;
     }
 
-    .completed-home__layout {
+    .completed-home__track {
+      height: auto;
+    }
+
+    .completed-home__sticky-window {
+      position: static;
+      height: auto;
+      overflow: visible;
+    }
+
+    .completed-home__collage-grid {
       flex-direction: column;
+      height: auto;
       row-gap: var(--gap-m);
+      padding-right: var(--gap-p);
+      padding-left: var(--gap-p);
     }
 
     .completed-home__left {
-      position: static;
       width: 100%;
       height: auto;
       flex-direction: column;
@@ -433,9 +550,14 @@ const specs: SpecItem[] = [
       height: 55vw;
     }
 
-    .completed-home__right {
+    .completed-home__right-window {
       width: 100%;
-      row-gap: var(--gap-m);
+      height: auto;
+      overflow: visible;
+    }
+
+    .completed-home__right-content {
+      transform: none !important;
     }
 
     .completed-home__living-box {
@@ -443,8 +565,9 @@ const specs: SpecItem[] = [
       height: 65vw;
     }
 
-    .completed-home__specs {
+    .completed-home__specs-box {
       width: 100%;
+      padding-top: var(--gap-s);
     }
 
     .completed-home__spec-row {
