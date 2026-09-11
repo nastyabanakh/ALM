@@ -1,0 +1,689 @@
+---
+import ButtonComposite from '../components/ButtonComposite.astro';
+---
+
+<section class="construction" id="custom-homes" aria-label="Custom Single-Family New Construction">
+  <div class="construction__container">
+    <div class="construction__grid">
+      <!-- 1. LEFT COLUMN: Sticky Left Photo (stays pinned at top: 0 as right column scrolls) -->
+      <div class="construction__col-left">
+        <img
+          src="/assets/images/hero-house-left.png"
+          alt="Custom luxury home architecture by ALM - Left View"
+          class="construction__photo construction__photo--left"
+          loading="eager"
+        />
+      </div>
+
+      <!-- 2. RIGHT COLUMN: Right Photo at Top + Scrolling Editorial Story -->
+      <div class="construction__col-right">
+        <!-- Top Right Photo: seamlessly aligns with Left Photo at section start to create one solid panoramic house -->
+        <div class="construction__top-photo-box">
+          <img
+            src="/assets/images/hero-house-right.png"
+            alt="Custom luxury home architecture by ALM - Right View"
+            class="construction__photo construction__photo--right"
+            loading="eager"
+          />
+        </div>
+
+        <!-- Sticky Indicator / Navigation Lines (Figma Frame 542: 43x3rem, gap 8rem) -->
+        <nav class="construction__indicator" id="construction-indicator" aria-label="Section scroll navigation">
+          <button
+            type="button"
+            class="construction__indicator-btn is-active"
+            data-target="construction-part-1"
+            aria-label="Scroll to A NEW HOME, NOT A RENOVATION"
+          >
+            <span class="construction__indicator-line"></span>
+          </button>
+          <button
+            type="button"
+            class="construction__indicator-btn"
+            data-target="construction-part-2"
+            aria-label="Scroll to ALM BUILDS PREMIUM SINGLE-FAMILY HOMES FROM THE GROUND UP"
+          >
+            <span class="construction__indicator-line"></span>
+          </button>
+        </nav>
+
+        <!-- Scrolling Content Area -->
+        <div class="construction__content">
+          <!-- Top Editorial Block (Frame 509) -->
+          <div class="construction__block-top" id="construction-part-1">
+            <!-- Sub-Header Bar (Frame 511) -->
+            <div class="construction__bar">
+              <div class="construction__bar-main">
+                <span class="construction__bullet" aria-hidden="true"></span>
+                <span class="construction__bar-title text-m text-opacity-subtle">
+                  Custom Single-Family New Construction
+                </span>
+              </div>
+              <span class="construction__bar-num text-m text-opacity-subtle" aria-hidden="true">
+                02//
+              </span>
+            </div>
+
+            <!-- Main Heading & Paragraph (Frame 518) -->
+            <div class="construction__heading-group">
+              <h2 class="construction__title h2 text-color-white">
+                A NEW HOME, NOT&nbsp;A RENOVATION
+              </h2>
+              <p class="construction__desc text-m text-opacity-subtle">
+                If an older house sits on the property, the project can begin with teardown and site preparation. The result is a completely new home, completed inside and out through final permit closeout.
+              </p>
+            </div>
+
+            <!-- Asymmetric Dual Photo Gallery (Frame 521) -->
+            <div class="construction__gallery">
+              <div class="construction__gallery-item construction__gallery-item--large">
+                <img
+                  src="/assets/images/construction-backyard.png"
+                  alt="Finished landscaped backyard and custom exterior"
+                  class="construction__gallery-img"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+              <div class="construction__gallery-item construction__gallery-item--small">
+                <img
+                  src="/assets/images/construction-patio.png"
+                  alt="Cozy illuminated outdoor living patio"
+                  class="construction__gallery-img"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom Editorial & CTA Block (Frame 524) -->
+          <div class="construction__block-bottom" id="construction-part-2">
+            <!-- Section 02 Subheading & Features Group (Frame 525) -->
+            <div class="construction__feature-group">
+              <div class="construction__feature-header">
+                <span class="construction__feature-num text-m text-opacity-subtle" aria-hidden="true">
+                  02//
+                </span>
+                <h3 class="construction__feature-title text-color-white">
+                  ALM BUILDS PREMIUM SINGLE-FAMILY HOMES FROM THE GROUND UP
+                </h3>
+              </div>
+
+              <div class="construction__feature-divider" aria-hidden="true"></div>
+
+              <!-- Two Feature Columns (Frame 531) -->
+              <div class="construction__features">
+                <div class="construction__feature-col">
+                  <span class="construction__bullet" aria-hidden="true"></span>
+                  <p class="construction__feature-text text-m text-opacity-subtle">
+                    Built around the approved plans and your family’s priorities
+                  </p>
+                </div>
+                <div class="construction__feature-col">
+                  <span class="construction__bullet" aria-hidden="true"></span>
+                  <p class="construction__feature-text text-m text-opacity-subtle">
+                    Managed from exterior to finishes and final approval
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- CTA Box (Frame 538) -->
+            <div class="construction__cta">
+              <p class="construction__cta-prompt">
+                OWN AN OLDER HOME?<br />
+                TELL US ABOUT THE PROPERTY AND THE NEW HOME YOU ARE CONSIDERING.
+              </p>
+              <div class="construction__cta-button">
+                <ButtonComposite text="SCHEDULE A CONSULTATION" href="#consultation" fullWidth={true} />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Sticky Indicator Controller with Scroll Spy & Click Navigation
+  const indicatorNav = document.getElementById('construction-indicator');
+  if (indicatorNav) {
+    const buttons = indicatorNav.querySelectorAll<HTMLButtonElement>('.construction__indicator-btn');
+    const part1 = document.getElementById('construction-part-1');
+    const part2 = document.getElementById('construction-part-2');
+
+    // Click navigation with smooth scroll
+    buttons.forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const targetId = btn.getAttribute('data-target');
+        if (!targetId) return;
+        const target = document.getElementById(targetId);
+        if (!target) return;
+
+        const lenis = (window as any).__lenis;
+        if (lenis) {
+          lenis.scrollTo(target, { offset: -40, duration: 1.2 });
+        } else {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+
+    // Scroll spy: toggle active class based on section visibility
+    function updateActiveLine() {
+      if (!part2) return;
+      const rect2 = part2.getBoundingClientRect();
+      const isPart2Active = rect2.top <= window.innerHeight * 0.55;
+
+      if (buttons[0] && buttons[1]) {
+        buttons[0].classList.toggle('is-active', !isPart2Active);
+        buttons[1].classList.toggle('is-active', isPart2Active);
+      }
+    }
+
+    window.addEventListener('scroll', updateActiveLine, { passive: true });
+    updateActiveLine();
+  }
+</script>
+
+<style>
+  /* ----------------------------------------------------------
+     Section Layout
+     ---------------------------------------------------------- */
+  .construction {
+    position: relative;
+    width: 100%;
+    background-color: var(--bg-brand);
+    background-image: var(--bg-pattern-dark);
+    background-repeat: repeat;
+    background-size: 30rem 30rem;
+    background-attachment: fixed;
+    margin-top: 24rem;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: var(--space-m);
+    padding-left: 0;
+  }
+
+  .construction__container {
+    width: 100%;
+    max-width: 1416rem;
+    margin-top: 0;
+    margin-right: auto;
+    margin-bottom: 0;
+    margin-left: auto;
+    position: relative;
+  }
+
+  /* ----------------------------------------------------------
+     Grid System: 2 Separate Photos forming 1 Seamless Hero
+     Left photo sticks at top: 0; Right photo scrolls with content
+     ---------------------------------------------------------- */
+  .construction__grid {
+    display: flex;
+    width: 100%;
+    position: relative;
+    align-items: flex-start;
+  }
+
+  /* ----------------------------------------------------------
+     Left Column (Sticky Left Photo: 708 x 772rem)
+     ---------------------------------------------------------- */
+  .construction__col-left {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 15rem;
+    width: 708rem;
+    height: calc(100vh - 30rem);
+    flex-shrink: 0;
+    align-self: flex-start;
+    overflow: hidden;
+    z-index: 5;
+  }
+
+  .construction__photo {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center center;
+  }
+
+  /* ----------------------------------------------------------
+     Right Column (Right Photo at Top + Scrolling Content)
+     ---------------------------------------------------------- */
+  .construction__col-right {
+    display: flex;
+    flex-direction: column;
+    width: 708rem;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 6;
+  }
+
+  .construction__top-photo-box {
+    position: relative;
+    width: 708rem;
+    height: calc(100vh - 30rem);
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  /* Sticky Indicator / Navigation (Figma Frame 542: 43x3rem, gap 8rem) */
+  .construction__indicator {
+    position: -webkit-sticky;
+    position: sticky;
+    top: calc(100vh - 69rem);
+    align-self: flex-end;
+    margin-top: -54rem;
+    margin-right: 40rem;
+    margin-bottom: 40rem;
+    margin-left: 0;
+    z-index: 15;
+    display: flex;
+    flex-direction: column;
+    row-gap: 8rem;
+    width: 43rem;
+  }
+
+  .construction__indicator-btn {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    width: 43rem;
+    height: 11rem;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    background-color: transparent;
+    border-top-width: 0;
+    border-right-width: 0;
+    border-bottom-width: 0;
+    border-left-width: 0;
+    cursor: pointer;
+    outline: none;
+  }
+
+  .construction__indicator-line {
+    display: block;
+    width: 43rem;
+    height: 3rem;
+    background-color: var(--color-white);
+    opacity: 0.3;
+    transition: opacity 0.25s ease, background-color 0.25s ease;
+  }
+
+  .construction__indicator-btn:hover .construction__indicator-line {
+    opacity: 0.7;
+  }
+
+  .construction__indicator-btn.is-active .construction__indicator-line {
+    opacity: 1;
+  }
+
+  /* Content area below top image */
+  .construction__content {
+    display: flex;
+    flex-direction: column;
+    row-gap: 120rem;
+    padding-top: 32rem;
+    padding-right: 40rem;
+    padding-bottom: 0;
+    padding-left: 40rem;
+    width: 100%;
+  }
+
+  /* ----------------------------------------------------------
+     Top Editorial Block
+     ---------------------------------------------------------- */
+  .construction__block-top {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  /* Sub-Header Bar (Frame 511) */
+  .construction__bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 25rem;
+    padding-left: 0;
+    border-bottom-width: 1rem;
+    border-bottom-style: solid;
+    border-bottom-color: var(--color-border);
+  }
+
+  .construction__bar-main {
+    display: flex;
+    align-items: center;
+    column-gap: 9rem;
+  }
+
+  .construction__bullet {
+    display: block;
+    width: 6rem;
+    height: 6rem;
+    background-color: var(--color-white);
+    flex-shrink: 0;
+  }
+
+  .construction__bar-title,
+  .construction__bar-num {
+    white-space: nowrap;
+    letter-spacing: 0;
+  }
+
+  /* Heading & Paragraph (Frame 518) */
+  .construction__heading-group {
+    display: flex;
+    flex-direction: column;
+    row-gap: 27rem;
+    width: 100%;
+    max-width: 427rem;
+    margin-top: 80rem;
+    margin-right: 0;
+    margin-bottom: 120rem;
+    margin-left: 0;
+  }
+
+  .construction__title {
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    letter-spacing: 0;
+    word-break: break-word;
+  }
+
+  .construction__desc {
+    width: 266rem;
+    max-width: 100%;
+    line-height: 1.4;
+    letter-spacing: 0;
+    word-break: break-word;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+  }
+
+  /* Asymmetric Dual Photo Gallery (Frame 521) */
+  .construction__gallery {
+    display: flex;
+    align-items: flex-end;
+    column-gap: 10rem;
+    width: 100%;
+  }
+
+  .construction__gallery-item--large {
+    width: 266rem;
+    height: 308rem;
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+
+  .construction__gallery-item--small {
+    width: 136.5rem;
+    height: 158rem;
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+
+  .construction__gallery-img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* ----------------------------------------------------------
+     Bottom Editorial & CTA Block (Frame 524)
+     ---------------------------------------------------------- */
+  .construction__block-bottom {
+    display: flex;
+    flex-direction: column;
+    row-gap: 212rem;
+    width: 100%;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 200rem;
+    padding-left: 0;
+    align-items: flex-end;
+  }
+
+  .construction__feature-group {
+    display: flex;
+    flex-direction: column;
+    row-gap: 24rem;
+    width: 100%;
+    align-items: flex-end;
+  }
+
+  .construction__feature-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .construction__feature-num {
+    white-space: nowrap;
+    letter-spacing: 0;
+    line-height: 1.2;
+    padding-top: 4rem;
+  }
+
+  .construction__feature-title {
+    font-family: var(--font-heading);
+    font-size: 25rem;
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: 0;
+    text-transform: uppercase;
+    width: 352rem;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    word-break: break-word;
+  }
+
+  .construction__feature-divider {
+    width: 352rem;
+    height: 1rem;
+    background-color: var(--color-border);
+  }
+
+  /* Two Feature Columns (Frame 531: 352rem total, gap 43rem) */
+  .construction__features {
+    display: flex;
+    column-gap: 43rem;
+    width: 352rem;
+  }
+
+  .construction__feature-col {
+    display: flex;
+    flex-direction: column;
+    row-gap: 15rem;
+    width: 165rem;
+  }
+
+  .construction__feature-text {
+    line-height: 1.4;
+    letter-spacing: 0;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    word-break: break-word;
+  }
+
+  /* CTA Box (Frame 538) */
+  .construction__cta {
+    display: flex;
+    flex-direction: column;
+    row-gap: 23rem;
+    width: 352rem;
+  }
+
+  .construction__cta-prompt {
+    font-family: var(--font-heading);
+    font-size: 12rem;
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: 0;
+    color: var(--color-white);
+    text-transform: uppercase;
+    width: 286rem;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+  }
+
+  .construction__cta-button {
+    width: 100%;
+  }
+
+  /* ----------------------------------------------------------
+     Mobile Responsive (<480px)
+     ---------------------------------------------------------- */
+  @media screen and (max-width: 479px) {
+    .construction {
+      padding-top: 0;
+      padding-right: var(--grid-margin);
+      padding-bottom: var(--gap-xl);
+      padding-left: var(--grid-margin);
+    }
+
+    .construction__grid {
+      flex-direction: column;
+    }
+
+    .construction__col-left {
+      display: none;
+    }
+
+    .construction__col-right {
+      width: 100%;
+    }
+
+    .construction__top-photo-box {
+      width: 100%;
+      height: 320rem;
+    }
+
+    .construction__photo--right {
+      object-position: center center;
+    }
+
+    .construction__indicator {
+      position: static;
+      align-self: flex-end;
+      margin-top: -34rem;
+      margin-right: 20rem;
+      margin-bottom: 20rem;
+      margin-left: 0;
+      width: 32rem;
+      row-gap: 6rem;
+    }
+
+    .construction__indicator-btn {
+      width: 32rem;
+      height: 9rem;
+    }
+
+    .construction__indicator-line {
+      width: 32rem;
+      height: 2.5rem;
+    }
+
+    .construction__content {
+      padding-top: var(--gap-p);
+      padding-right: 0;
+      padding-bottom: 0;
+      padding-left: 0;
+      row-gap: var(--gap-xl);
+    }
+
+    .construction__heading-group {
+      margin-top: var(--gap-m);
+      margin-bottom: var(--gap-m);
+      max-width: 100%;
+    }
+
+    .construction__desc {
+      width: 100%;
+    }
+
+    .construction__gallery {
+      column-gap: var(--gap-2xs);
+    }
+
+    .construction__gallery-item--large {
+      width: 65%;
+      height: 220rem;
+    }
+
+    .construction__gallery-item--small {
+      width: 35%;
+      height: 120rem;
+    }
+
+    .construction__block-bottom {
+      row-gap: var(--gap-xl);
+      align-items: flex-start;
+    }
+
+    .construction__feature-group {
+      align-items: flex-start;
+    }
+
+    .construction__feature-header {
+      flex-direction: column;
+      row-gap: var(--gap-xs);
+    }
+
+    .construction__feature-title {
+      width: 100%;
+      font-size: 20rem;
+    }
+
+    .construction__feature-divider {
+      width: 100%;
+    }
+
+    .construction__features {
+      flex-direction: column;
+      row-gap: var(--gap-m);
+      width: 100%;
+    }
+
+    .construction__feature-col {
+      width: 100%;
+    }
+
+    .construction__cta {
+      width: 100%;
+    }
+
+    .construction__cta-prompt {
+      width: 100%;
+    }
+  }
+</style>

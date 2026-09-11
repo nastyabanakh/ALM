@@ -1,0 +1,115 @@
+/* ============================================================
+   Typography & Base Styles (Self-hosted WebFonts)
+   ============================================================ */
+
+/* Primary Font (Syne — User-Provided Static TTF Fonts) */
+@font-face {
+  font-family: 'Syne';
+  src: url('/assets/fonts/Syne-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Syne';
+  src: url('/assets/fonts/Syne-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Syne';
+  src: url('/assets/fonts/Syne-SemiBold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Syne';
+  src: url('/assets/fonts/Syne-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Syne';
+  src: url('/assets/fonts/Syne-ExtraBold.ttf') format('truetype');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Secondary Monospace Font (JetBrains Mono) */
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('/assets/fonts/jetbrains-mono-regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+html {
+  overflow-x: clip;
+}
+
+body {
+  overflow-x: clip;
+  font-family: var(--font-body), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--bg-brand);
+  background-image: var(--bg-pattern-dark);
+  background-repeat: repeat;
+  background-size: 30rem 30rem;
+  background-attachment: fixed;
+  color: var(--color-white);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Page Wrapper — Box Model Strictly Longhand */
+.page-wrapper {
+  width: 100%;
+  max-width: var(--grid-width);
+  margin-top: 0;
+  margin-right: auto;
+  margin-bottom: 0;
+  margin-left: auto;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  background-color: var(--bg-brand);
+  background-image: var(--bg-pattern-dark);
+  background-repeat: repeat;
+  background-size: 30rem 30rem;
+  background-attachment: fixed;
+  padding-top: var(--gap-xs);
+  padding-right: var(--grid-margin);
+  padding-bottom: var(--gap-t);
+  padding-left: var(--grid-margin);
+}
+
+/* ============================================================
+   Visibility Utility Combo Classes
+   ============================================================ */
+
+.u-hide {
+  display: none !important;
+}
+
+@media screen and (min-width: 480px) {
+  .u-hide-pc {
+    display: none !important;
+  }
+}
+
+@media screen and (max-width: 479px) {
+  .u-hide-pc {
+    display: flex !important;
+  }
+  .u-hide-phone {
+    display: none !important;
+  }
+}

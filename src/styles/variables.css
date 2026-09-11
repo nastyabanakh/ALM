@@ -1,0 +1,179 @@
+/* ============================================================
+   ALM — Design Tokens & Fluid REM Scaling System
+   Source: Figma node-id=125-393 (Frame 404, 1440x1809)
+   ============================================================ */
+
+:root {
+  /* ----------------------------------------------------------
+     1. COLOR TOKENS (text, icons, borders, accents)
+     ---------------------------------------------------------- */
+  --color-brand:         #131313;
+  --color-white:         #ffffff;
+  --color-dark:          #131313;
+  --color-accent:        #23996d;
+  --color-border:        rgba(255, 255, 255, 0.1);
+  --color-border-subtle: rgba(255, 255, 255, 0.2);
+  --color-text-subtle:   rgba(255, 255, 255, 0.5);
+  --color-text-muted:    rgba(255, 255, 255, 0.6);
+  --color-text-dim:      rgba(255, 255, 255, 0.3);
+
+  /* ----------------------------------------------------------
+     2. BACKGROUND TOKENS
+     ---------------------------------------------------------- */
+  --bg-brand:            #131313;
+  --bg-dark:             #131313;
+  --bg-white:            #ffffff;
+  --bg-glass:            rgba(255, 255, 255, 0.07);
+  --bg-glass-phone:      rgba(255, 255, 255, 0.1);
+  --bg-card-active:      linear-gradient(90deg, rgba(35, 153, 109, 0) 0%, rgba(35, 153, 109, 0.5) 100%);
+  --bg-pattern-dark:     url('/assets/patterns/dark-pattern.svg');
+
+  /* ----------------------------------------------------------
+     3. TYPOGRAPHY — Font Families
+     ---------------------------------------------------------- */
+  --font-heading:        'Syne', sans-serif;
+  --font-body:           'Syne', sans-serif;
+  --font-mono:           'JetBrains Mono', monospace;
+
+  /* ----------------------------------------------------------
+     4. TYPOGRAPHY — Font Sizes (Desktop > 479px, ideal 1440)
+     ---------------------------------------------------------- */
+  --font-size-h1:        37rem;
+  --font-size-h2:        37rem;
+  --font-size-h3:        21rem;
+  --font-size-logo:      30rem;
+  --font-size-text-l:    16rem;
+  --font-size-text-m:    14rem;
+  --font-size-text-s:    12rem;
+  --font-size-text-xs:   11rem;
+  --font-size-text-tiny: 9rem;
+  --font-size-button:    14rem;
+
+  /* ----------------------------------------------------------
+     5. TYPOGRAPHY — Heading & Functional Styles
+     ---------------------------------------------------------- */
+  --h1-font-family:      var(--font-heading);
+  --h1-font-size:        var(--font-size-h1);
+  --h1-font-weight:      700;
+  --h1-line-height:      1.05;
+  --h1-letter-spacing:   0;
+
+  --h2-font-family:      var(--font-heading);
+  --h2-font-size:        var(--font-size-h2);
+  --h2-font-weight:      700;
+  --h2-line-height:      1.1;
+  --h2-letter-spacing:   0;
+
+  --h3-font-family:      var(--font-heading);
+  --h3-font-size:        var(--font-size-h3);
+  --h3-font-weight:      700;
+  --h3-line-height:      1.2;
+  --h3-letter-spacing:   0;
+
+  --text-m-font-family:  var(--font-body);
+  --text-m-font-size:    var(--font-size-text-m);
+  --text-m-font-weight:  400;
+  --text-m-line-height:  1.4;
+  --text-m-letter-spacing: 0;
+
+  --button-font-family:  var(--font-body);
+  --button-font-size:    var(--font-size-button);
+  --button-font-weight:  400;
+  --button-line-height:  1.2;
+  --button-letter-spacing: 0;
+
+  /* ----------------------------------------------------------
+     6. GAPS & SPACING TOKENS (Desktop Mode)
+     ---------------------------------------------------------- */
+  --gap-3xs:             4rem;
+  --gap-2xs:             8rem;
+  --gap-xs:              12rem;
+  --gap-s:               16rem;
+  --gap-p:               24rem;
+  --gap-r:               32rem;
+  --gap-t:               40rem;
+  --gap-m:               64rem;
+  --gap-l:               76rem;
+  --gap-xl:              120rem;
+  --gap-2xl:             160rem;
+
+  /* Section Spacing */
+  --space-xs:            40rem;
+  --space-s:             60rem;
+  --space-m:             80rem;
+  --space-l:             120rem;
+
+  /* ----------------------------------------------------------
+     7. BORDER RADIUS TOKENS (Desktop Mode)
+     ---------------------------------------------------------- */
+  --radius-xs:           4rem;
+  --radius-s:            6rem;
+  --radius-m:            10rem;
+  --radius-l:            16rem;
+  --radius-round:        70rem;
+  --radius-full:         9999rem;
+
+  /* ----------------------------------------------------------
+     8. GRID
+     ---------------------------------------------------------- */
+  --grid-width:          1440rem;
+  --grid-margin:         12rem;
+}
+
+/* ============================================================
+   SCALING SYSTEM — Fluid REM (2-Tier Setup: Mobile <=479px & Desktop >479px)
+   1 px у макеті Figma = 1 rem у верстці CSS
+   ============================================================ */
+
+/* Desktop (> 479px scales relative to 1440px Figma canvas) */
+:root {
+  --size-unit: 1;
+  --size-container-ideal: 1440;
+  --size-container-min: 480px;
+  --size-container-max: 2000px;
+  --size-container: clamp(var(--size-container-min), 100vw, var(--size-container-max));
+  --size-font: calc(var(--size-container) / (var(--size-container-ideal) / var(--size-unit)));
+}
+
+/* Mobile Portrait (Phones <= 479px, ideal 390px) */
+@media screen and (max-width: 479px) {
+  :root {
+    --size-unit: 1;
+    --size-container-ideal: 390;
+    --size-container-min: 320px;
+    --size-container-max: 479px;
+    --size-container: clamp(var(--size-container-min), 100vw, var(--size-container-max));
+    --size-font: calc(var(--size-container) / (var(--size-container-ideal) / var(--size-unit)));
+
+    /* Typography Scale for Mobile */
+    --font-size-h1:        26rem;
+    --font-size-h2:        24rem;
+    --font-size-h3:        18rem;
+    --font-size-logo:      24rem;
+    --font-size-text-l:    15rem;
+    --font-size-text-m:    13rem;
+    --font-size-text-s:    12rem;
+    --font-size-text-xs:   11rem;
+    --font-size-text-tiny: 9rem;
+    --font-size-button:    13rem;
+
+    /* Gaps Scale for Mobile */
+    --gap-3xs:             3rem;
+    --gap-2xs:             6rem;
+    --gap-xs:              10rem;
+    --gap-s:               14rem;
+    --gap-p:               18rem;
+    --gap-r:               24rem;
+    --gap-t:               32rem;
+    --gap-m:               48rem;
+    --gap-l:               56rem;
+    --gap-xl:              80rem;
+
+    --grid-margin:         8rem;
+  }
+}
+
+html,
+body {
+  font-size: var(--size-font);
+}

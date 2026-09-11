@@ -1,0 +1,756 @@
+---
+/**
+ * ProcessSection.astro — Section 06: Process (From First Call to Final Approval)
+ * Figma Frame 476 (node 172:1530)
+ *
+ * Full-width dark section (#131313) with fixed dark dot pattern,
+ * monumental two-line justified headline (Syne Bold 103rem),
+ * and an interactive 6-step accordion timeline with floating image preview.
+ */
+
+interface ProcessStep {
+  id: string;
+  num: string;
+  title: string;
+  desc: string;
+  image: string;
+  active?: boolean;
+}
+
+const steps: ProcessStep[] = [
+  {
+    id: 'step-01',
+    num: '01//',
+    title: 'Consultation',
+    desc: 'We discuss the property, plans, preferred home, priorities, and known constraints.',
+    image: '/assets/section-06/step-01.png'
+  },
+  {
+    id: 'step-02',
+    num: '02//',
+    title: 'Site & Plan Audit',
+    desc: 'ALM reviews property conditions and plans to identify needed engineering or design specialists.',
+    image: '/assets/section-06/step-02.png'
+  },
+  {
+    id: 'step-03',
+    num: '03//',
+    title: 'Engineering & Permits',
+    desc: 'Existing plans are adapted with local architects and engineers to secure city approvals.',
+    image: '/assets/section-06/step-03.png'
+  },
+  {
+    id: 'step-04',
+    num: '04//',
+    title: 'Budget & Selections',
+    desc: 'Scope, finishes, appliances, and materials are finalized and documented into a fixed agreement.',
+    image: '/assets/section-06/step-04.jpg'
+  },
+  {
+    id: 'step-05',
+    num: '05//',
+    title: 'Construction',
+    desc: 'ALM manages on-site execution, subcontractors, and mandatory city inspections.',
+    image: '/assets/section-06/step-05.png'
+  },
+  {
+    id: 'step-06',
+    num: '06//',
+    title: 'Final Handover',
+    desc: 'We walk the finished home together, resolve punch-list details, and close out all permits.',
+    image: '/assets/section-06/step-06.jpg'
+  }
+];
+---
+
+<section class="process-section" id="process" aria-label="From First Call to Final Approval">
+  <div class="process-section__inner">
+    <!-- Top Sub-Header Bar & Divider (Frame 437) -->
+    <div class="process-section__bar">
+      <div class="process-section__bar-left">
+        <span class="process-section__bullet" aria-hidden="true"></span>
+        <span class="process-section__bar-title">Process</span>
+      </div>
+      <span class="process-section__bar-index">07//</span>
+    </div>
+    <div class="process-section__divider" aria-hidden="true"></div>
+
+    <!-- Monumental Headline (Syne Bold 103rem, Two justified lines) -->
+    <div class="process-section__heading-box">
+      <div class="process-section__heading-row">
+        <span>FROM</span>
+        <span>FIRST</span>
+        <span>CALL</span>
+      </div>
+      <div class="process-section__heading-row">
+        <span>TO</span>
+        <span>FINAL</span>
+        <span>APPROVAL</span>
+      </div>
+    </div>
+
+    <!-- Interactive 6-Step Timeline (Frame 478) -->
+    <div class="process-section__timeline-wrapper" id="process-timeline">
+      <div class="process-section__list" role="tablist" aria-label="Process Steps">
+        {steps.map((step, idx) => (
+          <div
+            class="process-step"
+            id={step.id}
+            data-index={idx}
+            data-image={step.image}
+            role="tab"
+            tabindex="0"
+          >
+            <div class="process-step__main">
+              <!-- Left: Number + Title -->
+              <div class="process-step__header">
+                <span class="process-step__num">{step.num}</span>
+                <h3 class="process-step__title">{step.title}</h3>
+              </div>
+
+              <!-- Center: Description -->
+              <div class="process-step__desc-box">
+                <p class="process-step__desc">{step.desc}</p>
+              </div>
+            </div>
+
+            <!-- Far Right: Vector Toggle Icon (+) -->
+            <div class="process-step__icon-box" aria-hidden="true">
+              <svg
+                width="23"
+                height="24"
+                viewBox="0 0 23 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                class="process-step__icon"
+              >
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M11.5 0C11.7614 0 12.0121 0.108367 12.197 0.301261C12.3819 0.494156 12.4857 0.755777 12.4857 1.02857V10.9714H22.0143C22.2757 10.9714 22.5264 11.0798 22.7113 11.2727C22.8961 11.4656 23 11.7272 23 12C23 12.2728 22.8961 12.5344 22.7113 12.7273C22.5264 12.9202 22.2757 13.0286 22.0143 13.0286H12.4857V22.9714C12.4857 23.2442 12.3819 23.5058 12.197 23.6987C12.0121 23.8916 11.7614 24 11.5 24C11.2386 24 10.9879 23.8916 10.803 23.6987C10.6181 23.5058 10.5143 23.2442 10.5143 22.9714V13.0286H0.985714C0.724287 13.0286 0.473566 12.9202 0.288709 12.7273C0.103852 12.5344 0 12.2728 0 12C0 11.7272 0.103852 11.4656 0.288709 11.2727C0.473566 11.0798 0.724287 10.9714 0.985714 10.9714H10.5143V1.02857C10.5143 0.755777 10.6181 0.494156 10.803 0.301261C10.9879 0.108367 11.2386 0 11.5 0Z"
+                  fill="white"
+                />
+              </svg>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- Floating Image Preview Card Attached to Mouse (Absolute) -->
+      <div class="process-section__preview-card" id="process-preview" aria-hidden="true">
+        <div class="process-section__preview-mask" id="process-preview-mask">
+          <img
+            src={steps[0].image}
+            alt=""
+            class="process-section__preview-img process-section__preview-img--active"
+            id="process-preview-img-active"
+            data-current={steps[0].image}
+          />
+          <img
+            src={steps[0].image}
+            alt=""
+            class="process-section__preview-img process-section__preview-img--next"
+            id="process-preview-img-next"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  function initProcessSection() {
+    const timeline = document.getElementById('process-timeline');
+    if (!timeline) return;
+
+    const items = Array.from(timeline.querySelectorAll<HTMLElement>('.process-step'));
+    const previewCard = document.getElementById('process-preview') as HTMLElement | null;
+    const imgActive = document.getElementById('process-preview-img-active') as HTMLImageElement | null;
+    const imgNext = document.getElementById('process-preview-img-next') as HTMLImageElement | null;
+
+    if (!items.length || !previewCard || !imgActive || !imgNext) return;
+
+    let isHovered = false;
+    let targetY = 0;
+    let currentY = 0;
+    let rafId: number | null = null;
+    let currentImg = imgActive;
+    let nextImg = imgNext;
+    let zIndexCounter = 2;
+
+    const initialImage = items[0]?.getAttribute('data-image') || imgActive.getAttribute('src') || '';
+    let currentTargetSrc = initialImage;
+    let currentHoveredItem: HTMLElement = items[0];
+
+    const firstItem = items[0];
+
+    // Pre-cache & pre-decode all step images to guarantee zero hitch/lag
+    items.forEach((it) => {
+      const src = it.getAttribute('data-image');
+      if (src) {
+        const p = new Image();
+        p.src = src;
+        if (p.decode) p.decode().catch(() => {});
+      }
+    });
+
+    function getStepBaseTop(item: HTMLElement): number {
+      const itemRect = item.getBoundingClientRect();
+      const firstRect = firstItem.getBoundingClientRect();
+      return itemRect.top - firstRect.top;
+    }
+
+    function updateTargetY(e?: MouseEvent) {
+      if (!currentHoveredItem) return;
+      const base = getStepBaseTop(currentHoveredItem);
+      if (e) {
+        const itemRect = currentHoveredItem.getBoundingClientRect();
+        const itemCenter = itemRect.top + itemRect.height / 2;
+        const mouseDelta = (e.clientY - itemCenter) * 0.25;
+        targetY = base + mouseDelta;
+      } else {
+        targetY = base;
+      }
+    }
+
+    // Top-to-bottom mask reveal without jitter, never dropping hover changes
+    function switchImageSingleDirection(newSrc: string) {
+      if (!currentImg || !nextImg) return;
+      if (currentTargetSrc === newSrc) return;
+
+      currentTargetSrc = newSrc;
+
+      zIndexCounter++;
+      if (zIndexCounter > 100000) {
+        currentImg.style.zIndex = '1';
+        nextImg.style.zIndex = '2';
+        zIndexCounter = 2;
+      }
+
+      nextImg.src = newSrc;
+      nextImg.style.zIndex = String(zIndexCounter);
+
+      // Reset incoming layer to clipped-at-bottom state
+      nextImg.style.transition = 'none';
+      nextImg.style.opacity = '1';
+      nextImg.style.setProperty('clip-path', 'inset(0 0 100% 0)');
+      nextImg.style.setProperty('-webkit-clip-path', 'inset(0 0 100% 0)');
+
+      // Force layout reflow
+      void nextImg.offsetHeight;
+
+      // Reveal top photo smoothly from top to bottom
+      const curve = 'cubic-bezier(0.22, 1, 0.36, 1)';
+      nextImg.style.transition = `clip-path 0.55s ${curve}, -webkit-clip-path 0.55s ${curve}`;
+      nextImg.style.setProperty('clip-path', 'inset(0 0 0% 0)');
+      nextImg.style.setProperty('-webkit-clip-path', 'inset(0 0 0% 0)');
+
+      // Swap pointers so next transition uses the other layer seamlessly
+      const temp = currentImg;
+      currentImg = nextImg;
+      nextImg = temp;
+    }
+
+    // 60/120fps mouse follower with Lerp
+    function animateCursor() {
+      if (isHovered) {
+        currentY += (targetY - currentY) * 0.14;
+        const roundedY = Math.round(currentY * 10) / 10;
+        previewCard.style.transform = `translate3d(0, ${roundedY}px, 0)`;
+      }
+      rafId = requestAnimationFrame(animateCursor);
+    }
+    rafId = requestAnimationFrame(animateCursor);
+
+    function handleMouseEnter(e: MouseEvent) {
+      isHovered = true;
+      const target = (e.target as HTMLElement)?.closest('.process-step') as HTMLElement | null;
+      currentHoveredItem = target || items[0];
+      updateTargetY(e);
+      currentY = targetY;
+      previewCard.style.transform = `translate3d(0, ${Math.round(currentY * 10) / 10}px, 0)`;
+
+      timeline.classList.add('process-section__timeline-wrapper--hovered');
+      previewCard.classList.add('process-section__preview-card--visible');
+    }
+
+    function handleMouseMove(e: MouseEvent) {
+      updateTargetY(e);
+    }
+
+    function handleMouseLeave() {
+      isHovered = false;
+      timeline.classList.remove('process-section__timeline-wrapper--hovered');
+      items.forEach((it) => it.classList.remove('process-step--hovered'));
+      previewCard.classList.remove('process-section__preview-card--visible');
+    }
+
+    timeline.addEventListener('mouseenter', handleMouseEnter);
+    timeline.addEventListener('mousemove', handleMouseMove);
+    timeline.addEventListener('mouseleave', handleMouseLeave);
+
+    items.forEach((item) => {
+      item.addEventListener('mouseenter', (e) => {
+        currentHoveredItem = item;
+        items.forEach((it) => it.classList.toggle('process-step--hovered', it === item));
+        updateTargetY(e);
+        const newImage = item.getAttribute('data-image');
+        if (newImage) {
+          switchImageSingleDirection(newImage);
+        }
+      });
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initProcessSection);
+  } else {
+    initProcessSection();
+  }
+</script>
+
+<style>
+  /* ============================================================
+     ProcessSection — Scoped CSS (Fluid REM, Zero-PX)
+     Figma Frame 476 (node 172:1530)
+     ============================================================ */
+
+  .process-section {
+    position: relative;
+    width: 100%;
+    background-color: var(--bg-dark, #131313);
+    background-image: var(--bg-pattern-dark);
+    background-repeat: repeat;
+    background-position: 0 0;
+    background-size: 30rem 30rem;
+    background-attachment: fixed;
+    color: var(--color-white, #ffffff);
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    padding-top: 120rem;
+    padding-right: 0;
+    padding-bottom: 0rem;
+    padding-left: 0;
+  }
+
+  .process-section__inner {
+    width: 100%;
+    margin-top: 0;
+    margin-right: auto;
+    margin-bottom: 0;
+    margin-left: auto;
+    padding-top: 0;
+    padding-right: 52rem;
+    padding-bottom: 0;
+    padding-left: 52rem;
+  }
+
+  /* ----------------------------------------------------------
+     Top Sub-Header Bar & Divider (Frame 437)
+     ---------------------------------------------------------- */
+  .process-section__bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 16rem;
+    margin-left: 0;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+  }
+
+  .process-section__bar-left {
+    display: flex;
+    align-items: center;
+    column-gap: 9rem;
+  }
+
+  .process-section__bullet {
+    display: block;
+    width: 6rem;
+    height: 6rem;
+    background-color: #ffffff;
+    flex-shrink: 0;
+  }
+
+  .process-section__bar-title {
+    font-family: var(--font-display, 'Syne', sans-serif);
+    font-size: 14rem;
+    line-height: 1.2;
+    color: #ffffff;
+    opacity: 0.5;
+    white-space: nowrap;
+  }
+
+  .process-section__bar-index {
+    font-family: var(--font-display, 'Syne', sans-serif);
+    font-size: 14rem;
+    line-height: 1.2;
+    color: #ffffff;
+    opacity: 0.5;
+    white-space: nowrap;
+  }
+
+  .process-section__divider {
+    width: 100%;
+    border-top-width: 1rem;
+    border-top-style: solid;
+    border-top-color: rgba(255, 255, 255, 0.15);
+    border-right-width: 0;
+    border-bottom-width: 0;
+    border-left-width: 0;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 77rem;
+    margin-left: 0;
+  }
+
+  /* ----------------------------------------------------------
+     Monumental Justified Headline (Syne Bold 103rem)
+     ---------------------------------------------------------- */
+  .process-section__heading-box {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 75rem;
+    margin-left: 0;
+  }
+
+  .process-section__heading-row {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    font-family: var(--font-heading, 'Syne', sans-serif);
+    font-weight: 700;
+    font-size: 103rem;
+    line-height: 0.95;
+    text-transform: uppercase;
+    letter-spacing: 0;
+    color: #ffffff;
+  }
+
+  /* ----------------------------------------------------------
+     Interactive 6-Step Timeline Container (Frame 478)
+     ---------------------------------------------------------- */
+  .process-section__timeline-wrapper {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: flex-start;
+  }
+
+  .process-section__list {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .process-step {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    min-height: 91rem;
+    box-sizing: border-box;
+    border-bottom-width: 1rem;
+    border-bottom-style: solid;
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+    border-top-width: 0;
+    border-right-width: 0;
+    border-left-width: 0;
+    padding-top: 24rem;
+    padding-right: 0;
+    padding-bottom: 24rem;
+    padding-left: 0;
+    cursor: pointer;
+    outline: none;
+    transition: background-color 0.3s ease;
+  }
+
+  .process-step:first-child {
+    border-top-width: 1rem;
+    border-top-style: solid;
+    border-top-color: rgba(255, 255, 255, 0.1);
+  }
+
+  /* No line glow on hover - strictly constant border color */
+  .process-step:hover {
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .process-step__main {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    max-width: 960rem;
+  }
+
+  /* Left Header: Number + Title */
+  .process-step__header {
+    display: flex;
+    align-items: center;
+    width: 480rem;
+    flex-shrink: 0;
+    font-family: var(--font-heading, 'Syne', sans-serif);
+    font-weight: 700;
+    text-transform: uppercase;
+    line-height: 1;
+    color: #ffffff;
+    opacity: 0.35;
+    transition: opacity 0.35s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .process-step--hovered .process-step__header,
+  .process-step:hover .process-step__header {
+    opacity: 1;
+    transform: translateX(6rem);
+  }
+
+  /* Dim non-hovered items when timeline is hovered */
+  .process-section__timeline-wrapper--hovered .process-step:not(.process-step--hovered) .process-step__header {
+    opacity: 0.15;
+    transform: translateX(0);
+  }
+
+  .process-step__num {
+    font-size: 20rem;
+    width: 80rem;
+    flex-shrink: 0;
+    letter-spacing: 0;
+  }
+
+  .process-step__title {
+    font-size: 24rem;
+    letter-spacing: 0;
+    white-space: nowrap;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+  }
+
+  /* Center: Description */
+  .process-step__desc-box {
+    width: 340rem;
+    flex-shrink: 0;
+    opacity: 0;
+    transform: translateY(6rem);
+    pointer-events: none;
+    transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .process-step__desc {
+    font-family: var(--font-body, 'Syne', sans-serif);
+    font-weight: 400;
+    font-size: 14rem;
+    line-height: 1.5;
+    color: #ffffff;
+    opacity: 0.65;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+  }
+
+  .process-step--hovered .process-step__desc-box,
+  .process-step:hover .process-step__desc-box {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  /* Far Right: Vector Icon Container */
+  .process-step__icon-box {
+    width: 23rem;
+    height: 24rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 0;
+    margin-right: 10rem;
+    margin-bottom: 0;
+    margin-left: 0;
+  }
+
+  .process-step__icon {
+    width: 23rem;
+    height: 24rem;
+    display: block;
+    opacity: 0.25;
+    transition: opacity 0.35s ease;
+  }
+
+  .process-step--hovered .process-step__icon,
+  .process-step:hover .process-step__icon {
+    opacity: 1;
+  }
+
+  .process-section__timeline-wrapper--hovered .process-step:not(.process-step--hovered) .process-step__icon {
+    opacity: 0.12;
+  }
+
+  /* ----------------------------------------------------------
+     Floating Image Preview Card (Absolute, attached to mouse)
+     ---------------------------------------------------------- */
+  .process-section__preview-card {
+    position: absolute;
+    right: 80rem;
+    top: 80rem;
+    width: 153rem;
+    height: 193rem;
+    border-top-left-radius: 11rem;
+    border-top-right-radius: 11rem;
+    border-bottom-right-radius: 11rem;
+    border-bottom-left-radius: 11rem;
+    overflow: hidden;
+    background-color: #131313;
+    pointer-events: none;
+    z-index: 10;
+    opacity: 0;
+    will-change: transform, opacity;
+    transition: opacity 0.3s ease;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+
+  .process-section__preview-card--visible {
+    opacity: 1;
+  }
+
+  .process-section__preview-mask {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    border-top-left-radius: 11rem;
+    border-top-right-radius: 11rem;
+    border-bottom-right-radius: 11rem;
+    border-bottom-left-radius: 11rem;
+    -webkit-mask-image: -webkit-radial-gradient(white, black);
+  }
+
+  .process-section__preview-img {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    border-top-left-radius: 11rem;
+    border-top-right-radius: 11rem;
+    border-bottom-right-radius: 11rem;
+    border-bottom-left-radius: 11rem;
+    will-change: clip-path;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+
+  .process-section__preview-img--active {
+    z-index: 1;
+    opacity: 1;
+  }
+
+  .process-section__preview-img--next {
+    z-index: 2;
+    opacity: 1;
+    clip-path: inset(0 0 100% 0);
+    -webkit-clip-path: inset(0 0 100% 0);
+  }
+
+  /* ----------------------------------------------------------
+     Mobile Breakpoint (<= 479px)
+     ---------------------------------------------------------- */
+  @media (max-width: 479px) {
+    .process-section {
+      padding-top: 60rem;
+      padding-bottom: 60rem;
+    }
+
+    .process-section__inner {
+      padding-left: 20rem;
+      padding-right: 20rem;
+    }
+
+    .process-section__divider {
+      margin-bottom: 40rem;
+    }
+
+    .process-section__heading-box {
+      margin-bottom: 40rem;
+    }
+
+    .process-section__heading-row {
+      font-size: 38rem;
+      line-height: 1.05;
+    }
+
+    .process-step {
+      flex-direction: column;
+      align-items: flex-start;
+      row-gap: 16rem;
+      padding-top: 20rem;
+      padding-bottom: 20rem;
+      min-height: auto;
+    }
+
+    .process-step__main {
+      flex-direction: column;
+      align-items: flex-start;
+      row-gap: 12rem;
+      max-width: 100%;
+    }
+
+    .process-step__header {
+      width: 100%;
+      padding-right: 36rem;
+    }
+
+    .process-step__num {
+      font-size: 16rem;
+      width: 60rem;
+    }
+
+    .process-step__title {
+      font-size: 18rem;
+      white-space: normal;
+    }
+
+    .process-step__desc-box {
+      width: 100%;
+      display: none;
+    }
+
+    .process-step--hovered .process-step__desc-box {
+      display: block;
+      opacity: 1;
+      transform: none;
+    }
+
+    .process-step__icon-box {
+      position: absolute;
+      top: 20rem;
+      right: 0;
+      margin-top: 0;
+      margin-right: 0;
+    }
+
+    .process-section__preview-card {
+      display: none;
+    }
+  }
+</style>

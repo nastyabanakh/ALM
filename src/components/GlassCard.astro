@@ -1,0 +1,152 @@
+---
+/**
+ * GlassCard (Figma Frame 361)
+ * Reusable frosted glass consultation card with backdrop-blur,
+ * title tag, square bullet indicator, description, and ButtonComposite.
+ */
+import ButtonComposite from './ButtonComposite.astro';
+
+interface Props {
+  tag?: string;
+  text: string;
+  buttonText?: string;
+  buttonHref?: string;
+  class?: string;
+  ariaLabel?: string;
+  tagId?: string;
+  textId?: string;
+}
+
+const {
+  tag = 'About //',
+  text,
+  buttonText = 'REQUEST A CONSULTATION',
+  buttonHref = '#consultation',
+  class: className = '',
+  ariaLabel = 'Consultation info',
+  tagId,
+  textId
+} = Astro.props;
+---
+
+<aside class:list={['glass-card', className]} aria-label={ariaLabel}>
+  <div class="glass-card__body">
+    <div class="glass-card__top">
+      <span class="glass-card__tag" id={tagId}>{tag}</span>
+      <span class="glass-card__bullet" aria-hidden="true"></span>
+    </div>
+    <p class="glass-card__text" id={textId}>
+      {text}
+    </p>
+  </div>
+  <div class="glass-card__cta">
+    <ButtonComposite text={buttonText} href={buttonHref} fullWidth={true} />
+  </div>
+</aside>
+
+<style>
+  .glass-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 385rem;
+    background-color: var(--bg-glass);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    padding-top: 14rem;
+    padding-right: 14rem;
+    padding-bottom: 14rem;
+    padding-left: 14rem;
+    flex-shrink: 0;
+    box-sizing: border-box;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    row-gap: 24rem;
+  }
+
+  .glass-card__body {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    row-gap: 28rem;
+    width: 100%;
+  }
+
+  .glass-card__top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    width: 100%;
+    height: 17rem;
+  }
+
+  .glass-card__tag {
+    white-space: nowrap;
+    font-family: var(--font-body);
+    font-size: 14rem;
+    font-weight: 400;
+    line-height: 1.2;
+    color: var(--color-white);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+
+  .glass-card__bullet {
+    display: block;
+    width: 7rem;
+    height: 6rem;
+    background-color: var(--color-white);
+    flex-shrink: 0;
+    margin-top: 3rem;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+  }
+
+  .glass-card__text {
+    width: 100%;
+    max-width: 325rem;
+    font-family: var(--font-body);
+    font-size: 14rem;
+    font-weight: 400;
+    line-height: 1.4;
+    color: var(--color-white);
+    opacity: 0.8;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    word-break: break-word;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+
+  .glass-card__cta {
+    width: 100%;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+  }
+
+  @media (max-width: 479px) {
+    .glass-card {
+      width: 100%;
+      min-height: auto;
+      row-gap: 20rem;
+      padding-top: 12rem;
+      padding-right: 12rem;
+      padding-bottom: 12rem;
+      padding-left: 12rem;
+    }
+
+    .glass-card__body {
+      row-gap: 24rem;
+    }
+
+    .glass-card__text {
+      max-width: 100%;
+      font-size: 13rem;
+    }
+  }
+</style>

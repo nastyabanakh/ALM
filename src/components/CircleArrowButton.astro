@@ -1,0 +1,83 @@
+---
+interface Props {
+  ariaLabel?: string;
+  href?: string;
+  active?: boolean;
+}
+
+const {
+  ariaLabel = 'Select option',
+  href = '#',
+  active = false
+} = Astro.props;
+---
+
+<a
+  href={href}
+  class:list={['circle-arrow-btn', { 'circle-arrow-btn--active': active }]}
+  aria-label={ariaLabel}
+>
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    class="circle-arrow-btn__icon"
+  >
+    <path
+      d="M5 12H19M19 12L13 6M19 12L13 18"
+      stroke="currentColor"
+      stroke-width="1.6"
+      stroke-linecap="square"
+    />
+  </svg>
+</a>
+
+<style>
+  .circle-arrow-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 56rem;
+    height: 56rem;
+    border-top-width: 0.5rem;
+    border-right-width: 0.5rem;
+    border-bottom-width: 0.5rem;
+    border-left-width: 0.5rem;
+    border-top-style: solid;
+    border-right-style: solid;
+    border-bottom-style: solid;
+    border-left-style: solid;
+    border-top-color: var(--color-white);
+    border-right-color: var(--color-white);
+    border-bottom-color: var(--color-white);
+    border-left-color: var(--color-white);
+    border-top-left-radius: var(--radius-round);
+    border-top-right-radius: var(--radius-round);
+    border-bottom-right-radius: var(--radius-round);
+    border-bottom-left-radius: var(--radius-round);
+    background-color: transparent;
+    color: var(--color-white);
+    text-decoration: none;
+    flex-shrink: 0;
+    transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+  }
+
+  .circle-arrow-btn:hover,
+  .circle-arrow-btn--active {
+    background-color: var(--bg-white);
+    color: var(--color-dark);
+  }
+
+  .circle-arrow-btn__icon {
+    display: block;
+    width: 20rem;
+    height: 20rem;
+    transition: transform 0.2s ease;
+  }
+
+  .circle-arrow-btn:hover .circle-arrow-btn__icon {
+    transform: translateX(2rem);
+  }
+</style>

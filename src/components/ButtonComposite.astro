@@ -1,0 +1,176 @@
+---
+interface Props {
+  text: string;
+  href?: string;
+  fullWidth?: boolean;
+  variant?: 'white' | 'dark';
+  class?: string;
+}
+
+const {
+  text,
+  href = '#',
+  fullWidth = false,
+  variant = 'white',
+  class: className = ''
+} = Astro.props;
+---
+
+<a
+  href={href}
+  class:list={[
+    'btn-composite',
+    {
+      'btn-composite--full': fullWidth,
+      'btn-composite--dark': variant === 'dark'
+    },
+    className
+  ]}
+>
+  <!-- Main label block -->
+  <span class="btn-composite__main">
+    <span class="btn-composite__label text-btn font-normal">
+      {text}
+    </span>
+  </span>
+
+  <!-- Vertical connector tab (3px wide, 26px high, centered with 8px notches top & bottom) -->
+  <span class="btn-composite__connector" aria-hidden="true"></span>
+
+  <!-- Arrow block (white 28px wide, 42px high) -->
+  <span class="btn-composite__icon-box" aria-hidden="true">
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 20 20"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      class="btn-composite__arrow"
+    >
+      <path
+        d="M9.625 5L15.25 10.625L9.625 16.25M14.46875 10.625H3.0625"
+        stroke="currentColor"
+        stroke-width="1.2"
+        stroke-miterlimit="10"
+        stroke-linecap="square"
+      />
+    </svg>
+  </span>
+</a>
+
+<style>
+  .btn-composite {
+    display: inline-flex;
+    align-items: stretch;
+    height: 42rem;
+    background-color: transparent;
+    text-decoration: none;
+    position: relative;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .btn-composite--full {
+    display: flex;
+    width: 100%;
+  }
+
+  /* Main text box */
+  .btn-composite__main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
+    flex-shrink: 0;
+    flex-basis: auto;
+    height: 42rem;
+    background-color: var(--bg-white);
+    padding-top: 12rem;
+    padding-right: 13rem;
+    padding-bottom: 12rem;
+    padding-left: 13rem;
+    overflow: hidden;
+    transition: background-color 0.2s ease;
+  }
+
+  .btn-composite--full .btn-composite__main {
+    flex-basis: 0;
+  }
+
+  .btn-composite__label {
+    white-space: nowrap;
+    color: var(--color-dark);
+    font-family: var(--font-body);
+    font-size: 14rem;
+    font-weight: 400;
+    letter-spacing: 0;
+    line-height: 1.2;
+    text-transform: uppercase;
+  }
+
+  /* Middle connector (Figma Frame 353: width 3px, height 26px default -> 42px on hover) */
+  .btn-composite__connector {
+    display: block;
+    width: 3rem;
+    height: 26rem;
+    background-color: var(--bg-white);
+    margin-top: 8rem;
+    margin-right: 0;
+    margin-bottom: 8rem;
+    margin-left: 0;
+    flex-shrink: 0;
+    transition: height 0.22s cubic-bezier(0.2, 0, 0, 1), margin-top 0.22s cubic-bezier(0.2, 0, 0, 1), margin-bottom 0.22s cubic-bezier(0.2, 0, 0, 1);
+  }
+
+  /* Right arrow box (Figma Frame 352: width 28px, height 42px, white) */
+  .btn-composite__icon-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28rem;
+    height: 42rem;
+    background-color: var(--bg-white);
+    color: var(--color-dark, #131313);
+    flex-shrink: 0;
+    padding-top: 11rem;
+    padding-right: 4rem;
+    padding-bottom: 11rem;
+    padding-left: 4rem;
+    overflow: hidden;
+  }
+
+  .btn-composite__arrow {
+    display: block;
+    width: 20rem;
+    height: 20rem;
+    color: inherit;
+    stroke: currentColor;
+  }
+
+  /* Hover state (Figma node 137:1590): notches close into solid white button, arrow stays stationary */
+  .btn-composite:hover .btn-composite__connector {
+    height: 42rem;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  /* ----------------------------------------------------------
+     Dark Variant (Figma Frame 436 / Frame 457 on white backgrounds)
+     ---------------------------------------------------------- */
+  .btn-composite--dark .btn-composite__main {
+    background-color: var(--color-brand, #131313);
+  }
+
+  .btn-composite--dark .btn-composite__label {
+    color: var(--color-white, #ffffff);
+  }
+
+  .btn-composite--dark .btn-composite__connector {
+    background-color: var(--color-brand, #131313);
+  }
+
+  .btn-composite--dark .btn-composite__icon-box {
+    background-color: var(--color-brand, #131313);
+    color: var(--color-white, #ffffff);
+  }
+</style>

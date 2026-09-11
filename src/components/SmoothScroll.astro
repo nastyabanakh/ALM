@@ -1,0 +1,63 @@
+---
+/**
+ * SmoothScroll.astro
+ * Modern smooth scrolling with lerp interpolation powered by Lenis v1.
+ * Supports smooth anchor navigation, sticky compatibility, and 60/120fps display refresh.
+ */
+---
+
+<script>
+  import Lenis from 'lenis';
+  import 'lenis/dist/lenis.css';
+  import gsap from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  // Initialize Lenis with optimal lerp configuration
+  const lenis = new Lenis({
+    lerp: 0.09, // Buttery smooth lerp feel
+    wheelMultiplier: 1,
+    touchMultiplier: 1.5,
+    smoothWheel: true,
+    syncTouch: false, // Keep native touch momentum on mobile devices
+    autoRaf: false
+  });
+
+  // Expose instances globally
+  (window as any).__lenis = lenis;
+  (window as any).__gsap = gsap;
+  (window as any).__ScrollTrigger = ScrollTrigger;
+
+  // Synchronize Lenis with GSAP ScrollTrigger
+  lenis.on('scroll', ScrollTrigger.update);
+
+  gsap.ticker.add((time) => {
+    lenis.raf(time * 1000);
+  });
+  gsap.ticker.lagSmoothing(0);
+
+  import('../scripts/gsap-animations').then(({ initGlobalGsapAnimations }) => {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => initGlobalGsapAnimations());
+    } else {
+      initGlobalGsapAnimations();
+    }
+  });
+
+  // Smooth anchor navigation for all internal hashes
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+      anchor.addEventListener('click', (e) => {
+        const href = anchor.getAttribute('href');
+        if (href && href !== '#' && href.startsWith('#')) {
+          const target = document.querySelector(href);
+          if (target) {
+            e.preventDefault();
+            lenis.scrollTo(target as HTMLElement, { offset: -20, duration: 1.2 });
+          }
+        }
+      });
+    });
+  });
+</script>

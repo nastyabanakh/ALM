@@ -1,0 +1,298 @@
+---
+import ButtonComposite from './ButtonComposite.astro';
+
+interface NavItem {
+  num: string;
+  label: string;
+  href: string;
+}
+
+const navItems: NavItem[] = [
+  { num: '01/', label: 'CUSTOM HOMES', href: '#custom-homes' },
+  { num: '02/', label: 'PROCESS', href: '#process' },
+  { num: '03/', label: 'PROJECTS', href: '#projects' },
+  { num: '04/', label: 'ABOUT ALM', href: '#about' },
+  { num: '05/', label: 'FAQ', href: '#faq' },
+  { num: '06/', label: 'CONTACT', href: '#contact' },
+];
+---
+
+<header class="header-nav" role="banner">
+  <div class="header-nav__left">
+    <a href="/" class="header-nav__logo text-logo text-color-white" aria-label="ALM Home">
+      ALM
+    </a>
+
+    <nav class="header-nav__menu u-hide-phone" aria-label="Main Navigation">
+      <ul class="header-nav__list">
+        {navItems.map((item) => (
+          <li class="header-nav__item">
+            <a href={item.href} class="header-nav__link">
+              <span class="header-nav__item-num">{item.num}</span>
+              <span class="header-nav__item-label">{item.label}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  </div>
+
+  <div class="header-nav__right">
+    <a href="tel:+12065550199" class="header-nav__phone" aria-label="Call +1 (206) 555-0199">
+      <span class="header-nav__bullet" aria-hidden="true"></span>
+      <span class="header-nav__phone-number font-semibold">+1 (206) 555-0199</span>
+    </a>
+
+    <div class="header-nav__cta u-hide-phone">
+      <ButtonComposite text="DISCUSS YOUR PROJECT" href="#contact" />
+    </div>
+
+    <button
+      class="header-nav__mobile-toggle u-hide-pc"
+      type="button"
+      aria-label="Toggle Navigation Menu"
+      id="mobile-nav-toggle"
+    >
+      <span class="header-nav__toggle-line"></span>
+      <span class="header-nav__toggle-line"></span>
+    </button>
+  </div>
+
+  <!-- Mobile Dropdown Menu -->
+  <div class="header-nav__mobile-menu u-hide-pc" id="mobile-nav-menu" aria-hidden="true">
+    <ul class="header-nav__mobile-list">
+      {navItems.map((item) => (
+        <li class="header-nav__mobile-item">
+          <a href={item.href} class="header-nav__mobile-link">
+            <span class="header-nav__item-num">{item.num}</span>
+            <span class="header-nav__item-label">{item.label}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+    <div class="header-nav__mobile-cta">
+      <ButtonComposite text="DISCUSS YOUR PROJECT" href="#contact" fullWidth={true} />
+    </div>
+  </div>
+</header>
+
+<script>
+  const toggleBtn = document.getElementById('mobile-nav-toggle');
+  const menu = document.getElementById('mobile-nav-menu');
+
+  if (toggleBtn && menu) {
+    toggleBtn.addEventListener('click', () => {
+      const isExpanded = toggleBtn.getAttribute('aria-expanded') === 'true';
+      toggleBtn.setAttribute('aria-expanded', String(!isExpanded));
+      menu.classList.toggle('header-nav__mobile-menu--open');
+      menu.setAttribute('aria-hidden', String(isExpanded));
+    });
+  }
+</script>
+
+<style>
+  .header-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    position: relative;
+    z-index: 20;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+  }
+
+  .header-nav__left {
+    display: flex;
+    align-items: center;
+    column-gap: 53rem;
+  }
+
+  .header-nav__logo {
+    display: block;
+    text-decoration: none;
+    line-height: 1;
+    letter-spacing: 0;
+  }
+
+  .header-nav__list {
+    display: flex;
+    align-items: center;
+    column-gap: 17rem;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+  }
+
+  .header-nav__link {
+    display: inline-flex;
+    align-items: flex-start;
+    column-gap: 3rem;
+    padding-top: 4rem;
+    padding-right: 4rem;
+    padding-bottom: 4rem;
+    padding-left: 4rem;
+    color: var(--color-white);
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+  }
+
+  .header-nav__link:hover {
+    opacity: 0.7;
+  }
+
+  .header-nav__item-num {
+    font-family: var(--font-body);
+    font-size: 9rem;
+    font-weight: 400;
+    line-height: 1.2;
+    opacity: 0.6;
+    letter-spacing: 0;
+  }
+
+  .header-nav__item-label {
+    font-family: var(--font-body);
+    font-size: 14rem;
+    font-weight: 400;
+    line-height: 1.2;
+    letter-spacing: 0;
+    text-transform: uppercase;
+  }
+
+  .header-nav__right {
+    display: flex;
+    align-items: center;
+    column-gap: 8rem;
+    height: 42rem;
+  }
+
+  .header-nav__phone {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    column-gap: 10rem;
+    height: 100%;
+    background-color: var(--bg-glass-phone);
+    backdrop-filter: blur(5.5px);
+    -webkit-backdrop-filter: blur(5.5px);
+    padding-top: 10rem;
+    padding-right: 13rem;
+    padding-bottom: 10rem;
+    padding-left: 13rem;
+    color: var(--color-white);
+    text-decoration: none;
+    transition: background-color 0.2s ease;
+  }
+
+  .header-nav__phone:hover {
+    background-color: rgba(255, 255, 255, 0.18);
+  }
+
+  .header-nav__bullet {
+    display: block;
+    width: 6rem;
+    height: 6rem;
+    background-color: var(--color-white);
+    flex-shrink: 0;
+  }
+
+  .header-nav__phone-number {
+    font-family: var(--font-heading);
+    font-size: 12rem;
+    line-height: 1;
+    white-space: nowrap;
+    letter-spacing: 0;
+  }
+
+  .header-nav__cta {
+    display: flex;
+    align-items: center;
+  }
+
+  .header-nav__mobile-toggle {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    row-gap: 5rem;
+    width: 42rem;
+    height: 42rem;
+    background-color: var(--bg-glass-phone);
+    border-top-width: 0;
+    border-right-width: 0;
+    border-bottom-width: 0;
+    border-left-width: 0;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+  }
+
+  .header-nav__toggle-line {
+    display: block;
+    width: 20rem;
+    height: 2rem;
+    background-color: var(--color-white);
+  }
+
+  .header-nav__mobile-menu {
+    position: absolute;
+    top: 50rem;
+    left: 0;
+    right: 0;
+    background-color: rgba(19, 19, 19, 0.96);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top-width: 1rem;
+    border-right-width: 1rem;
+    border-bottom-width: 1rem;
+    border-left-width: 1rem;
+    border-top-style: solid;
+    border-right-style: solid;
+    border-bottom-style: solid;
+    border-left-style: solid;
+    border-top-color: var(--color-border);
+    border-right-color: var(--color-border);
+    border-bottom-color: var(--color-border);
+    border-left-color: var(--color-border);
+    padding-top: var(--gap-p);
+    padding-right: var(--gap-p);
+    padding-bottom: var(--gap-p);
+    padding-left: var(--gap-p);
+    display: none;
+    flex-direction: column;
+    row-gap: var(--gap-p);
+  }
+
+  .header-nav__mobile-menu--open {
+    display: flex !important;
+  }
+
+  .header-nav__mobile-list {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--gap-s);
+  }
+
+  .header-nav__mobile-link {
+    display: flex;
+    align-items: center;
+    column-gap: 8rem;
+    color: var(--color-white);
+    text-decoration: none;
+    font-size: 16rem;
+  }
+
+  @media screen and (max-width: 479px) {
+    .header-nav__mobile-toggle {
+      display: flex;
+    }
+  }
+</style>

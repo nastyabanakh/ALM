@@ -1,0 +1,915 @@
+---
+/**
+ * PropertyReviewSection (Figma node 140:1610 / Frame 452)
+ * Section 03 — "Before construction"
+ *
+ * Sequence:
+ * 1. Initial State (Photo 3):
+ *    - Sub-header bar matches Block 2 edge padding (40rem left, 40rem right).
+ *    - Center editorial block: "REVIEW THE PROPERTY BEFORE THE PROJECT GETS EXPENSIVE" + description.
+ *    - Card visual in normal flow (633rem x 361rem) showing Frame 1.
+ * 2. Phase 1 on Scroll:
+ *    - Frame 1 smoothly expands to 100vh / 100vw without lag.
+ *    - Header text and bar fade out.
+ * 3. Phase 2:
+ *    - The very instant the photo reaches full screen, video frames IMMEDIATELY
+ *      begin scrubbing across 100 frames with zero dead zone and zero delay.
+ *    - Overlay with 'LOT FIT' title and frosted glass consultation card fades in (Figma Node 125:556).
+ */
+import GlassCard from '../components/GlassCard.astro';
+---
+
+<section class="property-review" id="property-review" aria-label="Before construction — Property Review">
+  <!-- Scroll Track -->
+  <div class="property-review__track" id="pr-track">
+    <div class="property-review__sticky" id="pr-sticky">
+      <!-- Top Sub-Header Bar (Matches Block 2 edges: 40rem left & right) -->
+      <div class="property-review__bar-wrapper" id="pr-bar-wrapper">
+        <div class="property-review__bar">
+          <div class="property-review__bar-main">
+            <span class="property-review__bullet" aria-hidden="true"></span>
+            <span class="property-review__bar-title text-s text-opacity-subtle">
+              Before construction
+            </span>
+          </div>
+          <span class="property-review__bar-num text-s text-opacity-subtle" aria-hidden="true">
+            03//
+          </span>
+        </div>
+        <hr class="property-review__divider" aria-hidden="true" />
+      </div>
+
+      <!-- Content Flow Container: Holds Header & Layout Anchor -->
+      <div class="property-review__content-flow">
+        <!-- Center Editorial Block (Figma Frame 140:1613) -->
+        <div class="property-review__header" id="pr-header">
+          <h2 class="property-review__title text-color-white">
+            REVIEW THE PROPERTY BEFORE THE PROJECT GETS EXPENSIVE
+          </h2>
+          <p class="property-review__desc text-opacity-subtle">
+            A vacant lot, an older home, and an existing plan require different checks. Reviewing them early can expose site, approval, and cost issues before construction starts.
+          </p>
+        </div>
+
+        <!-- Media Anchor: Defines natural card position & size in document flow -->
+        <div class="property-review__media-anchor" id="pr-anchor"></div>
+      </div>
+
+      <!-- Animated Expanding Media Box & Canvas -->
+      <div class="property-review__media-box" id="pr-media-box">
+        <canvas class="property-review__canvas" id="pr-canvas"></canvas>
+        <img
+          src="/assets/video-frames/frame_001.jpg"
+          alt="Aerial view of residential neighborhood and property for custom home review"
+          class="property-review__fallback-img"
+          id="pr-fallback"
+          loading="eager"
+        />
+        <!-- Bottom gradient shadow for contrast & readability (Figma Linear 50%) -->
+        <div class="property-review__media-shadow" aria-hidden="true"></div>
+
+        <!-- Full-Screen Interactive Overlay (Figma Node 125:556) -->
+        <div class="property-review__overlay" id="pr-overlay" aria-hidden="true">
+          <!-- 4 Navigation Indicator Lines on the Left Middle -->
+          <nav class="property-review__indicator" id="pr-indicator" aria-label="Review steps navigation">
+            <button
+              type="button"
+              class="property-review__indicator-btn is-active"
+              data-step="0"
+              aria-label="Step 1: Lot Fit"
+            >
+              <span class="property-review__indicator-line"></span>
+            </button>
+            <button
+              type="button"
+              class="property-review__indicator-btn"
+              data-step="1"
+              aria-label="Step 2: Teardown Scope"
+            >
+              <span class="property-review__indicator-line"></span>
+            </button>
+            <button
+              type="button"
+              class="property-review__indicator-btn"
+              data-step="2"
+              aria-label="Step 3: Plan Adaptation"
+            >
+              <span class="property-review__indicator-line"></span>
+            </button>
+            <button
+              type="button"
+              class="property-review__indicator-btn"
+              data-step="3"
+              aria-label="Step 4: Approval Path"
+            >
+              <span class="property-review__indicator-line"></span>
+            </button>
+          </nav>
+
+          <div class="property-review__overlay-inner">
+            <div class="property-review__overlay-row">
+              <h3 class="property-review__overlay-title" id="pr-overlay-title">LOT<br />FIT</h3>
+
+              <GlassCard
+                tag="Lot fit //"
+                text="Compare the property with the size and type of home you want to build."
+                buttonText="SCHEDULE A CONSULTATION"
+                buttonHref="#consultation"
+                ariaLabel="Lot fit consultation info"
+                tagId="pr-card-tag"
+                textId="pr-card-text"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // ============================================================
+  // High-Performance Instant Scroll Frame Scrubbing Controller
+  // ============================================================
+  const TOTAL_FRAMES = 100;
+  // Compact expansion threshold: quickly and decisively reaches 100vh
+  const EXPAND_END = 0.14;
+
+  const track = document.getElementById('pr-track');
+  const sticky = document.getElementById('pr-sticky');
+  const barWrapper = document.getElementById('pr-bar-wrapper');
+  const header = document.getElementById('pr-header');
+  const anchor = document.getElementById('pr-anchor');
+  const mediaBox = document.getElementById('pr-media-box');
+  const canvas = document.getElementById('pr-canvas') as HTMLCanvasElement | null;
+  const fallback = document.getElementById('pr-fallback');
+  const overlay = document.getElementById('pr-overlay');
+  const overlayTitle = document.getElementById('pr-overlay-title');
+  const cardTag = document.getElementById('pr-card-tag');
+  const cardText = document.getElementById('pr-card-text');
+
+  interface ReviewStep {
+    title: string;
+    tag: string;
+    text: string;
+  }
+
+  const REVIEW_STEPS: ReviewStep[] = [
+    {
+      title: 'LOT<br />FIT',
+      tag: 'Lot fit //',
+      text: 'Compare the property with the size and type of home you want to build.',
+    },
+    {
+      title: 'TEARDOWN<br />SCOPE',
+      tag: 'Teardown scope //',
+      text: 'Clarify demolition, site preparation, and necessary property connections.',
+    },
+    {
+      title: 'PLAN<br />ADAPTATION',
+      tag: 'Plan adaptation //',
+      text: 'Identify where an existing plan may need to change for the site or local requirements.',
+    },
+    {
+      title: 'APPROVAL<br />PATH',
+      tag: 'Approval path //',
+      text: 'Outline the architects, engineers, city reviews, permits, and inspections the project may require.',
+    },
+  ];
+
+  let activeStepIndex = 0;
+  let stepTimeout: ReturnType<typeof setTimeout> | null = null;
+
+  const prIndicator = document.getElementById('pr-indicator');
+  const indicatorButtons = prIndicator ? prIndicator.querySelectorAll<HTMLButtonElement>('.property-review__indicator-btn') : [];
+
+  function updateStep(newIndex: number) {
+    indicatorButtons.forEach((btn, idx) => {
+      btn.classList.toggle('is-active', idx === newIndex);
+    });
+
+    if (newIndex === activeStepIndex) return;
+    activeStepIndex = newIndex;
+    const step = REVIEW_STEPS[newIndex];
+
+    if (overlayTitle && cardTag && cardText) {
+      if (stepTimeout) {
+        clearTimeout(stepTimeout);
+      }
+
+      overlayTitle.style.opacity = '0';
+      overlayTitle.style.transform = 'translateY(-6px)';
+      cardTag.style.opacity = '0';
+      cardText.style.opacity = '0';
+      cardText.style.transform = 'translateY(6px)';
+
+      stepTimeout = setTimeout(() => {
+        overlayTitle.innerHTML = step.title;
+        cardTag.innerText = step.tag;
+        cardText.innerText = step.text;
+
+        overlayTitle.style.opacity = '1';
+        overlayTitle.style.transform = 'translateY(0)';
+        cardTag.style.opacity = '1';
+        cardText.style.opacity = '1';
+        cardText.style.transform = 'translateY(0)';
+      }, 140);
+    }
+  }
+
+  // Click navigation on the 4 indicator lines to switch between 4 texts & scroll to step
+  indicatorButtons.forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const stepAttr = btn.getAttribute('data-step');
+      if (stepAttr === null) return;
+      const targetStep = parseInt(stepAttr, 10);
+
+      updateStep(targetStep);
+
+      if (!track) return;
+      const trackTop = track.getBoundingClientRect().top + window.scrollY;
+      const scrollDist = track.offsetHeight - window.innerHeight;
+      if (scrollDist <= 0) return;
+
+      const stepScrubProgress = (targetStep + 0.5) / REVIEW_STEPS.length;
+      const targetOverallProgress = EXPAND_END + stepScrubProgress * (1 - EXPAND_END);
+      const targetScrollY = trackTop + targetOverallProgress * scrollDist;
+
+      const lenis = (window as any).__lenis;
+      if (lenis) {
+        lenis.scrollTo(targetScrollY, { duration: 1.0 });
+      } else {
+        window.scrollTo({ top: targetScrollY, behavior: 'smooth' });
+      }
+    });
+  });
+
+  if (track && sticky && anchor && mediaBox && canvas) {
+    const ctx = canvas.getContext('2d', { alpha: false });
+    const frames: HTMLImageElement[] = [];
+    let targetProgress = 0;
+    let currentProgress = 0;
+    let currentFrameIndex = 1;
+    let isCanvasReady = false;
+
+    // 1. Preload 100 frames with async GPU decode
+    for (let i = 1; i <= TOTAL_FRAMES; i++) {
+      const img = new Image();
+      const pad = String(i).padStart(3, '0');
+      img.src = `/assets/video-frames/frame_${pad}.jpg`;
+
+      if (typeof img.decode === 'function') {
+        img.decode()
+          .then(() => {
+            if (i === 1 && !isCanvasReady) {
+              isCanvasReady = true;
+              drawFrame(1);
+              if (fallback) fallback.style.opacity = '0';
+            }
+          })
+          .catch(() => {});
+      } else {
+        img.onload = () => {
+          if (i === 1 && !isCanvasReady) {
+            isCanvasReady = true;
+            drawFrame(1);
+            if (fallback) fallback.style.opacity = '0';
+          }
+        };
+      }
+      frames.push(img);
+    }
+
+    // 2. Draw frame maintaining object-fit: cover
+    function drawFrame(frameIdx: number) {
+      if (!ctx || !canvas) return;
+      const img = frames[frameIdx - 1];
+      if (!img || !img.complete || img.naturalWidth === 0) {
+        // Fallback to nearest loaded frame
+        for (let offset = 1; offset < TOTAL_FRAMES; offset++) {
+          const prev = frames[Math.max(0, frameIdx - 1 - offset)];
+          if (prev && prev.complete && prev.naturalWidth > 0) {
+            renderCover(prev);
+            return;
+          }
+          const next = frames[Math.min(TOTAL_FRAMES - 1, frameIdx - 1 + offset)];
+          if (next && next.complete && next.naturalWidth > 0) {
+            renderCover(next);
+            return;
+          }
+        }
+        return;
+      }
+      renderCover(img);
+    }
+
+    function renderCover(img: HTMLImageElement) {
+      if (!ctx || !canvas) return;
+      const w = canvas.width;
+      const h = canvas.height;
+      if (w === 0 || h === 0) return;
+
+      const imgW = img.naturalWidth || 1280;
+      const imgH = img.naturalHeight || 720;
+      const imgRatio = imgW / imgH;
+      const canvasRatio = w / h;
+
+      let drawW = w;
+      let drawH = h;
+      let offX = 0;
+      let offY = 0;
+
+      if (canvasRatio > imgRatio) {
+        drawW = w;
+        drawH = w / imgRatio;
+        offY = (h - drawH) / 2;
+      } else {
+        drawH = h;
+        drawW = h * imgRatio;
+        offX = (w - drawW) / 2;
+      }
+
+      ctx.drawImage(img, offX, offY, drawW, drawH);
+    }
+
+    // 3. Resize canvas to match display size with devicePixelRatio
+    function resizeCanvas() {
+      if (!canvas) return;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const rect = canvas.getBoundingClientRect();
+      const newW = Math.round(rect.width * dpr);
+      const newH = Math.round(rect.height * dpr);
+      if (canvas.width !== newW || canvas.height !== newH) {
+        canvas.width = newW;
+        canvas.height = newH;
+        drawFrame(currentFrameIndex);
+      }
+    }
+
+    window.addEventListener('resize', resizeCanvas, { passive: true });
+
+    // 4. Update on Scroll
+    function updateScrollProgress() {
+      if (!track) return;
+      const rect = track.getBoundingClientRect();
+      const scrollDist = track.offsetHeight - window.innerHeight;
+      if (scrollDist <= 0) {
+        targetProgress = 0;
+      } else {
+        const raw = -rect.top / scrollDist;
+        targetProgress = Math.max(0, Math.min(1, raw));
+      }
+    }
+
+    window.addEventListener('scroll', updateScrollProgress, { passive: true });
+    updateScrollProgress();
+
+    // 5. Responsive, immediate 60fps render loop
+    function tick() {
+      // Snappy 0.22 lerp: zero trailing lag, instant response to scrolling
+      currentProgress += (targetProgress - currentProgress) * 0.22;
+      if (Math.abs(targetProgress - currentProgress) < 0.0002) {
+        currentProgress = targetProgress;
+      }
+
+      if (!anchor || !sticky || !mediaBox) {
+        requestAnimationFrame(tick);
+        return;
+      }
+
+      const anchorRect = anchor.getBoundingClientRect();
+      const stickyRect = sticky.getBoundingClientRect();
+
+      const startX = anchorRect.left - stickyRect.left;
+      const startY = anchorRect.top - stickyRect.top;
+      const startW = anchorRect.width;
+      const startH = anchorRect.height;
+      const targetW = stickyRect.width;
+      const targetH = stickyRect.height;
+
+      if (currentProgress < EXPAND_END) {
+        // --- PHASE 1: Smooth Expansion of Frame 1 to 100vh ---
+        const rawP = Math.max(0, currentProgress / EXPAND_END);
+        // Smooth sine ease
+        const easeP = Math.sin((rawP * Math.PI) / 2);
+
+        const curW = startW + (targetW - startW) * easeP;
+        const curH = startH + (targetH - startH) * easeP;
+        const curX = startX * (1 - easeP);
+        const curY = startY * (1 - easeP);
+
+        mediaBox.style.width = `${curW}px`;
+        mediaBox.style.height = `${curH}px`;
+        mediaBox.style.transform = `translate3d(${curX}px, ${curY}px, 0)`;
+
+        // Fade header and bar
+        const textOpacity = Math.max(0, 1 - easeP * 1.5);
+        if (header) {
+          header.style.opacity = String(textOpacity);
+          header.style.transform = `translateY(${-easeP * 30}px)`;
+          header.style.pointerEvents = textOpacity < 0.05 ? 'none' : 'auto';
+        }
+        if (barWrapper) {
+          barWrapper.style.opacity = String(textOpacity);
+          barWrapper.style.transform = `translateY(${-easeP * 15}px)`;
+          barWrapper.style.pointerEvents = textOpacity < 0.05 ? 'none' : 'auto';
+        }
+        mediaBox.style.pointerEvents = 'none';
+        if (overlay) {
+          overlay.style.opacity = '0';
+          overlay.style.pointerEvents = 'none';
+        }
+        updateStep(0);
+
+        // Strictly Frame 1 during expansion
+        if (currentFrameIndex !== 1) {
+          currentFrameIndex = 1;
+          drawFrame(1);
+        }
+      } else {
+        // --- PHASE 2: IMMEDIATELY SCRUB FRAMES ON FULL SCREEN (ZERO DEAD ZONE) ---
+        mediaBox.style.width = `${targetW}px`;
+        mediaBox.style.height = `${targetH}px`;
+        mediaBox.style.transform = 'none';
+        mediaBox.style.pointerEvents = 'auto';
+
+        if (header) {
+          header.style.opacity = '0';
+          header.style.pointerEvents = 'none';
+        }
+        if (barWrapper) {
+          barWrapper.style.opacity = '0';
+          barWrapper.style.pointerEvents = 'none';
+        }
+        if (overlay) {
+          const overlayFade = Math.min(1, Math.max(0, (currentProgress - EXPAND_END) / 0.03));
+          overlay.style.opacity = String(overlayFade);
+          overlay.style.pointerEvents = overlayFade > 0.5 ? 'auto' : 'none';
+        }
+
+        const scrubProgress = (currentProgress - EXPAND_END) / (1 - EXPAND_END);
+        // Instant handoff: from the very first pixel above EXPAND_END, new frames begin advancing!
+        const frameIdx = Math.min(
+          TOTAL_FRAMES,
+          Math.max(1, 1 + Math.floor(scrubProgress * (TOTAL_FRAMES - 1)))
+        );
+
+        if (frameIdx !== currentFrameIndex) {
+          currentFrameIndex = frameIdx;
+          drawFrame(currentFrameIndex);
+        }
+
+        // Evenly distribute 4 cards across all 100 frames (25 frames / 25% per card)
+        const targetStep = Math.min(
+          REVIEW_STEPS.length - 1,
+          Math.max(0, Math.floor(scrubProgress * REVIEW_STEPS.length))
+        );
+        updateStep(targetStep);
+      }
+
+      resizeCanvas();
+      requestAnimationFrame(tick);
+    }
+
+    // Initialize
+    resizeCanvas();
+    requestAnimationFrame(tick);
+  }
+</script>
+
+<style>
+  /* ----------------------------------------------------------
+     Section Layout & Sticky Track
+     ---------------------------------------------------------- */
+  .property-review {
+    position: relative;
+    width: 100%;
+    background-color: var(--bg-brand);
+    background-image: var(--bg-pattern-dark);
+    background-repeat: repeat;
+    background-size: 30rem 30rem;
+    background-attachment: fixed;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+  }
+
+  /* 420vh provides generous, comfortable scroll pace for 4 sequential cards */
+  .property-review__track {
+    position: relative;
+    width: 100%;
+    height: 420vh;
+  }
+
+  /* Sticky Viewport Container: stays pinned at top: 0 while scrolling through track */
+  .property-review__sticky {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    width: 100%;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: var(--bg-brand);
+  }
+
+  /* ----------------------------------------------------------
+     Top Sub-Header Bar (Matches Block 2 edges: 40rem left & right)
+     ---------------------------------------------------------- */
+  .property-review__bar-wrapper {
+    position: relative;
+    width: 100%;
+    padding-top: 24rem;
+    padding-right: 40rem;
+    padding-bottom: 0;
+    padding-left: 40rem;
+    z-index: 10;
+    transition: opacity 0.1s linear;
+  }
+
+  .property-review__bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 16rem;
+    margin-left: 0;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+  }
+
+  .property-review__bar-main {
+    display: flex;
+    align-items: center;
+    column-gap: 9rem;
+  }
+
+  .property-review__bullet {
+    display: block;
+    width: 6rem;
+    height: 6rem;
+    background-color: var(--color-white);
+    flex-shrink: 0;
+  }
+
+  .property-review__bar-title,
+  .property-review__bar-num {
+    white-space: nowrap;
+    letter-spacing: 0;
+    font-family: var(--font-body);
+    font-size: 14rem;
+    font-weight: 400;
+    line-height: 1.2;
+    color: var(--color-white);
+  }
+
+  .property-review__divider {
+    border-top-width: 1rem;
+    border-right-width: 0;
+    border-bottom-width: 0;
+    border-left-width: 0;
+    border-top-style: solid;
+    border-right-style: none;
+    border-bottom-style: none;
+    border-left-style: none;
+    border-top-color: var(--color-border);
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    width: 100%;
+  }
+
+  /* ----------------------------------------------------------
+     Content Flow: Center Header & Anchor
+     ---------------------------------------------------------- */
+  .property-review__content-flow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    flex: 1;
+    justify-content: center;
+    padding-top: 20rem;
+    padding-bottom: 40rem;
+    position: relative;
+    z-index: 5;
+  }
+
+  .property-review__header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    row-gap: 19rem;
+    width: 100%;
+    max-width: 633rem;
+    margin-top: 0;
+    margin-right: auto;
+    margin-bottom: 48rem;
+    margin-left: auto;
+    padding-right: 20rem;
+    padding-left: 20rem;
+    transition: opacity 0.1s linear;
+  }
+
+  .property-review__title {
+    width: 100%;
+    max-width: 633rem;
+    font-family: var(--font-body);
+    font-size: 37rem;
+    font-weight: 700;
+    line-height: 1.15;
+    text-transform: uppercase;
+    letter-spacing: 0;
+    color: var(--color-white);
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    word-break: break-word;
+  }
+
+  .property-review__desc {
+    width: 100%;
+    max-width: 287rem;
+    font-family: var(--font-body);
+    font-size: 14rem;
+    font-weight: 400;
+    line-height: 1.4;
+    letter-spacing: 0;
+    color: var(--color-white);
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    word-break: break-word;
+  }
+
+  /* Anchor defines the exact card size & position matching Photo 3 */
+  .property-review__media-anchor {
+    width: 633rem;
+    max-width: calc(100% - 80rem);
+    height: 361rem;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  /* ----------------------------------------------------------
+     Expanding Media Box:
+     Positioned over the anchor in initial state (Photo 3),
+     smoothly expands to 100vw x 100vh on scroll!
+     ---------------------------------------------------------- */
+  .property-review__media-box {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 633rem;
+    height: 361rem;
+    overflow: hidden;
+    z-index: 8;
+    background-color: #131313;
+    will-change: width, height, transform;
+    pointer-events: none;
+  }
+
+  .property-review__canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .property-review__fallback-img {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    z-index: 1;
+  }
+
+  /* ----------------------------------------------------------
+     Bottom Gradient Shadow on Media Box (Figma Linear 50%)
+     Ensures high contrast & readability for white text & card
+     ---------------------------------------------------------- */
+  .property-review__media-shadow {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 70%;
+    background: linear-gradient(180deg, rgba(19, 19, 19, 0) 0%, rgba(19, 19, 19, 0.45) 45%, rgba(19, 19, 19, 0.9) 100%);
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  /* ----------------------------------------------------------
+     Full-Screen Interactive Overlay (Figma Node 125:556)
+     ---------------------------------------------------------- */
+  .property-review__overlay {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    pointer-events: none;
+    opacity: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.2s ease-out;
+  }
+
+  /* 4-Step Indicator Navigation (on the left, vertically centered) */
+  .property-review__indicator {
+    position: absolute;
+    left: 40rem;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 25;
+    display: flex;
+    flex-direction: column;
+    row-gap: 8rem;
+    width: 43rem;
+    pointer-events: auto;
+  }
+
+  .property-review__indicator-btn {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 43rem;
+    height: 11rem;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    background-color: transparent;
+    border-top-width: 0;
+    border-right-width: 0;
+    border-bottom-width: 0;
+    border-left-width: 0;
+    cursor: pointer;
+    outline: none;
+  }
+
+  .property-review__indicator-line {
+    display: block;
+    width: 43rem;
+    height: 3rem;
+    background-color: var(--color-white);
+    opacity: 0.3;
+    transition: opacity 0.25s ease, background-color 0.25s ease;
+  }
+
+  .property-review__indicator-btn:hover .property-review__indicator-line {
+    opacity: 0.7;
+  }
+
+  .property-review__indicator-btn.is-active .property-review__indicator-line {
+    opacity: 1;
+  }
+
+  .property-review__overlay-inner {
+    position: relative;
+    width: 100%;
+    max-width: 1920rem;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding-top: 0;
+    padding-right: 40rem;
+    padding-bottom: 40rem;
+    padding-left: 40rem;
+    box-sizing: border-box;
+  }
+
+  /* Both LOT FIT and the card are aligned along their top edge */
+  .property-review__overlay-row {
+    position: relative;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+
+  .property-review__overlay-title {
+    font-family: var(--font-body);
+    font-size: 67rem;
+    font-weight: 700;
+    line-height: 0.92;
+    max-width: 480rem;
+    color: var(--color-white);
+    text-transform: uppercase;
+    letter-spacing: normal;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+
+  /* ----------------------------------------------------------
+     Mobile Responsive (<480px)
+     ---------------------------------------------------------- */
+  @media screen and (max-width: 479px) {
+    .property-review__track {
+      height: 280vh;
+    }
+
+    .property-review__bar-wrapper {
+      padding-top: var(--gap-s);
+      padding-right: var(--grid-margin);
+      padding-left: var(--grid-margin);
+    }
+
+    .property-review__content-flow {
+      padding-top: var(--gap-xs);
+      padding-bottom: var(--gap-s);
+    }
+
+    .property-review__header {
+      margin-bottom: var(--gap-m);
+      row-gap: var(--gap-xs);
+      padding-right: var(--grid-margin);
+      padding-left: var(--grid-margin);
+    }
+
+    .property-review__title {
+      font-size: 22rem;
+    }
+
+    .property-review__media-anchor {
+      width: 100%;
+      height: 220rem;
+    }
+
+    .property-review__overlay-inner {
+      padding-top: 0;
+      padding-right: var(--grid-margin);
+      padding-bottom: 30rem;
+      padding-left: var(--grid-margin);
+    }
+
+    .property-review__indicator {
+      left: 20rem;
+      width: 32rem;
+      row-gap: 6rem;
+    }
+
+    .property-review__indicator-btn {
+      width: 32rem;
+      height: 9rem;
+    }
+
+    .property-review__indicator-line {
+      width: 32rem;
+      height: 2.5rem;
+    }
+
+    .property-review__overlay-row {
+      flex-direction: column;
+      align-items: flex-start;
+      row-gap: 20rem;
+    }
+
+    .property-review__overlay-title {
+      font-size: 38rem;
+      line-height: 1;
+      margin-top: 0;
+      margin-right: 0;
+      margin-bottom: 0;
+      margin-left: 0;
+    }
+  }
+</style>

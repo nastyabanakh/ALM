@@ -1,0 +1,876 @@
+---
+/**
+ * FinishedStandardSection.astro
+ * Section 05: The Finished Standard (Figma node 166:2231 / Frame 436)
+ * "PREMIUM MEANS FINISHED DETAILS, NOT LEFT FOR LATER"
+ * Includes responsive layout, fluid REM scaling, and interactive showcase tabs.
+ */
+
+interface ShowcaseItem {
+  id: string;
+  title: string;
+  subtitle: string;
+  cardTitle: string;
+  image: string;
+  active?: boolean;
+}
+
+const showcaseItems: ShowcaseItem[] = [
+  {
+    id: 'daily-layout',
+    title: 'Daily<br />Layout',
+    subtitle: 'Living, private, and outdoor spaces shaped for how your family actually lives.',
+    cardTitle: 'Daily Layout',
+    image: '/assets/section-05/daily-layout.jpg',
+    active: true
+  },
+  {
+    id: 'turnkey-interiors',
+    title: 'Turnkey<br />Interiors',
+    subtitle: 'Cabinetry, fixtures, surfaces, and lighting delivered fully complete.',
+    cardTitle: 'Turnkey Interiors',
+    image: '/assets/section-05/turnkey-interiors.jpg',
+    active: false
+  },
+  {
+    id: 'cohesive-finishes',
+    title: 'Cohesive<br />Finishes',
+    subtitle: 'Key finishes are chosen with the full interior and exterior in view.',
+    cardTitle: 'Cohesive Finishes',
+    image: '/assets/section-05/cohesive-finishes.jpg',
+    active: false
+  },
+  {
+    id: 'outdoor-living',
+    title: 'Outdoor<br />Living',
+    subtitle: 'Facades, glazing, and terraces planned together—never as afterthoughts.',
+    cardTitle: 'Outdoor Living',
+    image: '/assets/section-05/outdoor-living.jpg',
+    active: false
+  }
+];
+---
+
+<section class="finished-standard" id="finished-standard" aria-label="The Finished Standard">
+  <!-- Top Sub-Header Bar & Divider (Frame 437 / Frame 433) -->
+  <div class="finished-standard__bar">
+    <div class="finished-standard__bar-left">
+      <span class="finished-standard__bullet" aria-hidden="true"></span>
+      <span class="finished-standard__bar-title">
+        The finished standard
+      </span>
+    </div>
+    <span class="finished-standard__bar-index" aria-hidden="true">
+      05//
+    </span>
+  </div>
+
+  <div class="finished-standard__divider" aria-hidden="true"></div>
+
+  <!-- Centered Section Heading & Description (Frame 432) -->
+  <div class="finished-standard__header">
+    <h2 class="finished-standard__title">
+      Premium Means Finished Details, Not Left for Later
+    </h2>
+    <p class="finished-standard__desc">
+      Premium is not a label. It is the layout, materials, kitchen, bathrooms, lighting, exterior work, and how those decisions fit together.
+    </p>
+  </div>
+
+  <!-- Full-Width Interactive Showcase Box (Frame 455) -->
+  <div class="finished-standard__showcase" id="fs-showcase">
+    <!-- Background Ambient Layers (Active item cross-fade) -->
+    <div class="finished-standard__bg-layers" aria-hidden="true">
+      {showcaseItems.map((item, idx) => (
+        <div
+          class:list={[
+            'finished-standard__bg-item',
+            { 'finished-standard__bg-item--active': item.active }
+          ]}
+          data-bg-index={idx}
+        >
+          <img
+            src={item.image}
+            alt=""
+            class="finished-standard__bg-img"
+            loading="lazy"
+          />
+        </div>
+      ))}
+      <div class="finished-standard__bg-overlay"></div>
+    </div>
+
+
+    <!-- Center Display Title & Description (Frame 456) -->
+    <div class="finished-standard__center-info" id="fs-center-info">
+      <h3 class="finished-standard__center-title" id="fs-center-title" set:html={showcaseItems[0].title} />
+      <p class="finished-standard__center-desc" id="fs-center-desc">
+        {showcaseItems[0].subtitle}
+      </p>
+    </div>
+
+    <!-- Bottom Thumbnail Navigation Bar (Frame 463 / Frame 464) -->
+    <div class="finished-standard__nav-wrapper">
+      <div class="finished-standard__nav-line" aria-hidden="true"></div>
+
+      <div class="finished-standard__nav-cards" id="fs-cards" role="tablist" aria-label="Showcase items">
+        {showcaseItems.map((item, idx) => (
+          <button
+            type="button"
+            role="tab"
+            class:list={[
+              'finished-standard__card',
+              { 'finished-standard__card--active': item.active }
+            ]}
+            data-index={idx}
+            data-title={item.title}
+            data-desc={item.subtitle}
+            aria-selected={item.active ? 'true' : 'false'}
+            aria-label={`View ${item.cardTitle}`}
+          >
+            <span class="finished-standard__card-title">
+              {item.cardTitle}
+            </span>
+
+            <div class="finished-standard__thumb-box">
+              <img
+                src={item.image}
+                alt=""
+                class="finished-standard__thumb-img"
+                loading="lazy"
+              />
+              <div class="finished-standard__thumb-overlay"></div>
+
+              <!-- Action Indicator Arrow Button (Figma node 166:2366) -->
+              <div class="finished-standard__arrow-btn" aria-hidden="true">
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="finished-standard__arrow-icon"
+                >
+                  <path
+                    d="M6.9154 7.9829V14.4905L6.91609 15.0906H5.71594L5.71663 14.4905V6.53554L5.71594 5.93547L6.31602 5.93616H14.271L14.871 5.93547V7.13562L14.271 7.13493H7.76338L15.7819 15.1534L14.9339 16.0014L6.9154 7.9829Z"
+                    fill="#131313"
+                    transform="rotate(90 10 10)"
+                  />
+                </svg>
+              </div>
+            </div>
+          </button>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Interactive Showcase Controller: Card switching with auto-play, smooth transitions & light parallax
+  const showcase = document.getElementById('fs-showcase');
+  if (showcase) {
+    const cards = Array.from(showcase.querySelectorAll<HTMLButtonElement>('.finished-standard__card'));
+    const bgItems = Array.from(showcase.querySelectorAll<HTMLElement>('.finished-standard__bg-item'));
+    const bgLayers = showcase.querySelector<HTMLElement>('.finished-standard__bg-layers');
+    const centerInfo = document.getElementById('fs-center-info');
+    const centerTitle = document.getElementById('fs-center-title');
+    const centerDesc = document.getElementById('fs-center-desc');
+
+    let currentIndex = 0;
+    let isTransitioning = false;
+    let autoplayTimer: ReturnType<typeof setInterval> | null = null;
+    let cleanupPrevTimer: ReturnType<typeof setTimeout> | null = null;
+    const AUTOPLAY_INTERVAL = 4800; // 4.8 seconds
+
+    // 1. Silky Smooth Switching Controller (Seamless Layer Stacking + Continuous Ken Burns Zoom)
+    function switchToIndex(nextIndex: number) {
+      if (nextIndex === currentIndex || isTransitioning) return;
+      isTransitioning = true;
+      const prevIndex = currentIndex;
+      currentIndex = nextIndex;
+
+      // Update Cards active state & accessibility
+      cards.forEach((card, i) => {
+        const isActive = i === nextIndex;
+        card.classList.toggle('finished-standard__card--active', isActive);
+        card.setAttribute('aria-selected', String(isActive));
+      });
+
+      // Clear any pending cleanup
+      if (cleanupPrevTimer) {
+        clearTimeout(cleanupPrevTimer);
+      }
+
+      // Mark outgoing item as --prev so it stays at opacity: 1 underneath at z-index: 2
+      bgItems.forEach((bg) => bg.classList.remove('finished-standard__bg-item--prev'));
+      if (bgItems[prevIndex]) {
+        bgItems[prevIndex].classList.remove('finished-standard__bg-item--active');
+        bgItems[prevIndex].classList.add('finished-standard__bg-item--prev');
+      }
+
+      // Activate incoming item (fades in on top at z-index: 3 and restarts Ken Burns zoom from scale 1)
+      if (bgItems[nextIndex]) {
+        const nextImg = bgItems[nextIndex].querySelector<HTMLElement>('.finished-standard__bg-img');
+        if (nextImg) {
+          nextImg.style.animation = 'none';
+          void nextImg.offsetHeight; // trigger reflow
+          nextImg.style.animation = '';
+        }
+        bgItems[nextIndex].classList.add('finished-standard__bg-item--active');
+      }
+
+      // Remove --prev from old item once incoming item is completely opaque (1400ms)
+      cleanupPrevTimer = setTimeout(() => {
+        bgItems.forEach((bg) => bg.classList.remove('finished-standard__bg-item--prev'));
+      }, 1400);
+
+      // Smooth fade out and update title & description
+      const targetCard = cards[nextIndex];
+      const newTitle = targetCard.dataset.title;
+      const newDesc = targetCard.dataset.desc;
+
+      if (centerTitle && centerDesc && newTitle && newDesc) {
+        // Pure opacity fade with zero layout jump or translateY bounce
+        centerTitle.style.opacity = '0';
+        centerDesc.style.opacity = '0';
+
+        setTimeout(() => {
+          centerTitle.innerHTML = newTitle;
+          centerDesc.textContent = newDesc;
+          centerTitle.style.opacity = '1';
+          centerDesc.style.opacity = '1';
+
+          setTimeout(() => {
+            isTransitioning = false;
+          }, 350);
+        }, 260);
+      } else {
+        isTransitioning = false;
+      }
+    }
+
+    // 2. Autoplay Timer
+    function startAutoplay() {
+      stopAutoplay();
+      autoplayTimer = setInterval(() => {
+        const nextIndex = (currentIndex + 1) % cards.length;
+        switchToIndex(nextIndex);
+      }, AUTOPLAY_INTERVAL);
+    }
+
+    function stopAutoplay() {
+      if (autoplayTimer) {
+        clearInterval(autoplayTimer);
+        autoplayTimer = null;
+      }
+    }
+
+    // Manual card click: switches to clicked photo and restarts auto-play countdown
+    cards.forEach((card, idx) => {
+      card.addEventListener('click', () => {
+        switchToIndex(idx);
+        startAutoplay();
+      });
+    });
+
+    // Start auto-play on initial load
+    startAutoplay();
+
+    // 3. Subtle Parallax Effect on Scroll
+    let ticking = false;
+
+    function updateParallax() {
+      const rect = showcase.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+
+      if (rect.bottom > 0 && rect.top < windowHeight) {
+        const centerY = rect.top + rect.height / 2;
+        const distFromCenter = centerY - windowHeight / 2;
+
+        // Subtle vertical parallax offsets
+        const bgOffset = -distFromCenter * 0.12;
+        const textOffset = -distFromCenter * 0.04;
+
+        if (bgLayers) {
+          bgLayers.style.transform = `translate3d(0, ${bgOffset.toFixed(2)}px, 0)`;
+        }
+        if (centerInfo) {
+          centerInfo.style.transform = `translate3d(-50%, ${textOffset.toFixed(2)}px, 0)`;
+        }
+      }
+      ticking = false;
+    }
+
+    function onScroll() {
+      if (!ticking) {
+        requestAnimationFrame(updateParallax);
+        ticking = true;
+      }
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    updateParallax();
+  }
+</script>
+
+<style>
+  /* ============================================================
+     FinishedStandardSection — Scoped CSS (Fluid REM, Zero-PX)
+     Figma Frame 436 (node 166:2231)
+     ============================================================ */
+
+  .finished-standard {
+    position: relative;
+    width: 100%;
+    background-color: var(--bg-white, #ffffff);
+    color: var(--color-dark, #131313);
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+  }
+
+  /* ----------------------------------------------------------
+     Top Sub-Header Bar & Divider (Frame 437 / 433)
+     ---------------------------------------------------------- */
+  .finished-standard__bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 16rem;
+    margin-left: 0;
+    padding-top: 0;
+    padding-right: 40rem;
+    padding-bottom: 0;
+    padding-left: 40rem;
+  }
+
+  .finished-standard__bar-left {
+    display: flex;
+    align-items: center;
+    column-gap: 9rem;
+  }
+
+  .finished-standard__bullet {
+    display: block;
+    width: 6rem;
+    height: 6rem;
+    background-color: #131313;
+    flex-shrink: 0;
+  }
+
+  .finished-standard__bar-title {
+    font-family: var(--font-display, 'Syne', sans-serif);
+    font-size: 14rem;
+    line-height: 1.2;
+    color: #131313;
+    opacity: 0.5;
+    white-space: nowrap;
+  }
+
+  .finished-standard__bar-index {
+    font-family: var(--font-display, 'Syne', sans-serif);
+    font-size: 14rem;
+    line-height: 1.2;
+    color: #131313;
+    opacity: 0.5;
+    white-space: nowrap;
+  }
+
+  .finished-standard__divider {
+    width: calc(100% - 80rem);
+    border-top-width: 1rem;
+    border-top-style: solid;
+    border-top-color: rgba(19, 19, 19, 0.15);
+    border-right-width: 0;
+    border-bottom-width: 0;
+    border-left-width: 0;
+    margin-top: 0;
+    margin-right: 40rem;
+    margin-bottom: 99rem;
+    margin-left: 40rem;
+  }
+
+  /* ----------------------------------------------------------
+     Section Heading & Description (Frame 432)
+     ---------------------------------------------------------- */
+  .finished-standard__header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    row-gap: 19rem;
+    width: 100%;
+    margin-top: 0;
+    margin-right: auto;
+    margin-bottom: 99rem;
+    margin-left: auto;
+    padding-top: 0;
+    padding-right: 40rem;
+    padding-bottom: 0;
+    padding-left: 40rem;
+  }
+
+  .finished-standard__title {
+    width: 100%;
+    max-width: 573rem;
+    font-family: var(--font-heading, 'Syne', sans-serif);
+    font-weight: 700;
+    font-size: 37rem;
+    line-height: 1.15;
+    text-transform: uppercase;
+    letter-spacing: 0;
+    color: #131313;
+    text-align: center;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    word-break: break-word;
+  }
+
+  .finished-standard__desc {
+    width: 100%;
+    max-width: 291rem;
+    font-family: var(--font-body, 'Syne', sans-serif);
+    font-weight: 400;
+    font-size: 14rem;
+    line-height: 1.4;
+    letter-spacing: 0;
+    color: #131313;
+    opacity: 0.5;
+    text-align: center;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    word-break: break-word;
+  }
+
+  /* ----------------------------------------------------------
+     Full-Width Showcase Box (Frame 455)
+     ---------------------------------------------------------- */
+  .finished-standard__showcase {
+    position: relative;
+    width: 100%;
+    height: 791rem;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    background-color: #131313;
+  }
+
+  /* Background Images & Overlay */
+  .finished-standard__bg-layers {
+    position: absolute;
+    top: -80rem;
+    right: 0;
+    bottom: -80rem;
+    left: 0;
+    pointer-events: none;
+    z-index: 1;
+    overflow: hidden;
+    will-change: transform;
+  }
+
+  .finished-standard__bg-item {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    opacity: 0;
+    z-index: 1;
+    pointer-events: none;
+    transition: opacity 1.4s cubic-bezier(0.25, 1, 0.5, 1);
+    will-change: opacity;
+  }
+
+  /* Outgoing layer stays at opacity: 1 underneath while incoming layer fades in on top */
+  .finished-standard__bg-item--prev {
+    opacity: 1;
+    z-index: 2;
+  }
+
+  /* Incoming active layer fades in on top at z-index: 3 */
+  .finished-standard__bg-item--active {
+    opacity: 1;
+    z-index: 3;
+  }
+
+  .finished-standard__bg-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    image-rendering: -webkit-optimize-contrast;
+    transform: scale(1);
+    backface-visibility: hidden;
+    will-change: transform;
+  }
+
+  /* Continuous subtle zoom on the active photo (Ken Burns) */
+  .finished-standard__bg-item--active .finished-standard__bg-img {
+    animation-name: fs-ken-burns;
+    animation-duration: 6s;
+    animation-timing-function: cubic-bezier(0.25, 1, 0.5, 1);
+    animation-fill-mode: forwards;
+  }
+
+  .finished-standard__bg-item--prev .finished-standard__bg-img {
+    transform: scale(1.08);
+  }
+
+  @keyframes fs-ken-burns {
+    0% {
+      transform: scale(1);
+    }
+    100% {
+      transform: scale(1.08);
+    }
+  }
+
+  .finished-standard__bg-overlay {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 4;
+  }
+
+
+  /* Center Title & Description (Frame 456) */
+  .finished-standard__center-info {
+    position: absolute;
+    top: 180rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    row-gap: 14rem;
+    width: 546rem;
+    max-width: 90%;
+    z-index: 6;
+    pointer-events: none;
+    will-change: transform;
+  }
+
+  .finished-standard__center-title {
+    font-family: var(--font-heading, 'Syne', sans-serif);
+    font-weight: 700;
+    font-size: 67rem;
+    line-height: 1.05;
+    letter-spacing: 0;
+    text-transform: uppercase;
+    color: #ffffff;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    min-height: 142rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+  }
+
+  .finished-standard__center-desc {
+    font-family: var(--font-body, 'Syne', sans-serif);
+    font-weight: 400;
+    font-size: 19rem;
+    line-height: 1.4;
+    letter-spacing: 0;
+    color: #ffffff;
+    max-width: 372rem;
+    min-height: 54rem;
+    text-align: center;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    transition: opacity 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+  }
+
+  /* ----------------------------------------------------------
+     Bottom Navigation & Cards (Frame 463 / Frame 464)
+     ---------------------------------------------------------- */
+  .finished-standard__nav-wrapper {
+    position: relative;
+    z-index: 5;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    row-gap: 22rem;
+    padding-top: 0;
+    padding-right: 40rem;
+    padding-bottom: 36rem;
+    padding-left: 40rem;
+  }
+
+  .finished-standard__nav-line {
+    width: 100%;
+    border-top-width: 1rem;
+    border-top-style: solid;
+    border-top-color: rgba(255, 255, 255, 0.2);
+    border-right-width: 0;
+    border-bottom-width: 0;
+    border-left-width: 0;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+  }
+
+  .finished-standard__nav-cards {
+    display: flex;
+    align-items: flex-end;
+    column-gap: 16rem;
+    width: 100%;
+  }
+
+  .finished-standard__card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    row-gap: 12rem;
+    flex: 1;
+    background: transparent;
+    border-top-width: 0;
+    border-right-width: 0;
+    border-bottom-width: 0;
+    border-left-width: 0;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    cursor: pointer;
+    text-align: left;
+    outline: none;
+  }
+
+  .finished-standard__card-title {
+    font-family: var(--font-heading, 'Syne', sans-serif);
+    font-weight: 700;
+    font-size: 12rem;
+    line-height: 1.2;
+    text-transform: uppercase;
+    letter-spacing: 0;
+    color: #ffffff;
+    opacity: 0.4;
+    transition: opacity 0.3s ease;
+  }
+
+  .finished-standard__card:hover .finished-standard__card-title,
+  .finished-standard__card--active .finished-standard__card-title {
+    opacity: 1;
+  }
+
+  .finished-standard__thumb-box {
+    position: relative;
+    width: 100%;
+    height: 166rem;
+    overflow: hidden;
+    background-color: #131313;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+  }
+
+  .finished-standard__thumb-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.4s ease;
+  }
+
+  .finished-standard__card:hover .finished-standard__thumb-img {
+    transform: scale(1.03);
+  }
+
+  /* Black shadow overlay on inactive photo; removed (opacity: 0) on active photo */
+  .finished-standard__thumb-overlay {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: #131313;
+    opacity: 0.6;
+    transition: opacity 0.45s cubic-bezier(0.25, 1, 0.5, 1);
+    pointer-events: none;
+  }
+
+  /* Card hover subtly lights up inactive thumbnail */
+  .finished-standard__card:hover:not(.finished-standard__card--active) .finished-standard__thumb-overlay {
+    opacity: 0.2;
+  }
+
+  .finished-standard__card--active .finished-standard__thumb-overlay {
+    opacity: 0;
+  }
+
+  /* Diagonal Arrow Button (Figma node 166:2366) */
+  .finished-standard__arrow-btn {
+    position: absolute;
+    top: 108rem;
+    left: 16rem;
+    width: 42rem;
+    height: 42rem;
+    border-top-left-radius: 52.5rem;
+    border-top-right-radius: 52.5rem;
+    border-bottom-right-radius: 52.5rem;
+    border-bottom-left-radius: 52.5rem;
+    background-color: #ffffff;
+    border-top-width: 0.5rem;
+    border-right-width: 0.5rem;
+    border-bottom-width: 0.5rem;
+    border-left-width: 0.5rem;
+    border-top-style: solid;
+    border-right-style: solid;
+    border-bottom-style: solid;
+    border-left-style: solid;
+    border-top-color: #ffffff;
+    border-right-color: #ffffff;
+    border-bottom-color: #ffffff;
+    border-left-color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transform: scale(0.8);
+    transition: opacity 0.35s cubic-bezier(0.25, 1, 0.5, 1), transform 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  /* Appears on ACTIVE card AND on HOVER of any card */
+  .finished-standard__card:hover .finished-standard__arrow-btn,
+  .finished-standard__card--active .finished-standard__arrow-btn {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .finished-standard__arrow-icon {
+    width: 20rem;
+    height: 20rem;
+    display: block;
+    transition: transform 0.25s ease;
+  }
+
+  /* Micro-translation towards top-right along the arrow angle */
+  .finished-standard__card:hover .finished-standard__arrow-icon {
+    transform: translate(2rem, -2rem);
+  }
+
+  /* ----------------------------------------------------------
+     Mobile Breakpoint (<= 479px)
+     ---------------------------------------------------------- */
+  @media (max-width: 479px) {
+    .finished-standard {
+      padding-top: 0;
+      padding-right: 0;
+      padding-bottom: 0;
+      padding-left: 0;
+    }
+
+    .finished-standard__bar {
+      padding-top: 0;
+      padding-right: 20rem;
+      padding-bottom: 0;
+      padding-left: 20rem;
+    }
+
+    .finished-standard__divider {
+      margin-left: 20rem;
+      margin-right: 20rem;
+      width: calc(100% - 40rem);
+      margin-bottom: 40rem;
+    }
+
+    .finished-standard__header {
+      padding-top: 0;
+      padding-right: 20rem;
+      padding-bottom: 0;
+      padding-left: 20rem;
+      margin-bottom: 40rem;
+      row-gap: 12rem;
+    }
+
+    .finished-standard__title {
+      font-size: 24rem;
+    }
+
+    .finished-standard__showcase {
+      height: 600rem;
+    }
+
+    .finished-standard__center-info {
+      top: 100rem;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+    }
+
+    .finished-standard__center-title {
+      font-size: 36rem;
+      min-height: 82rem;
+    }
+
+    .finished-standard__center-desc {
+      font-size: 14rem;
+      max-width: 280rem;
+      min-height: 40rem;
+    }
+
+    .finished-standard__nav-wrapper {
+      padding-top: 0;
+      padding-right: 16rem;
+      padding-bottom: 20rem;
+      padding-left: 16rem;
+    }
+
+    .finished-standard__nav-cards {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      row-gap: 12rem;
+      column-gap: 12rem;
+    }
+
+    .finished-standard__thumb-box {
+      height: 100rem;
+    }
+
+    .finished-standard__arrow-btn {
+      top: 50rem;
+      left: 10rem;
+      width: 32rem;
+      height: 32rem;
+    }
+
+    .finished-standard__arrow-icon {
+      width: 16rem;
+      height: 16rem;
+    }
+  }
+</style>

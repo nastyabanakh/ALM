@@ -1,0 +1,743 @@
+---
+/**
+ * SinglePointContactSection.astro
+ * Section 04: Single point of contact (Figma node 125:685 / Frame 435)
+ * "ONE BUILDER. ZERO CONTRACTOR CHAOS."
+ * Includes responsive layout, fluid REM scaling, and interactive accordion.
+ */
+
+interface AccordionItem {
+  id: string;
+  num: string;
+  title: string;
+  shortTitle: string;
+  description: string;
+  image: string;
+  active?: boolean;
+}
+
+const accordionItems: AccordionItem[] = [
+  {
+    id: 'accordion-01',
+    num: '01//',
+    title: 'PLANS &\nENGINEERING',
+    shortTitle: 'Plans & Engineering',
+    description: 'Use your existing plans or bring in the local architects and engineers needed to adapt them.',
+    image: '/assets/section-04/plans-engineering.png',
+    active: true
+  },
+  {
+    id: 'accordion-02',
+    num: '02//',
+    title: 'PERMITS &\nCITY REVIEWS',
+    shortTitle: 'Permits & city reviews',
+    description: 'ALM coordinates directly with local building departments, managing plan submissions, zoning approvals, and permit issuance.',
+    image: '/assets/section-04/permits-city-reviews.png',
+    active: false
+  },
+  {
+    id: 'accordion-03',
+    num: '03//',
+    title: 'CONTRACTORS &\nCONSTRUCTION',
+    shortTitle: 'Contractors & construction',
+    description: 'A single dedicated team oversees site work, trade contractors, material deliveries, and schedule adherence from groundbreak to finish.',
+    image: '/assets/section-04/contractors-construction.png',
+    active: false
+  },
+  {
+    id: 'accordion-04',
+    num: '04//',
+    title: 'INSPECTIONS &\nCLOSEOUT',
+    shortTitle: 'Inspections & closeout',
+    description: 'We schedule and walk all required municipal inspections, resolve punch lists, and deliver a clean, move-in ready home.',
+    image: '/assets/section-04/inspections-closeout.jpg',
+    active: false
+  }
+];
+---
+
+<section class="spc-section" id="single-point-of-contact" aria-label="Single Point of Contact">
+  <!-- Top Sub-Header Bar (Figma Frame 433) -->
+  <div class="spc-section__bar">
+    <div class="spc-section__bar-left">
+      <span class="spc-section__bullet" aria-hidden="true"></span>
+      <span class="spc-section__bar-title text-s text-opacity-subtle">
+        Single point of contact
+      </span>
+    </div>
+    <span class="spc-section__bar-index text-s text-opacity-subtle" aria-hidden="true">
+      04//
+    </span>
+  </div>
+
+  <div class="spc-section__divider" aria-hidden="true"></div>
+
+  <!-- Main Display Title (node 125:696) -->
+  <div class="spc-section__title-wrapper">
+    <h2 class="spc-section__title">
+      <span class="spc-section__title-row spc-section__title-row--1">
+        <span>ONE</span>
+        <span>BUILDER.ZERO</span>
+      </span>
+      <span class="spc-section__title-row spc-section__title-row--2">
+        <span>CONTRACTOR</span>
+        <span>CHAOS.</span>
+      </span>
+    </h2>
+  </div>
+
+  <!-- Centered Paragraph Description (node 125:697) -->
+  <p class="spc-section__desc">
+    ALM handles every permit, trade, and municipal inspection. You communicate strictly with one dedicated team.
+  </p>
+
+  <!-- Accordion List (node 125:702 - 125:747) -->
+  <div class="spc-section__accordion" id="spc-accordion">
+    {accordionItems.map((item, index) => (
+      <article
+        class={`spc-accordion__item ${item.active ? 'spc-accordion__item--active' : ''}`}
+        data-index={index}
+        id={item.id}
+      >
+        <!-- Background Image Container for Active State -->
+        <div class="spc-accordion__bg" aria-hidden="true">
+          <img src={item.image} alt="" class="spc-accordion__bg-img" loading="lazy" />
+          <div class="spc-accordion__bg-overlay"></div>
+        </div>
+
+        <!-- Collapsed Header Trigger -->
+        <button
+          type="button"
+          class="spc-accordion__header"
+          aria-expanded={item.active ? 'true' : 'false'}
+          aria-controls={`${item.id}-body`}
+          data-accordion-trigger
+        >
+          <div class="spc-accordion__header-left">
+            <span class="spc-accordion__index">{item.num}</span>
+            <span class="spc-accordion__short-title">{item.shortTitle}</span>
+          </div>
+          <div class="spc-accordion__icon-box" aria-hidden="true">
+            <span class="spc-accordion__icon spc-accordion__icon--plus">
+              <svg width="27" height="28" viewBox="0 0 27 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M13.4896 0C13.7962 0 14.0903 0.126268 14.3072 0.351027C14.524 0.575786 14.6458 0.880625 14.6458 1.19848V12.7838H25.8229C26.1296 12.7838 26.4237 12.9101 26.6405 13.1348C26.8573 13.3596 26.9792 13.6644 26.9792 13.9823C26.9792 14.3002 26.8573 14.605 26.6405 14.8297C26.4237 15.0545 26.1296 15.1808 25.8229 15.1808H14.6458V26.7661C14.6458 27.084 14.524 27.3888 14.3072 27.6136C14.0903 27.8383 13.7962 27.9646 13.4896 27.9646C13.1829 27.9646 12.8888 27.8383 12.672 27.6136C12.4552 27.3888 12.3333 27.084 12.3333 26.7661V15.1808H1.15625C0.849593 15.1808 0.555497 15.0545 0.338658 14.8297C0.121819 14.605 0 14.3002 0 13.9823C0 13.6644 0.121819 13.3596 0.338658 13.1348C0.555497 12.9101 0.849593 12.7838 1.15625 12.7838H12.3333V1.19848C12.3333 0.880625 12.4552 0.575786 12.672 0.351027C12.8888 0.126268 13.1829 0 13.4896 0Z" fill="currentColor"/>
+              </svg>
+            </span>
+            <span class="spc-accordion__icon spc-accordion__icon--minus">
+              <svg width="37" height="37" viewBox="0 0 37 37" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M30.8332 17.3436H17.3436H6.1665C5.85985 17.3436 5.56575 17.4654 5.34891 17.6822C5.13207 17.8991 5.01025 18.1932 5.01025 18.4998C5.01025 18.8065 5.13207 19.1006 5.34891 19.3174C5.56575 19.5343 5.85985 19.6561 6.1665 19.6561H19.6561H30.8332C31.1398 19.6561 31.4339 19.5343 31.6508 19.3174C31.8676 19.1006 31.9894 18.8065 31.9894 18.4998C31.9894 18.1932 31.8676 17.8991 31.6508 17.6822C31.4339 17.4654 31.1398 17.3436 30.8332 17.3436Z" fill="currentColor"/>
+              </svg>
+            </span>
+          </div>
+        </button>
+
+        <!-- Expanded Body Content -->
+        <div class="spc-accordion__body" id={`${item.id}-body`}>
+          <div class="spc-accordion__body-inner">
+            <!-- Left Info Block -->
+            <div class="spc-accordion__info">
+              <h3 class="spc-accordion__expanded-title" set:html={item.title.replace('\n', '<br />')} />
+              <div class="spc-accordion__desc-row">
+                <p class="spc-accordion__expanded-desc">{item.description}</p>
+                <div class="spc-accordion__dot" aria-hidden="true"></div>
+              </div>
+            </div>
+
+            <!-- Right Preview Thumbnail -->
+            <div class="spc-accordion__thumb-box">
+              <img src={item.image} alt={item.shortTitle} class="spc-accordion__thumb-img" loading="lazy" />
+            </div>
+          </div>
+        </div>
+      </article>
+    ))}
+  </div>
+</section>
+
+<script>
+  // Interactive Accordion Controller with Synchronized Height Animation (Zero Layout Jump)
+  const accordionContainer = document.getElementById('spc-accordion');
+  if (accordionContainer) {
+    const items = accordionContainer.querySelectorAll<HTMLElement>('.spc-accordion__item');
+    let isTransitioning = false;
+
+    items.forEach((item) => {
+      const trigger = item.querySelector<HTMLButtonElement>('[data-accordion-trigger]');
+      if (!trigger) return;
+
+      trigger.addEventListener('click', () => {
+        const isCurrentlyActive = item.classList.contains('spc-accordion__item--active');
+        if (isCurrentlyActive || isTransitioning) return;
+        isTransitioning = true;
+
+        const currentActive = accordionContainer.querySelector<HTMLElement>('.spc-accordion__item.spc-accordion__item--active');
+        const currentBody = currentActive?.querySelector<HTMLElement>('.spc-accordion__body');
+        const newBody = item.querySelector<HTMLElement>('.spc-accordion__body');
+
+        if (!newBody) {
+          isTransitioning = false;
+          return;
+        }
+
+        // 1. Capture current body height
+        if (currentBody) {
+          const currentH = currentBody.scrollHeight;
+          currentBody.style.height = `${currentH}px`;
+          currentBody.style.opacity = '1';
+        }
+
+        // 2. Measure target body height
+        newBody.style.height = '0px';
+        newBody.style.opacity = '0';
+        const targetH = newBody.scrollHeight;
+
+        // 3. Force browser reflow to register start heights
+        void newBody.offsetHeight;
+
+        // 4. Update aria & active classes
+        if (currentActive) {
+          currentActive.classList.remove('spc-accordion__item--active');
+          const oldTrigger = currentActive.querySelector<HTMLButtonElement>('[data-accordion-trigger]');
+          if (oldTrigger) oldTrigger.setAttribute('aria-expanded', 'false');
+        }
+        item.classList.add('spc-accordion__item--active');
+        trigger.setAttribute('aria-expanded', 'true');
+
+        // 5. Simultaneously animate opening and closing heights in lockstep
+        requestAnimationFrame(() => {
+          newBody.style.height = `${targetH}px`;
+          newBody.style.opacity = '1';
+
+          if (currentBody) {
+            currentBody.style.height = '0px';
+            currentBody.style.opacity = '0';
+          }
+        });
+
+        // 6. Reset inline styles after transition completes
+        setTimeout(() => {
+          newBody.style.height = '';
+          newBody.style.opacity = '';
+          if (currentBody) {
+            currentBody.style.height = '';
+            currentBody.style.opacity = '';
+          }
+          isTransitioning = false;
+        }, 460);
+      });
+    });
+  }
+</script>
+
+<style>
+  /* ----------------------------------------------------------
+     Section Layout & Background
+     ---------------------------------------------------------- */
+  .spc-section {
+    position: relative;
+    width: 100%;
+    background-color: var(--bg-white, #ffffff);
+    color: var(--color-dark, #131313);
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    padding-top: 120rem; /* Space/S 120px */
+    padding-right: 40rem;
+    padding-bottom: 120rem; /* Space/S 120px */
+    padding-left: 40rem;
+  }
+
+  /* ----------------------------------------------------------
+     Top Sub-Header Bar & Divider (Frame 433)
+     ---------------------------------------------------------- */
+  .spc-section__bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 16rem;
+    margin-left: 0;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+  }
+
+  .spc-section__bar-left {
+    display: flex;
+    align-items: center;
+    column-gap: 9rem;
+  }
+
+  .spc-section__bullet {
+    display: block;
+    width: 6rem;
+    height: 6rem;
+    background-color: #131313;
+    flex-shrink: 0;
+  }
+
+  .spc-section__bar-title {
+    font-family: var(--font-display, 'Syne', sans-serif);
+    font-size: 14rem;
+    line-height: 1.2;
+    color: #131313;
+    opacity: 0.5;
+    white-space: nowrap;
+  }
+
+  .spc-section__bar-index {
+    font-family: var(--font-display, 'Syne', sans-serif);
+    font-size: 14rem;
+    line-height: 1.2;
+    color: #131313;
+    opacity: 0.5;
+    white-space: nowrap;
+  }
+
+  .spc-section__divider {
+    width: 100%;
+    border-top-width: 1rem;
+    border-top-style: solid;
+    border-top-color: rgba(19, 19, 19, 0.15);
+    border-right-width: 0;
+    border-bottom-width: 0;
+    border-left-width: 0;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 76rem;
+    margin-left: 0;
+  }
+
+  /* ----------------------------------------------------------
+     Main Title (node 125:696)
+     ---------------------------------------------------------- */
+  .spc-section__title-wrapper {
+    width: 100%;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 36rem;
+    margin-left: 0;
+  }
+
+  .spc-section__title {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    font-family: var(--font-display, 'Syne', sans-serif);
+    font-weight: 700;
+    font-size: 103rem;
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+    color: #131313;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+  }
+
+  .spc-section__title-row {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  /* ----------------------------------------------------------
+     Centered Paragraph (node 125:697)
+     ---------------------------------------------------------- */
+  .spc-section__desc {
+    font-family: var(--font-display, 'Syne', sans-serif);
+    font-weight: 400;
+    font-size: 18rem;
+    line-height: 1.4;
+    color: #131313;
+    opacity: 0.9;
+    text-align: center;
+    max-width: 287rem;
+    margin-top: 0;
+    margin-right: auto;
+    margin-bottom: 72rem;
+    margin-left: auto;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+  }
+
+  /* ----------------------------------------------------------
+     Accordion Container & Items
+     ---------------------------------------------------------- */
+  .spc-section__accordion {
+    display: flex;
+    flex-direction: column;
+    row-gap: 6rem;
+    width: 100%;
+  }
+
+  .spc-accordion__item {
+    position: relative;
+    width: 100%;
+    background-color: #131313;
+    background-image: var(--bg-pattern-dark);
+    background-repeat: repeat;
+    background-size: 30rem 30rem;
+    background-attachment: fixed;
+    overflow: hidden;
+    transition: background-color 0.4s ease;
+  }
+
+  /* Background Image & Overlay for Active State */
+  .spc-accordion__bg {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 1;
+  }
+
+  .spc-accordion__item--active .spc-accordion__bg {
+    opacity: 1;
+  }
+
+  .spc-accordion__bg-img {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    image-rendering: -webkit-optimize-contrast;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    filter: contrast(1.05) saturate(1.03);
+  }
+
+  .spc-accordion__bg-overlay {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.62);
+  }
+
+  /* ----------------------------------------------------------
+     Accordion Header (Collapsed Trigger)
+     ---------------------------------------------------------- */
+  .spc-accordion__header {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    background: transparent;
+    border-top-width: 0;
+    border-right-width: 0;
+    border-bottom-width: 0;
+    border-left-width: 0;
+    outline: none;
+    cursor: pointer;
+    padding-top: 36rem;
+    padding-right: 30rem;
+    padding-bottom: 36rem;
+    padding-left: 30rem;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    color: #ffffff;
+    text-align: left;
+  }
+
+  .spc-accordion__header-left {
+    display: flex;
+    align-items: center;
+    column-gap: 67rem;
+  }
+
+  .spc-accordion__index {
+    font-family: var(--font-display, 'Syne', sans-serif);
+    font-weight: 700;
+    font-size: 20rem;
+    line-height: 1;
+    color: #ffffff;
+    letter-spacing: 0;
+    white-space: nowrap;
+  }
+
+  .spc-accordion__short-title {
+    font-family: var(--font-display, 'Syne', sans-serif);
+    font-weight: 700;
+    font-size: 24rem;
+    line-height: 1;
+    color: #ffffff;
+    text-transform: uppercase;
+    letter-spacing: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  /* When item is active, hide the collapsed short title in header to show big title below */
+  .spc-accordion__item--active .spc-accordion__short-title {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .spc-accordion__icon-box {
+    position: relative;
+    width: 37rem;
+    height: 37rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .spc-accordion__icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+
+  .spc-accordion__icon--plus {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  .spc-accordion__icon--minus {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.8);
+  }
+
+  .spc-accordion__item--active .spc-accordion__icon--plus {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.8);
+  }
+
+  .spc-accordion__item--active .spc-accordion__icon--minus {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  /* ----------------------------------------------------------
+     Accordion Body (Expanded Content)
+     ---------------------------------------------------------- */
+  .spc-accordion__body {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: height 0.45s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease;
+  }
+
+  .spc-accordion__item--active .spc-accordion__body {
+    height: auto;
+    opacity: 1;
+  }
+
+  .spc-accordion__body-inner {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    width: 100%;
+    padding-top: 36rem;
+    padding-right: 30rem;
+    padding-bottom: 50rem;
+    padding-left: 30rem;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+  }
+
+  .spc-accordion__info {
+    display: flex;
+    flex-direction: column;
+    row-gap: 18rem;
+    max-width: 760rem;
+    transition: opacity 0.35s ease, transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .spc-accordion__item:not(.spc-accordion__item--active) .spc-accordion__info {
+    opacity: 0;
+    transform: translateY(-8rem);
+  }
+
+  .spc-accordion__item--active .spc-accordion__info {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .spc-accordion__expanded-title {
+    font-family: var(--font-display, 'Syne', sans-serif);
+    font-weight: 700;
+    font-size: 51rem;
+    line-height: 1;
+    text-transform: uppercase;
+    color: #ffffff;
+    white-space: nowrap;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+  }
+
+  .spc-accordion__desc-row {
+    display: flex;
+    align-items: flex-start;
+    column-gap: 24rem;
+  }
+
+  .spc-accordion__expanded-desc {
+    font-family: var(--font-display, 'Syne', sans-serif);
+    font-weight: 400;
+    font-size: 14rem;
+    line-height: 1.4;
+    color: #ffffff;
+    opacity: 0.8;
+    max-width: 260rem;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+  }
+
+  .spc-accordion__dot {
+    width: 7rem;
+    height: 6rem;
+    background-color: #ffffff;
+    flex-shrink: 0;
+    margin-top: 5rem;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+  }
+
+  .spc-accordion__thumb-box {
+    position: relative;
+    width: 267rem;
+    height: 180rem;
+    overflow: hidden;
+    flex-shrink: 0;
+    background-color: #ffffff;
+    transition: opacity 0.35s ease, transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .spc-accordion__item:not(.spc-accordion__item--active) .spc-accordion__thumb-box {
+    opacity: 0;
+    transform: translateY(-8rem);
+  }
+
+  .spc-accordion__item--active .spc-accordion__thumb-box {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .spc-accordion__thumb-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    filter: contrast(1.04) saturate(1.02);
+  }
+
+  /* ----------------------------------------------------------
+     Mobile Breakpoint (<= 479px)
+     ---------------------------------------------------------- */
+  @media (max-width: 479px) {
+    .spc-section {
+      padding-top: 60rem;
+      padding-right: 20rem;
+      padding-bottom: 60rem;
+      padding-left: 20rem;
+    }
+
+    .spc-section__divider {
+      margin-bottom: 40rem;
+    }
+
+    .spc-section__title {
+      font-size: 42rem;
+      line-height: 1.05;
+    }
+
+    .spc-section__title-row {
+      flex-direction: column;
+      row-gap: 4rem;
+    }
+
+    .spc-section__desc {
+      font-size: 16rem;
+      max-width: 100%;
+      margin-bottom: 40rem;
+    }
+
+    .spc-accordion__header {
+      padding-top: 24rem;
+      padding-right: 16rem;
+      padding-bottom: 24rem;
+      padding-left: 16rem;
+    }
+
+    .spc-accordion__header-left {
+      column-gap: 20rem;
+    }
+
+    .spc-accordion__short-title {
+      font-size: 18rem;
+    }
+
+    .spc-accordion__body-inner {
+      flex-direction: column;
+      align-items: flex-start;
+      row-gap: 24rem;
+      padding-top: 16rem;
+      padding-right: 16rem;
+      padding-bottom: 28rem;
+      padding-left: 16rem;
+    }
+
+    .spc-accordion__expanded-title {
+      font-size: 32rem;
+    }
+
+    .spc-accordion__thumb-box {
+      width: 100%;
+      height: 160rem;
+    }
+  }
+</style>

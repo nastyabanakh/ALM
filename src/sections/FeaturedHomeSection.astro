@@ -1,0 +1,928 @@
+---
+/**
+ * FeaturedHomeSection.astro — Section 09: Featured Completed Home & Project Breakdown
+ * Figma Frame 477 (node 172:1795)
+ *
+ * Full-width dark section (#131313) with fixed dark dot pattern,
+ * featuring a wide architectural kitchen panorama with 15rem offset, 5-row specification table,
+ * and a full-screen pinned (100vh, 40rem padding top & bottom) horizontal interactive breakdown gallery
+ * with 4 cards whose photos dynamically grow from small (307rem) to big (668rem) and shrink as the user scrolls.
+ */
+import ButtonComposite from '../components/ButtonComposite.astro';
+
+interface SpecRow {
+  index: string;
+  label: string;
+  value: string;
+}
+
+const specs: SpecRow[] = [
+  {
+    index: '01//',
+    label: 'Project type:',
+    value: 'Custom Single-Family Residence'
+  },
+  {
+    index: '02//',
+    label: 'Location:',
+    value: 'West Bellevue, WA'
+  },
+  {
+    index: '03//',
+    label: 'Starting point:',
+    value: 'Full Teardown & Slope Stabilization'
+  },
+  {
+    index: '04//',
+    label: 'Home size:',
+    value: '4,850 sq ft'
+  },
+  {
+    index: '05//',
+    label: 'Architectural style:',
+    value: 'Pacific Northwest Contemporary'
+  }
+];
+
+interface BreakdownStage {
+  id: string;
+  num: string;
+  stageTitle: string;
+  title: string;
+  desc: string;
+  image: string;
+  hasZoom?: boolean;
+}
+
+const stages: BreakdownStage[] = [
+  {
+    id: 'stage-01',
+    num: '01//',
+    stageTitle: 'STAGE 01',
+    title: 'Starting situation',
+    desc: 'An outdated 1960s rambler on a steep, heavily wooded Bellevue lot. The owners wanted an open, light-filled modern home that embraced the tree canopy without losing functional yard space.',
+    image: '/assets/section-09/breakdown-card-01.jpg'
+  },
+  {
+    id: 'stage-02',
+    num: '02//',
+    stageTitle: 'STAGE 02',
+    title: 'Scope of work',
+    desc: 'Complete structure teardown, slope stabilization, tailored engineering permits, full ground-up build, custom interior finishes, and final city sign-offs.',
+    image: '/assets/section-09/breakdown-02.png'
+  },
+  {
+    id: 'stage-03',
+    num: '03//',
+    stageTitle: 'STAGE 03',
+    title: 'Key decisions',
+    desc: 'Integrated 10-foot floor-to-ceiling glass, continuous white oak cabinetry, a cantilevered primary terrace, and an understated exterior blend of dark metal and cedar.',
+    image: '/assets/section-09/breakdown-card-03.jpg'
+  },
+  {
+    id: 'stage-04',
+    num: '04//',
+    stageTitle: 'STAGE 04',
+    title: 'Result',
+    desc: 'A 4,850 sq ft modern residence in West Bellevue, delivered move-in ready with custom millwork and zero punch list items.',
+    image: '/assets/section-09/breakdown-card-04.jpg'
+  }
+];
+---
+
+<section class="featured-home-section" id="featured-home" aria-label="Featured completed home">
+  
+  <!-- ============================================================
+       Part A: Wide Architectural Photo with strictly 15rem offset
+       ============================================================ -->
+  <div class="featured-home-section__hero-media-wrap">
+    <div class="featured-home-section__hero-media">
+      <img
+        src="/assets/section-09/hero-kitchen-2.jpg"
+        alt="Featured completed home — open modern kitchen and dining room with large glass doors to wooded patio"
+        class="featured-home-section__hero-img"
+        loading="lazy"
+        decoding="async"
+      />
+    </div>
+  </div>
+
+  <!-- Part A Specifications & Overview Content -->
+  <div class="featured-home-section__inner">
+    <div class="featured-home-section__hero-block">
+      <!-- Sub-Header Bar (Frame 437) -->
+      <div class="featured-home-section__bar">
+        <div class="featured-home-section__bar-left">
+          <span class="featured-home-section__bullet" aria-hidden="true"></span>
+          <span class="featured-home-section__bar-title">Featured completed home</span>
+        </div>
+        <span class="featured-home-section__bar-index">09//</span>
+      </div>
+      <div class="featured-home-section__divider" aria-hidden="true"></div>
+
+      <!-- Main Overview Block (Frame 495) -->
+      <div class="featured-home-section__overview">
+        <!-- Section Title (shifted right to line up with specs) -->
+        <div class="featured-home-section__title-wrap">
+          <h2 class="featured-home-section__title">
+            FROM CONCEPT TO COMPLETION
+          </h2>
+        </div>
+
+        <!-- 5-Row Specifications Table (Frame 487) — clean static, zero hover -->
+        <div class="featured-home-section__specs" role="table" aria-label="Project specifications">
+          {specs.map((spec) => (
+            <div class="featured-home-section__spec-row" role="row">
+              <div class="featured-home-section__spec-left" role="rowheader">
+                <span class="featured-home-section__spec-index">{spec.index}</span>
+              </div>
+              <div class="featured-home-section__spec-right" role="cell">
+                <span class="featured-home-section__spec-label">{spec.label}</span>
+                <span class="featured-home-section__spec-value">{spec.value}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       Breakdown Top Bar (Frame 501) — Normal Flow (Not Sticky)
+       120rem gap from specs table, 75rem gap to the sticky cards block
+       ============================================================ -->
+  <div class="featured-home-section__breakdown-header-wrap">
+    <div class="featured-home-section__breakdown-header">
+      <h2 class="featured-home-section__breakdown-title">
+        <span>PROJECT</span>
+        <span>BREAKDOWN</span>
+      </h2>
+      <span class="featured-home-section__breakdown-bullet" aria-hidden="true"></span>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       Part B: Full-screen Pinned Sticky Project Breakdown (4 Cards)
+       100vh height, strictly 40rem padding top & bottom on the cards block
+       Horizontal scroll with photos dynamically growing & shrinking
+       ============================================================ -->
+  <div class="featured-home-section__breakdown-outer" id="project-breakdown-outer">
+    <div class="featured-home-section__breakdown-sticky" id="project-breakdown-sticky">
+      
+      <!-- Interactive Animated Horizontal Gallery Track -->
+      <div class="featured-home-section__breakdown-viewport">
+        <div class="featured-home-section__gallery-track" id="project-breakdown-track">
+          {stages.map((stage, idx) => (
+            <article
+              class="featured-home-section__card"
+              id={stage.id}
+              data-index={idx}
+            >
+              <!-- Media Frame with Dynamic Scale (Big 668rem / Small 307rem) -->
+              <div
+                class:list={[
+                  'featured-home-section__card-media',
+                  { 'featured-home-section__card-media--zoom': stage.hasZoom }
+                ]}
+              >
+                <img
+                  src={stage.image}
+                  alt={stage.title}
+                  class="featured-home-section__card-img"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+
+              <!-- Content Column (Frame 503, 311rem) -->
+              <div class="featured-home-section__card-content">
+                <div class="featured-home-section__card-copy">
+                  <h3 class="featured-home-section__card-title">{stage.title}</h3>
+                  <p class="featured-home-section__card-desc">{stage.desc}</p>
+                </div>
+
+                <div class="featured-home-section__card-btn">
+                  <ButtonComposite
+                    text="Schedule a Consultation"
+                    href="#consultation"
+                    fullWidth={true}
+                  />
+                </div>
+              </div>
+
+              <!-- Vertical Divider Line (between cards only, not after the last card) -->
+              {idx < stages.length - 1 && (
+                <div class="featured-home-section__v-divider" aria-hidden="true"></div>
+              )}
+            </article>
+          ))}
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</section>
+
+<script>
+  function initBreakdownStickyScroll() {
+    const outer = document.getElementById('project-breakdown-outer');
+    const track = document.getElementById('project-breakdown-track');
+    if (!outer || !track) return;
+
+    const cards = Array.from(track.querySelectorAll<HTMLElement>('.featured-home-section__card'));
+    if (!cards.length) return;
+
+    let ticking = false;
+
+    function update() {
+      ticking = false;
+      const rect = outer.getBoundingClientRect();
+      const totalScrollable = outer.offsetHeight - window.innerHeight;
+      if (totalScrollable <= 0) return;
+
+      // Fractional progress from 0.0 to 1.0
+      const scrolled = -rect.top;
+      const progress = Math.max(0, Math.min(1, scrolled / totalScrollable));
+      const stageProgress = progress * (cards.length - 1); // 0.0 to 3.0
+
+      // Dynamic rem measurement
+      const rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+      const minW = 307 * rem;
+      const minH = 295 * rem;
+      const cardGap = 60 * rem;
+      const contentW = 311 * rem;
+      const dividerW = 1 * rem;
+      
+      // Compute available height in sticky container (100vh - 40rem top - 40rem bottom)
+      const viewport = track.parentElement;
+      const availableH = viewport ? viewport.clientHeight : (window.innerHeight - 80 * rem);
+      const maxH = Math.max(minH, availableH);
+      const maxW = Math.round(maxH * (668 / 698));
+
+      // Unit width of a card unit in track when small: photo + gap + content + gap + divider + gap
+      const baseCardUnit = minW + cardGap + contentW + cardGap + dividerW + cardGap;
+
+      cards.forEach((card, idx) => {
+        const media = card.querySelector<HTMLElement>('.featured-home-section__card-media');
+        const content = card.querySelector<HTMLElement>('.featured-home-section__card-content');
+        
+        // Distance to the active fractional point
+        const dist = Math.abs(stageProgress - idx);
+        // Weight is 1 when exactly active, 0 when >= 1 step away
+        const weight = Math.max(0, Math.min(1, 1 - dist));
+
+        // Smooth width & height interpolation
+        const currentW = minW + (maxW - minW) * weight;
+        const currentH = minH + (maxH - minH) * weight;
+
+        if (media) {
+          media.style.width = `${currentW}px`;
+          media.style.height = `${currentH}px`;
+        }
+
+        if (content) {
+          content.style.opacity = `${0.35 + 0.65 * weight}`;
+          content.style.transform = `translate3d(0, ${(1 - weight) * 10}px, 0)`;
+        }
+      });
+
+      // Shift track smoothly so active card is anchored
+      const trackX = stageProgress * baseCardUnit;
+      track.style.transform = `translate3d(-${trackX}px, 0, 0)`;
+    }
+
+    function onScrollOrResize() {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(update);
+      }
+    }
+
+    window.addEventListener('scroll', onScrollOrResize, { passive: true });
+    window.addEventListener('resize', onScrollOrResize, { passive: true });
+    update();
+  }
+
+  // -------------------------------------------------------------
+  // Kitchen Photo Parallax Effect (Section 09)
+  // -------------------------------------------------------------
+  function initKitchenPhotoParallax() {
+    const heroMedia = document.querySelector<HTMLElement>('.featured-home-section__hero-media');
+    const heroImg = document.querySelector<HTMLElement>('.featured-home-section__hero-img');
+    if (!heroMedia || !heroImg) return;
+
+    let ticking = false;
+
+    function updateParallax() {
+      ticking = false;
+      const rect = heroMedia.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+
+      // Only calculate when element is in or near viewport
+      if (rect.bottom > -200 && rect.top < windowHeight + 200) {
+        // Progress from 0 (when top of media reaches bottom of viewport)
+        // to 1 (when bottom of media reaches top of viewport)
+        const totalDistance = windowHeight + rect.height;
+        const currentDistance = windowHeight - rect.top;
+        const progress = Math.max(0, Math.min(1, currentDistance / totalDistance));
+
+        // Parallax offset: shift smoothly from -12% to +12% with scale 1.08
+        const yOffsetPercent = -12 + progress * 24; // from -12% to +12%
+        heroImg.style.transform = `translate3d(0, ${yOffsetPercent.toFixed(2)}%, 0) scale(1.08)`;
+      }
+    }
+
+    function onScroll() {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(updateParallax);
+      }
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+    updateParallax();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      initBreakdownStickyScroll();
+      initKitchenPhotoParallax();
+    });
+  } else {
+    initBreakdownStickyScroll();
+    initKitchenPhotoParallax();
+  }
+</script>
+
+<style>
+  /* ============================================================
+     FeaturedHomeSection — Scoped CSS (Fluid REM, Zero-PX)
+     Figma Frame 477 (node 172:1795)
+     ============================================================ */
+
+  .featured-home-section {
+    position: relative;
+    width: 100%;
+    background-color: #131313;
+    background-image: var(--bg-pattern-dark);
+    background-repeat: repeat;
+    background-position: 0 0;
+    background-size: 30rem 30rem;
+    background-attachment: scroll;
+    color: var(--color-white, #ffffff);
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    padding-top: 120rem;
+    padding-right: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+  }
+
+  /* Full-width Wide Photo with strictly 15rem offset from edges */
+  .featured-home-section__hero-media-wrap {
+    width: 100%;
+    box-sizing: border-box;
+    padding-top: 0;
+    padding-right: 15rem;
+    padding-bottom: 0;
+    padding-left: 15rem;
+    margin-top: 0;
+    margin-right: auto;
+    margin-bottom: 40rem;
+    margin-left: auto;
+  }
+
+  .featured-home-section__hero-media {
+    position: relative;
+    width: 100%;
+    height: 791rem;
+    max-height: calc(100vh - 30rem);
+    min-height: 480rem;
+    overflow: hidden;
+    background-color: #131313;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+  }
+
+  .featured-home-section__hero-img {
+    width: 100%;
+    height: 120%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    will-change: transform;
+    transform: translate3d(0, -10%, 0) scale(1.05);
+  }
+
+  /* Standard Grid Container for Part A Overview */
+  .featured-home-section__inner {
+    width: 100%;
+    max-width: var(--grid-width, 1440rem);
+    margin-top: 0;
+    margin-right: auto;
+    margin-bottom: 0;
+    margin-left: auto;
+    padding-top: 0;
+    padding-right: 40rem;
+    padding-bottom: 0;
+    padding-left: 40rem;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ----------------------------------------------------------
+     Part A: Hero Overview Block
+     ---------------------------------------------------------- */
+  .featured-home-section__hero-block {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* Sub-Header Bar (Frame 437) */
+  .featured-home-section__bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 1416rem;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 16rem;
+    margin-left: 0;
+  }
+
+  .featured-home-section__bar-left {
+    display: flex;
+    align-items: center;
+    column-gap: 9rem;
+  }
+
+  .featured-home-section__bullet {
+    width: 6rem;
+    height: 6rem;
+    background-color: var(--color-white, #ffffff);
+    flex-shrink: 0;
+    display: block;
+  }
+
+  .featured-home-section__bar-title {
+    font-family: var(--font-body, 'Syne', sans-serif);
+    font-weight: 400;
+    font-size: 14rem;
+    line-height: 1.2;
+    color: var(--color-white, #ffffff);
+    opacity: 0.5;
+    letter-spacing: 0;
+    white-space: nowrap;
+  }
+
+  .featured-home-section__bar-index {
+    font-family: var(--font-body, 'Syne', sans-serif);
+    font-weight: 400;
+    font-size: 14rem;
+    line-height: 1.2;
+    color: var(--color-white, #ffffff);
+    opacity: 0.5;
+    letter-spacing: 0;
+    white-space: nowrap;
+  }
+
+  /* Full-width Divider Line */
+  .featured-home-section__divider {
+    width: 100%;
+    max-width: 1416rem;
+    height: 1rem;
+    background-color: rgba(255, 255, 255, 0.1);
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 76rem;
+    margin-left: 0;
+  }
+
+  /* Main Overview Block (Frame 495) */
+  .featured-home-section__overview {
+    width: 100%;
+    max-width: 1336rem;
+    display: flex;
+    flex-direction: column;
+    row-gap: 88rem;
+  }
+
+  .featured-home-section__title-wrap {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .featured-home-section__title {
+    font-family: var(--font-heading, 'Syne', sans-serif);
+    font-weight: 700;
+    font-size: 37rem;
+    line-height: 1.15;
+    text-transform: uppercase;
+    color: var(--color-white, #ffffff);
+    width: 627rem;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    letter-spacing: 0;
+  }
+
+  /* Specifications Table — Clean, static, no hover */
+  .featured-home-section__specs {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    border-top-width: 1rem;
+    border-top-style: solid;
+    border-top-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .featured-home-section__spec-row {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding-top: 14rem;
+    padding-right: 0;
+    padding-bottom: 14rem;
+    padding-left: 0;
+    border-bottom-width: 1rem;
+    border-bottom-style: solid;
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .featured-home-section__spec-left {
+    width: 709rem;
+    flex-shrink: 0;
+  }
+
+  .featured-home-section__spec-index {
+    font-family: var(--font-body, 'Syne', sans-serif);
+    font-weight: 400;
+    font-size: 14rem;
+    line-height: 1.2;
+    color: var(--color-white, #ffffff);
+    opacity: 0.5;
+  }
+
+  .featured-home-section__spec-right {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 627rem;
+    flex-shrink: 0;
+    font-family: var(--font-body, 'Syne', sans-serif);
+    font-weight: 400;
+    font-size: 14rem;
+    line-height: 1.2;
+    text-transform: uppercase;
+    color: var(--color-white, #ffffff);
+    white-space: nowrap;
+  }
+
+  .featured-home-section__spec-label {
+    opacity: 0.9;
+  }
+
+  .featured-home-section__spec-value {
+    opacity: 1;
+    font-weight: 600;
+  }
+
+  /* ============================================================
+     Part B: Breakdown Top Bar (Frame 501) — Normal Flow (Not Sticky)
+     120rem gap from specs table, 75rem gap to the sticky cards block
+     ============================================================ */
+  .featured-home-section__breakdown-header-wrap {
+    width: 100%;
+    max-width: var(--grid-width, 1440rem);
+    margin-top: 120rem; /* Strictly 120rem from specs table */
+    margin-right: auto;
+    margin-bottom: 75rem; /* Strictly 75rem to the cards block */
+    margin-left: auto;
+    padding-top: 0;
+    padding-right: 40rem;
+    padding-bottom: 0;
+    padding-left: 40rem;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .featured-home-section__breakdown-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 1336rem;
+    margin-top: 0;
+    margin-right: auto;
+    margin-bottom: 0;
+    margin-left: 0;
+    flex-shrink: 0;
+  }
+
+  .featured-home-section__breakdown-title {
+    display: flex;
+    flex-direction: column;
+    font-family: var(--font-heading, 'Syne', sans-serif);
+    font-weight: 700;
+    font-size: 67rem;
+    line-height: 1.05;
+    text-transform: uppercase;
+    color: var(--color-white, #ffffff);
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    letter-spacing: -1rem;
+  }
+
+  .featured-home-section__breakdown-bullet {
+    width: 6rem;
+    height: 6rem;
+    background-color: var(--color-white, #ffffff);
+    display: block;
+    margin-top: 14rem;
+  }
+
+  /* ============================================================
+     Part C: Full-screen Pinned Sticky Project Breakdown (4 Cards)
+     100vh height, strictly 40rem padding top & bottom on the cards block
+     ============================================================ */
+  .featured-home-section__breakdown-outer {
+    position: relative;
+    width: 100%;
+    height: 380vh; /* Scroll distance for 4 stages */
+  }
+
+  .featured-home-section__breakdown-sticky {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    width: 100%;
+    height: 100vh;
+    box-sizing: border-box;
+    padding-top: 40rem;
+    padding-right: 40rem;
+    padding-bottom: 40rem;
+    padding-left: 40rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    overflow: visible;
+    background-color: #131313;
+    background-image: var(--bg-pattern-dark);
+    background-repeat: repeat;
+    background-position: 0 0;
+    background-size: 30rem 30rem;
+    background-attachment: scroll;
+    z-index: 5;
+  }
+
+  /* Viewport and Animated Track */
+  .featured-home-section__breakdown-viewport {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: flex-end;
+    overflow: visible;
+  }
+
+  .featured-home-section__gallery-track {
+    display: flex;
+    height: 100%;
+    align-items: flex-end;
+    column-gap: 60rem;
+    width: max-content;
+    will-change: transform;
+    transform: translate3d(0, 0, 0);
+    padding-right: 80rem;
+  }
+
+  /* Each Card */
+  .featured-home-section__card {
+    display: flex;
+    height: 100%;
+    align-items: flex-end;
+    column-gap: 60rem;
+    flex-shrink: 0;
+  }
+
+  /* Card Media with Dynamic Width & Height */
+  .featured-home-section__card-media {
+    position: relative;
+    overflow: hidden;
+    background-color: #131313;
+    flex-shrink: 0;
+    width: 307rem; /* default fallback, animated via JS */
+    height: 295rem;
+    will-change: width, height;
+    transition: width 0.05s linear, height 0.05s linear;
+  }
+
+  .featured-home-section__card-media--zoom .featured-home-section__card-img {
+    position: absolute;
+    width: 529.49%;
+    height: 337.82%;
+    top: -237.82%;
+    left: -214.75%;
+    max-width: none;
+    object-fit: cover;
+  }
+
+  .featured-home-section__card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+  }
+
+  /* Content Column (Frame 503, 311rem) */
+  .featured-home-section__card-content {
+    width: 311rem;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    row-gap: 40rem;
+    padding-bottom: 16rem;
+    will-change: opacity, transform;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+  }
+
+  .featured-home-section__card-copy {
+    display: flex;
+    flex-direction: column;
+    row-gap: 20rem;
+  }
+
+  .featured-home-section__card-title {
+    font-family: var(--font-heading, 'Syne', sans-serif);
+    font-weight: 700;
+    font-size: 24rem;
+    line-height: 1.1;
+    text-transform: uppercase;
+    color: var(--color-white, #ffffff);
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+  }
+
+  .featured-home-section__card-desc {
+    font-family: var(--font-body, 'Syne', sans-serif);
+    font-weight: 400;
+    font-size: 14rem;
+    line-height: 1.5;
+    color: var(--color-white, #ffffff);
+    opacity: 0.5;
+    text-align: justify;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+  }
+
+  .featured-home-section__card-btn {
+    width: 100%;
+  }
+
+  /* Vertical Divider */
+  .featured-home-section__v-divider {
+    width: 1rem;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.1);
+    flex-shrink: 0;
+    align-self: stretch;
+  }
+
+  /* ============================================================
+     Mobile Breakpoint (<= 479px)
+     ============================================================ */
+  @media (max-width: 479px) {
+    .featured-home-section {
+      padding-top: 15rem;
+    }
+
+    .featured-home-section__hero-media-wrap {
+      padding-left: 15rem;
+      padding-right: 15rem;
+      margin-bottom: 24rem;
+    }
+
+    .featured-home-section__hero-media {
+      height: 240rem;
+      margin-bottom: 0;
+    }
+
+    .featured-home-section__inner {
+      padding-left: 20rem;
+      padding-right: 20rem;
+      padding-bottom: 40rem;
+    }
+
+    .featured-home-section__divider {
+      margin-bottom: 40rem;
+    }
+
+    .featured-home-section__overview {
+      row-gap: 40rem;
+    }
+
+    .featured-home-section__title-wrap {
+      justify-content: flex-start;
+    }
+
+    .featured-home-section__title {
+      width: 100%;
+      font-size: 24rem;
+    }
+
+    .featured-home-section__spec-row {
+      flex-direction: column;
+      align-items: flex-start;
+      row-gap: 8rem;
+    }
+
+    .featured-home-section__spec-left {
+      width: 100%;
+    }
+
+    .featured-home-section__spec-right {
+      width: 100%;
+      flex-direction: column;
+      align-items: flex-start;
+      row-gap: 4rem;
+      white-space: normal;
+    }
+
+    /* Mobile breakdown */
+    .featured-home-section__breakdown-header-wrap {
+      margin-top: 60rem;
+      margin-bottom: 30rem;
+      padding-left: 20rem;
+      padding-right: 20rem;
+    }
+
+    .featured-home-section__breakdown-outer {
+      height: auto;
+    }
+
+    .featured-home-section__breakdown-sticky {
+      position: static;
+      height: auto;
+      padding-top: 40rem;
+      padding-right: 20rem;
+      padding-bottom: 40rem;
+      padding-left: 20rem;
+    }
+
+    .featured-home-section__breakdown-title {
+      font-size: 38rem;
+    }
+
+    .featured-home-section__breakdown-viewport {
+      overflow-x: auto;
+      overflow-y: hidden;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 20rem;
+    }
+
+    .featured-home-section__gallery-track {
+      transform: none !important;
+    }
+
+    .featured-home-section__card {
+      flex-direction: column;
+      align-items: flex-start;
+      row-gap: 24rem;
+    }
+
+    .featured-home-section__card-media {
+      width: 280rem !important;
+      height: 240rem !important;
+    }
+
+    .featured-home-section__card-content {
+      width: 280rem;
+      opacity: 1 !important;
+      transform: none !important;
+    }
+
+    .featured-home-section__v-divider {
+      display: none;
+    }
+  }
+</style>

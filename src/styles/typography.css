@@ -1,0 +1,148 @@
+/* ============================================================
+   ALM — Typography System & UI Kit Utility Classes
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   1. Headings (H1 — H3)
+   ------------------------------------------------------------ */
+
+h1, .h1 {
+  font-family: var(--h1-font-family);
+  font-size: var(--h1-font-size);
+  font-weight: var(--h1-font-weight);
+  line-height: var(--h1-line-height);
+  letter-spacing: var(--h1-letter-spacing);
+  text-transform: uppercase;
+  color: inherit;
+}
+
+h2, .h2 {
+  font-family: var(--h2-font-family);
+  font-size: var(--h2-font-size);
+  font-weight: var(--h2-font-weight);
+  line-height: var(--h2-line-height);
+  letter-spacing: var(--h2-letter-spacing);
+  text-transform: uppercase;
+  color: inherit;
+}
+
+h3, .h3 {
+  font-family: var(--h3-font-family);
+  font-size: var(--h3-font-size);
+  font-weight: var(--h3-font-weight);
+  line-height: var(--h3-line-height);
+  letter-spacing: var(--h3-letter-spacing);
+  text-transform: uppercase;
+  color: inherit;
+}
+
+/* ------------------------------------------------------------
+   2. Body & Functional Text Classes
+   ------------------------------------------------------------ */
+
+.text-logo {
+  font-family: var(--font-heading);
+  font-size: var(--font-size-logo);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0;
+  text-transform: uppercase;
+  color: inherit;
+}
+
+.text-l {
+  font-family: var(--font-body);
+  font-size: var(--font-size-text-l);
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: 0;
+}
+
+.text-m {
+  font-family: var(--text-m-font-family);
+  font-size: var(--text-m-font-size);
+  font-weight: var(--text-m-font-weight);
+  line-height: var(--text-m-line-height);
+  letter-spacing: var(--text-m-letter-spacing);
+}
+
+.text-s {
+  font-family: var(--font-body);
+  font-size: var(--font-size-text-s);
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: 0;
+}
+
+.text-xs {
+  font-family: var(--font-body);
+  font-size: var(--font-size-text-xs);
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: 0;
+}
+
+.text-tiny {
+  font-family: var(--font-body);
+  font-size: var(--font-size-text-tiny);
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: 0;
+}
+
+.text-mono {
+  font-family: var(--font-mono);
+}
+
+.text-btn {
+  font-family: var(--button-font-family);
+  font-size: var(--button-font-size);
+  font-weight: var(--button-font-weight);
+  line-height: var(--button-line-height);
+  letter-spacing: var(--button-letter-spacing);
+  text-transform: uppercase;
+}
+
+/* ------------------------------------------------------------
+   3. Color & Style Modifiers
+   ------------------------------------------------------------ */
+
+.font-bold {
+  font-weight: 700 !important;
+}
+
+.font-semibold {
+  font-weight: 600 !important;
+}
+
+.font-normal {
+  font-weight: 400 !important;
+}
+
+.text-color-white {
+  color: var(--color-white);
+}
+
+.text-color-dark {
+  color: var(--color-dark);
+}
+
+.text-color-accent {
+  color: var(--color-accent);
+}
+
+.text-color-brand {
+  color: var(--color-brand);
+}
+
+.text-opacity-subtle {
+  opacity: 0.5;
+}
+
+.text-opacity-muted {
+  opacity: 0.6;
+}
+
+.text-opacity-dim {
+  opacity: 0.3;
+}

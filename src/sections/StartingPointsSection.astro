@@ -1,0 +1,564 @@
+---
+import CircleArrowButton from '../components/CircleArrowButton.astro';
+import ButtonComposite from '../components/ButtonComposite.astro';
+
+interface StartingPoint {
+  id: string;
+  num: string;
+  title: string;
+  image: string;
+  note: string;
+  active?: boolean;
+}
+
+const startingPoints: StartingPoint[] = [
+  {
+    id: 'step-1',
+    num: '01.',
+    title: 'Still looking for property',
+    image: '/assets/images/property-search.jpg',
+    note: 'Tell us the area and vision you have in mind. We can assess potential land and parcels before you commit.',
+    active: false
+  },
+  {
+    id: 'step-2',
+    num: '02.',
+    title: 'You already own a lot',
+    image: '/assets/images/property-aerial.png',
+    note: 'ALM will evaluate your property topography, zoning, utilities, and orientation to shape your custom build.',
+    active: true
+  },
+  {
+    id: 'step-3',
+    num: '03.',
+    title: 'There is an older home',
+    image: '/assets/images/property-teardown.jpg',
+    note: 'Assess teardown scope, permit paths, site clearing, and infrastructure before designing your new home.',
+    active: false
+  },
+  {
+    id: 'step-4',
+    num: '04.',
+    title: 'You have plans or a reference',
+    image: '/assets/images/property-plans.jpg',
+    note: 'Bring your existing sketches, architectural drafts, or inspirational references for early feasibility review.',
+    active: false
+  },
+];
+---
+
+<section class="starting-points" id="process" aria-label="Starting Points">
+  <!-- Top Sub-Header Bar (Figma Frame 447) -->
+  <div class="starting-points__bar">
+    <div class="starting-points__bar-left">
+      <span class="starting-points__bullet" aria-hidden="true"></span>
+      <span class="starting-points__bar-title text-s text-opacity-subtle">
+        You Can Start Before Everything Is Decided
+      </span>
+    </div>
+    <span class="starting-points__bar-index text-s text-opacity-subtle" aria-hidden="true">
+      01//
+    </span>
+  </div>
+
+  <hr class="starting-points__divider" aria-hidden="true" />
+
+  <!-- Center Heading & Description (Figma Frame 454) -->
+  <div class="starting-points__header">
+    <h2 class="starting-points__title h2 text-color-white">
+      Bring the Property, Plans, References, or Idea You Have
+    </h2>
+    <p class="starting-points__desc text-m text-opacity-subtle text-color-white">
+      You do not need a finished plan before the first call. Show ALM what you have, and the team will explain what needs to happen next.
+    </p>
+  </div>
+
+  <!-- Main 2-Column Content (Figma Frame 458) -->
+  <div class="starting-points__grid">
+    <!-- Left Column: Visual, Note & Counter (Figma Frame 459) -->
+    <div class="starting-points__left">
+      <div class="starting-points__image-wrapper" id="sp-image-wrapper">
+        {startingPoints.map((item, idx) => (
+          <img
+            src={item.image}
+            alt={item.title}
+            class:list={['starting-points__image', { 'is-active': item.active }]}
+            data-img-index={idx}
+            loading="lazy"
+          />
+        ))}
+      </div>
+
+      <div class="starting-points__note">
+        <p class="starting-points__note-text text-m text-opacity-subtle text-color-white" id="sp-note-text">
+          {startingPoints[1].note}
+        </p>
+        <span class="starting-points__note-bullet" aria-hidden="true"></span>
+      </div>
+
+      <div class="starting-points__counter" aria-label="Step 2 of 4">
+        <span class="starting-points__counter-current text-m text-color-white" id="sp-counter-current">02</span>
+        <span class="starting-points__counter-total text-m text-opacity-dim text-color-white">/ 04</span>
+      </div>
+    </div>
+
+    <!-- Right Column: Interactive Situation Cards & CTA (Figma Frame 466) -->
+    <div class="starting-points__right">
+      <ul class="starting-points__list" id="sp-list">
+        {startingPoints.map((item, idx) => (
+          <li
+            class:list={[
+              'starting-points__card',
+              { 'starting-points__card--active': item.active }
+            ]}
+            data-step-index={idx}
+            data-step-num={item.num.replace('.', '')}
+            data-step-note={item.note}
+          >
+            <div class="starting-points__card-info">
+              <span class="starting-points__card-num text-mono text-m text-opacity-subtle text-color-white">
+                {item.num}
+              </span>
+              <h3 class="starting-points__card-title h3 text-color-white">
+                {item.title}
+              </h3>
+            </div>
+            <CircleArrowButton
+              active={item.active}
+              ariaLabel={`Select: ${item.title}`}
+              href={`#${item.id}`}
+            />
+          </li>
+        ))}
+      </ul>
+
+      <div class="starting-points__cta">
+        <ButtonComposite text="REQUEST A CONSULTATION" href="#consultation" fullWidth={true} />
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Interactive Hover and Selection: Image Cross-Fade, Counter, and Active Highlights
+  const cards = document.querySelectorAll<HTMLElement>('.starting-points__card');
+  const images = document.querySelectorAll<HTMLImageElement>('.starting-points__image');
+  const noteText = document.getElementById('sp-note-text');
+  const counterCurrent = document.getElementById('sp-counter-current');
+  const list = document.getElementById('sp-list');
+
+  let persistentIndex = 1; // Default selected state: step 02
+
+  const updateActiveUI = (targetIndex: number) => {
+    cards.forEach((card, idx) => {
+      const isActive = idx === targetIndex;
+      card.classList.toggle('starting-points__card--active', isActive);
+      const btn = card.querySelector('.circle-arrow-btn');
+      if (btn) {
+        btn.classList.toggle('circle-arrow-btn--active', isActive);
+      }
+    });
+
+    images.forEach((img, idx) => {
+      img.classList.toggle('is-active', idx === targetIndex);
+    });
+
+    const activeCard = cards[targetIndex];
+    if (activeCard) {
+      if (counterCurrent && activeCard.dataset.stepNum) {
+        counterCurrent.textContent = activeCard.dataset.stepNum;
+      }
+    }
+  };
+
+  cards.forEach((card, idx) => {
+    card.addEventListener('mouseenter', () => {
+      updateActiveUI(idx);
+    });
+
+    card.addEventListener('click', () => {
+      persistentIndex = idx;
+      updateActiveUI(idx);
+    });
+  });
+
+  if (list) {
+    list.addEventListener('mouseleave', () => {
+      updateActiveUI(persistentIndex);
+    });
+  }
+</script>
+
+<style>
+  .starting-points {
+    position: relative;
+    width: 100%;
+    background-color: var(--bg-brand);
+    background-image: var(--bg-pattern-dark);
+    background-repeat: repeat;
+    background-size: 30rem 30rem;
+    background-attachment: scroll;
+    margin-top: var(--gap-t);
+    padding-top: 0;
+    padding-right: 40rem;
+    padding-bottom: 60rem;
+    padding-left: 40rem;
+  }
+
+  /* ----------------------------------------------------------
+     Top Bar & Divider (Frame 447)
+     ---------------------------------------------------------- */
+  .starting-points__bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 16rem;
+    margin-left: 0;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+  }
+
+  .starting-points__bar-left {
+    display: flex;
+    align-items: center;
+    column-gap: 9rem;
+  }
+
+  .starting-points__bullet {
+    display: block;
+    width: 6rem;
+    height: 6rem;
+    background-color: var(--color-white);
+    flex-shrink: 0;
+  }
+
+  .starting-points__bar-title {
+    white-space: nowrap;
+  }
+
+  .starting-points__bar-index {
+    white-space: nowrap;
+  }
+
+  .starting-points__divider {
+    border-top-width: 1rem;
+    border-right-width: 0;
+    border-bottom-width: 0;
+    border-left-width: 0;
+    border-top-style: solid;
+    border-right-style: none;
+    border-bottom-style: none;
+    border-left-style: none;
+    border-top-color: var(--color-border);
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 76rem;
+    margin-left: 0;
+    width: 100%;
+  }
+
+  /* ----------------------------------------------------------
+     Header (Frame 454)
+     ---------------------------------------------------------- */
+  .starting-points__header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    row-gap: 19rem;
+    width: 100%;
+    margin-top: 0;
+    margin-right: auto;
+    margin-bottom: 76rem;
+    margin-left: auto;
+  }
+
+  .starting-points__title {
+    max-width: 696rem;
+    text-align: center;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    word-break: break-word;
+  }
+
+  .starting-points__desc {
+    max-width: 346rem;
+    text-align: center;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    word-break: break-word;
+  }
+
+  /* ----------------------------------------------------------
+     Grid (Frame 458)
+     ---------------------------------------------------------- */
+  .starting-points__grid {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    column-gap: 60rem;
+    width: 100%;
+  }
+
+  /* ----------------------------------------------------------
+     Left Column (Frame 459)
+     ---------------------------------------------------------- */
+  .starting-points__left {
+    display: flex;
+    flex-direction: column;
+    width: 591rem;
+    flex-shrink: 0;
+  }
+
+  .starting-points__image-wrapper {
+    position: relative;
+    width: 100%;
+    height: 330rem;
+    overflow: hidden;
+    background-color: #131313;
+  }
+
+  .starting-points__image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    pointer-events: none;
+  }
+
+  .starting-points__image.is-active {
+    opacity: 1;
+  }
+
+  .starting-points__note {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 27rem;
+    margin-right: 0;
+    margin-bottom: 50rem;
+    margin-left: 0;
+  }
+
+  .starting-points__note-text {
+    max-width: 286rem;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    min-height: 48rem;
+    transition: opacity 0.2s ease;
+  }
+
+  .starting-points__note-bullet {
+    display: block;
+    width: 6rem;
+    height: 6rem;
+    background-color: var(--color-white);
+    flex-shrink: 0;
+    margin-top: 6rem;
+  }
+
+  .starting-points__counter {
+    display: flex;
+    align-items: center;
+    column-gap: 4rem;
+  }
+
+  /* ----------------------------------------------------------
+     Right Column: Situation Cards (Frame 466)
+     ---------------------------------------------------------- */
+  .starting-points__right {
+    display: flex;
+    flex-direction: column;
+    row-gap: 40rem;
+    width: 627rem;
+    flex-shrink: 0;
+  }
+
+  .starting-points__list {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+  }
+
+  .starting-points__card {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 110rem;
+    width: 100%;
+    border-bottom-width: 1rem;
+    border-bottom-style: solid;
+    border-bottom-color: var(--color-border);
+    padding-top: 0;
+    padding-right: 24rem;
+    padding-bottom: 0;
+    padding-left: 24rem;
+    background-color: transparent;
+    cursor: pointer;
+  }
+
+  .starting-points__card:first-child {
+    border-top-width: 1rem;
+    border-top-style: solid;
+    border-top-color: var(--color-border);
+  }
+
+  /* Smooth Right-to-Left Green Fill Hover Animation */
+  .starting-points__card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-image: var(--bg-card-active);
+    transform-origin: right center;
+    transform: scaleX(0);
+    opacity: 1;
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .starting-points__card:hover::before,
+  .starting-points__card--active::before {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+
+  .starting-points__card :global(.circle-arrow-btn) {
+    position: relative;
+    z-index: 2;
+  }
+
+  .starting-points__card:hover :global(.circle-arrow-btn),
+  .starting-points__card--active :global(.circle-arrow-btn) {
+    background-color: var(--bg-white);
+    color: var(--color-dark);
+    border-top-color: var(--color-white);
+    border-right-color: var(--color-white);
+    border-bottom-color: var(--color-white);
+    border-left-color: var(--color-white);
+  }
+
+  .starting-points__card:hover :global(.circle-arrow-btn svg path),
+  .starting-points__card--active :global(.circle-arrow-btn svg path) {
+    stroke: #131313;
+  }
+
+  .starting-points__card-info {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    column-gap: 21rem;
+  }
+
+  .starting-points__card-num {
+    white-space: nowrap;
+  }
+
+  .starting-points__card-title {
+    white-space: nowrap;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+  }
+
+  .starting-points__cta {
+    width: 100%;
+  }
+
+  /* ----------------------------------------------------------
+     Mobile Responsive (<480px)
+     ---------------------------------------------------------- */
+  @media screen and (max-width: 479px) {
+    .starting-points {
+      margin-top: var(--gap-r);
+      padding-right: var(--grid-margin);
+      padding-left: var(--grid-margin);
+      padding-bottom: var(--gap-r);
+    }
+
+    .starting-points__bar-title {
+      white-space: normal;
+    }
+
+    .starting-points__divider {
+      margin-bottom: var(--gap-r);
+    }
+
+    .starting-points__header {
+      margin-bottom: var(--gap-r);
+    }
+
+    .starting-points__grid {
+      flex-direction: column;
+      row-gap: var(--gap-r);
+    }
+
+    .starting-points__left {
+      width: 100%;
+    }
+
+    .starting-points__image-wrapper {
+      height: 220rem;
+    }
+
+    .starting-points__note {
+      margin-top: var(--gap-s);
+      margin-bottom: var(--gap-s);
+    }
+
+    .starting-points__note-text {
+      max-width: 85%;
+    }
+
+    .starting-points__right {
+      width: 100%;
+    }
+
+    .starting-points__card {
+      height: auto;
+      padding-top: var(--gap-s);
+      padding-bottom: var(--gap-s);
+      padding-right: var(--gap-xs);
+    }
+
+    .starting-points__card-info {
+      column-gap: var(--gap-xs);
+    }
+
+    .starting-points__card-title {
+      white-space: normal;
+      font-size: 16rem;
+    }
+  }
+</style>

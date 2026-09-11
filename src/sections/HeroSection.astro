@@ -1,0 +1,385 @@
+---
+import HeaderNav from '../components/HeaderNav.astro';
+import GlassCard from '../components/GlassCard.astro';
+---
+
+<section class="hero" id="hero-section" aria-label="Hero Section">
+  <!-- Background Video & Gradient Overlays -->
+  <div class="hero__bg" aria-hidden="true">
+    <video
+      class="hero__bg-video"
+      autoplay
+      muted
+      loop
+      playsinline
+      poster="/assets/images/hero-house.jpg"
+    >
+      <source src="/assets/video/a1b54a75-926d-4ee7-95db-ec5462efbb29.mp4" type="video/mp4" />
+    </video>
+    <div class="hero__overlay"></div>
+  </div>
+
+  <!-- Header Navigation -->
+  <div class="hero__header-wrapper">
+    <HeaderNav />
+  </div>
+
+  <!-- Architectural Crosshair / Target Marker Overlay (Figma Frame 356/357 Motion) -->
+  <div class="hero__crosshair" id="hero-crosshair" aria-hidden="true">
+    <div class="hero__crosshair-line-v" id="crosshair-line-v"></div>
+    <div class="hero__crosshair-line-h" id="crosshair-line-h"></div>
+    <div class="hero__crosshair-target" id="crosshair-target">
+      <svg width="58" height="58" viewBox="0 0 58 58" fill="none" class="hero__crosshair-svg">
+        <circle cx="29" cy="29" r="28.5" stroke="white" stroke-width="0.5" stroke-opacity="0.85" />
+        <line x1="29" y1="22.5" x2="29" y2="35.5" stroke="white" stroke-width="1" stroke-linecap="square" />
+        <line x1="22.5" y1="29" x2="35.5" y2="29" stroke="white" stroke-width="1" stroke-linecap="square" />
+      </svg>
+    </div>
+  </div>
+
+  <!-- Service Area Markers: Static on the sides, centered vertically in hero (50%) -->
+  <span class="hero__service-marker hero__service-marker--left text-xs text-mono text-opacity-subtle" aria-hidden="true">
+    SERVICE AREA
+  </span>
+  <span class="hero__service-marker hero__service-marker--right text-xs text-mono text-opacity-subtle" aria-hidden="true">
+    SERVICE AREA
+  </span>
+
+  <!-- Hero Main Content Grid: Title (Bottom Left) + Glass Card (Bottom Right) -->
+  <div class="hero__content">
+    <div class="hero__copy">
+      <div class="hero__badge">
+        <span class="hero__badge-bullet" aria-hidden="true"></span>
+        <span class="hero__badge-text text-s text-opacity-subtle">
+          Local, Family-Owned Custom Home Builder
+        </span>
+      </div>
+      <h1 class="hero__title h1 text-color-white">
+        Build the Home You Want—Without Managing the Build Yourself
+      </h1>
+    </div>
+
+    <!-- Glassmorphic About Card (Figma Frame 361 — 385x261px) -->
+    <GlassCard
+      tag="About //"
+      text="ALM builds custom single-family homes in Service Area to Confirm, shaped around your property, plans, and priorities."
+      buttonText="REQUEST A CONSULTATION"
+      buttonHref="#consultation"
+      ariaLabel="About ALM summary"
+    />
+  </div>
+</section>
+
+<script>
+  // Figma Motion: Interactive Cursor Tracking for Architectural Crosshair (Frame 356/357)
+  const hero = document.getElementById('hero-section');
+  const target = document.getElementById('crosshair-target');
+  const lineV = document.getElementById('crosshair-line-v');
+  const lineH = document.getElementById('crosshair-line-h');
+
+  if (hero && target && lineV && lineH) {
+    let currentX = 0;
+    let currentY = 0;
+    let targetX = 0;
+    let targetY = 0;
+    let isHovered = false;
+
+    const resetToDefault = () => {
+      const rect = hero.getBoundingClientRect();
+      targetX = rect.width * 0.50;
+      targetY = rect.height * 0.50;
+    };
+
+    const applyTransforms = (x: number, y: number) => {
+      lineV.style.transform = `translateX(${x}px)`;
+      lineH.style.transform = `translateY(${y}px)`;
+      target.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%)`;
+    };
+
+    resetToDefault();
+    currentX = targetX;
+    currentY = targetY;
+    applyTransforms(currentX, currentY);
+
+    window.addEventListener('resize', () => {
+      if (!isHovered) resetToDefault();
+    });
+
+    hero.addEventListener('mouseenter', (e) => {
+      isHovered = true;
+      const rect = hero.getBoundingClientRect();
+      targetX = e.clientX - rect.left;
+      targetY = e.clientY - rect.top;
+    });
+
+    hero.addEventListener('mousemove', (e) => {
+      const rect = hero.getBoundingClientRect();
+      targetX = e.clientX - rect.left;
+      targetY = e.clientY - rect.top;
+    });
+
+    hero.addEventListener('mouseleave', () => {
+      isHovered = false;
+      resetToDefault();
+    });
+
+    // Smooth 60fps lerp loop
+    const animate = () => {
+      const lerp = isHovered ? 0.12 : 0.05;
+      currentX += (targetX - currentX) * lerp;
+      currentY += (targetY - currentY) * lerp;
+      applyTransforms(currentX, currentY);
+      requestAnimationFrame(animate);
+    };
+    requestAnimationFrame(animate);
+  }
+</script>
+
+<style>
+  .hero {
+    position: relative;
+    width: 100%;
+    height: calc(100vh - 30rem);
+    min-height: calc(100vh - 30rem);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 15rem;
+    margin-left: 0;
+    padding-top: 24rem;
+    padding-right: 40rem;
+    padding-bottom: 40rem;
+    padding-left: 40rem;
+    background-color: var(--bg-brand);
+  }
+
+  /* ----------------------------------------------------------
+     Background & Overlays
+     ---------------------------------------------------------- */
+  .hero__bg {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+    overflow: hidden;
+  }
+
+  .hero__bg-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 30%;
+    pointer-events: none;
+  }
+
+  .hero__overlay {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: linear-gradient(
+      180deg,
+      rgba(19, 19, 19, 0.45) 0%,
+      rgba(19, 19, 19, 0.15) 35%,
+      rgba(19, 19, 19, 0.6) 75%,
+      rgba(19, 19, 19, 0.85) 100%
+    );
+    pointer-events: none;
+  }
+
+  /* ----------------------------------------------------------
+     Header Wrapper
+     ---------------------------------------------------------- */
+  .hero__header-wrapper {
+    position: relative;
+    z-index: 20;
+    width: 100%;
+  }
+
+  /* ----------------------------------------------------------
+     Architectural Crosshair Target (Figma Frame 356/357)
+     ---------------------------------------------------------- */
+  .hero__crosshair {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 5;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .hero__crosshair-line-v {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 1rem;
+    background-color: rgba(255, 255, 255, 0.15);
+    will-change: transform;
+    pointer-events: none;
+  }
+
+  .hero__crosshair-line-h {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1rem;
+    background-color: rgba(255, 255, 255, 0.15);
+    will-change: transform;
+    pointer-events: none;
+  }
+
+  .hero__crosshair-target {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 58rem;
+    height: 58rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    will-change: transform;
+    pointer-events: none;
+  }
+
+  .hero__crosshair-svg {
+    display: block;
+    width: 58rem;
+    height: 58rem;
+    flex-shrink: 0;
+  }
+
+  /* ----------------------------------------------------------
+     Service Area Markers (Centered on Horizontal Crosshair Line)
+     ---------------------------------------------------------- */
+  .hero__service-marker {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 6;
+    letter-spacing: 0.5rem;
+    pointer-events: none;
+    white-space: nowrap;
+    line-height: 1;
+  }
+
+  .hero__service-marker--left {
+    left: 40rem;
+  }
+
+  .hero__service-marker--right {
+    right: 40rem;
+  }
+
+  /* ----------------------------------------------------------
+     Hero Main Content (Bottom Left & Right)
+     ---------------------------------------------------------- */
+  .hero__content {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    column-gap: var(--gap-r);
+    margin-top: auto;
+    padding-top: 140rem;
+  }
+
+  .hero__copy {
+    display: flex;
+    flex-direction: column;
+    max-width: 635rem;
+  }
+
+  .hero__badge {
+    display: flex;
+    align-items: center;
+    column-gap: 9rem;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 12rem;
+    margin-left: 0;
+  }
+
+  .hero__badge-bullet {
+    display: block;
+    width: 6rem;
+    height: 6rem;
+    background-color: var(--color-white);
+    flex-shrink: 0;
+  }
+
+  .hero__badge-text {
+    white-space: nowrap;
+  }
+
+  .hero__title {
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    letter-spacing: 0;
+    word-break: break-word;
+  }
+
+  /* ----------------------------------------------------------
+     Mobile Responsive (<480px)
+     ---------------------------------------------------------- */
+  @media screen and (max-width: 479px) {
+    .hero {
+      height: auto;
+      min-height: auto;
+      padding-top: var(--gap-s);
+      padding-right: var(--grid-margin);
+      padding-bottom: var(--gap-r);
+      padding-left: var(--grid-margin);
+    }
+
+    .hero__crosshair,
+    .hero__service-marker {
+      display: none;
+    }
+
+    .hero__content {
+      flex-direction: column;
+      align-items: flex-start;
+      row-gap: var(--gap-r);
+      padding-top: var(--gap-xl);
+    }
+
+    .hero__copy {
+      max-width: 100%;
+    }
+
+    .hero__card {
+      width: 100%;
+      height: auto;
+      min-height: auto;
+      row-gap: var(--gap-p);
+    }
+
+    .hero__card-body {
+      height: auto;
+      row-gap: var(--gap-s);
+    }
+
+    .hero__card-text {
+      margin-top: var(--gap-s);
+      height: auto;
+    }
+
+    .hero__badge-text {
+      white-space: normal;
+    }
+  }
+</style>

@@ -1,0 +1,410 @@
+---
+/**
+ * BudgetSelectionsSection.astro
+ * Section 06: Budget, Selections & Changes (Figma node 172:372 / Frame 457 / Frame 436)
+ * "CLEAR UPFRONT CHOICES PREVENT COST SURPRISES"
+ *
+ * Implements:
+ * - Fluid REM Scaling (1px = 1rem, Zero-px rule)
+ * - Atomic longhand properties only (no multi-value shorthands)
+ * - Two-column editorial layout with vertical & horizontal dividers
+ * - Integrated ButtonComposite component
+ */
+import ButtonComposite from '../components/ButtonComposite.astro';
+
+interface ChoiceItem {
+  title: string;
+  desc: string;
+}
+
+const choices: ChoiceItem[] = [
+  {
+    title: 'Real-Project Pricing',
+    desc: 'Every quote is grounded in your actual site conditions and plans, locked into a signed agreement.'
+  },
+  {
+    title: 'Early Selections',
+    desc: 'Cabinetry, tile, fixtures, and appliances are chosen early to keep procurement on schedule and budget.'
+  },
+  {
+    title: 'Approved Changes Only',
+    desc: 'Any design or scope update is priced, timeline-checked, and approved in writing before work begins.'
+  }
+];
+---
+
+<section class="budget-selections" id="budget-selections" aria-label="Budget, Selections & Changes">
+  <!-- Top Sub-Header Bar & Divider (Frame 437) -->
+  <div class="budget-selections__bar">
+    <div class="budget-selections__bar-left">
+      <span class="budget-selections__bullet" aria-hidden="true"></span>
+      <span class="budget-selections__bar-title">The finished standard</span>
+    </div>
+    <span class="budget-selections__bar-index" aria-hidden="true">06//</span>
+  </div>
+
+  <div class="budget-selections__divider" aria-hidden="true"></div>
+
+  <!-- Main Content: Left Editorial Column + Right Feature Items -->
+  <div class="budget-selections__container">
+    <!-- Left Column (Heading + Description + ButtonComposite) -->
+    <div class="budget-selections__left">
+      <div class="budget-selections__copy">
+        <h2 class="budget-selections__title">
+          Clear Upfront Choices Prevent Cost Surprises
+        </h2>
+        <p class="budget-selections__desc">
+          Scope, site prep, and finishes are fully defined upfront so costs stay predictable.
+        </p>
+      </div>
+
+      <div class="budget-selections__btn-wrap">
+        <ButtonComposite text="Schedule a Consultation" href="#consultation" fullWidth={true} variant="dark" />
+      </div>
+    </div>
+
+    <!-- Right Group: Vertical Divider Line + Right Items (Frame 607) -->
+    <div class="budget-selections__right-group">
+      <div class="budget-selections__v-divider" aria-hidden="true"></div>
+
+      <div class="budget-selections__right">
+        {choices.map((item, idx) => (
+          <div class="budget-selections__item">
+            <div class="budget-selections__item-content">
+              <div class="budget-selections__item-copy">
+                <h3 class="budget-selections__item-title">{item.title}</h3>
+                <p class="budget-selections__item-desc">{item.desc}</p>
+              </div>
+              <span class="budget-selections__item-bullet" aria-hidden="true"></span>
+            </div>
+            {idx < choices.length - 1 && (
+              <div class="budget-selections__item-divider" aria-hidden="true"></div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* ============================================================
+     BudgetSelectionsSection — Scoped CSS (Fluid REM, Zero-PX)
+     Figma Frame 436 / Frame 457 (node 172:372)
+     ============================================================ */
+
+  .budget-selections {
+    position: relative;
+    width: 100%;
+    background-color: var(--bg-white, #ffffff);
+    color: var(--color-dark, #131313);
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    padding-top: 120rem; /* Space/S 120px */
+    padding-right: 40rem;
+    padding-bottom: 120rem; /* Space/S 120px */
+    padding-left: 40rem;
+  }
+
+  /* ----------------------------------------------------------
+     Top Sub-Header Bar & Divider (Frame 437 / Frame 433)
+     ---------------------------------------------------------- */
+  .budget-selections__bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 16rem;
+    margin-left: 0;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+  }
+
+  .budget-selections__bar-left {
+    display: flex;
+    align-items: center;
+    column-gap: 9rem;
+  }
+
+  .budget-selections__bullet {
+    display: block;
+    width: 6rem;
+    height: 6rem;
+    background-color: #131313;
+    flex-shrink: 0;
+  }
+
+  .budget-selections__bar-title {
+    font-family: var(--font-display, 'Syne', sans-serif);
+    font-size: 14rem;
+    line-height: 1.2;
+    color: #131313;
+    opacity: 0.5;
+    white-space: nowrap;
+  }
+
+  .budget-selections__bar-index {
+    font-family: var(--font-display, 'Syne', sans-serif);
+    font-size: 14rem;
+    line-height: 1.2;
+    color: #131313;
+    opacity: 0.5;
+    white-space: nowrap;
+  }
+
+  .budget-selections__divider {
+    width: 100%;
+    border-top-width: 1rem;
+    border-top-style: solid;
+    border-top-color: rgba(19, 19, 19, 0.15);
+    border-right-width: 0;
+    border-bottom-width: 0;
+    border-left-width: 0;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 99rem;
+    margin-left: 0;
+  }
+
+  /* ----------------------------------------------------------
+     Main Container: Two-Column Editorial Grid (Frame 436)
+     ---------------------------------------------------------- */
+  .budget-selections__container {
+    display: flex;
+    align-items: stretch;
+    justify-content: space-between;
+    width: 100%;
+    min-height: 428rem;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+  }
+
+  /* Left Column */
+  .budget-selections__left {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 413rem;
+    flex-shrink: 0;
+  }
+
+  .budget-selections__copy {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    row-gap: 19rem;
+    width: 100%;
+  }
+
+  .budget-selections__title {
+    font-family: var(--font-heading, 'Syne', sans-serif);
+    font-size: 37rem;
+    font-weight: 700;
+    line-height: 1.15;
+    text-transform: uppercase;
+    color: #131313;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    width: 497rem;
+    max-width: 100%;
+    word-break: break-word;
+  }
+
+  .budget-selections__desc {
+    font-family: var(--font-body, 'Syne', sans-serif);
+    font-size: 14rem;
+    font-weight: 400;
+    line-height: 1.4;
+    color: #131313;
+    opacity: 0.5;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    width: 265rem;
+    max-width: 100%;
+  }
+
+  .budget-selections__btn-wrap {
+    width: 100%;
+    margin-top: 40rem;
+  }
+
+  /* Right Group (Figma Frame 607: left 707px in 1416px layout) */
+  .budget-selections__right-group {
+    display: flex;
+    align-items: stretch;
+    flex-shrink: 0;
+  }
+
+  /* Vertical Divider Line (Figma Line 26: 428px high) */
+  .budget-selections__v-divider {
+    width: 1rem;
+    background-color: rgba(19, 19, 19, 0.15);
+    flex-shrink: 0;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    align-self: stretch;
+  }
+
+  /* Right Column (Frame 475: width 668rem, pl-[50px] exactly 50rem from divider) */
+  .budget-selections__right {
+    display: flex;
+    flex-direction: column;
+    width: 668rem;
+    flex-shrink: 0;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    padding-left: 50rem;
+    row-gap: 32rem;
+  }
+
+  .budget-selections__item {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    row-gap: 25rem;
+  }
+
+  .budget-selections__item-content {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .budget-selections__item-copy {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    row-gap: 17rem;
+    width: 343rem;
+  }
+
+  .budget-selections__item-title {
+    font-family: var(--font-heading, 'Syne', sans-serif);
+    font-size: 24rem;
+    font-weight: 700;
+    line-height: 1;
+    text-transform: uppercase;
+    color: #131313;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    white-space: nowrap;
+  }
+
+  .budget-selections__item-desc {
+    font-family: var(--font-body, 'Syne', sans-serif);
+    font-size: 14rem;
+    font-weight: 400;
+    line-height: 1.4;
+    color: #131313;
+    opacity: 0.5;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    width: 251rem;
+    max-width: 100%;
+  }
+
+  .budget-selections__item-bullet {
+    display: block;
+    width: 6rem;
+    height: 6rem;
+    background-color: #131313;
+    flex-shrink: 0;
+    margin-top: 6rem;
+  }
+
+  .budget-selections__item-divider {
+    width: 100%;
+    border-top-width: 1rem;
+    border-top-style: solid;
+    border-top-color: rgba(19, 19, 19, 0.15);
+    border-right-width: 0;
+    border-bottom-width: 0;
+    border-left-width: 0;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+  }
+
+  /* ----------------------------------------------------------
+     Mobile Adaptation (<480px)
+     ---------------------------------------------------------- */
+  @media (max-width: 479px) {
+    .budget-selections {
+      padding-top: 60rem;
+      padding-right: 16rem;
+      padding-bottom: 60rem;
+      padding-left: 16rem;
+    }
+
+    .budget-selections__divider {
+      margin-bottom: 40rem;
+    }
+
+    .budget-selections__container {
+      flex-direction: column;
+      row-gap: 48rem;
+    }
+
+    .budget-selections__left {
+      width: 100%;
+    }
+
+    .budget-selections__title {
+      font-size: 28rem;
+      width: 100%;
+    }
+
+    .budget-selections__desc {
+      width: 100%;
+    }
+
+    .budget-selections__btn-wrap {
+      margin-top: 28rem;
+    }
+
+    .budget-selections__v-divider {
+      display: none;
+    }
+
+    .budget-selections__right {
+      width: 100%;
+      padding-left: 0;
+      row-gap: 24rem;
+    }
+
+    .budget-selections__item-copy {
+      width: calc(100% - 24rem);
+    }
+
+    .budget-selections__item-title {
+      font-size: 20rem;
+      white-space: normal;
+    }
+
+    .budget-selections__item-desc {
+      width: 100%;
+    }
+  }
+</style>
