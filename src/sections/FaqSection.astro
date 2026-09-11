@@ -1,14 +1,14 @@
 ---
 /**
- * FaqSection.astro — Section 14: Common Questions (FAQ)
+ * FaqSection.astro — Section 14: What to Know Before You Build (FAQ)
  * Figma node 213:1430 / Frame 539 / Spacer 213:1122
  *
  * Requirements:
  * — Dark theme background (#131313 with pattern)
  * — Top gap: 120rem spacer (var(--space-l))
  * — Side padding: strictly 40rem (var(--gap-r))
- * — Sub-bar: Common questions / 14//
- * — Left column: Blueprint drawing photo (350rem x 196rem) + H2 title + CTA button ("SCHEDULE A CONSULTATION")
+ * — Top sub-bar removed per user request
+ * — Left column: Kitchen photo (350rem x 196rem) + H2 title + CTA button ("SCHEDULE A CONSULTATION")
  * — Right column: 8-item interactive FAQ accordion with dividers & plus/minus toggle icons
  * — Fluid REM Scaling & Longhand CSS box model
  */
@@ -70,25 +70,15 @@ const faqItems: FaqItem[] = [
 
   <div class="faq__container">
 
-    <!-- 1. SUB-HEADER BAR -->
-    <div class="faq__bar">
-      <div class="faq__bar-main">
-        <span class="faq__bullet" aria-hidden="true"></span>
-        <span class="faq__bar-label text-m">Common questions</span>
-      </div>
-      <span class="faq__bar-index text-m">14//</span>
-    </div>
-    <div class="faq__divider" aria-hidden="true"></div>
-
-    <!-- 2. MAIN LAYOUT GRID -->
+    <!-- MAIN LAYOUT GRID -->
     <div class="faq__layout">
 
       <!-- Left Column: Media + Heading + Button -->
       <div class="faq__left">
         <div class="faq__media-box">
           <img
-            src="/assets/section-14/faq-blueprint.webp"
-            alt="Architectural drawing and blueprints for custom single-family construction"
+            src="/assets/section-14/faq-kitchen.webp"
+            alt="Custom kitchen with dining area built by ALM"
             class="faq__photo"
             loading="lazy"
             decoding="async"
@@ -244,53 +234,7 @@ const faqItems: FaqItem[] = [
     padding-left: 40rem;
   }
 
-  /* ─── 1. Sub-Header Bar ─── */
-  .faq__bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    padding-top: 0;
-    padding-right: 0;
-    padding-bottom: var(--gap-2xs);
-    padding-left: 0;
-  }
-
-  .faq__bar-main {
-    display: flex;
-    align-items: center;
-    column-gap: 9rem;
-  }
-
-  .faq__bullet {
-    display: block;
-    width: 6rem;
-    height: 6rem;
-    background-color: var(--color-white);
-    flex-shrink: 0;
-  }
-
-  .faq__bar-label {
-    color: var(--color-white);
-    opacity: 0.5;
-  }
-
-  .faq__bar-index {
-    color: var(--color-white);
-    opacity: 0.5;
-  }
-
-  .faq__divider {
-    width: 100%;
-    height: 1rem;
-    background-color: rgba(255, 255, 255, 0.15);
-    margin-top: var(--gap-2xs);
-    margin-right: 0;
-    margin-bottom: 99rem;
-    margin-left: 0;
-  }
-
-  /* ─── 2. Main Layout Grid ─── */
+  /* ─── Main Layout Grid ─── */
   .faq__layout {
     display: flex;
     flex-direction: row;
@@ -484,10 +428,6 @@ const faqItems: FaqItem[] = [
     .faq__container {
       padding-right: var(--gap-p);
       padding-left: var(--gap-p);
-    }
-
-    .faq__divider {
-      margin-bottom: var(--gap-l);
     }
 
     .faq__layout {
