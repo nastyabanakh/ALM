@@ -706,7 +706,11 @@
   - **Вимога користувача:** "в самом у футері відступ зверху і знизу має бути однаковим".
   - **Виправлення:**
     1. У `src/styles/base.css` для `.page-wrapper` змінено `padding-bottom: var(--gap-t);` на `padding-bottom: 0;`, щоб усунути темну смугу фону під футером.
-    2. У `src/sections/FooterSection.astro` встановлено однакові відступи `padding-top: 12rem;` та `padding-bottom: 12rem;` для десктопу та мобільної версії, забезпечуючи ідеальну симетрію та точний відступ у 12rem як над контентом футера, так і під логотипом.
+- **2026-09-11 — Природне прокручування точкового фонового патерну (background-attachment: scroll):**
+  - **Вимога користувача:** "також цятки на чорному фоні немають стояти на місці а рухатись з всім контентом".
+  - **Виправлення:**
+    1. У всіх файлах зі стилями темних блоків (`src/styles/base.css`, `NewConstructionSection.astro`, `PropertyReviewSection.astro`, `SinglePointContactSection.astro`, `ProcessSection.astro`, `FaqSection.astro`, `FinalCtaFormSection.astro`) замінено `background-attachment: fixed;` на `background-attachment: scroll;`.
+    2. Тепер точкова сітка (патерн) не «застигає» у в'юпорті, а скролиться синхронно й природно разом з усім вмістом сторінки.
 
 
 

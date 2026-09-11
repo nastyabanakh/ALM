@@ -63,7 +63,7 @@ body {
   background-image: var(--bg-pattern-dark);
   background-repeat: repeat;
   background-size: 30rem 30rem;
-  background-attachment: fixed;
+  background-attachment: scroll;
   color: var(--color-white);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -84,7 +84,7 @@ body {
   background-image: var(--bg-pattern-dark);
   background-repeat: repeat;
   background-size: 30rem 30rem;
-  background-attachment: fixed;
+  background-attachment: scroll;
   padding-top: var(--gap-xs);
   padding-right: var(--grid-margin);
   padding-bottom: 0;
