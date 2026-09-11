@@ -1,0 +1,52 @@
+---
+/**
+ * AnimationsInit.astro
+ * Initializes GSAP + ScrollTrigger animations (without Lenis smooth scroll).
+ * Handles anchor navigation with native smooth scroll.
+ */
+---
+
+<script>
+  import gsap from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  // Expose globally for any section scripts that reference __gsap / __ScrollTrigger
+  (window as any).__gsap = gsap;
+  (window as any).__ScrollTrigger = ScrollTrigger;
+  // __lenis is undefined — all scrollTo calls already use native window.scrollTo
+
+  // Native ScrollTrigger refresh on load
+  ScrollTrigger.refresh();
+  window.addEventListener('load', () => {
+    ScrollTrigger.refresh();
+  });
+
+  // Init GSAP section animations
+  import('../scripts/gsap-animations').then(({ initGlobalGsapAnimations }) => {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => initGlobalGsapAnimations());
+    } else {
+      initGlobalGsapAnimations();
+    }
+  });
+
+  // Native smooth anchor navigation for all internal hashes
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+      anchor.addEventListener('click', (e) => {
+        const href = anchor.getAttribute('href');
+        if (href && href !== '#' && href.startsWith('#')) {
+          const target = document.querySelector(href);
+          if (target) {
+            e.preventDefault();
+            const rect = (target as HTMLElement).getBoundingClientRect();
+            const scrollTop = window.scrollY + rect.top - 20;
+            window.scrollTo({ top: scrollTop, behavior: 'smooth' });
+          }
+        }
+      });
+    });
+  });
+</script>
