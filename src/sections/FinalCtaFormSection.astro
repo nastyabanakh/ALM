@@ -152,13 +152,14 @@ import ButtonComposite from '../components/ButtonComposite.astro';
 
             <!-- Next Step Action -->
             <div class="start-conversation__btn-wrap">
-              <button type="button" class="start-conversation__action-btn" id="flow-next-btn">
-                <ButtonComposite
-                  text="NEXT STEP"
-                  variant="white"
-                  fullWidth={true}
-                />
-              </button>
+              <ButtonComposite
+                text="NEXT STEP"
+                variant="white"
+                fullWidth={true}
+                as="button"
+                type="button"
+                id="flow-next-btn"
+              />
             </div>
           </div>
 
@@ -269,13 +270,14 @@ import ButtonComposite from '../components/ButtonComposite.astro';
               <button type="button" class="start-conversation__back-btn" id="flow-back-btn">
                 ← Back to Step 1
               </button>
-              <button type="submit" class="start-conversation__action-btn" id="flow-submit-btn">
-                <ButtonComposite
-                  text="SCHEDULE A CONSULTATION"
-                  variant="white"
-                  fullWidth={true}
-                />
-              </button>
+              <ButtonComposite
+                text="SCHEDULE A CONSULTATION"
+                variant="white"
+                fullWidth={true}
+                as="button"
+                type="submit"
+                id="flow-submit-btn"
+              />
             </div>
           </div>
 
@@ -353,7 +355,10 @@ import ButtonComposite from '../components/ButtonComposite.astro';
     if (!form || !step1 || !step2 || !nextBtn || !backBtn || !successBox) return;
 
     // Step 1 -> Step 2 validation & transition
-    nextBtn.addEventListener('click', () => {
+    nextBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+
       const step1Inputs = step1.querySelectorAll<HTMLInputElement | HTMLSelectElement>('input, select');
       let isValid = true;
 
@@ -371,7 +376,10 @@ import ButtonComposite from '../components/ButtonComposite.astro';
     });
 
     // Step 2 -> Step 1 back navigation
-    backBtn.addEventListener('click', () => {
+    backBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+
       step2.classList.remove('is-active');
       step1.classList.add('is-active');
     });
@@ -384,7 +392,6 @@ import ButtonComposite from '../components/ButtonComposite.astro';
       step2.classList.remove('is-active');
       successBox.classList.add('is-visible');
       form.reset();
-      successBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     });
   }
 
@@ -601,7 +608,7 @@ import ButtonComposite from '../components/ButtonComposite.astro';
   .start-conversation__fields {
     display: flex;
     flex-direction: column;
-    row-gap: 26rem;
+    row-gap: 33rem;
     margin-bottom: 36rem;
     width: 100%;
   }
