@@ -666,6 +666,11 @@
     2. У компоненті `ButtonComposite.astro` додано підтримку тегів `<button>` замість `<a>` (`as?: 'a' | 'button'`).
     3. Кнопку `NEXT STEP` переведено на `<button type="button">`, додано `e.preventDefault()` / `e.stopPropagation()`. Тепер при переході між кроками Step 1 та Step 2 сторінка не скролиться нагору.
 
+- **2026-09-11 — Відновлення відображення фотографії правої колонки (Section 15):**
+  - **Проблема:** Через `height: 100%` на флекс-колонці та `min-height: 0` у вкладеному контейнері без абсолютно позиціонованого зображення контейнер фото колапсував до висоти 0 у браузері.
+  - **Виправлення:** Прибрано `height: 100%` з `.start-conversation__col-right` (колонка природно розтягується через `align-items: stretch`), контейнеру `.start-conversation__photo-box` задано `position: relative; flex-grow: 1; flex-shrink: 1; flex-basis: 0; min-height: 520rem;`, а самому зображенню `.start-conversation__photo` встановлено `position: absolute; top: 0; right: 0; bottom: 0; left: 0; width: 100%; height: 100%; object-fit: cover;`. Фотографія завжди відображається і розтягується точно до нижньої межі кнопки.
+
+
 
 
 
