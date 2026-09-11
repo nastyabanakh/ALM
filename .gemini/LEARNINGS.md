@@ -678,6 +678,18 @@
        - При заповненні (`:not(:placeholder-shown)`): нижня лінія стає яскравішою (`rgba(255, 255, 255, 0.45)`).
        - При фокусі / активному вводі (`:focus`): чітка чиста біла лінія `border-bottom-color: var(--color-white)` з тонкою лінійною тінню `box-shadow: 0 1rem 0 0 var(--color-white)` без жодної важкої заливки фону.
 
+- **2026-09-11 — Верстка Футера та анімація наїжджання (Section 16 / Footer, Figma Frame 568-571 / node 70:2431):**
+  - **Архітектура компонента:** Створено `src/sections/FooterSection.astro` та підключено у `src/pages/index.astro`.
+  - **Специфікація:**
+    1. **Фон та геометрія:** Світле тло `#ffffff` (`var(--bg-white)`), контрастний чорний колір шрифту `#131313`, бічні поля `40rem` (`var(--gap-r)`).
+    2. **3 верхні колонки:**
+       - Ліва: чорний маркер `6×6rem`, контакти `ALMStudio@gmail.com` та `+1 (206) 555-0192` (Syne Bold 24rem uppercase) + чорна кнопка `SCHEDULE A CONSULTATION` (`ButtonComposite` з `variant="dark"`).
+       - Центральна: чорний маркер `6×6rem`, 6 якірних посилань навігації (`CUSTOM HOMES`, `PROCESS`, `PROJECTS`, `ABOUT ALM`, `FAQ`, `CONTACT`).
+       - Права: чорний маркер `6×6rem`, 2 юридичні посилання (`PRIVACY POLICY`, `TERMS, IF REQUIRED`).
+    3. **Нижній брендинг:** Монументальний напис `ALM` (`206.67rem` Syne Bold uppercase) та знак `®` (`90rem`).
+    4. **Скрол-анімація наїжджання:** Налаштовано GSAP ScrollTrigger ефект, при якому світлий блок футера (`z-index: 10`) плавно наїжджає знизу на темний блок форми (Section 15, `z-index: 1`) з реалістичною тінню перекриття без ривків.
+
+
 
 
 

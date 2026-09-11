@@ -512,6 +512,115 @@ export function initGlobalGsapAnimations() {
     );
   }
 
+  // -------------------------------------------------------------
+  // 9. SECTION 15: START THE CONVERSATION
+  // -------------------------------------------------------------
+  const ctaBar = document.querySelector('.start-conversation__bar');
+  const ctaDivider = document.querySelector('.start-conversation__divider');
+  const ctaHeader = document.querySelector('.start-conversation__header');
+  const ctaLayout = document.querySelector('.start-conversation__layout');
+
+  if (ctaBar && ctaDivider) {
+    gsap.fromTo(
+      ctaBar,
+      { opacity: 0, y: 20 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        ease: 'power3.out',
+        scrollTrigger: { trigger: ctaBar, start: 'top 88%' }
+      }
+    );
+    gsap.fromTo(
+      ctaDivider,
+      { scaleX: 0, transformOrigin: 'left center' },
+      {
+        scaleX: 1,
+        duration: 1.1,
+        ease: 'power3.inOut',
+        scrollTrigger: { trigger: ctaDivider, start: 'top 88%' }
+      }
+    );
+  }
+
+  if (ctaHeader) {
+    gsap.fromTo(
+      ctaHeader,
+      { opacity: 0, y: 35 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.9,
+        ease: 'power3.out',
+        scrollTrigger: { trigger: ctaHeader, start: 'top 85%' }
+      }
+    );
+  }
+
+  if (ctaLayout) {
+    gsap.fromTo(
+      ctaLayout,
+      { opacity: 0, y: 30 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 1,
+        ease: 'power3.out',
+        scrollTrigger: { trigger: ctaLayout, start: 'top 85%' }
+      }
+    );
+  }
+
+  // -------------------------------------------------------------
+  // 10. SECTION 16: FOOTER SLIDE-OVER OVERLAY ANIMATION
+  // -------------------------------------------------------------
+  const footer = document.querySelector<HTMLElement>('.site-footer');
+  const prevSection = document.querySelector<HTMLElement>('.start-conversation');
+
+  if (footer && prevSection) {
+    ScrollTrigger.matchMedia({
+      // Desktop & Tablet (> 768px): Smooth parallax curtain slide-over
+      '(min-width: 769px)': function () {
+        gsap.fromTo(
+          footer,
+          {
+            yPercent: 30,
+            boxShadow: '0 -40rem 100rem rgba(0, 0, 0, 0.65)'
+          },
+          {
+            yPercent: 0,
+            boxShadow: '0 -15rem 40rem rgba(0, 0, 0, 0.15)',
+            ease: 'none',
+            scrollTrigger: {
+              trigger: prevSection,
+              start: 'bottom bottom',
+              end: 'bottom top',
+              scrub: 0.8
+            }
+          }
+        );
+      },
+      // Mobile: Clean responsive entrance
+      '(max-width: 768px)': function () {
+        gsap.fromTo(
+          footer,
+          { opacity: 0.9, y: 25 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.8,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: footer,
+              start: 'top 92%'
+            }
+          }
+        );
+      }
+    });
+  }
+
   // Ensure all triggers recalculate accurate offsets once images and fonts are loaded
   ScrollTrigger.refresh();
   if (document.readyState !== 'complete') {

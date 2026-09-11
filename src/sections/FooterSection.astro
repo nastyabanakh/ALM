@@ -1,0 +1,356 @@
+---
+/**
+ * FooterSection.astro — Section 16: Footer
+ * Figma Frame 568-571 / nodes 220:2067 - 220:2105
+ *
+ * Requirements:
+ * — Light theme background (#ffffff, var(--bg-white))
+ * — Slide-over animation overlaying preceding Section 15
+ * — 3-column top info grid:
+ *     - Col 1: Square bullet, email, phone, "SCHEDULE A CONSULTATION" dark button
+ *     - Col 2: Square bullet, 6 navigation links
+ *     - Col 3: Square bullet, 2 legal links
+ * — Bottom brand typography: Huge "ALM" (206.67rem) + "®" (90rem)
+ * — Fluid REM Scaling & Longhand CSS box model
+ */
+import ButtonComposite from '../components/ButtonComposite.astro';
+
+const navLinks = [
+  { label: 'CUSTOM HOMES', href: '#construction' },
+  { label: 'PROCESS', href: '#process' },
+  { label: 'PROJECTS', href: '#projects' },
+  { label: 'ABOUT ALM', href: '#about' },
+  { label: 'FAQ', href: '#faq' },
+  { label: 'CONTACT', href: '#contact' },
+];
+
+const legalLinks = [
+  { label: 'PRIVACY POLICY', href: '#privacy' },
+  { label: 'TERMS, IF REQUIRED', href: '#terms' },
+];
+---
+
+<footer class="site-footer" id="footer" aria-label="Site Footer">
+  <div class="site-footer__container">
+
+    <!-- TOP SECTION: 3-COLUMN GRID -->
+    <div class="site-footer__grid">
+
+      <!-- Column 1: Contacts & CTA -->
+      <div class="site-footer__col site-footer__col--contacts">
+        <div class="site-footer__bullet" aria-hidden="true"></div>
+        <div class="site-footer__contacts-block">
+          <div class="site-footer__contacts-list">
+            <a href="mailto:ALMStudio@gmail.com" class="site-footer__contact-link">
+              ALMStudio@gmail.com
+            </a>
+            <a href="tel:+12065550192" class="site-footer__contact-link">
+              +1 (206) 555-0192
+            </a>
+          </div>
+
+          <div class="site-footer__cta-wrap">
+            <ButtonComposite
+              text="SCHEDULE A CONSULTATION"
+              variant="dark"
+              href="#contact"
+              class="site-footer__btn"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Column 2: Navigation Links -->
+      <div class="site-footer__col site-footer__col--nav">
+        <div class="site-footer__bullet" aria-hidden="true"></div>
+        <nav class="site-footer__nav" aria-label="Footer navigation">
+          <ul class="site-footer__nav-list">
+            {navLinks.map((item) => (
+              <li class="site-footer__nav-item">
+                <a href={item.href} class="site-footer__nav-link">
+                  {item.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </div>
+
+      <!-- Column 3: Legal Links -->
+      <div class="site-footer__col site-footer__col--legal">
+        <div class="site-footer__bullet" aria-hidden="true"></div>
+        <div class="site-footer__legal-block">
+          <ul class="site-footer__legal-list">
+            {legalLinks.map((item) => (
+              <li class="site-footer__legal-item">
+                <a href={item.href} class="site-footer__legal-link">
+                  {item.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- BOTTOM SECTION: MONUMENTAL BRAND TYPOGRAPHY -->
+    <div class="site-footer__brand-row">
+      <div class="site-footer__brand-wrapper">
+        <span class="site-footer__brand-logo">ALM</span>
+        <span class="site-footer__brand-trademark" aria-label="Registered trademark">®</span>
+      </div>
+    </div>
+
+  </div>
+</footer>
+
+<style>
+  /* ============================================================
+     SITE FOOTER — SECTION 16
+     Fluid REM Scaling: 1px Figma = 1rem CSS. Zero-px rule.
+     Atomic longhand box model & positioning properties only.
+     ============================================================ */
+
+  .site-footer {
+    background-color: var(--bg-white, #ffffff);
+    color: var(--color-brand, #131313);
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    padding-top: 80rem;
+    padding-right: 0;
+    padding-bottom: 50rem;
+    padding-left: 0;
+    box-shadow: 0 -20rem 60rem rgba(0, 0, 0, 0.35);
+    overflow-x: clip;
+    transform: translate3d(0, 0, 0);
+    will-change: transform;
+  }
+
+  .site-footer__container {
+    width: 100%;
+    max-width: 1440rem;
+    margin-top: 0;
+    margin-right: auto;
+    margin-bottom: 0;
+    margin-left: auto;
+    padding-top: 0;
+    padding-right: 40rem;
+    padding-bottom: 0;
+    padding-left: 40rem;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ─── 1. Top 3-Column Grid ─── */
+  .site-footer__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    column-gap: 40rem;
+    row-gap: 40rem;
+    width: 100%;
+    margin-bottom: 70rem;
+  }
+
+  .site-footer__col {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .site-footer__col--contacts {
+    max-width: 380rem;
+  }
+
+  .site-footer__col--nav {
+    padding-left: 60rem;
+  }
+
+  .site-footer__col--legal {
+    padding-left: 40rem;
+  }
+
+  .site-footer__bullet {
+    display: block;
+    width: 6rem;
+    height: 6rem;
+    background-color: var(--color-brand, #131313);
+    flex-shrink: 0;
+    margin-bottom: 36rem;
+  }
+
+  /* Contacts & CTA */
+  .site-footer__contacts-block {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .site-footer__contacts-list {
+    display: flex;
+    flex-direction: column;
+    row-gap: 8rem;
+    margin-bottom: 80rem;
+  }
+
+  .site-footer__contact-link {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 24rem;
+    line-height: 1.2;
+    text-transform: uppercase;
+    color: var(--color-brand, #131313);
+    text-decoration: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    display: inline-block;
+  }
+
+  .site-footer__contact-link:hover {
+    opacity: 0.6;
+    transform: translateX(4rem);
+  }
+
+  .site-footer__cta-wrap {
+    display: flex;
+  }
+
+  /* Navigation Links */
+  .site-footer__nav {
+    width: 100%;
+  }
+
+  .site-footer__nav-list,
+  .site-footer__legal-list {
+    list-style: none;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+    display: flex;
+    flex-direction: column;
+    row-gap: 8rem;
+  }
+
+  .site-footer__nav-item,
+  .site-footer__legal-item {
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+  }
+
+  .site-footer__nav-link,
+  .site-footer__legal-link {
+    font-family: var(--font-body);
+    font-weight: 400;
+    font-size: 14rem;
+    line-height: 1.2;
+    text-transform: uppercase;
+    color: var(--color-brand, #131313);
+    text-decoration: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    display: inline-block;
+  }
+
+  .site-footer__nav-link:hover,
+  .site-footer__legal-link:hover {
+    opacity: 0.55;
+    transform: translateX(3rem);
+  }
+
+  /* ─── 2. Bottom Brand Row ─── */
+  .site-footer__brand-row {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: flex-end;
+    width: 100%;
+    margin-top: auto;
+  }
+
+  .site-footer__brand-wrapper {
+    display: inline-flex;
+    align-items: flex-start;
+    line-height: 0.8;
+  }
+
+  .site-footer__brand-logo {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 206.67rem;
+    line-height: 0.82;
+    text-transform: uppercase;
+    color: var(--color-brand, #131313);
+    letter-spacing: -2rem;
+    user-select: none;
+  }
+
+  .site-footer__brand-trademark {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 90rem;
+    line-height: 0.9;
+    text-transform: uppercase;
+    color: var(--color-brand, #131313);
+    margin-left: 10rem;
+    margin-top: 6rem;
+    user-select: none;
+  }
+
+  /* ─── MOBILE ADAPTATION (max-width: 479px) ─── */
+  @media (max-width: 479px) {
+    .site-footer {
+      padding-top: var(--gap-xl);
+      padding-bottom: var(--gap-l);
+    }
+
+    .site-footer__container {
+      padding-right: var(--gap-p);
+      padding-left: var(--gap-p);
+    }
+
+    .site-footer__grid {
+      grid-template-columns: 1fr;
+      row-gap: var(--gap-l);
+      margin-bottom: var(--gap-xl);
+    }
+
+    .site-footer__col--contacts,
+    .site-footer__col--nav,
+    .site-footer__col--legal {
+      padding-left: 0;
+      max-width: 100%;
+    }
+
+    .site-footer__bullet {
+      margin-bottom: var(--gap-s);
+    }
+
+    .site-footer__contacts-list {
+      margin-bottom: var(--gap-m);
+    }
+
+    .site-footer__contact-link {
+      font-size: 20rem;
+    }
+
+    .site-footer__brand-row {
+      justify-content: flex-start;
+    }
+
+    .site-footer__brand-logo {
+      font-size: 110rem;
+    }
+
+    .site-footer__brand-trademark {
+      font-size: 48rem;
+      margin-left: 6rem;
+      margin-top: 4rem;
+    }
+  }
+</style>
