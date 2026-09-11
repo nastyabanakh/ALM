@@ -644,3 +644,8 @@
        - **Step 2 — Optional project details:** Existing home on property? (select), Approximate Home Size, Architectural Style, Estimated Budget (select), Desired Timeline (select), Plans Status (select).
     5. **Форма та кнопка відправки:** Кнопка `Schedule a Consultation` з темним тлом та інтерактивним JS-обробником (валідація полів + стан успішного надсилання з карткою зворотного зв'язку).
     6. Підключено до `src/pages/index.astro` та перевірено продакшен-білд Astro SSG.
+
+- **2026-09-11 — Додавання білого відступу 120 rem під кнопкою Builder Accountability (Section 13):**
+  - **Проблема:** Після кнопки `SCHEDULE A CONSULTATION` у блоці Builder Accountability був відсутній нижній спейсер, через що кнопка впритул прилягала до темного фону секції FAQ.
+  - **Виправлення:** Додано явний блок `.builder-accountability__bottom-spacer` висотою `120rem` (`Space/S`) з білим фоном (`var(--bg-white)`), що забезпечує точний простір у 120rem чистого білого кольору під кнопкою перед початком темної секції.
+

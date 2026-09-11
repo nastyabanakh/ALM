@@ -104,6 +104,9 @@ const commitments: CommitmentItem[] = [
     </div>
 
   </div>
+
+  <!-- Bottom 120rem White Spacer (Space/S) -->
+  <div class="builder-accountability__bottom-spacer" aria-hidden="true"></div>
 </section>
 
 <style>
@@ -123,8 +126,14 @@ const commitments: CommitmentItem[] = [
     overflow-x: clip;
   }
 
-  /* ─── 120rem Top Spacer (Figma node 207:934 Space/S) ─── */
+  /* ─── 120rem Top & Bottom Spacer (Figma node 207:934 Space/S) ─── */
   .builder-accountability__top-spacer {
+    width: 100%;
+    height: 120rem;
+    background-color: var(--bg-white);
+  }
+
+  .builder-accountability__bottom-spacer {
     width: 100%;
     height: 120rem;
     background-color: var(--bg-white);
@@ -311,10 +320,11 @@ const commitments: CommitmentItem[] = [
   /* ─── MOBILE ADAPTATION (max-width: 479px) ─── */
   @media (max-width: 479px) {
     .builder-accountability {
-      padding-bottom: var(--gap-xl);
+      padding-bottom: 0;
     }
 
-    .builder-accountability__top-spacer {
+    .builder-accountability__top-spacer,
+    .builder-accountability__bottom-spacer {
       height: 60rem;
     }
 
