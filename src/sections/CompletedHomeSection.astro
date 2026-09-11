@@ -237,16 +237,16 @@ const specs: SpecItem[] = [
   }
 
   .completed-home__container {
-    width: 1416rem;
-    max-width: 100%;
+    width: 100%;
+    max-width: 1440rem;
     margin-top: 0;
     margin-right: auto;
     margin-bottom: 0;
     margin-left: auto;
     padding-top: 0;
-    padding-right: var(--gap-xs);
+    padding-right: 40rem;
     padding-bottom: 0;
-    padding-left: var(--gap-xs);
+    padding-left: 40rem;
   }
 
   /* ─── 1. Sub-Header Bar ─── */
@@ -343,23 +343,23 @@ const specs: SpecItem[] = [
     flex-direction: row;
     align-items: flex-start;
     column-gap: 12rem;
-    width: 1416rem;
-    max-width: 100%;
+    width: 100%;
+    max-width: 1440rem;
     height: 100%;
     margin-top: 0;
     margin-right: auto;
     margin-bottom: 0;
     margin-left: auto;
     padding-top: 0;
-    padding-right: var(--gap-xs);
+    padding-right: 40rem;
     padding-bottom: 0;
-    padding-left: var(--gap-xs);
+    padding-left: 40rem;
   }
 
   /* ─── Left Column (Fixed in the sticky window) ─── */
   .completed-home__left {
-    width: 737rem;
-    flex-shrink: 0;
+    flex: 1.15 1 0;
+    min-width: 0;
     height: 100%;
     display: flex;
     flex-direction: row;
@@ -368,17 +368,17 @@ const specs: SpecItem[] = [
   }
 
   .completed-home__bathroom-box {
-    width: 362.5rem;
+    flex: 1 1 0;
+    min-width: 0;
     height: 100%;
-    flex-shrink: 0;
     overflow: hidden;
     background-color: #8b8b8b;
   }
 
   .completed-home__stack-box {
-    width: 362.5rem;
+    flex: 1 1 0;
+    min-width: 0;
     height: 100%;
-    flex-shrink: 0;
     display: flex;
     flex-direction: column;
     row-gap: 12rem;
@@ -400,8 +400,8 @@ const specs: SpecItem[] = [
 
   /* ─── Right Column: Clipped Window & Scrolling Content ─── */
   .completed-home__right-window {
-    width: 667rem;
-    flex-shrink: 0;
+    flex: 1 1 0;
+    min-width: 0;
     height: 100%;
     overflow: hidden;
     position: relative;
@@ -432,8 +432,7 @@ const specs: SpecItem[] = [
 
   /* ─── Specifications Box ─── */
   .completed-home__specs-box {
-    width: 628rem;
-    max-width: 100%;
+    width: 100%;
     display: flex;
     flex-direction: column;
     padding-top: 40rem;
