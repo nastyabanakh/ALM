@@ -512,66 +512,6 @@ export function initGlobalGsapAnimations() {
     );
   }
 
-  // -------------------------------------------------------------
-  // 9. SECTION 15: START THE CONVERSATION
-  // -------------------------------------------------------------
-  const ctaBar = document.querySelector('.start-conversation__bar');
-  const ctaDivider = document.querySelector('.start-conversation__divider');
-  const ctaHeader = document.querySelector('.start-conversation__header');
-  const ctaLayout = document.querySelector('.start-conversation__layout');
-
-  if (ctaBar && ctaDivider) {
-    gsap.fromTo(
-      ctaBar,
-      { opacity: 0, y: 20 },
-      {
-        opacity: 1,
-        y: 0,
-        duration: 0.8,
-        ease: 'power3.out',
-        scrollTrigger: { trigger: ctaBar, start: 'top 88%' }
-      }
-    );
-    gsap.fromTo(
-      ctaDivider,
-      { scaleX: 0, transformOrigin: 'left center' },
-      {
-        scaleX: 1,
-        duration: 1.1,
-        ease: 'power3.inOut',
-        scrollTrigger: { trigger: ctaDivider, start: 'top 88%' }
-      }
-    );
-  }
-
-  if (ctaHeader) {
-    gsap.fromTo(
-      ctaHeader,
-      { opacity: 0, y: 35 },
-      {
-        opacity: 1,
-        y: 0,
-        duration: 0.9,
-        ease: 'power3.out',
-        scrollTrigger: { trigger: ctaHeader, start: 'top 85%' }
-      }
-    );
-  }
-
-  if (ctaLayout) {
-    gsap.fromTo(
-      ctaLayout,
-      { opacity: 0, y: 30 },
-      {
-        opacity: 1,
-        y: 0,
-        duration: 1,
-        ease: 'power3.out',
-        scrollTrigger: { trigger: ctaLayout, start: 'top 85%' }
-      }
-    );
-  }
-
   // Ensure all triggers recalculate accurate offsets once images and fonts are loaded
   ScrollTrigger.refresh();
   if (document.readyState !== 'complete') {
