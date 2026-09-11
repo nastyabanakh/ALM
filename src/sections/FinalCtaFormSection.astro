@@ -1,322 +1,278 @@
 ---
 /**
- * FinalCtaFormSection.astro — Section 15: Final CTA & Form
- * Figma node 213:1526 / Frame 15 — Final CTA & Form
+ * FinalCtaFormSection.astro — Section 15: Start the conversation
+ * Figma node 216:1678 / Frame 216:1678
  *
  * Requirements:
- * — White background (#ffffff)
- * — Top gap: 120rem spacer (var(--space-l))
+ * — Dark background (#131313 with dot pattern)
+ * — Top spacer: 120rem (var(--space-l))
  * — Side padding: strictly 40rem (var(--gap-r))
- * — Header: Eyebrow "START THE CONVERSATION", H2 "Tell Us What You Have. We’ll Tell You What Comes Next.", Description
- * — Form Benefits: 3 checklist items
- * — 2-Step Consultation Form:
- *     - Step 1 — Required fields (Name, Email, Phone, Location, Where are you starting?, Message)
- *     - Step 2 — Optional project details (Existing home, Home size, Architectural style, Budget, Timeline, Plans status)
- * — Submit Button: "Schedule a Consultation"
- * — Footnote Notice & Success State
+ * — Sub-bar: Start the conversation / 15//
+ * — Centered H2 title + description
+ * — Left column (675rem): STEP 1 — REQUIRED FIELDS, underline inputs, NEXT STEP ButtonComposite
+ * — Right column (562rem): 3 specification lines with bottom dividers + Patio photo (520rem height)
  * — Fluid REM Scaling & Longhand CSS box model
  */
+import ButtonComposite from '../components/ButtonComposite.astro';
 ---
 
-<section class="cta-form" id="contact" aria-label="Schedule a Consultation">
+<section class="start-conversation" id="contact" aria-label="Start the conversation">
   <!-- Top 120rem Spacer -->
-  <div class="cta-form__top-spacer" aria-hidden="true"></div>
+  <div class="start-conversation__top-spacer" aria-hidden="true"></div>
 
-  <div class="cta-form__container">
+  <div class="start-conversation__container">
 
-    <!-- 1. HEADER BLOCK -->
-    <header class="cta-form__header">
-      <span class="cta-form__eyebrow">START THE CONVERSATION</span>
-      <h2 class="cta-form__title">
+    <!-- 1. SUB-HEADER BAR -->
+    <div class="start-conversation__bar">
+      <div class="start-conversation__bar-main">
+        <span class="start-conversation__bullet" aria-hidden="true"></span>
+        <span class="start-conversation__bar-label text-m">Start the conversation</span>
+      </div>
+      <span class="start-conversation__bar-index text-m">15//</span>
+    </div>
+    <div class="start-conversation__divider" aria-hidden="true"></div>
+
+    <!-- 2. SECTION HEADER (TITLE & DESCRIPTION) -->
+    <div class="start-conversation__header">
+      <h2 class="start-conversation__title h2">
         Tell Us What You Have. We’ll Tell You What Comes Next.
       </h2>
-      <p class="cta-form__desc">
+      <p class="start-conversation__desc text-m">
         Share the property, plans, or references you have now. ALM will review them before the consultation and identify what still needs to be checked.
       </p>
-    </header>
-
-    <!-- 2. FORM BENEFITS (3 ITEMS) -->
-    <div class="cta-form__benefits" aria-label="Key Benefits">
-      <div class="cta-form__benefit-item">
-        <span class="cta-form__check" aria-hidden="true">✓</span>
-        <span class="cta-form__benefit-text">No completed plans required</span>
-      </div>
-      <div class="cta-form__benefit-item">
-        <span class="cta-form__check" aria-hidden="true">✓</span>
-        <span class="cta-form__benefit-text">Start with a lot, teardown property, plan, or reference</span>
-      </div>
-      <div class="cta-form__benefit-item">
-        <span class="cta-form__check" aria-hidden="true">✓</span>
-        <span class="cta-form__benefit-text">Project pricing is reviewed individually</span>
-      </div>
     </div>
 
-    <!-- 3. CONSULTATION FORM -->
-    <form class="cta-form__form" id="consultation-form" novalidate>
-      <div class="cta-form__cards-grid">
+    <!-- 3. TWO-COLUMN LAYOUT -->
+    <div class="start-conversation__layout">
 
-        <!-- STEP 1: REQUIRED FIELDS -->
-        <fieldset class="cta-form__card">
-          <legend class="cta-form__card-legend">
-            <span class="cta-form__card-title">Step 1 — Required fields</span>
-            <span class="cta-form__card-subtitle">Your contact details and current starting point</span>
-          </legend>
-
-          <div class="cta-form__field">
-            <label for="form-name" class="cta-form__label">Name <span class="cta-form__required-mark" aria-hidden="true">*</span></label>
-            <input
-              type="text"
-              id="form-name"
-              name="name"
-              class="cta-form__input"
-              placeholder="First and last name"
-              required
-            />
+      <!-- LEFT COLUMN: FORM -->
+      <div class="start-conversation__col-left">
+        <div class="start-conversation__form-header">
+          <div class="start-conversation__form-titles">
+            <h3 class="start-conversation__step-title">
+              Step 1 — Required fields
+            </h3>
+            <p class="start-conversation__step-desc text-m">
+              Your contact details and current starting point
+            </p>
           </div>
+          <span class="start-conversation__step-bullet" aria-hidden="true"></span>
+        </div>
 
-          <div class="cta-form__field">
-            <label for="form-email" class="cta-form__label">Email <span class="cta-form__required-mark" aria-hidden="true">*</span></label>
-            <input
-              type="email"
-              id="form-email"
-              name="email"
-              class="cta-form__input"
-              placeholder="you@example.com"
-              required
-            />
-          </div>
+        <form class="start-conversation__form" id="consultation-flow-form" novalidate>
+          <div class="start-conversation__fields">
 
-          <div class="cta-form__field">
-            <label for="form-phone" class="cta-form__label">Phone <span class="cta-form__required-mark" aria-hidden="true">*</span></label>
-            <input
-              type="tel"
-              id="form-phone"
-              name="phone"
-              class="cta-form__input"
-              placeholder="Phone number"
-              required
-            />
-          </div>
-
-          <div class="cta-form__field">
-            <label for="form-location" class="cta-form__label">Preferred Project Location <span class="cta-form__required-mark" aria-hidden="true">*</span></label>
-            <input
-              type="text"
-              id="form-location"
-              name="location"
-              class="cta-form__input"
-              placeholder="City or area"
-              required
-            />
-          </div>
-
-          <div class="cta-form__field">
-            <label for="form-starting-point" class="cta-form__label">Where are you starting? <span class="cta-form__required-mark" aria-hidden="true">*</span></label>
-            <div class="cta-form__select-wrapper">
-              <select id="form-starting-point" name="startingPoint" class="cta-form__select" required>
-                <option value="" disabled selected>Select an option...</option>
-                <option value="looking-for-property">Looking for property</option>
-                <option value="own-vacant-lot">Own a vacant lot</option>
-                <option value="own-teardown-home">Own a teardown home</option>
-                <option value="have-plans">Have plans</option>
-                <option value="have-reference">Have a reference or early idea</option>
-                <option value="other">Other</option>
-              </select>
-              <span class="cta-form__select-arrow" aria-hidden="true"></span>
+            <!-- Field: Name -->
+            <div class="start-conversation__field">
+              <label for="flow-name" class="start-conversation__label">Name</label>
+              <input
+                type="text"
+                id="flow-name"
+                name="name"
+                class="start-conversation__input"
+                placeholder="First and last name"
+                required
+              />
             </div>
-          </div>
 
-          <div class="cta-form__field">
-            <label for="form-message" class="cta-form__label">Project Message</label>
-            <textarea
-              id="form-message"
-              name="message"
-              class="cta-form__textarea"
-              placeholder="What would you like to build, and what do you already have in place?"
-              rows="4"
-            ></textarea>
-          </div>
-        </fieldset>
-
-        <!-- STEP 2: OPTIONAL PROJECT DETAILS -->
-        <fieldset class="cta-form__card">
-          <legend class="cta-form__card-legend">
-            <span class="cta-form__card-title">Step 2 — Optional project details</span>
-            <span class="cta-form__card-subtitle">Add what you know. “Not sure” is a valid answer.</span>
-          </legend>
-
-          <div class="cta-form__field">
-            <label for="form-existing-home" class="cta-form__label">Existing home on property? (optional)</label>
-            <div class="cta-form__select-wrapper">
-              <select id="form-existing-home" name="existingHome" class="cta-form__select">
-                <option value="" disabled selected>Select an option...</option>
-                <option value="yes">Yes</option>
-                <option value="no">No</option>
-                <option value="not-sure">Not sure</option>
-                <option value="no-property-yet">I do not own property yet</option>
-              </select>
-              <span class="cta-form__select-arrow" aria-hidden="true"></span>
+            <!-- Field: Email -->
+            <div class="start-conversation__field">
+              <label for="flow-email" class="start-conversation__label">Email</label>
+              <input
+                type="email"
+                id="flow-email"
+                name="email"
+                class="start-conversation__input"
+                placeholder="you@example.com"
+                required
+              />
             </div>
-          </div>
 
-          <div class="cta-form__field">
-            <label for="form-home-size" class="cta-form__label">Approximate Home Size (optional)</label>
-            <input
-              type="text"
-              id="form-home-size"
-              name="homeSize"
-              class="cta-form__input"
-              placeholder="Square footage, if known"
-            />
-          </div>
-
-          <div class="cta-form__field">
-            <label for="form-architectural-style" class="cta-form__label">Architectural Style (optional)</label>
-            <input
-              type="text"
-              id="form-architectural-style"
-              name="architecturalStyle"
-              class="cta-form__input"
-              placeholder="Modern, transitional, traditional, or another direction"
-            />
-          </div>
-
-          <div class="cta-form__field">
-            <label for="form-budget" class="cta-form__label">Estimated Budget (optional)</label>
-            <div class="cta-form__select-wrapper">
-              <select id="form-budget" name="budget" class="cta-form__select">
-                <option value="" disabled selected>Select an option...</option>
-                <option value="under-1-5m">Under $1.5M</option>
-                <option value="1-5m-2-5m">$1.5M - $2.5M</option>
-                <option value="2-5m-plus">$2.5M+</option>
-                <option value="prefer-to-discuss">Prefer to discuss</option>
-                <option value="not-sure-yet">Not sure yet</option>
-              </select>
-              <span class="cta-form__select-arrow" aria-hidden="true"></span>
+            <!-- Field: Phone -->
+            <div class="start-conversation__field">
+              <label for="flow-phone" class="start-conversation__label">Phone</label>
+              <input
+                type="tel"
+                id="flow-phone"
+                name="phone"
+                class="start-conversation__input"
+                placeholder="Phone number"
+                required
+              />
             </div>
+
+            <!-- Field: Preferred Project Location -->
+            <div class="start-conversation__field">
+              <label for="flow-location" class="start-conversation__label">Preferred Project Location</label>
+              <input
+                type="text"
+                id="flow-location"
+                name="location"
+                class="start-conversation__input"
+                placeholder="City or area"
+                required
+              />
+            </div>
+
+            <!-- Field: Where are you starting? -->
+            <div class="start-conversation__field">
+              <label for="flow-starting-point" class="start-conversation__label">Where are you starting?</label>
+              <div class="start-conversation__select-wrapper">
+                <select id="flow-starting-point" name="startingPoint" class="start-conversation__select" required>
+                  <option value="" disabled selected>Select starting point...</option>
+                  <option value="looking-for-property">Looking for property</option>
+                  <option value="own-vacant-lot">Own a vacant lot</option>
+                  <option value="own-teardown-home">Own a teardown home</option>
+                  <option value="have-plans">Have plans</option>
+                  <option value="have-reference">Have a reference or early idea</option>
+                  <option value="other">Other</option>
+                </select>
+                <span class="start-conversation__select-arrow" aria-hidden="true"></span>
+              </div>
+            </div>
+
+            <!-- Field: Project Message -->
+            <div class="start-conversation__field">
+              <label for="flow-message" class="start-conversation__label">Project Message</label>
+              <input
+                type="text"
+                id="flow-message"
+                name="message"
+                class="start-conversation__input"
+                placeholder="What would you like to build, and what do you already have in place?"
+              />
+            </div>
+
           </div>
 
-          <div class="cta-form__field">
-            <label for="form-timeline" class="cta-form__label">Desired Timeline (optional)</label>
-            <div class="cta-form__select-wrapper">
-              <select id="form-timeline" name="timeline" class="cta-form__select">
-                <option value="" disabled selected>Select an option...</option>
-                <option value="exploring">Exploring</option>
-                <option value="planning-soon">Planning soon</option>
-                <option value="target-start-date">Target start date</option>
-                <option value="not-sure-yet">Not sure yet</option>
-              </select>
-              <span class="cta-form__select-arrow" aria-hidden="true"></span>
-            </div>
+          <!-- Submit / Next Step Action -->
+          <div class="start-conversation__btn-wrap">
+            <button type="submit" class="start-conversation__submit-btn" id="flow-submit-btn">
+              <ButtonComposite
+                text="NEXT STEP"
+                variant="white"
+                fullWidth={true}
+              />
+            </button>
           </div>
 
-          <div class="cta-form__field">
-            <label for="form-plans-status" class="cta-form__label">Plans Status (optional)</label>
-            <div class="cta-form__select-wrapper">
-              <select id="form-plans-status" name="plansStatus" class="cta-form__select">
-                <option value="" disabled selected>Select an option...</option>
-                <option value="completed">Completed</option>
-                <option value="preliminary">Preliminary</option>
-                <option value="in-development">In development</option>
-                <option value="no-plans">No plans</option>
-                <option value="reference-only">Reference only</option>
-              </select>
-              <span class="cta-form__select-arrow" aria-hidden="true"></span>
-            </div>
+          <!-- Success Alert Card -->
+          <div class="start-conversation__success-box" id="flow-success-box" role="alert">
+            <p class="start-conversation__success-text text-m">
+              Thank you! ALM will review your project details and contact you to arrange the consultation.
+            </p>
           </div>
-        </fieldset>
+        </form>
+      </div>
+
+      <!-- RIGHT COLUMN: SPECS + PHOTO -->
+      <div class="start-conversation__col-right">
+
+        <!-- 3 Specification Lines -->
+        <div class="start-conversation__specs">
+          <div class="start-conversation__spec-row">
+            <div class="start-conversation__spec-inner">
+              <span class="start-conversation__spec-label">DOCUMENTATION:</span>
+              <span class="start-conversation__spec-value">No completed plans required</span>
+            </div>
+            <div class="start-conversation__spec-line" aria-hidden="true"></div>
+          </div>
+
+          <div class="start-conversation__spec-row">
+            <div class="start-conversation__spec-inner">
+              <span class="start-conversation__spec-label">STARTING POINT:</span>
+              <span class="start-conversation__spec-value">Open to vacant lots, teardown homes, or early ideas</span>
+            </div>
+            <div class="start-conversation__spec-line" aria-hidden="true"></div>
+          </div>
+
+          <div class="start-conversation__spec-row">
+            <div class="start-conversation__spec-inner">
+              <span class="start-conversation__spec-label">ESTIMATION:</span>
+              <span class="start-conversation__spec-value">Pricing and scope tailored individually</span>
+            </div>
+            <div class="start-conversation__spec-line" aria-hidden="true"></div>
+          </div>
+        </div>
+
+        <!-- Photo Box -->
+        <div class="start-conversation__photo-box">
+          <img
+            src="/assets/section-15-patio.webp"
+            alt="Custom home living area and patio built by ALM"
+            class="start-conversation__photo"
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
 
       </div>
 
-      <!-- 4. SUBMIT ACTION -->
-      <div class="cta-form__actions">
-        <button type="submit" class="cta-form__submit-btn" id="consultation-submit-btn">
-          Schedule a Consultation
-        </button>
-      </div>
-
-      <!-- 5. NOTICE TEXT -->
-      <p class="cta-form__notice">
-        Sending the form does not book a time automatically. ALM will contact you to arrange the consultation.
-      </p>
-
-      <!-- 6. SUCCESS MESSAGE BOX -->
-      <div class="cta-form__success-box" id="form-success-message" role="alert" aria-live="polite">
-        <p class="cta-form__success-text">
-          Thank you. ALM will review your project details and contact you to arrange the consultation.
-        </p>
-      </div>
-    </form>
+    </div>
 
   </div>
+
+  <!-- Bottom 120rem Spacer -->
+  <div class="start-conversation__bottom-spacer" aria-hidden="true"></div>
 </section>
 
 <script>
-  function initConsultationForm() {
-    const form = document.getElementById('consultation-form') as HTMLFormElement | null;
-    const successBox = document.getElementById('form-success-message') as HTMLElement | null;
-    const submitBtn = document.getElementById('consultation-submit-btn') as HTMLButtonElement | null;
+  function initFlowForm() {
+    const form = document.getElementById('consultation-flow-form') as HTMLFormElement | null;
+    const successBox = document.getElementById('flow-success-box') as HTMLElement | null;
 
-    if (!form || !successBox || !submitBtn) return;
+    if (!form || !successBox) return;
 
     form.addEventListener('submit', (e) => {
       e.preventDefault();
 
-      // Check form validity
       if (!form.checkValidity()) {
         form.reportValidity();
         return;
       }
 
-      // Visual feedback on submit
-      submitBtn.disabled = true;
-      submitBtn.textContent = 'Sending...';
-
-      // Simulate successful submission
-      setTimeout(() => {
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Schedule a Consultation';
-        successBox.classList.add('is-visible');
-        form.reset();
-
-        // Smoothly scroll to the success box if not fully visible
-        successBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      }, 600);
+      successBox.classList.add('is-visible');
+      form.reset();
+      successBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     });
   }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initConsultationForm);
+    document.addEventListener('DOMContentLoaded', initFlowForm);
   } else {
-    initConsultationForm();
+    initFlowForm();
   }
 </script>
 
 <style>
   /* ============================================================
-     FINAL CTA & FORM — SECTION 15
+     START THE CONVERSATION — SECTION 15
      Fluid REM Scaling: 1px Figma = 1rem CSS. Zero-px rule.
      Atomic longhand box model & positioning properties only.
      ============================================================ */
 
-  .cta-form {
-    background-color: var(--bg-white);
+  .start-conversation {
+    background-color: var(--bg-brand);
+    background-image: var(--bg-pattern-dark);
+    background-repeat: repeat;
+    background-size: 30rem 30rem;
+    background-attachment: fixed;
     position: relative;
     padding-top: 0;
     padding-right: 0;
-    padding-bottom: 96rem;
+    padding-bottom: 0;
     padding-left: 0;
     overflow-x: clip;
   }
 
-  /* ─── 120rem Top Spacer (Figma node 213:1526 Space/S) ─── */
-  .cta-form__top-spacer {
+  /* ─── 120rem Top & Bottom Spacer (Figma node 213:1660 / Space/S) ─── */
+  .start-conversation__top-spacer,
+  .start-conversation__bottom-spacer {
     width: 100%;
     height: 120rem;
-    background-color: var(--bg-white);
   }
 
-  .cta-form__container {
+  .start-conversation__container {
     width: 100%;
     max-width: 1440rem;
     margin-top: 0;
@@ -329,418 +285,401 @@
     padding-left: 40rem;
   }
 
-  /* ─── 1. Header Block ─── */
-  .cta-form__header {
+  /* ─── 1. Sub-Header Bar ─── */
+  .start-conversation__bar {
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    row-gap: 16rem;
-    margin-top: 0;
-    margin-right: 0;
-    margin-bottom: 24rem;
-    margin-left: 0;
-    max-width: 1000rem;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: var(--gap-2xs);
+    padding-left: 0;
   }
 
-  .cta-form__eyebrow {
-    font-family: var(--font-body);
-    font-weight: 600;
-    font-size: 13rem;
-    line-height: 1.2;
-    text-transform: uppercase;
-    color: var(--color-dark);
+  .start-conversation__bar-main {
+    display: flex;
+    align-items: center;
+    column-gap: 9rem;
+  }
+
+  .start-conversation__bullet {
+    display: block;
+    width: 6rem;
+    height: 6rem;
+    background-color: var(--color-white);
+    flex-shrink: 0;
+  }
+
+  .start-conversation__bar-label {
+    color: var(--color-white);
     opacity: 0.5;
   }
 
-  .cta-form__title {
-    font-family: var(--font-heading);
-    font-weight: 700;
-    font-size: 36rem;
-    line-height: 1.15;
-    color: var(--color-dark);
-    max-width: 950rem;
+  .start-conversation__bar-index {
+    color: var(--color-white);
+    opacity: 0.5;
   }
 
-  .cta-form__desc {
-    font-family: var(--font-body);
-    font-weight: 400;
-    font-size: 16rem;
-    line-height: 1.45;
-    color: var(--color-dark);
-    opacity: 0.6;
-    max-width: 1000rem;
+  .start-conversation__divider {
+    width: 100%;
+    height: 1rem;
+    background-color: rgba(255, 255, 255, 0.15);
+    margin-top: var(--gap-2xs);
+    margin-right: 0;
+    margin-bottom: 99rem;
+    margin-left: 0;
   }
 
-  /* ─── 2. Form Benefits (3 items) ─── */
-  .cta-form__benefits {
+  /* ─── 2. Section Header (Title + Description) ─── */
+  .start-conversation__header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-top: 0;
+    margin-right: auto;
+    margin-bottom: 99rem;
+    margin-left: auto;
+    max-width: 633rem;
+    row-gap: 19rem;
+  }
+
+  .start-conversation__title {
+    color: var(--color-white);
+    text-transform: uppercase;
+    line-height: 1.05;
+  }
+
+  .start-conversation__desc {
+    color: var(--color-white);
+    opacity: 0.5;
+    line-height: 1.4;
+    max-width: 287rem;
+  }
+
+  /* ─── 3. Two-Column Layout ─── */
+  .start-conversation__layout {
     display: flex;
     flex-direction: row;
-    align-items: center;
-    column-gap: 32rem;
-    row-gap: 12rem;
-    flex-wrap: wrap;
-    margin-top: 0;
-    margin-right: 0;
-    margin-bottom: 32rem;
-    margin-left: 0;
-  }
-
-  .cta-form__benefit-item {
-    display: flex;
-    align-items: center;
-    column-gap: 8rem;
-  }
-
-  .cta-form__check {
-    font-weight: 700;
-    font-size: 15rem;
-    color: var(--color-dark);
-    line-height: 1;
-  }
-
-  .cta-form__benefit-text {
-    font-family: var(--font-body);
-    font-weight: 600;
-    font-size: 14rem;
-    line-height: 1.3;
-    color: var(--color-dark);
-  }
-
-  /* ─── 3. Cards Grid ─── */
-  .cta-form__form {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    margin-top: 0;
-    margin-right: 0;
-    margin-bottom: 0;
-    margin-left: 0;
-  }
-
-  .cta-form__cards-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    column-gap: 24rem;
-    row-gap: 24rem;
-    width: 100%;
-    margin-top: 0;
-    margin-right: 0;
-    margin-bottom: 24rem;
-    margin-left: 0;
-  }
-
-  .cta-form__card {
-    background-color: #f5f5f5;
-    border-top-width: 1rem;
-    border-top-style: solid;
-    border-top-color: #d9d9d9;
-    border-right-width: 1rem;
-    border-right-style: solid;
-    border-right-color: #d9d9d9;
-    border-bottom-width: 1rem;
-    border-bottom-style: solid;
-    border-bottom-color: #d9d9d9;
-    border-left-width: 1rem;
-    border-left-style: solid;
-    border-left-color: #d9d9d9;
-    border-top-left-radius: 8rem;
-    border-top-right-radius: 8rem;
-    border-bottom-right-radius: 8rem;
-    border-bottom-left-radius: 8rem;
-    padding-top: 28rem;
-    padding-right: 28rem;
-    padding-bottom: 28rem;
-    padding-left: 28rem;
-    display: flex;
-    flex-direction: column;
-    row-gap: 16rem;
-    margin-top: 0;
-    margin-right: 0;
-    margin-bottom: 0;
-    margin-left: 0;
-    min-width: 0;
-  }
-
-  .cta-form__card-legend {
-    display: flex;
-    flex-direction: column;
-    row-gap: 4rem;
-    margin-bottom: 4rem;
+    align-items: flex-start;
+    justify-content: space-between;
+    column-gap: 99rem;
     width: 100%;
   }
 
-  .cta-form__card-title {
+  /* Left Column: Form */
+  .start-conversation__col-left {
+    width: 675rem;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    row-gap: 87rem;
+  }
+
+  .start-conversation__form-header {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .start-conversation__form-titles {
+    display: flex;
+    flex-direction: column;
+    row-gap: 9rem;
+    max-width: 372rem;
+  }
+
+  .start-conversation__step-title {
     font-family: var(--font-heading);
     font-weight: 700;
-    font-size: 22rem;
+    font-size: 24rem;
     line-height: 1.2;
-    color: var(--color-dark);
+    text-transform: uppercase;
+    color: var(--color-white);
   }
 
-  .cta-form__card-subtitle {
-    font-family: var(--font-body);
-    font-weight: 400;
-    font-size: 13rem;
-    line-height: 1.35;
-    color: var(--color-dark);
+  .start-conversation__step-desc {
+    color: var(--color-white);
     opacity: 0.5;
+    line-height: 1.4;
   }
 
-  /* ─── Form Fields ─── */
-  .cta-form__field {
+  .start-conversation__step-bullet {
+    display: block;
+    width: 6rem;
+    height: 6rem;
+    background-color: var(--color-white);
+    flex-shrink: 0;
+    margin-top: 6rem;
+  }
+
+  .start-conversation__form {
     display: flex;
     flex-direction: column;
-    row-gap: 6rem;
+    row-gap: 54rem;
     width: 100%;
   }
 
-  .cta-form__label {
-    font-family: var(--font-body);
-    font-weight: 600;
-    font-size: 13rem;
-    line-height: 1.3;
-    color: var(--color-dark);
+  .start-conversation__fields {
+    display: flex;
+    flex-direction: column;
+    row-gap: 39rem;
+    width: 100%;
   }
 
-  .cta-form__required-mark {
-    color: #e53935;
-    margin-left: 2rem;
+  .start-conversation__field {
+    display: flex;
+    flex-direction: column;
+    row-gap: 12rem;
+    width: 100%;
+    position: relative;
   }
 
-  .cta-form__input,
-  .cta-form__select,
-  .cta-form__textarea {
+  .start-conversation__label {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 15rem;
+    line-height: 1;
+    text-transform: uppercase;
+    color: var(--color-white);
+    letter-spacing: 0;
+  }
+
+  .start-conversation__input,
+  .start-conversation__select {
     font-family: var(--font-body);
     font-size: 14rem;
     line-height: 1.4;
-    color: var(--color-dark);
-    background-color: var(--bg-white);
-    border-top-width: 1rem;
-    border-top-style: solid;
-    border-top-color: #d9d9d9;
-    border-right-width: 1rem;
-    border-right-style: solid;
-    border-right-color: #d9d9d9;
+    color: var(--color-white);
+    background-color: transparent;
+    border-top-width: 0;
+    border-right-width: 0;
     border-bottom-width: 1rem;
     border-bottom-style: solid;
-    border-bottom-color: #d9d9d9;
-    border-left-width: 1rem;
-    border-left-style: solid;
-    border-left-color: #d9d9d9;
-    border-top-left-radius: 6rem;
-    border-top-right-radius: 6rem;
-    border-bottom-right-radius: 6rem;
-    border-bottom-left-radius: 6rem;
-    padding-top: 12rem;
-    padding-right: 14rem;
+    border-bottom-color: rgba(255, 255, 255, 0.15);
+    border-left-width: 0;
+    border-radius: 0;
+    padding-top: 4rem;
+    padding-right: 0;
     padding-bottom: 12rem;
-    padding-left: 14rem;
+    padding-left: 0;
     width: 100%;
     outline: none;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    transition: border-bottom-color 0.25s ease;
   }
 
-  .cta-form__input::placeholder,
-  .cta-form__textarea::placeholder {
-    color: rgba(19, 19, 19, 0.38);
+  .start-conversation__input::placeholder {
+    color: rgba(255, 255, 255, 0.25);
   }
 
-  .cta-form__input:focus,
-  .cta-form__select:focus,
-  .cta-form__textarea:focus {
-    border-top-color: var(--color-dark);
-    border-right-color: var(--color-dark);
-    border-bottom-color: var(--color-dark);
-    border-left-color: var(--color-dark);
-    box-shadow: 0 0 0 1rem var(--color-dark);
+  .start-conversation__input:focus,
+  .start-conversation__select:focus {
+    border-bottom-color: var(--color-white);
   }
 
-  .cta-form__select-wrapper {
+  .start-conversation__select-wrapper {
     position: relative;
     width: 100%;
   }
 
-  .cta-form__select {
+  .start-conversation__select {
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
-    padding-right: 36rem;
+    padding-right: 28rem;
     cursor: pointer;
   }
 
-  .cta-form__select-arrow {
+  .start-conversation__select option {
+    background-color: var(--bg-dark);
+    color: var(--color-white);
+  }
+
+  .start-conversation__select-arrow {
     position: absolute;
     top: 50%;
-    right: 14rem;
+    right: 0;
     transform: translateY(-50%);
     width: 10rem;
     height: 6rem;
     pointer-events: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6' fill='none'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%23131313' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6' fill='none'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%23ffffff' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: center;
     background-size: contain;
-    opacity: 0.7;
-  }
-
-  .cta-form__textarea {
-    resize: vertical;
-    min-height: 86rem;
-  }
-
-  /* ─── 4. Actions & Submit Button ─── */
-  .cta-form__actions {
-    display: flex;
-    align-items: center;
-    margin-top: 0;
-    margin-right: 0;
-    margin-bottom: 12rem;
-    margin-left: 0;
-  }
-
-  .cta-form__submit-btn {
-    font-family: var(--font-body);
-    font-weight: 600;
-    font-size: 14rem;
-    line-height: 1;
-    color: var(--color-white);
-    background-color: #1e1e1e;
-    border-top-width: 0;
-    border-right-width: 0;
-    border-bottom-width: 0;
-    border-left-width: 0;
-    border-top-left-radius: 6rem;
-    border-top-right-radius: 6rem;
-    border-bottom-right-radius: 6rem;
-    border-bottom-left-radius: 6rem;
-    padding-top: 15rem;
-    padding-right: 28rem;
-    padding-bottom: 15rem;
-    padding-left: 28rem;
-    cursor: pointer;
-    transition: background-color 0.2s ease, transform 0.15s ease;
-  }
-
-  .cta-form__submit-btn:hover {
-    background-color: #333333;
-  }
-
-  .cta-form__submit-btn:active {
-    transform: scale(0.98);
-  }
-
-  .cta-form__submit-btn:disabled {
     opacity: 0.6;
-    cursor: not-allowed;
   }
 
-  /* ─── 5. Footnote Notice ─── */
-  .cta-form__notice {
-    font-family: var(--font-body);
-    font-size: 13rem;
-    line-height: 1.4;
-    color: var(--color-dark);
-    opacity: 0.5;
-    margin-top: 0;
-    margin-right: 0;
-    margin-bottom: 20rem;
-    margin-left: 0;
-    max-width: 1000rem;
+  .start-conversation__btn-wrap {
+    width: 100%;
   }
 
-  /* ─── 6. Success Message Box ─── */
-  .cta-form__success-box {
+  .start-conversation__submit-btn {
+    background: transparent;
+    border: none;
+    padding: 0;
+    width: 100%;
+    cursor: pointer;
+    text-align: inherit;
+    display: block;
+  }
+
+  .start-conversation__success-box {
     display: none;
-    background-color: #f5f5f5;
+    background-color: rgba(255, 255, 255, 0.08);
     border-top-width: 1rem;
     border-top-style: solid;
-    border-top-color: #d9d9d9;
+    border-top-color: rgba(255, 255, 255, 0.2);
     border-right-width: 1rem;
     border-right-style: solid;
-    border-right-color: #d9d9d9;
+    border-right-color: rgba(255, 255, 255, 0.2);
     border-bottom-width: 1rem;
     border-bottom-style: solid;
-    border-bottom-color: #d9d9d9;
+    border-bottom-color: rgba(255, 255, 255, 0.2);
     border-left-width: 1rem;
     border-left-style: solid;
-    border-left-color: #d9d9d9;
-    border-top-left-radius: 6rem;
-    border-top-right-radius: 6rem;
-    border-bottom-right-radius: 6rem;
-    border-bottom-left-radius: 6rem;
+    border-left-color: rgba(255, 255, 255, 0.2);
     padding-top: 18rem;
     padding-right: 20rem;
     padding-bottom: 18rem;
     padding-left: 20rem;
-    width: 100%;
-    margin-top: 8rem;
-    margin-right: 0;
-    margin-bottom: 0;
-    margin-left: 0;
+    margin-top: 12rem;
   }
 
-  .cta-form__success-box.is-visible {
+  .start-conversation__success-box.is-visible {
     display: block;
   }
 
-  .cta-form__success-text {
+  .start-conversation__success-text {
+    color: var(--color-white);
+    line-height: 1.4;
+  }
+
+  /* Right Column: Specs + Photo */
+  .start-conversation__col-right {
+    width: 562rem;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    row-gap: 21rem;
+  }
+
+  .start-conversation__specs {
+    display: flex;
+    flex-direction: column;
+    row-gap: 12rem;
+    width: 100%;
+  }
+
+  .start-conversation__spec-row {
+    display: flex;
+    flex-direction: column;
+    row-gap: 12rem;
+    width: 100%;
+  }
+
+  .start-conversation__spec-inner {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
     font-family: var(--font-body);
     font-size: 14rem;
-    line-height: 1.4;
-    color: var(--color-dark);
+    line-height: 1.2;
+    color: var(--color-white);
+  }
+
+  .start-conversation__spec-label {
+    opacity: 0.5;
+    text-transform: uppercase;
+    flex-shrink: 0;
+  }
+
+  .start-conversation__spec-value {
+    opacity: 1;
+    text-align: right;
+  }
+
+  .start-conversation__spec-line {
+    width: 100%;
+    height: 1rem;
+    background-color: rgba(255, 255, 255, 0.15);
+  }
+
+  .start-conversation__photo-box {
+    width: 562rem;
+    height: 520rem;
+    position: relative;
+    overflow: hidden;
+    background-color: #f5f5f5;
+  }
+
+  .start-conversation__photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
   }
 
   /* ─── MOBILE ADAPTATION (max-width: 479px) ─── */
   @media (max-width: 479px) {
-    .cta-form {
-      padding-bottom: var(--gap-xl);
-    }
-
-    .cta-form__top-spacer {
+    .start-conversation__top-spacer,
+    .start-conversation__bottom-spacer {
       height: 60rem;
     }
 
-    .cta-form__container {
+    .start-conversation__container {
       padding-right: var(--gap-p);
       padding-left: var(--gap-p);
     }
 
-    .cta-form__title {
-      font-size: 24rem;
+    .start-conversation__divider {
+      margin-bottom: var(--gap-l);
     }
 
-    .cta-form__desc {
-      font-size: 14rem;
+    .start-conversation__header {
+      align-items: flex-start;
+      text-align: left;
+      margin-bottom: var(--gap-l);
+      max-width: 100%;
     }
 
-    .cta-form__benefits {
+    .start-conversation__desc {
+      max-width: 100%;
+    }
+
+    .start-conversation__layout {
+      flex-direction: column;
+      row-gap: var(--gap-xl);
+    }
+
+    .start-conversation__col-left {
+      width: 100%;
+      row-gap: var(--gap-m);
+    }
+
+    .start-conversation__col-right {
+      width: 100%;
+    }
+
+    .start-conversation__photo-box {
+      width: 100%;
+      height: 70vw;
+    }
+
+    .start-conversation__spec-inner {
       flex-direction: column;
       align-items: flex-start;
-      row-gap: 8rem;
-      margin-bottom: var(--gap-p);
+      row-gap: 4rem;
     }
 
-    .cta-form__cards-grid {
-      grid-template-columns: 1fr;
-      row-gap: var(--gap-s);
-    }
-
-    .cta-form__card {
-      padding-top: var(--gap-p);
-      padding-right: var(--gap-p);
-      padding-bottom: var(--gap-p);
-      padding-left: var(--gap-p);
-    }
-
-    .cta-form__card-title {
-      font-size: 18rem;
-    }
-
-    .cta-form__submit-btn {
-      width: 100%;
-      text-align: center;
-      padding-top: 14rem;
-      padding-bottom: 14rem;
+    .start-conversation__spec-value {
+      text-align: left;
     }
   }
 </style>

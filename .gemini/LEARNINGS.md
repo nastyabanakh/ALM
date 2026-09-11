@@ -633,17 +633,21 @@
     - `inert` атрибут на прихованому оверлеї (`#pr-overlay`) у секції Property Review, динамічно знімається при opacity > 0.5.
     - Touch target `.construction__indicator-btn` збільшено до `min-height: 44px` з padding для зручності на смартфонах.
 
-- **2026-09-11 — Верстка Секції 15 «Final CTA & Form» (Figma node 213:1526):**
+- **2026-09-11 — Верстка Секції 15 «Start the conversation» (Figma Frame 216:1678 / node 70:2431):**
   - **Створено компонент:** `src/sections/FinalCtaFormSection.astro`.
   - **Специфікація:**
-    1. **Геометрія:** Верхній відступ 120rem (`Space/S`), бічні відступи строго по 40rem (`padding-left: 40rem; padding-right: 40rem;`), біле тло (`var(--bg-white)`).
-    2. **Хедер:** Eyebrow `START THE CONVERSATION`, заголовок H2 `Tell Us What You Have. We’ll Tell You What Comes Next.` (Syne Bold 36rem), опис проєкту.
-    3. **Form Benefits (3 check items):** `✓ No completed plans required`, `✓ Start with a lot, teardown property, plan, or reference`, `✓ Project pricing is reviewed individually`.
-    4. **2-Step Consultation Form:**
-       - **Step 1 — Required fields:** Name, Email, Phone, Preferred Project Location, Where are you starting? (select dropdown), Project Message (textarea).
-       - **Step 2 — Optional project details:** Existing home on property? (select), Approximate Home Size, Architectural Style, Estimated Budget (select), Desired Timeline (select), Plans Status (select).
-    5. **Форма та кнопка відправки:** Кнопка `Schedule a Consultation` з темним тлом та інтерактивним JS-обробником (валідація полів + стан успішного надсилання з карткою зворотного зв'язку).
-    6. Підключено до `src/pages/index.astro` та перевірено продакшен-білд Astro SSG.
+    1. **Геометрія:** Верхній та нижній спейсери по 120rem (`Space/S`), бічні відступи строго по 40rem (`padding-left: 40rem; padding-right: 40rem;`), темне брендове тло (`#131313` з точковим патерном).
+    2. **Саб-хедер:** квадратний маркер 6×6rem, напис `Start the conversation`, індекс `15//` та тонка лінія-розділювач.
+    3. **Заголовок:** `TELL US WHAT YOU HAVE. WE’LL TELL YOU WHAT COMES NEXT.` (Syne Bold 37rem, uppercase, max-width 633rem, по центру) та текстовий опис.
+    4. **Ліва колонка (675rem):**
+       - Заголовок `STEP 1 — REQUIRED FIELDS` (24rem Syne Bold) та сабтайтл `Your contact details and current starting point` з білим маркером.
+       - Елегантні поля форми у мінімалістичному стилі з нижньою лінією: `NAME`, `EMAIL`, `PHONE`, `PREFERRED PROJECT LOCATION`, `WHERE ARE YOU STARTING?` (select dropdown), `PROJECT MESSAGE`.
+       - Фірмова кнопка `NEXT STEP` (`ButtonComposite` білого кольору на всю ширину з вирізами та стрілкою).
+    5. **Права колонка (562rem):**
+       - 3 рядки специфікації з розділювачами: `DOCUMENTATION: No completed plans required`, `STARTING POINT: Open to vacant lots...`, `ESTIMATION: Pricing and scope tailored individually`.
+       - Фотографія вітальні та тераси (`/assets/section-15-patio.webp`, висота 520rem).
+    6. Підключено до `src/pages/index.astro`, перевірено Astro SSG білд та вивантажено на GitHub.
+
 
 - **2026-09-11 — Додавання білого відступу 120 rem під кнопкою Builder Accountability (Section 13):**
   - **Проблема:** Після кнопки `SCHEDULE A CONSULTATION` у блоці Builder Accountability був відсутній нижній спейсер, через що кнопка впритул прилягала до темного фону секції FAQ.
