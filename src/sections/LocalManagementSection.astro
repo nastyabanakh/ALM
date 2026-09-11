@@ -1,0 +1,388 @@
+---
+/**
+ * LocalManagementSection.astro — Section 12: Built and Managed Locally
+ * Figma node 207:869 / Frame 500 / Spacer 203:651
+ *
+ * Requirements:
+ * — Top gap: 120rem spacer (var(--space-l))
+ * — Side padding: strictly 40rem (var(--gap-r))
+ * — White background
+ * — Sub-bar (Built and managed locally / 12//)
+ * — Centered statement headline (37rem uppercase)
+ * — Two-column editorial layout:
+ *     - Left: On-site owner photo (437rem x 489rem)
+ *     - Right: 3 key principles (Family-owned, Locally focused, Field experience) with dividers + "Our background" highlight (18rem uppercase)
+ */
+
+interface PrincipleItem {
+  title: string;
+  description: string;
+}
+
+const principles: PrincipleItem[] = [
+  {
+    title: 'Family-owned',
+    description: 'The owners take personal accountability for every home bearing the ALM name.'
+  },
+  {
+    title: 'Locally focused',
+    description: 'We build nearby so owners can stay actively involved on-site and manage approvals.'
+  },
+  {
+    title: 'Field experience',
+    description: 'We build nearby so owners can stay actively involved on-site and manage approvals.'
+  }
+];
+---
+
+<section class="local-management" id="local-management" aria-label="Built and Managed Locally">
+  <!-- Top 120rem Spacer -->
+  <div class="local-management__top-spacer" aria-hidden="true"></div>
+
+  <div class="local-management__container">
+
+    <!-- 1. SUB-HEADER BAR -->
+    <div class="local-management__bar">
+      <div class="local-management__bar-main">
+        <span class="local-management__bullet" aria-hidden="true"></span>
+        <span class="local-management__bar-label text-m">Built and managed locally</span>
+      </div>
+      <span class="local-management__bar-index text-m">12//</span>
+    </div>
+    <div class="local-management__divider" aria-hidden="true"></div>
+
+    <!-- 2. CENTERED STATEMENT HEADLINE -->
+    <div class="local-management__headline-box">
+      <h2 class="local-management__headline h2">
+        By focusing exclusively on local projects, our owners stay directly involved on-site with every property, trade crew, and municipal approval process.
+      </h2>
+    </div>
+
+    <!-- 3. MAIN EDITORIAL CONTENT GRID -->
+    <div class="local-management__content">
+
+      <!-- Left Column: Owner Photo -->
+      <div class="local-management__media-box">
+        <img
+          src="/assets/section-12/team-onsite.webp"
+          alt="ALM leadership and construction team on-site"
+          class="local-management__photo"
+          loading="lazy"
+          decoding="async"
+        />
+      </div>
+
+      <!-- Right Column: Principles & Background -->
+      <div class="local-management__details">
+
+        <!-- Principles List -->
+        <div class="local-management__principles">
+          {principles.map((item) => (
+            <div class="local-management__principle-row">
+              <span class="local-management__principle-title">{item.title}</span>
+              <div class="local-management__principle-desc-wrap">
+                <p class="local-management__principle-desc text-m">
+                  {item.description}
+                </p>
+                <div class="local-management__item-divider" aria-hidden="true"></div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <!-- Our Background Highlight Block -->
+        <div class="local-management__background-block">
+          <span class="local-management__background-label">Our background</span>
+          <p class="local-management__background-text">
+            While ALM is a new brand, our leadership brings over 8 years of dedicated hands-on exterior construction expertise.
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<style>
+  /* ============================================================
+     BUILT AND MANAGED LOCALLY — SECTION 12
+     Fluid REM Scaling: 1px Figma = 1rem CSS. Zero-px rule.
+     Atomic longhand box model & positioning properties only.
+     ============================================================ */
+
+  .local-management {
+    background-color: var(--bg-white);
+    position: relative;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: var(--gap-2xl);
+    padding-left: 0;
+    overflow-x: clip;
+  }
+
+  /* ─── 120rem Top Spacer (Figma node 203:651 Space/S) ─── */
+  .local-management__top-spacer {
+    width: 100%;
+    height: 120rem;
+    background-color: var(--bg-white);
+  }
+
+  .local-management__container {
+    width: 100%;
+    max-width: 1440rem;
+    margin-top: 0;
+    margin-right: auto;
+    margin-bottom: 0;
+    margin-left: auto;
+    padding-top: 0;
+    padding-right: 40rem;
+    padding-bottom: 0;
+    padding-left: 40rem;
+  }
+
+  /* ─── 1. Sub-Header Bar ─── */
+  .local-management__bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: var(--gap-2xs);
+    padding-left: 0;
+  }
+
+  .local-management__bar-main {
+    display: flex;
+    align-items: center;
+    column-gap: 9rem;
+  }
+
+  .local-management__bullet {
+    display: block;
+    width: 6rem;
+    height: 6rem;
+    background-color: var(--color-dark);
+    flex-shrink: 0;
+  }
+
+  .local-management__bar-label {
+    color: var(--color-dark);
+    opacity: 0.5;
+  }
+
+  .local-management__bar-index {
+    color: var(--color-dark);
+    opacity: 0.5;
+  }
+
+  .local-management__divider {
+    width: 100%;
+    height: 1rem;
+    background-color: rgba(19, 19, 19, 0.15);
+    margin-top: var(--gap-2xs);
+    margin-right: 0;
+    margin-bottom: var(--gap-xl);
+    margin-left: 0;
+  }
+
+  /* ─── 2. Headline Statement ─── */
+  .local-management__headline-box {
+    width: 100%;
+    max-width: 1358rem;
+    margin-top: 0;
+    margin-right: auto;
+    margin-bottom: 99rem;
+    margin-left: auto;
+    text-align: center;
+  }
+
+  .local-management__headline {
+    color: var(--color-dark);
+    text-transform: uppercase;
+    line-height: 1.1;
+  }
+
+  /* ─── 3. Content Grid ─── */
+  .local-management__content {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    column-gap: 125rem;
+    width: 100%;
+  }
+
+  /* Left Column: Media Box */
+  .local-management__media-box {
+    width: 437rem;
+    height: 489rem;
+    flex-shrink: 0;
+    overflow: hidden;
+    background-color: #b4b4b4;
+  }
+
+  .local-management__photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+  }
+
+  /* Right Column: Details & Principles */
+  .local-management__details {
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    row-gap: 105rem;
+  }
+
+  .local-management__principles {
+    display: flex;
+    flex-direction: column;
+    row-gap: 40rem;
+    width: 100%;
+  }
+
+  .local-management__principle-row {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    width: 100%;
+  }
+
+  .local-management__principle-title {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 14rem;
+    line-height: 1.2;
+    color: var(--color-dark);
+    width: 268rem;
+    flex-shrink: 0;
+  }
+
+  .local-management__principle-desc-wrap {
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    row-gap: 32rem;
+  }
+
+  .local-management__principle-desc {
+    color: var(--color-dark);
+    opacity: 0.5;
+    line-height: 1.5;
+    max-width: 311rem;
+    text-align: left;
+  }
+
+  .local-management__item-divider {
+    width: 100%;
+    height: 1rem;
+    background-color: rgba(19, 19, 19, 0.15);
+  }
+
+  /* ─── Background Highlight Block ─── */
+  .local-management__background-block {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    column-gap: 142rem;
+    width: 100%;
+  }
+
+  .local-management__background-label {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 14rem;
+    line-height: 1.2;
+    color: var(--color-dark);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .local-management__background-text {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 18rem;
+    line-height: 1.2;
+    text-transform: uppercase;
+    color: var(--color-dark);
+    max-width: 401rem;
+  }
+
+  /* ─── MOBILE ADAPTATION (max-width: 479px) ─── */
+  @media (max-width: 479px) {
+    .local-management {
+      padding-bottom: var(--gap-xl);
+    }
+
+    .local-management__top-spacer {
+      height: 60rem;
+    }
+
+    .local-management__container {
+      padding-right: var(--gap-p);
+      padding-left: var(--gap-p);
+    }
+
+    .local-management__divider {
+      margin-bottom: var(--gap-l);
+    }
+
+    .local-management__headline-box {
+      margin-bottom: var(--gap-l);
+      text-align: left;
+    }
+
+    .local-management__content {
+      flex-direction: column;
+      row-gap: var(--gap-l);
+    }
+
+    .local-management__media-box {
+      width: 100%;
+      height: 75vw;
+    }
+
+    .local-management__details {
+      row-gap: var(--gap-l);
+    }
+
+    .local-management__principles {
+      row-gap: var(--gap-m);
+    }
+
+    .local-management__principle-row {
+      flex-direction: column;
+      row-gap: 12rem;
+    }
+
+    .local-management__principle-title {
+      width: 100%;
+    }
+
+    .local-management__principle-desc-wrap {
+      width: 100%;
+      row-gap: 20rem;
+    }
+
+    .local-management__principle-desc {
+      max-width: 100%;
+    }
+
+    .local-management__background-block {
+      flex-direction: column;
+      row-gap: 16rem;
+    }
+
+    .local-management__background-text {
+      max-width: 100%;
+      font-size: 16rem;
+    }
+  }
+</style>
