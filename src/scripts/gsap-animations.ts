@@ -572,55 +572,6 @@ export function initGlobalGsapAnimations() {
     );
   }
 
-  // -------------------------------------------------------------
-  // 10. SECTION 16: FOOTER SLIDE-OVER OVERLAY ANIMATION
-  // -------------------------------------------------------------
-  const footer = document.querySelector<HTMLElement>('.site-footer');
-  const prevSection = document.querySelector<HTMLElement>('.start-conversation');
-
-  if (footer && prevSection) {
-    ScrollTrigger.matchMedia({
-      // Desktop & Tablet (> 768px): Smooth parallax curtain slide-over
-      '(min-width: 769px)': function () {
-        gsap.fromTo(
-          footer,
-          {
-            yPercent: 30,
-            boxShadow: '0 -40rem 100rem rgba(0, 0, 0, 0.65)'
-          },
-          {
-            yPercent: 0,
-            boxShadow: '0 -15rem 40rem rgba(0, 0, 0, 0.15)',
-            ease: 'none',
-            scrollTrigger: {
-              trigger: prevSection,
-              start: 'bottom bottom',
-              end: 'bottom top',
-              scrub: 0.8
-            }
-          }
-        );
-      },
-      // Mobile: Clean responsive entrance
-      '(max-width: 768px)': function () {
-        gsap.fromTo(
-          footer,
-          { opacity: 0.9, y: 25 },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.8,
-            ease: 'power3.out',
-            scrollTrigger: {
-              trigger: footer,
-              start: 'top 92%'
-            }
-          }
-        );
-      }
-    });
-  }
-
   // Ensure all triggers recalculate accurate offsets once images and fonts are loaded
   ScrollTrigger.refresh();
   if (document.readyState !== 'complete') {
