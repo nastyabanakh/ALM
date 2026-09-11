@@ -94,8 +94,15 @@ const legalLinks = [
 
     </div>
 
-    <!-- BOTTOM SECTION: MONUMENTAL BRAND TYPOGRAPHY -->
-    <div class="site-footer__brand-row">
+    <!-- HORIZONTAL DIVIDER LINE -->
+    <div class="site-footer__divider" aria-hidden="true"></div>
+
+    <!-- BOTTOM SECTION: COPYRIGHT + MONUMENTAL BRAND TYPOGRAPHY -->
+    <div class="site-footer__bottom-row">
+      <p class="site-footer__copyright">
+        © ALM — YEAR TO ADD
+      </p>
+
       <div class="site-footer__brand-wrapper">
         <span class="site-footer__brand-logo">ALM</span>
         <span class="site-footer__brand-trademark" aria-label="Registered trademark">®</span>
@@ -120,7 +127,7 @@ const legalLinks = [
     width: 100%;
     padding-top: 80rem;
     padding-right: 0;
-    padding-bottom: 50rem;
+    padding-bottom: 12rem;
     padding-left: 0;
     box-shadow: 0 -20rem 60rem rgba(0, 0, 0, 0.4);
     overflow-x: clip;
@@ -148,7 +155,7 @@ const legalLinks = [
     column-gap: 40rem;
     row-gap: 40rem;
     width: 100%;
-    margin-bottom: 70rem;
+    margin-bottom: 50rem;
   }
 
   .site-footer__col {
@@ -261,14 +268,39 @@ const legalLinks = [
     transform: translateX(3rem);
   }
 
-  /* ─── 2. Bottom Brand Row ─── */
-  .site-footer__brand-row {
+  /* ─── 2. Horizontal Divider Line ─── */
+  .site-footer__divider {
+    width: 100%;
+    height: 1rem;
+    background-color: rgba(19, 19, 19, 0.15);
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 30rem;
+    margin-left: 0;
+  }
+
+  /* ─── 3. Bottom Row: Copyright + Brand Logo ─── */
+  .site-footer__bottom-row {
     display: flex;
     flex-direction: row;
     align-items: flex-end;
-    justify-content: flex-end;
+    justify-content: space-between;
     width: 100%;
-    margin-top: auto;
+  }
+
+  .site-footer__copyright {
+    font-family: var(--font-body);
+    font-weight: 400;
+    font-size: 14rem;
+    line-height: 1.2;
+    text-transform: uppercase;
+    color: var(--color-brand, #131313);
+    opacity: 0.5;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 24rem;
+    margin-left: 0;
+    letter-spacing: 0;
   }
 
   .site-footer__brand-wrapper {
@@ -304,7 +336,7 @@ const legalLinks = [
   @media (max-width: 479px) {
     .site-footer {
       padding-top: var(--gap-xl);
-      padding-bottom: var(--gap-l);
+      padding-bottom: 12rem;
     }
 
     .site-footer__container {
@@ -315,7 +347,7 @@ const legalLinks = [
     .site-footer__grid {
       grid-template-columns: 1fr;
       row-gap: var(--gap-l);
-      margin-bottom: var(--gap-xl);
+      margin-bottom: var(--gap-l);
     }
 
     .site-footer__col--contacts,
@@ -337,8 +369,19 @@ const legalLinks = [
       font-size: 20rem;
     }
 
-    .site-footer__brand-row {
-      justify-content: flex-start;
+    .site-footer__divider {
+      margin-bottom: var(--gap-m);
+    }
+
+    .site-footer__bottom-row {
+      flex-direction: column-reverse;
+      align-items: flex-start;
+      row-gap: var(--gap-s);
+    }
+
+    .site-footer__copyright {
+      margin-bottom: 0;
+      font-size: 12rem;
     }
 
     .site-footer__brand-logo {
