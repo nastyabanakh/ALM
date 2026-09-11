@@ -1,0 +1,460 @@
+---
+/**
+ * CompletedHomeSection.astro — Section 11: The Completed Home
+ * Figma node 70:2431 / Frame 500
+ *
+ * Layout:
+ * — White header: sub-bar (The completed home / 11//), centered H2 title, centered description
+ * — Sticky Split Collage:
+ *     - Height of view frame: calc(100vh - 80rem) with top: 40rem sticky offset
+ *     - Left part (737rem): Bathroom photo (362.5rem) + Stacked Office/Kitchen photos with CTA (362.5rem) — STICKY
+ *     - Right part (667rem): Living Room panorama (height: 100vh - 80rem) + 5-row specification table + full-width CTA — SCROLLS
+ *     - Once the user scrolls past the full specification list & CTA button, the section finishes and moves to the next block.
+ */
+import ButtonComposite from '../components/ButtonComposite.astro';
+
+interface SpecItem {
+  label: string;
+  value: string;
+}
+
+const specs: SpecItem[] = [
+  {
+    label: 'SURFACES & ENVELOPE:',
+    value: 'Interior walls, hardwood flooring, and exterior siding'
+  },
+  {
+    label: 'CABINETRY & KITCHEN:',
+    value: 'Custom millwork, countertops, and agreed appliances'
+  },
+  {
+    label: 'BATHROOMS & FIXTURES:',
+    value: 'Designer plumbing, tilework, mirrors, and lighting'
+  },
+  {
+    label: 'MECHANICAL SYSTEMS:',
+    value: 'Fully connected HVAC, electrical, and plumbing'
+  },
+  {
+    label: 'PERMITS & CLOSEOUT:',
+    value: 'Passed city inspections and final sign-off for move-in'
+  }
+];
+---
+
+<section class="completed-home" id="completed-home" aria-label="The Completed Home">
+  <div class="completed-home__container">
+
+    <!-- 1. TOP SUB-BAR -->
+    <div class="completed-home__bar">
+      <div class="completed-home__bar-main">
+        <span class="completed-home__bullet" aria-hidden="true"></span>
+        <span class="completed-home__bar-label text-m">The completed home</span>
+      </div>
+      <span class="completed-home__bar-index text-m">11//</span>
+    </div>
+    <div class="completed-home__divider" aria-hidden="true"></div>
+
+    <!-- 2. SECTION HEADER (TITLE & DESCRIPTION) -->
+    <div class="completed-home__header">
+      <h2 class="completed-home__title h2">
+        MOVE IN AFTER HANDOFF, NOT AFTER MORE CONSTRUCTION
+      </h2>
+      <p class="completed-home__desc text-m">
+        Every major finish is complete before you turn the key. We deliver homes ready for living, with all interior, exterior, and mechanical systems fully resolved.
+      </p>
+    </div>
+
+    <!-- 3. STICKY SPLIT COLLAGE & SPECS -->
+    <div class="completed-home__layout">
+      <!-- LEFT COLUMN: Sticky 3-Photo Collage with CTA -->
+      <div class="completed-home__left">
+        <!-- Bathroom (Full Height) -->
+        <div class="completed-home__bathroom-box">
+          <img
+            src="/assets/section-10/bathroom.webp"
+            alt="Designer custom bathroom with vanity and ambient lighting"
+            class="completed-home__photo"
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+
+        <!-- Center Stack: Office (top) + Kitchen (bottom) + Button -->
+        <div class="completed-home__stack-box">
+          <div class="completed-home__stack-top">
+            <img
+              src="/assets/section-10/office.webp"
+              alt="Luxury custom home private office with large windows"
+              class="completed-home__photo"
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+          <div class="completed-home__stack-bottom">
+            <img
+              src="/assets/section-10/kitchen.webp"
+              alt="High-end modern kitchen with integrated appliances"
+              class="completed-home__photo"
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+          <div class="completed-home__left-cta">
+            <ButtonComposite
+              text="SCHEDULE A CONSULTATION"
+              href="#contact"
+              variant="dark"
+              fullWidth={true}
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT COLUMN: Living Room Photo (Top) + Specifications (Bottom) + CTA -->
+      <div class="completed-home__right">
+        <!-- Living Room Panorama (100vh - 80rem) -->
+        <div class="completed-home__living-box">
+          <img
+            src="/assets/section-10/living-room.webp"
+            alt="Spacious living room with high ceilings and custom finishes"
+            class="completed-home__photo"
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+
+        <!-- Specification Rows -->
+        <div class="completed-home__specs">
+          {specs.map((item) => (
+            <div class="completed-home__spec-row">
+              <span class="completed-home__spec-label text-m">{item.label}</span>
+              <span class="completed-home__spec-value text-m">{item.value}</span>
+            </div>
+          ))}
+
+          <!-- Right Bottom Full-Width CTA -->
+          <div class="completed-home__right-cta">
+            <ButtonComposite
+              text="SCHEDULE A CONSULTATION"
+              href="#contact"
+              variant="dark"
+              fullWidth={true}
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<style>
+  /* ============================================================
+     THE COMPLETED HOME — SECTION 11
+     Fluid REM Scaling: 1px Figma = 1rem CSS. Zero-px rule.
+     Atomic longhand box model & positioning properties only.
+     ============================================================ */
+
+  .completed-home {
+    background-color: var(--bg-white);
+    position: relative;
+    padding-top: var(--gap-r);
+    padding-right: 0;
+    padding-bottom: var(--gap-xl);
+    padding-left: 0;
+    overflow-x: clip;
+  }
+
+  .completed-home__container {
+    width: 1416rem;
+    max-width: 100%;
+    margin-top: 0;
+    margin-right: auto;
+    margin-bottom: 0;
+    margin-left: auto;
+    padding-top: 0;
+    padding-right: var(--gap-xs);
+    padding-bottom: 0;
+    padding-left: var(--gap-xs);
+  }
+
+  /* ─── 1. Sub-Header Bar ─── */
+  .completed-home__bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: var(--gap-2xs);
+    padding-left: 0;
+  }
+
+  .completed-home__bar-main {
+    display: flex;
+    align-items: center;
+    column-gap: 9rem;
+  }
+
+  .completed-home__bullet {
+    display: block;
+    width: 6rem;
+    height: 6rem;
+    background-color: var(--color-dark);
+    flex-shrink: 0;
+  }
+
+  .completed-home__bar-label {
+    color: var(--color-dark);
+    opacity: 0.5;
+  }
+
+  .completed-home__bar-index {
+    color: var(--color-dark);
+    opacity: 0.5;
+  }
+
+  .completed-home__divider {
+    width: 100%;
+    height: 1rem;
+    background-color: rgba(19, 19, 19, 0.15);
+    margin-top: var(--gap-2xs);
+    margin-right: 0;
+    margin-bottom: var(--gap-l);
+    margin-left: 0;
+  }
+
+  /* ─── 2. Header (Title + Description) ─── */
+  .completed-home__header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-top: 0;
+    margin-right: auto;
+    margin-bottom: var(--gap-l);
+    margin-left: auto;
+    max-width: 516rem;
+    row-gap: 19rem;
+  }
+
+  .completed-home__title {
+    color: var(--color-dark);
+    text-transform: uppercase;
+    line-height: 1.05;
+  }
+
+  .completed-home__desc {
+    color: var(--color-dark);
+    opacity: 0.5;
+    line-height: 1.4;
+    max-width: 291rem;
+  }
+
+  /* ─── 3. Layout Grid (Sticky Left + Scrolling Right) ─── */
+  .completed-home__layout {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    column-gap: 12rem;
+    width: 100%;
+  }
+
+  /* ─── Left Column (Sticky at top: 40rem) ─── */
+  .completed-home__left {
+    position: sticky;
+    top: 40rem;
+    width: 737rem;
+    flex-shrink: 0;
+    height: calc(100vh - 80rem);
+    display: flex;
+    flex-direction: row;
+    column-gap: 12rem;
+    overflow: hidden;
+  }
+
+  .completed-home__bathroom-box {
+    width: 362.5rem;
+    height: 100%;
+    flex-shrink: 0;
+    overflow: hidden;
+    background-color: #8b8b8b;
+  }
+
+  .completed-home__stack-box {
+    width: 362.5rem;
+    height: 100%;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    row-gap: 12rem;
+  }
+
+  .completed-home__stack-top {
+    flex: 1 1 0;
+    min-height: 1rem;
+    overflow: hidden;
+    background-color: #8b8b8b;
+  }
+
+  .completed-home__stack-bottom {
+    flex: 1 1 0;
+    min-height: 1rem;
+    overflow: hidden;
+    background-color: #8b8b8b;
+  }
+
+  .completed-home__left-cta {
+    width: 100%;
+    flex-shrink: 0;
+  }
+
+  /* ─── Right Column (Scrolls smoothly) ─── */
+  .completed-home__right {
+    width: 667rem;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    row-gap: 40rem;
+  }
+
+  .completed-home__living-box {
+    width: 100%;
+    height: calc(100vh - 80rem);
+    overflow: hidden;
+    background-color: #8b8b8b;
+    flex-shrink: 0;
+  }
+
+  .completed-home__photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+  }
+
+  /* ─── Specifications List ─── */
+  .completed-home__specs {
+    width: 628rem;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    row-gap: 12rem;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: var(--gap-r);
+    margin-left: 0;
+  }
+
+  .completed-home__spec-row {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: space-between;
+    width: 100%;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 12rem;
+    padding-left: 0;
+    border-bottom-width: 1rem;
+    border-bottom-style: solid;
+    border-bottom-color: rgba(19, 19, 19, 0.15);
+    column-gap: var(--gap-s);
+  }
+
+  .completed-home__spec-label {
+    color: var(--color-dark);
+    opacity: 0.5;
+    text-transform: uppercase;
+    flex-shrink: 0;
+  }
+
+  .completed-home__spec-value {
+    color: var(--color-dark);
+    text-align: right;
+  }
+
+  .completed-home__right-cta {
+    width: 100%;
+    margin-top: var(--gap-s);
+  }
+
+  /* ─── MOBILE ADAPTATION (max-width: 479px) ─── */
+  @media (max-width: 479px) {
+    .completed-home {
+      padding-top: var(--gap-l);
+      padding-bottom: var(--gap-l);
+    }
+
+    .completed-home__container {
+      width: 100%;
+      padding-right: var(--gap-p);
+      padding-left: var(--gap-p);
+    }
+
+    .completed-home__header {
+      align-items: flex-start;
+      text-align: left;
+      max-width: 100%;
+    }
+
+    .completed-home__desc {
+      max-width: 100%;
+    }
+
+    .completed-home__layout {
+      flex-direction: column;
+      row-gap: var(--gap-m);
+    }
+
+    .completed-home__left {
+      position: static;
+      width: 100%;
+      height: auto;
+      flex-direction: column;
+      row-gap: var(--gap-s);
+    }
+
+    .completed-home__bathroom-box {
+      width: 100%;
+      height: 75vw;
+    }
+
+    .completed-home__stack-box {
+      width: 100%;
+      height: auto;
+      row-gap: var(--gap-s);
+    }
+
+    .completed-home__stack-top,
+    .completed-home__stack-bottom {
+      height: 55vw;
+    }
+
+    .completed-home__right {
+      width: 100%;
+      row-gap: var(--gap-m);
+    }
+
+    .completed-home__living-box {
+      width: 100%;
+      height: 65vw;
+    }
+
+    .completed-home__specs {
+      width: 100%;
+    }
+
+    .completed-home__spec-row {
+      flex-direction: column;
+      align-items: flex-start;
+      row-gap: 4rem;
+    }
+
+    .completed-home__spec-value {
+      text-align: left;
+    }
+  }
+</style>
