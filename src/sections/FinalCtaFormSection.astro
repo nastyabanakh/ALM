@@ -358,14 +358,16 @@ import ButtonComposite from '../components/ButtonComposite.astro';
     max-width: 287rem;
   }
 
-  /* ─── 3. Two-Column Layout ─── */
+  /* ─── 3. Two-Column Layout (100vh - 80rem) ─── */
   .start-conversation__layout {
     display: flex;
     flex-direction: row;
-    align-items: flex-start;
+    align-items: stretch;
     justify-content: space-between;
     column-gap: 99rem;
     width: 100%;
+    height: calc(100vh - 80rem);
+    min-height: calc(100vh - 80rem);
   }
 
   /* Left Column: Form */
@@ -374,7 +376,8 @@ import ButtonComposite from '../components/ButtonComposite.astro';
     flex-shrink: 0;
     display: flex;
     flex-direction: column;
-    row-gap: 87rem;
+    justify-content: space-between;
+    height: 100%;
   }
 
   .start-conversation__form-header {
@@ -383,6 +386,7 @@ import ButtonComposite from '../components/ButtonComposite.astro';
     align-items: flex-start;
     justify-content: space-between;
     width: 100%;
+    margin-bottom: 24rem;
   }
 
   .start-conversation__form-titles {
@@ -419,21 +423,25 @@ import ButtonComposite from '../components/ButtonComposite.astro';
   .start-conversation__form {
     display: flex;
     flex-direction: column;
-    row-gap: 54rem;
+    justify-content: space-between;
+    flex: 1 1 0;
+    min-height: 0;
     width: 100%;
   }
 
   .start-conversation__fields {
     display: flex;
     flex-direction: column;
-    row-gap: 39rem;
+    justify-content: space-between;
+    flex: 1 1 0;
+    margin-bottom: 32rem;
     width: 100%;
   }
 
   .start-conversation__field {
     display: flex;
     flex-direction: column;
-    row-gap: 12rem;
+    row-gap: 8rem;
     width: 100%;
     position: relative;
   }
@@ -461,10 +469,13 @@ import ButtonComposite from '../components/ButtonComposite.astro';
     border-bottom-style: solid;
     border-bottom-color: rgba(255, 255, 255, 0.15);
     border-left-width: 0;
-    border-radius: 0;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
     padding-top: 4rem;
     padding-right: 0;
-    padding-bottom: 12rem;
+    padding-bottom: 10rem;
     padding-left: 0;
     width: 100%;
     outline: none;
@@ -515,12 +526,19 @@ import ButtonComposite from '../components/ButtonComposite.astro';
 
   .start-conversation__btn-wrap {
     width: 100%;
+    flex-shrink: 0;
   }
 
   .start-conversation__submit-btn {
     background: transparent;
-    border: none;
-    padding: 0;
+    border-top-width: 0;
+    border-right-width: 0;
+    border-bottom-width: 0;
+    border-left-width: 0;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    padding-left: 0;
     width: 100%;
     cursor: pointer;
     text-align: inherit;
@@ -558,13 +576,14 @@ import ButtonComposite from '../components/ButtonComposite.astro';
     line-height: 1.4;
   }
 
-  /* Right Column: Specs + Photo */
+  /* Right Column: Specs + Photo (Full-Height Stretch) */
   .start-conversation__col-right {
     width: 562rem;
     flex-shrink: 0;
     display: flex;
     flex-direction: column;
     row-gap: 21rem;
+    height: 100%;
   }
 
   .start-conversation__specs {
@@ -572,6 +591,7 @@ import ButtonComposite from '../components/ButtonComposite.astro';
     flex-direction: column;
     row-gap: 12rem;
     width: 100%;
+    flex-shrink: 0;
   }
 
   .start-conversation__spec-row {
@@ -612,7 +632,8 @@ import ButtonComposite from '../components/ButtonComposite.astro';
 
   .start-conversation__photo-box {
     width: 562rem;
-    height: 520rem;
+    flex: 1 1 0;
+    min-height: 0;
     position: relative;
     overflow: hidden;
     background-color: #f5f5f5;
@@ -656,20 +677,30 @@ import ButtonComposite from '../components/ButtonComposite.astro';
     .start-conversation__layout {
       flex-direction: column;
       row-gap: var(--gap-xl);
+      height: auto;
+      min-height: auto;
     }
 
     .start-conversation__col-left {
       width: 100%;
+      height: auto;
       row-gap: var(--gap-m);
+    }
+
+    .start-conversation__fields {
+      row-gap: var(--gap-p);
+      margin-bottom: var(--gap-m);
     }
 
     .start-conversation__col-right {
       width: 100%;
+      height: auto;
     }
 
     .start-conversation__photo-box {
       width: 100%;
       height: 70vw;
+      flex: none;
     }
 
     .start-conversation__spec-inner {
