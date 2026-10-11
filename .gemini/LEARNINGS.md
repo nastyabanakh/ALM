@@ -732,6 +732,7 @@
     - Підрівняно всі відступи: обнулено зайвий десктопний `padding-bottom: 200rem` у `.construction__block-bottom`, вирівняно `row-gap: var(--gap-l)`.
   - **Секція 04 (SinglePointContact):**
     - Зменшено розмір заголовка `.spc-section__title` з `42rem` до `30rem` із `word-break: break-word`, щоб словосполучення `BUILDER.ZERO` повністю вміщалося в ширину екрана без вилазіння слова "ZERO" за правий край.
+    - Встановлено центральне вирівнювання (`text-align: center; align-items: center; justify-content: center;`) для рядків заголовка `.spc-section__title-row` та текстового опису `.spc-section__desc`.
   - **Секція 12 (LocalManagement):**
     - Для фотографії власниці (`.local-management__photo`) встановлено `object-position: top center;` на десктопі та мобілці, а на мобілці оптимізовано висоту контейнера `height: 100vw; max-height: 440rem;`, щоб голова не обрізалася.
 
