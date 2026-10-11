@@ -712,6 +712,15 @@
     1. У всіх файлах зі стилями темних блоків (`src/styles/base.css`, `NewConstructionSection.astro`, `PropertyReviewSection.astro`, `SinglePointContactSection.astro`, `ProcessSection.astro`, `FaqSection.astro`, `FinalCtaFormSection.astro`) замінено `background-attachment: fixed;` на `background-attachment: scroll;`.
     2. Тепер точкова сітка (патерн) не «застигає» у в'юпорті, а скролиться синхронно й природно разом з усім вмістом сторінки.
 
+- **2026-10-11 — Дефолтний стан та керування мобільним бургер-меню (HeaderNav):**
+  - **Проблема:** На мобільних екранах (<480px) бургер-меню було одразу відкритим при завантаженні сайту.
+  - **Причина:** Елемент `#mobile-nav-menu` містив утилітарний клас `u-hide-pc`, для якого в `src/styles/base.css` було прописано `@media (max-width: 479px) { .u-hide-pc { display: flex !important; } }`. Це примусово перезаписувало базовий `display: none` меню на мобілці.
+  - **Виправлення:**
+    1. Видалено клас `u-hide-pc` з контейнера `#mobile-nav-menu` в `src/components/HeaderNav.astro`.
+    2. Додано чітку ізоляцію: меню приховане за замовчуванням (`display: none;`), відкривається тільки за наявності класу `.header-nav__mobile-menu--open` (`display: flex !important;`), а на екранах >=480px гарантовано ховається через `display: none !important;`.
+    3. Покращено скрипт перемикача: додано автоматичне закриття меню при кліку на навігаційні посилання, кліку поза межами меню та натисканні клавіші `Escape`.
+    4. Додано анімацію перетворення іконки бургера на хрестик (`X`) при відкритому стані (`aria-expanded="true"`).
+
 
 
 

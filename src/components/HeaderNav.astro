@@ -51,6 +51,7 @@ const navItems: NavItem[] = [
       class="header-nav__mobile-toggle u-hide-pc"
       type="button"
       aria-label="Toggle Navigation Menu"
+      aria-expanded="false"
       id="mobile-nav-toggle"
     >
       <span class="header-nav__toggle-line"></span>
@@ -58,8 +59,8 @@ const navItems: NavItem[] = [
     </button>
   </div>
 
-  <!-- Mobile Dropdown Menu -->
-  <div class="header-nav__mobile-menu u-hide-pc" id="mobile-nav-menu" aria-hidden="true" inert>
+  <!-- Mobile Dropdown Menu (Hidden by default, opened on toggle) -->
+  <div class="header-nav__mobile-menu" id="mobile-nav-menu" aria-hidden="true" inert>
     <ul class="header-nav__mobile-list">
       {navItems.map((item) => (
         <li class="header-nav__mobile-item">
@@ -81,16 +82,52 @@ const navItems: NavItem[] = [
   const menu = document.getElementById('mobile-nav-menu');
 
   if (toggleBtn && menu) {
-    toggleBtn.addEventListener('click', () => {
+    const closeMenu = () => {
+      toggleBtn.setAttribute('aria-expanded', 'false');
+      menu.classList.remove('header-nav__mobile-menu--open');
+      menu.setAttribute('aria-hidden', 'true');
+      menu.setAttribute('inert', '');
+    };
+
+    const openMenu = () => {
+      toggleBtn.setAttribute('aria-expanded', 'true');
+      menu.classList.add('header-nav__mobile-menu--open');
+      menu.setAttribute('aria-hidden', 'false');
+      menu.removeAttribute('inert');
+    };
+
+    toggleBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
       const isExpanded = toggleBtn.getAttribute('aria-expanded') === 'true';
-      const willOpen = !isExpanded;
-      toggleBtn.setAttribute('aria-expanded', String(willOpen));
-      menu.classList.toggle('header-nav__mobile-menu--open', willOpen);
-      menu.setAttribute('aria-hidden', String(!willOpen));
-      if (willOpen) {
-        menu.removeAttribute('inert');
+      if (isExpanded) {
+        closeMenu();
       } else {
-        menu.setAttribute('inert', '');
+        openMenu();
+      }
+    });
+
+    // Close when clicking any nav link
+    const links = menu.querySelectorAll('a, button');
+    links.forEach((link) => {
+      link.addEventListener('click', () => {
+        closeMenu();
+      });
+    });
+
+    // Close when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!menu.contains(e.target as Node) && !toggleBtn.contains(e.target as Node)) {
+        if (toggleBtn.getAttribute('aria-expanded') === 'true') {
+          closeMenu();
+        }
+      }
+    });
+
+    // Close on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && toggleBtn.getAttribute('aria-expanded') === 'true') {
+        closeMenu();
+        toggleBtn.focus();
       }
     });
   }
@@ -239,6 +276,7 @@ const navItems: NavItem[] = [
     padding-right: 0;
     padding-bottom: 0;
     padding-left: 0;
+    cursor: pointer;
   }
 
   .header-nav__toggle-line {
@@ -246,6 +284,15 @@ const navItems: NavItem[] = [
     width: 20rem;
     height: 2rem;
     background-color: var(--color-white);
+    transition: transform 0.25s ease, opacity 0.25s ease;
+  }
+
+  .header-nav__mobile-toggle[aria-expanded="true"] .header-nav__toggle-line:first-child {
+    transform: translateY(3.5rem) rotate(45deg);
+  }
+
+  .header-nav__mobile-toggle[aria-expanded="true"] .header-nav__toggle-line:last-child {
+    transform: translateY(-3.5rem) rotate(-45deg);
   }
 
   .header-nav__mobile-menu {
@@ -275,6 +322,7 @@ const navItems: NavItem[] = [
     display: none;
     flex-direction: column;
     row-gap: var(--gap-p);
+    z-index: 100;
   }
 
   .header-nav__mobile-menu--open {
@@ -294,6 +342,12 @@ const navItems: NavItem[] = [
     color: var(--color-white);
     text-decoration: none;
     font-size: 16rem;
+  }
+
+  @media screen and (min-width: 480px) {
+    .header-nav__mobile-menu {
+      display: none !important;
+    }
   }
 
   @media screen and (max-width: 479px) {
