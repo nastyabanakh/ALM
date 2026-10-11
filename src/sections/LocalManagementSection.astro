@@ -227,7 +227,7 @@ const principles: PrincipleItem[] = [
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: center;
+    object-position: top center;
     display: block;
   }
 
@@ -346,7 +346,12 @@ const principles: PrincipleItem[] = [
 
     .local-management__media-box {
       width: 100%;
-      height: 75vw;
+      height: 100vw;
+      max-height: 440rem;
+    }
+
+    .local-management__photo {
+      object-position: top center;
     }
 
     .local-management__details {

@@ -171,20 +171,28 @@ const startingPoints: StartingPoint[] = [
     }
   };
 
+  const isDesktop = () => window.matchMedia('(hover: hover) and (min-width: 480px)').matches;
+
   cards.forEach((card, idx) => {
     card.addEventListener('mouseenter', () => {
-      updateActiveUI(idx);
+      if (isDesktop()) {
+        updateActiveUI(idx);
+      }
     });
 
     card.addEventListener('click', () => {
-      persistentIndex = idx;
-      updateActiveUI(idx);
+      if (isDesktop()) {
+        persistentIndex = idx;
+        updateActiveUI(idx);
+      }
     });
   });
 
   if (list) {
     list.addEventListener('mouseleave', () => {
-      updateActiveUI(persistentIndex);
+      if (isDesktop()) {
+        updateActiveUI(persistentIndex);
+      }
     });
   }
 </script>
@@ -429,47 +437,49 @@ const startingPoints: StartingPoint[] = [
     border-top-color: var(--color-border);
   }
 
-  /* Smooth Right-to-Left Green Fill Hover Animation */
-  .starting-points__card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    background-image: var(--bg-card-active);
-    transform-origin: right center;
-    transform: scaleX(0);
-    opacity: 1;
-    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-    pointer-events: none;
-    z-index: 1;
-  }
+  /* Smooth Right-to-Left Green Fill Hover Animation (Desktop only) */
+  @media (hover: hover) and (min-width: 480px) {
+    .starting-points__card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      background-image: var(--bg-card-active);
+      transform-origin: right center;
+      transform: scaleX(0);
+      opacity: 1;
+      transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: none;
+      z-index: 1;
+    }
 
-  .starting-points__card:hover::before,
-  .starting-points__card--active::before {
-    transform: scaleX(1);
-    opacity: 1;
+    .starting-points__card:hover::before,
+    .starting-points__card--active::before {
+      transform: scaleX(1);
+      opacity: 1;
+    }
+
+    .starting-points__card:hover :global(.circle-arrow-btn),
+    .starting-points__card--active :global(.circle-arrow-btn) {
+      background-color: var(--bg-white);
+      color: var(--color-dark);
+      border-top-color: var(--color-white);
+      border-right-color: var(--color-white);
+      border-bottom-color: var(--color-white);
+      border-left-color: var(--color-white);
+    }
+
+    .starting-points__card:hover :global(.circle-arrow-btn svg path),
+    .starting-points__card--active :global(.circle-arrow-btn svg path) {
+      stroke: #131313;
+    }
   }
 
   .starting-points__card :global(.circle-arrow-btn) {
     position: relative;
     z-index: 2;
-  }
-
-  .starting-points__card:hover :global(.circle-arrow-btn),
-  .starting-points__card--active :global(.circle-arrow-btn) {
-    background-color: var(--bg-white);
-    color: var(--color-dark);
-    border-top-color: var(--color-white);
-    border-right-color: var(--color-white);
-    border-bottom-color: var(--color-white);
-    border-left-color: var(--color-white);
-  }
-
-  .starting-points__card:hover :global(.circle-arrow-btn svg path),
-  .starting-points__card--active :global(.circle-arrow-btn svg path) {
-    stroke: #131313;
   }
 
   .starting-points__card-info {
@@ -550,6 +560,11 @@ const startingPoints: StartingPoint[] = [
       padding-top: var(--gap-s);
       padding-bottom: var(--gap-s);
       padding-right: var(--gap-xs);
+      cursor: default;
+    }
+
+    .starting-points__card::before {
+      display: none !important;
     }
 
     .starting-points__card-info {

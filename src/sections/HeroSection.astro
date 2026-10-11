@@ -338,12 +338,31 @@ import GlassCard from '../components/GlassCard.astro';
      ---------------------------------------------------------- */
   @media screen and (max-width: 479px) {
     .hero {
-      height: auto;
-      min-height: auto;
+      height: 100vh;
+      height: 100dvh;
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
       padding-top: var(--gap-s);
       padding-right: var(--grid-margin);
-      padding-bottom: var(--gap-r);
+      padding-bottom: var(--gap-s);
       padding-left: var(--grid-margin);
+      margin-top: 0;
+      margin-right: 0;
+      margin-bottom: var(--gap-s);
+      margin-left: 0;
+    }
+
+    .hero__overlay {
+      background: linear-gradient(
+        180deg,
+        rgba(19, 19, 19, 0.75) 0%,
+        rgba(19, 19, 19, 0.5) 25%,
+        rgba(19, 19, 19, 0.75) 60%,
+        rgba(19, 19, 19, 0.95) 100%
+      );
     }
 
     .hero__crosshair,
@@ -354,12 +373,18 @@ import GlassCard from '../components/GlassCard.astro';
     .hero__content {
       flex-direction: column;
       align-items: flex-start;
-      row-gap: var(--gap-r);
-      padding-top: var(--gap-xl);
+      row-gap: var(--gap-s);
+      margin-top: auto;
+      padding-top: var(--gap-s);
     }
 
     .hero__copy {
       max-width: 100%;
+    }
+
+    .hero__title {
+      font-size: 26rem;
+      line-height: 1.1;
     }
 
     .hero__card {

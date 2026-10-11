@@ -582,7 +582,9 @@ import ButtonComposite from '../components/ButtonComposite.astro';
 
     .construction__top-photo-box {
       width: 100%;
-      height: 320rem;
+      height: 75vw;
+      min-height: 260rem;
+      max-height: 340rem;
     }
 
     .construction__photo--right {
@@ -590,38 +592,28 @@ import ButtonComposite from '../components/ButtonComposite.astro';
     }
 
     .construction__indicator {
-      position: static;
-      align-self: flex-end;
-      margin-top: -34rem;
-      margin-right: 20rem;
-      margin-bottom: 20rem;
-      margin-left: 0;
-      width: 32rem;
-      row-gap: 6rem;
-    }
-
-    .construction__indicator-btn {
-      width: 32rem;
-      height: 9rem;
-    }
-
-    .construction__indicator-line {
-      width: 32rem;
-      height: 2.5rem;
+      display: none !important;
     }
 
     .construction__content {
-      padding-top: var(--gap-p);
+      padding-top: var(--gap-m);
       padding-right: 0;
       padding-bottom: 0;
       padding-left: 0;
-      row-gap: var(--gap-xl);
+      row-gap: var(--gap-l);
     }
 
     .construction__heading-group {
       margin-top: var(--gap-m);
+      margin-right: 0;
       margin-bottom: var(--gap-m);
+      margin-left: 0;
       max-width: 100%;
+    }
+
+    .construction__title {
+      font-size: 24rem;
+      line-height: 1.15;
     }
 
     .construction__desc {
@@ -643,7 +635,11 @@ import ButtonComposite from '../components/ButtonComposite.astro';
     }
 
     .construction__block-bottom {
-      row-gap: var(--gap-xl);
+      row-gap: var(--gap-l);
+      padding-top: 0;
+      padding-right: 0;
+      padding-bottom: 0;
+      padding-left: 0;
       align-items: flex-start;
     }
 

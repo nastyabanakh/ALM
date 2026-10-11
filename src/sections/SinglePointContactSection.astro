@@ -681,9 +681,9 @@ const accordionItems: AccordionItem[] = [
   @media (max-width: 479px) {
     .spc-section {
       padding-top: 60rem;
-      padding-right: 20rem;
+      padding-right: var(--grid-margin);
       padding-bottom: 60rem;
-      padding-left: 20rem;
+      padding-left: var(--grid-margin);
     }
 
     .spc-section__divider {
@@ -691,8 +691,10 @@ const accordionItems: AccordionItem[] = [
     }
 
     .spc-section__title {
-      font-size: 42rem;
+      font-size: 30rem;
       line-height: 1.05;
+      letter-spacing: -0.02em;
+      word-break: break-word;
     }
 
     .spc-section__title-row {
