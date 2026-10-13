@@ -10,12 +10,12 @@
   },
   "hero": {
     "badgeText": "Local, Family-Owned Custom Home Builder",
-    "title": "Build the Home You Want—Without Managing the Build Yourself+++",
+    "title": "Build the Home You Want—Without Managing the Build Yourself",
     "aboutTag": "About //",
     "aboutText": "ALM builds custom single-family homes in Service Area to Confirm, shaped around your property, plans, and priorities.",
     "ctaText": "REQUEST A CONSULTATION",
     "ctaHref": "#contact",
-    "videoPoster": "/assets/images/hero-house.webp",
+    "videoPoster": "/assets/uploads/esently.png",
     "videoUrl": "/assets/video/a1b54a75-926d-4ee7-95db-ec5462efbb29.mp4"
   },
   "startingPoints": {
@@ -177,8 +177,8 @@
     }
   ],
   "pub": {
-    "at": "2026-10-13T18:37:51.926Z",
+    "at": "2026-10-13T18:39:04.577Z",
     "by": "admin",
-    "id": "ec02d28e8a72"
+    "id": "7f02782bb69e"
   }
 }
