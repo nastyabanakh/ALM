@@ -186,6 +186,9 @@
       <button id="bOut" class="btn sm ghost">Вийти</button>
     </div>
   </header>
+  <div id="tokenWarn" style="display:none;background:#2A1B05;color:#F2B37A;padding:10px 24px;font-size:13px;border-bottom:1px solid rgba(242,179,122,.2);align-items:center;gap:10px;">
+    <span>⚠️ <b>Не налаштовано GITHUB_TOKEN:</b> Щоб зберігати зміни на сайті, додайте змінну <code>GITHUB_TOKEN</code> у налаштуваннях Vercel (Project → Settings → Environment Variables).</span>
+  </div>
 
   <main class="wrap">
     <!-- Editor Column -->
@@ -720,6 +723,13 @@
     $('login').hidden = true;
     $('app').hidden = false;
     $('who').textContent = S.me;
+
+    const me = await api('me').catch(() => ({ ready: true }));
+    if (!me.ready) {
+      $('tokenWarn').style.display = 'flex';
+    } else {
+      $('tokenWarn').style.display = 'none';
+    }
 
     const r = await api('content');
     S.pub = r.published.content;

@@ -223,6 +223,9 @@ export default async function handler(req, res) {
           console.warn('Sync public/content.json skipped/failed:', syncErr.message);
         }
       } else {
+        if (process.env.VERCEL || process.env.AWS_REGION || !process.env.NODE_ENV || process.env.NODE_ENV === 'production') {
+          throw new Error('У Vercel не налаштовано змінну GITHUB_TOKEN! Перейдіть у Vercel Dashboard → Settings → Environment Variables і додайте GITHUB_TOKEN.');
+        }
         // In local development mode without token, write directly to local file
         const localPath = path.join(process.cwd(), 'src/data/content.json');
         fs.writeFileSync(localPath, fileContent, 'utf8');
@@ -261,6 +264,9 @@ export default async function handler(req, res) {
         });
         return res.status(200).json({ url: `/assets/uploads/${safeName}` });
       } else {
+        if (process.env.VERCEL || process.env.AWS_REGION || !process.env.NODE_ENV || process.env.NODE_ENV === 'production') {
+          throw new Error('Для завантаження фото на Vercel потрібен GITHUB_TOKEN у Environment Variables');
+        }
         // Local dev save
         const uploadDir = path.join(process.cwd(), 'public/assets/uploads');
         if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
