@@ -25,7 +25,7 @@
         "id": "step-1",
         "num": "01.",
         "title": "Still looking for property",
-        "image": "/assets/uploads/esently3.webp",
+        "image": "/assets/images/property-search.webp",
         "note": "Tell us the area and vision you have in mind. We can assess potential land and parcels before you commit."
       },
       {
@@ -55,6 +55,7 @@
     "barTitle": "Featured Project Breakdown",
     "title": "Contemporary West Bellevue Residence",
     "subtitle": "4,850 sq ft custom build crafted around a challenging hillside topography.",
+    "heroKitchenImage": "/assets/section-09/hero-kitchen-2.webp",
     "specs": [
       {
         "index": "01//",
@@ -89,7 +90,7 @@
         "stageTitle": "Lot Assessment & Teardown",
         "title": "Clearing the Site & Groundwork",
         "desc": "Initial slope stabilization, teardown permits, and soil preparation to establish solid foundations.",
-        "image": "/assets/images/construction-backyard.webp"
+        "image": "/assets/section-09/breakdown-card-01.webp"
       },
       {
         "id": "stage-02",
@@ -97,7 +98,7 @@
         "stageTitle": "Framing & Structural Core",
         "title": "Architectural Framing",
         "desc": "Heavy timber beams, steel-reinforced spans, and soaring ceiling volumes taking shape.",
-        "image": "/assets/images/property-search.webp"
+        "image": "/assets/section-09/breakdown-02.webp"
       },
       {
         "id": "stage-03",
@@ -105,7 +106,7 @@
         "stageTitle": "Envelope & Rough-ins",
         "title": "High-Efficiency Enclosure",
         "desc": "Weather-tight barrier, triple-pane architectural glazing, and complete MEP integration.",
-        "image": "/assets/images/property-aerial.webp"
+        "image": "/assets/section-09/breakdown-card-03.webp"
       },
       {
         "id": "stage-04",
@@ -113,12 +114,18 @@
         "stageTitle": "Interior Finishes & Handover",
         "title": "Custom Millwork & Delivery",
         "desc": "Handcrafted cabinetry, bespoke stone surfaces, and flawless final move-in detailing.",
-        "image": "/assets/images/property-teardown.webp"
+        "image": "/assets/images/construction-backyard.webp"
       }
     ]
   },
   "completedHome": {
     "barLabel": "The completed home",
+    "images": {
+      "bathroom": "/assets/section-10/bathroom.webp",
+      "office": "/assets/section-10/office.webp",
+      "kitchen": "/assets/section-10/kitchen.webp",
+      "livingRoom": "/assets/section-10/living-room.webp"
+    },
     "specs": [
       {
         "label": "SURFACES & ENVELOPE:",
@@ -177,8 +184,8 @@
     }
   ],
   "pub": {
-    "at": "2026-10-13T18:50:27.006Z",
+    "at": "2026-10-13T18:39:04.577Z",
     "by": "admin",
-    "id": "f9705c98f52d"
+    "id": "7f02782bb69e"
   }
 }
