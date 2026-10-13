@@ -31,5 +31,19 @@ import AnimationsInit from '../components/AnimationsInit.astro';
       <slot />
     </div>
     <AnimationsInit />
+
+    <!-- Fallback for freshly uploaded CMS assets during Vercel build window -->
+    <script is:inline>
+      window.addEventListener('error', function (e) {
+        var el = e.target;
+        if (el && el.tagName === 'IMG' && el.src && el.src.indexOf('/assets/uploads/') !== -1 && !el.dataset.ghFallback) {
+          el.dataset.ghFallback = 'true';
+          try {
+            var urlObj = new URL(el.src);
+            el.src = 'https://raw.githubusercontent.com/nastyabanakh/ALM/main/public' + urlObj.pathname;
+          } catch (err) {}
+        }
+      }, true);
+    </script>
   </body>
 </html>
