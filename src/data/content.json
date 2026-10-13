@@ -25,7 +25,7 @@
         "id": "step-1",
         "num": "01.",
         "title": "Still looking for property",
-        "image": "/assets/images/property-search.webp",
+        "image": "/assets/uploads/esently.webp",
         "note": "Tell us the area and vision you have in mind. We can assess potential land and parcels before you commit."
       },
       {
@@ -184,8 +184,8 @@
     }
   ],
   "pub": {
-    "at": "2026-10-13T18:39:04.577Z",
+    "at": "2026-10-13T19:00:58.151Z",
     "by": "admin",
-    "id": "7f02782bb69e"
+    "id": "f2f9399a430e"
   }
 }
