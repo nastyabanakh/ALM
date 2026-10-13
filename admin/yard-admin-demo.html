@@ -1,0 +1,1461 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>YARD · Адмін</title>
+<link rel="icon" href="/favicon.ico">
+<style>
+  @font-face{font-family:'ABC MG';font-weight:300;src:url(/fonts/ABCMonumentGroteskCyrillic-Light.woff) format('woff');font-display:swap}
+  @font-face{font-family:'ABC MG';font-weight:400;src:url(/fonts/ABCMonumentGroteskCyrillic-Regular.woff) format('woff');font-display:swap}
+  @font-face{font-family:'ABC MG';font-weight:500 600;src:url(/fonts/ABCMonumentGroteskCyrillic-Medium.woff) format('woff');font-display:swap}
+  @font-face{font-family:'ABC MG';font-weight:700 900;src:url(/fonts/ABCMonumentGroteskCyrillic-Bold.woff) format('woff');font-display:swap}
+  :root{--bg:#000;--ink:#F3F3EC;--mint:#9BD9D6;--plate:#1A1A19;--dark:#0E0E0E;--l06:rgba(243,243,236,.06);--l10:rgba(243,243,236,.1);--l20:rgba(243,243,236,.2);--l45:rgba(243,243,236,.45);--l60:rgba(243,243,236,.6);--warn:#F2B37A;--bad:#F08A7E;--r:22px;--rs:14px}
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--ink);font:400 15px/1.35 'ABC MG',system-ui,sans-serif;letter-spacing:-.01em;-webkit-font-smoothing:antialiased}
+  body{min-height:100vh;background-image:radial-gradient(rgba(243,243,236,.07) 1px,transparent 1.3px);background-size:26px 26px;background-attachment:fixed}
+  button,input,textarea,select{font:inherit;color:inherit;letter-spacing:inherit}
+  button{cursor:pointer;border:0;background:none;padding:0}
+  a{color:inherit}
+  [hidden]{display:none!important}
+  ::selection{background:var(--mint);color:#000}
+
+  /* ---------- shared pieces ---------- */
+  .cap{font-size:11px;line-height:1.1;letter-spacing:.05em;text-transform:uppercase;font-weight:500;color:var(--l45)}
+  .btn{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 15px;border-radius:12px;background:var(--l06);font-weight:500;font-size:14px;white-space:nowrap;transition:background .15s}
+  .btn:hover{background:var(--l10)} .btn:disabled{opacity:.4;cursor:default}
+  .btn.sm{height:32px;padding:0 11px;font-size:13px;border-radius:10px}
+  .btn.ghost{background:none;box-shadow:inset 0 0 0 1px var(--l10)} .btn.ghost:hover{background:var(--l06)}
+  .btn.bad{color:var(--bad)}
+  .btn svg{width:14px;height:14px}
+  /* the site's CTA: a plate and a cell with the arrow */
+  .cta{display:inline-flex;gap:4px;height:44px;color:#000;font-weight:700;font-size:15px;letter-spacing:-.02em}
+  .cta .cl{display:flex;align-items:center;padding:0 18px;border-radius:14px;background:var(--mint);white-space:nowrap}
+  .cta .ca{width:44px;border-radius:14px;background:var(--mint);display:grid;place-items:center}
+  .cta .ca svg{width:16px;height:16px}
+  .cta:hover .ca svg{transform:translate(1px,-1px)} .cta:disabled{opacity:.35;cursor:default}
+  .cta.ink .cl,.cta.ink .ca{background:var(--ink)}
+  .ic{display:inline-grid;place-items:center;width:32px;height:32px;border-radius:10px;background:var(--l06);font-size:15px;line-height:1;transition:background .15s}
+  .ic:hover{background:var(--l10)} .ic.bad:hover{background:rgba(240,138,126,.18);color:var(--bad)}
+
+  /* ---------- login ---------- */
+  .login{min-height:100vh;display:grid;place-items:center;padding:24px}
+  .lg-box{width:min(440px,100%);background:var(--plate);border-radius:28px;padding:34px 30px 30px}
+  .lg-mark{font-weight:300;font-size:84px;line-height:.85;letter-spacing:-.05em;margin:0 0 6px}
+  .lg-box p{margin:0}
+  .lg-sub{color:var(--l60);margin:10px 0 28px!important}
+  .lg-g{min-height:44px;margin-bottom:12px}
+  .lg-pw{display:grid;gap:10px;margin-top:16px}
+  .lg-err{color:var(--bad);margin-top:14px!important;min-height:1em}
+  .lg-setup{margin-top:20px!important;font-size:13px;color:var(--l60);line-height:1.5}
+  .lg-setup code{color:var(--ink)}
+
+  /* ---------- top bar ---------- */
+  .top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:16px;padding:12px 24px;background:rgba(0,0,0,.72);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+  .brand{display:flex;align-items:baseline;gap:10px;font-weight:300;font-size:30px;letter-spacing:-.04em;line-height:1}
+  .brand em{font-style:normal;font-size:11px;letter-spacing:.05em;text-transform:uppercase;font-weight:500;color:var(--l45)}
+  .tabs{display:flex;gap:2px;padding:4px;border-radius:16px;background:var(--l06);overflow-x:auto;scrollbar-width:none}
+  .tabs::-webkit-scrollbar{display:none}
+  .tabs button{height:34px;padding:0 13px;border-radius:12px;font-size:12px;letter-spacing:.04em;text-transform:uppercase;font-weight:500;color:var(--l60);white-space:nowrap}
+  .tabs button:hover{color:var(--ink)} .tabs button.on{background:var(--ink);color:#000}
+  .acts{margin-left:auto;display:flex;align-items:center;gap:8px}
+  .st{font-size:13px;color:var(--l60);white-space:nowrap;display:flex;align-items:center;gap:8px}
+  .st i{width:8px;height:8px;border-radius:50%;background:var(--l20)} .st.dirty i{background:var(--warn)} .st.ok i{background:var(--mint)}
+  .who{font-size:12px;color:var(--l45)}
+
+  /* ---------- layout ---------- */
+  .wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(380px,44%);gap:24px;padding:12px 24px 80px;align-items:start}
+  .ed{min-width:0}
+  .pv{position:sticky;top:76px;height:calc(100vh - 92px);display:flex;flex-direction:column;gap:10px}
+  .pv-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .pv-box{position:relative;flex:1;border-radius:var(--r);overflow:hidden;background:var(--dark)}
+  .pv-box iframe{position:absolute;left:0;top:0;border:0;transform-origin:0 0;background:#000}
+  .pv-box.ph{background:none} .pv-box.ph iframe{border-radius:28px;box-shadow:0 0 0 6px var(--plate)}
+  .pv-note{position:absolute;inset:auto 12px 12px;font-size:12px;color:var(--l45);pointer-events:none}
+  body.pv-big .pv{position:fixed;inset:0;z-index:45;height:auto;top:0;background:#000;padding:14px}
+  .seg{display:inline-flex;padding:3px;border-radius:12px;background:var(--dark);gap:2px}
+  .seg button{height:32px;padding:0 12px;border-radius:9px;font-size:13px;font-weight:500;color:var(--l60);white-space:nowrap}
+  .seg button.on{background:var(--mint);color:#000}
+  .sw{display:inline-flex;align-items:center;gap:9px;font-size:13px;color:var(--l60);cursor:pointer;user-select:none}
+  .sw input{appearance:none;width:36px;height:22px;border-radius:11px;background:var(--l20);position:relative;margin:0;cursor:pointer;transition:background .15s;flex:none}
+  .sw input::after{content:'';position:absolute;left:3px;top:3px;width:16px;height:16px;border-radius:50%;background:var(--ink);transition:transform .15s}
+  .sw input:checked{background:var(--mint)} .sw input:checked::after{transform:translateX(14px);background:#000}
+
+  /* ---------- editor ---------- */
+  .sec-h{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin:20px 0 22px}
+  .sec-h h1{margin:0;font-weight:300;font-size:56px;line-height:.9;letter-spacing:-.045em}
+  .sec-h p{margin:8px 0 0;color:var(--l60);max-width:560px}
+  .plate{background:var(--plate);border-radius:var(--r);padding:22px}
+  .plate+.plate,.stack>*+*{margin-top:12px}
+  .plate h2{margin:0 0 16px;font-weight:500;font-size:22px;letter-spacing:-.03em}
+  .plate h3{margin:22px 0 12px;font-weight:500;font-size:16px}
+  .grid{display:grid;gap:14px 14px;grid-template-columns:repeat(12,minmax(0,1fr))}
+  .c2{grid-column:span 2}.c3{grid-column:span 3}.c4{grid-column:span 4}.c5{grid-column:span 5}.c6{grid-column:span 6}.c7{grid-column:span 7}.c8{grid-column:span 8}.c12{grid-column:1/-1}
+  .f{display:flex;flex-direction:column;gap:7px;min-width:0}
+  .f .lb{display:flex;justify-content:space-between;gap:10px}
+  .f .cnt{font-size:11px;color:var(--l45);font-variant-numeric:tabular-nums} .f .cnt.over{color:var(--warn)}
+  .f input[type=text],.f input[type=email],.f input[type=url],.f input[type=number],.f input[type=date],.f input[type=time],.f textarea,.f select{width:100%;background:var(--dark);border:0;border-radius:12px;padding:11px 13px;outline:none;box-shadow:inset 0 0 0 1px rgba(243,243,236,.07);transition:box-shadow .15s;font-size:15px}
+  .f input:focus,.f textarea:focus,.f select:focus{box-shadow:inset 0 0 0 1px var(--mint)}
+  .f textarea{resize:vertical;min-height:44px;line-height:1.35}
+  .f input[type=date],.f input[type=time]{color-scheme:dark}
+  .hint{font-size:12px;color:var(--l45);line-height:1.35}
+  .warn{font-size:12px;color:var(--warn);display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .warn button{color:var(--ink);text-decoration:underline;font-size:12px}
+  .row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .row.sp{justify-content:space-between}
+  .badge{display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:7px;font-size:11px;letter-spacing:.04em;text-transform:uppercase;font-weight:500;background:var(--l10);color:var(--ink)}
+  .badge.mint{background:var(--mint);color:#000} .badge.off{background:none;box-shadow:inset 0 0 0 1px var(--l20);color:var(--l45)}
+
+  /* lists */
+  .items{display:flex;flex-direction:column;gap:8px}
+  .it{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:16px;background:var(--dark);cursor:pointer;transition:background .15s,opacity .15s}
+  .it:hover{background:#151514} .it.on{box-shadow:inset 0 0 0 1px var(--mint)} .it.hid{opacity:.5}
+  .it.drag{opacity:.35} .it.over{box-shadow:inset 0 2px 0 var(--mint)}
+  .it .hd{cursor:grab;color:var(--l45);font-size:16px;padding:0 2px;touch-action:none}
+  .it .no{font-size:12px;color:var(--l45);font-variant-numeric:tabular-nums;width:22px}
+  .it .th{width:46px;height:56px;border-radius:9px;background:#222 center/cover;flex:none}
+  .it .tt{flex:1;min-width:0}
+  .it .tt b{display:block;font-weight:500;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .it .tt span{font-size:13px;color:var(--l60)}
+  .it .ops{display:flex;gap:4px}
+  .add{width:100%;height:52px;border-radius:16px;box-shadow:inset 0 0 0 1px var(--l10);color:var(--l60);font-weight:500}
+  .add:hover{color:var(--ink);background:var(--l06)}
+
+  /* media */
+  .media{display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap}
+  .ph-box{position:relative;width:180px;aspect-ratio:432/537;border-radius:14px;background:#222 center/cover no-repeat;flex:none;overflow:hidden;cursor:crosshair}
+  .ph-box.wide{width:260px;aspect-ratio:16/9;cursor:default}
+  .ph-box.sq{aspect-ratio:206/249;cursor:default}
+  .ph-box .x{position:absolute;width:22px;height:22px;margin:-11px 0 0 -11px;border-radius:50%;box-shadow:0 0 0 2px var(--mint),0 0 0 4px rgba(0,0,0,.5);pointer-events:none}
+  .ph-box .em{position:absolute;inset:0;display:grid;place-items:center;color:var(--l45);font-size:13px;text-align:center;padding:12px}
+  .drop{border-radius:14px;box-shadow:inset 0 0 0 1px var(--l20);padding:14px;color:var(--l60);font-size:13px;display:flex;flex-direction:column;gap:10px;align-items:flex-start;min-width:200px;flex:1}
+  .drop.on{box-shadow:inset 0 0 0 2px var(--mint);background:rgba(155,217,214,.06)}
+  .bar{height:6px;border-radius:3px;background:var(--l10);overflow:hidden;width:100%} .bar i{display:block;height:100%;background:var(--mint);width:0;transition:width .2s}
+  .certs{display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:10px}
+  .crt{position:relative;border-radius:14px;background:var(--dark);padding:8px;display:flex;flex-direction:column;gap:8px}
+  .crt.drag{opacity:.35} .crt.over{box-shadow:inset 0 0 0 2px var(--mint)}
+  .crt .im{height:110px;border-radius:9px;background:#111 center/contain no-repeat;cursor:grab}
+  .crt input{width:100%;background:#000;border:0;border-radius:8px;padding:7px 8px;font-size:12px;outline:none;box-shadow:inset 0 0 0 1px rgba(243,243,236,.07)}
+  .crt input:focus{box-shadow:inset 0 0 0 1px var(--mint)}
+  .crt .row{gap:4px}
+  .crt .ic{width:26px;height:26px;border-radius:8px;font-size:13px}
+  .crt .nfg{position:absolute;left:12px;top:12px}
+  .crt.up{display:grid;place-items:center;min-height:180px;color:var(--l45);font-size:12px;text-align:center}
+
+  /* modal */
+  .mod{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.72);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:grid;place-items:center;padding:20px}
+  .mod-c{width:min(640px,100%);max-height:calc(100vh - 40px);overflow:auto;background:var(--plate);border-radius:28px;padding:26px}
+  .mod-c.big{width:min(1000px,100%)}
+  .mod-c h2{margin:0 0 12px;font-weight:300;font-size:40px;letter-spacing:-.04em;line-height:.95}
+  .mod-c p{color:var(--l60)}
+  .mod-f{display:flex;justify-content:flex-end;gap:8px;margin-top:22px;flex-wrap:wrap}
+  .crop{position:relative;margin:0 auto;user-select:none;touch-action:none;max-width:100%}
+  .crop img{display:block;max-width:100%;max-height:62vh}
+  .crop .sh{position:absolute;background:rgba(0,0,0,.62);pointer-events:none}
+  .crop .rc{position:absolute;box-shadow:inset 0 0 0 1px var(--mint);cursor:move}
+  .crop .hn{position:absolute;width:18px;height:18px;margin:-9px;border-radius:6px;background:var(--mint)}
+  .chg{margin:14px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px;font-size:14px}
+  .chg li::before{content:'';display:inline-block;width:6px;height:6px;border-radius:2px;background:var(--mint);margin-right:10px;vertical-align:2px}
+  .steps{display:flex;flex-direction:column;gap:10px;margin-top:16px}
+  .steps div{display:flex;gap:10px;align-items:center;color:var(--l45)} .steps div.on{color:var(--ink)} .steps div.ok{color:var(--mint)}
+  .steps i{width:10px;height:10px;border-radius:3px;background:var(--l20)} .steps .on i{background:var(--ink);animation:bl 1s infinite} .steps .ok i{background:var(--mint)}
+  @keyframes bl{50%{opacity:.3}}
+  .toast{position:fixed;left:50%;bottom:22px;z-index:60;transform:translate(-50%,20px);opacity:0;background:var(--ink);color:#000;font-weight:500;padding:12px 18px;border-radius:14px;transition:.25s;pointer-events:none;max-width:calc(100vw - 40px)}
+  .toast.on{transform:translate(-50%,0);opacity:1} .toast.bad{background:var(--bad)}
+  .hist{display:flex;flex-direction:column;gap:6px}
+  .hist .it{cursor:default}
+  .md-hint{font-size:12px;color:var(--l45)} .md-hint b{color:var(--l60);font-weight:500}
+  .pvfab{display:none}
+
+  @media (max-width:700px){ .it{flex-wrap:wrap;gap:8px 10px} .it .tt{flex:1 1 150px} .it .ops{width:100%;justify-content:flex-end} .it .badge{display:none} .ph-box{width:140px} .sec-h{flex-direction:column;align-items:flex-start} }
+  @media (max-width:1100px){
+    .wrap{grid-template-columns:1fr;padding:12px 14px 90px}
+    .pv{position:fixed;inset:0;z-index:40;height:auto;top:0;background:#000;padding:12px;display:none}
+    body.pv-open .pv{display:flex}
+    .pvfab{display:inline-flex;position:fixed;right:14px;bottom:14px;z-index:41}
+    .top{flex-wrap:wrap;padding:10px 14px;gap:10px}
+    .acts{margin-left:0;width:100%;flex-wrap:wrap}
+    .sec-h h1{font-size:40px}
+    .grid{grid-template-columns:repeat(6,minmax(0,1fr))}
+    .c2,.c3{grid-column:span 3}.c4,.c5,.c6,.c7,.c8{grid-column:1/-1}
+  }
+</style>
+</head>
+<body>
+<div style="background: #1a3a2a; border-bottom: 1px solid #33f07a; color: #33f07a; padding: 8px 16px; font-family: sans-serif; font-size: 13px; display: flex; justify-content: space-between; align-items: center; z-index: 9999;">
+  <span>⚡ <b>Демо-режим адмінки YARD</b>: Ви переглядаєте повний функціонал кабінету з реальними даними сайту в безпечному автономному режимі.</span>
+  <span style="color: #aaa; font-size: 12px;">Всі 9 вкладок активні</span>
+</div>
+<div class="login" id="login" hidden>
+  <div class="lg-box">
+    <p class="lg-mark">YARD</p>
+    <p class="cap">Адмін-панель</p>
+    <p class="lg-sub">Увійди, щоб редагувати кейси, програму, тарифи й решту контенту сайту</p>
+    <div class="lg-g" id="gBtn"></div>
+    <form class="lg-pw" id="pwForm" hidden>
+      <div class="f"><span class="cap">Пошта</span><input type="text" name="email" autocomplete="username" inputmode="email"></div>
+      <div class="f"><span class="cap">Пароль</span><input type="password" name="password" autocomplete="current-password"></div>
+      <button class="cta" type="submit"><span class="cl">Увійти</span><span class="ca arr"></span></button>
+    </form>
+    <p class="lg-err" id="lgErr"></p>
+    <p class="lg-setup" id="lgSetup" hidden></p>
+  </div>
+</div>
+
+<div id="app" hidden>
+  <header class="top">
+    <div class="brand">YARD <em>Адмін</em></div>
+    <nav class="tabs" id="tabs"></nav>
+    <div class="acts">
+      <span class="st" id="st"><i></i><span>…</span></span>
+      <button class="btn ghost" id="bPhone" title="Відкрити чернетку на телефоні">На телефоні</button>
+      <button class="cta" id="bPub"><span class="cl">Опублікувати</span><span class="ca arr"></span></button>
+      <button class="btn sm ghost" id="bOut" title="Вийти"><span class="who" id="who"></span></button>
+    </div>
+  </header>
+  <div class="wrap">
+    <main class="ed" id="ed"></main>
+    <aside class="pv" id="pv">
+      <div class="pv-bar">
+        <div class="seg" id="dev"><button data-d="desk" class="on">Монітор</button><button data-d="ph">Телефон</button></div>
+        <label class="sw"><input type="checkbox" id="auto" checked>Оновлювати саме</label>
+        <button class="btn sm" id="pvRe">Оновити</button>
+        <button class="btn sm ghost" id="pvBig">Розгорнути</button>
+        <button class="btn sm ghost" id="pvClose" style="margin-left:auto" hidden>Закрити</button>
+      </div>
+      <div class="pv-box" id="pvBox"><iframe id="pvF" title="Превʼю сайту" loading="lazy"></iframe><p class="pv-note">Превʼю: сайт із твоїми змінами — нічого ще не опубліковано</p></div>
+    </aside>
+  </div>
+  <button class="cta ink pvfab" id="pvFab"><span class="cl">Превʼю</span><span class="ca arr"></span></button>
+</div>
+<div class="mod" id="mod" hidden><div class="mod-c" id="modC"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+(() => {
+  'use strict';
+  const ARR = '<svg viewBox="0 0 33 33" aria-hidden="true" fill="currentColor"><path d="M30.8379 0.0117188C32.0275 0.0117264 32.9922 0.976356 32.9922 2.16602V7.94824C32.9919 9.1377 32.0274 10.1016 30.8379 10.1016H26.6426C23.8251 10.1017 21.5411 12.3857 21.541 15.2031V19.3984C21.541 20.5879 20.5772 21.5525 19.3877 21.5527H13.6055C12.4158 21.5527 11.4512 20.5881 11.4512 19.3984V13.6162C11.4513 12.4266 12.4159 11.4619 13.6055 11.4619H17.7988C20.6165 11.4619 22.9014 9.177 22.9014 6.35938V2.16602C22.9014 0.976422 23.8661 0.0118338 25.0557 0.0117188H30.8379Z"/><path d="M19.3867 11.4619C20.5764 11.4619 21.541 12.4266 21.541 13.6162V19.3984C21.5408 20.5879 20.5762 21.5518 19.3867 21.5518H15.5996L15.5986 21.5527H15.1914C12.3739 21.5528 10.09 23.8368 10.0898 26.6543V30.8486C10.0898 32.0381 9.12598 33.0027 7.93652 33.0029H2.1543C0.964637 33.0029 7.60631e-06 32.0383 0 30.8486V25.0664C0.000115024 23.8768 0.964703 22.9121 2.1543 22.9121H3.70508C3.71744 22.9122 3.72981 22.9131 3.74219 22.9131H6.34961C9.16724 22.9131 11.4512 20.6282 11.4512 17.8105V15.2031C11.4512 15.1885 11.4503 15.1738 11.4502 15.1592V13.6162C11.4502 12.4266 12.4149 11.462 13.6045 11.4619H19.3867Z"/><rect x="22.8945" width="10.1018" height="21.5117" rx="2.15408"/><rect x="22.8945" y="22.9043" width="10.0893" height="10.0893" rx="2.15408"/><rect x="11.4844" y="0.0117188" width="21.5117" height="10.1018" rx="2.15408"/><rect y="0.0117188" width="10.0893" height="10.0893" rx="2.15408"/></svg>';
+  document.querySelectorAll('.arr').forEach(e => e.innerHTML = ARR);
+  const $ = id => document.getElementById(id);
+  const clone = o => JSON.parse(JSON.stringify(o));
+  const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+  function h(tag, a, ...kids) {
+    const e = document.createElement(tag);
+    if (a) for (const k in a) { const v = a[k]; if (v == null || v === false) continue;
+      if (k === 'class') e.className = v; else if (k === 'html') e.innerHTML = v; else if (k === 'style' && typeof v === 'object') Object.assign(e.style, v);
+      else if (k.startsWith('on')) e.addEventListener(k.slice(2), v); else if (v === true) e.setAttribute(k, ''); else e.setAttribute(k, v); }
+    for (const k of kids.flat(9)) if (k != null && k !== false) e.append(k.nodeType ? k : document.createTextNode(String(k)));
+    return e;
+  }
+  const media = u => !u ? '' : /^(https?:)?\/\//.test(u) || u.startsWith('/') ? u : '/' + u;
+  const certSrc = id => /^(https?:)?\/|^assets\//.test(id) ? media(id) : '/assets/certs/' + id + '.webp';
+  let toastT = 0;
+  function toast(t, bad) { const e = $('toast'); e.textContent = t; e.classList.toggle('bad', !!bad); e.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => e.classList.remove('on'), bad ? 6000 : 2600); }
+
+  /* ---------- api ---------- */
+  const MOCK_CONTENT = {
+ "v": 1,
+ "stream": {
+  "start": "2026-10-14T18:00:00+03:00"
+ },
+ "links": {
+  "discord": "https://discord.gg/MhwnaFCfB",
+  "support": "https://t.me/dvoretskyiyard"
+ },
+ "cases": [
+  {
+   "show": true,
+   "kind": "none",
+   "fn": "Володимир",
+   "ln": "Барна",
+   "nick": "",
+   "year": "2024",
+   "pay": "$164,111",
+   "top": "TOP 11",
+   "tc": "трейдерів України за версією NOFAKEGAINS",
+   "loss": "~$13.700",
+   "quote": "",
+   "video": "",
+   "poster": "",
+   "dur": "",
+   "ig": "https://www.instagram.com/v1adimiron",
+   "photo": "assets/cases/barna.webp",
+   "pos": "50% 50%",
+   "nfg": "",
+   "certs": [
+    {
+     "id": "v01",
+     "ar": 1,
+     "href": "https://nofakegains.com/cert/NFG-260728-4AP8"
+    },
+    {
+     "id": "v02",
+     "ar": 1
+    },
+    {
+     "id": "v03",
+     "ar": 1
+    },
+    {
+     "id": "v04",
+     "ar": 1
+    }
+   ]
+  },
+  {
+   "show": true,
+   "kind": "none",
+   "fn": "Єгор",
+   "ln": "Юрченко",
+   "nick": "",
+   "year": "2025",
+   "pay": "$20,397",
+   "top": "TOP 64",
+   "tc": "трейдерів України за версією NOFAKEGAINS",
+   "loss": "~$6.450",
+   "quote": "",
+   "video": "",
+   "poster": "",
+   "dur": "",
+   "ig": "https://www.instagram.com/yurch_32_",
+   "photo": "assets/cases/zubr.webp?v=2",
+   "pos": "",
+   "nfg": "https://nofakegains.com/cert/NFG-260713-2M9Y",
+   "certs": []
+  },
+  {
+   "show": true,
+   "kind": "none",
+   "fn": "Іван",
+   "ln": "Васильківський",
+   "nick": "",
+   "year": "2024",
+   "pay": "$149,763",
+   "top": "TOP 14",
+   "tc": "трейдерів України за версією NOFAKEGAINS",
+   "loss": "~$9.400",
+   "quote": "",
+   "video": "",
+   "poster": "",
+   "dur": "",
+   "ig": "https://www.instagram.com/vanya.vasylkivskyi",
+   "photo": "assets/cases/ivan.webp?v=2",
+   "pos": "50% 50%",
+   "nfg": "https://nofakegains.com/cert/NFG-260719-AGC5",
+   "certs": []
+  },
+  {
+   "show": true,
+   "kind": "none",
+   "fn": "Олександр",
+   "ln": "Галицький",
+   "nick": "",
+   "year": "2024",
+   "pay": "$18,080",
+   "top": "",
+   "tc": "трейдерів України за версією NOFAKEGAINS",
+   "loss": "~$2.100",
+   "quote": "",
+   "video": "",
+   "poster": "",
+   "dur": "",
+   "ig": "https://www.instagram.com/o.galetskyi",
+   "photo": "assets/cases/sasha.webp",
+   "pos": "50% 50%",
+   "nfg": "",
+   "certs": [
+    {
+     "id": "s01",
+     "ar": 1
+    }
+   ]
+  },
+  {
+   "show": true,
+   "kind": "none",
+   "fn": "Володимир",
+   "ln": "Пуха",
+   "nick": "",
+   "year": "2024",
+   "pay": "$81,667",
+   "top": "TOP 27",
+   "tc": "трейдерів України за версією NOFAKEGAINS",
+   "loss": "~$10.500",
+   "quote": "",
+   "video": "",
+   "poster": "",
+   "dur": "",
+   "ig": "",
+   "photo": "assets/cases/pukha.webp",
+   "pos": "50% 50%",
+   "nfg": "https://nofakegains.com/cert/NFG-260812-BC7Z",
+   "certs": []
+  },
+  {
+   "show": true,
+   "kind": "none",
+   "fn": "Михайло",
+   "ln": "",
+   "nick": "",
+   "year": "2024",
+   "pay": "$19,450",
+   "top": "TOP 109",
+   "tc": "трейдерів України за версією NOFAKEGAINS",
+   "loss": "~$3.100",
+   "quote": "",
+   "video": "",
+   "poster": "",
+   "dur": "",
+   "ig": "https://www.instagram.com/mishaamishaa/",
+   "photo": "assets/cases/mike.webp",
+   "pos": "50% 50%",
+   "nfg": "https://nofakegains.com/cert/NFG-261006-TMLU",
+   "certs": []
+  }
+ ],
+ "mentors": [
+  {
+   "key": "yura",
+   "name": "Yura\nPukaliak",
+   "exp": "5 років досвіду на ринку Forex",
+   "photo": "assets/yura.webp",
+   "soc": [
+    {
+     "t": "Instagram",
+     "u": "https://www.instagram.com/yura.pukaliak",
+     "s": "Inst"
+    }
+   ],
+   "nfg": "https://nofakegains.com/cert/NFG-260901-8LHS",
+   "cap": "ТОП-3 ПРОП-\nТРЕЙДЕРІВ УКРАЇНИ\nЗА ВЕРСІЄЮ\nNOFAKEGAINS",
+   "amt": "$265,825.31",
+   "lbl": "Верифікованого\nпрофіту з Проп-фірм",
+   "lblm": "Верифікованого\nпрофіту\nз Проп-фірм",
+   "certTitle": "Сертифікати Юри",
+   "certBtn": "Сертифікати виплат",
+   "certs": [
+    {
+     "id": "ynfg",
+     "ar": 1,
+     "href": "https://nofakegains.com/cert/NFG-260901-8LHS",
+     "orbit": false
+    },
+    {
+     "id": "y01",
+     "ar": 1
+    },
+    {
+     "id": "y02",
+     "ar": 0.705
+    },
+    {
+     "id": "y03",
+     "ar": 1
+    },
+    {
+     "id": "y04",
+     "ar": 1.418
+    },
+    {
+     "id": "y05",
+     "ar": 1.007
+    },
+    {
+     "id": "y06",
+     "ar": 1
+    },
+    {
+     "id": "y07",
+     "ar": 1.034
+    },
+    {
+     "id": "y08",
+     "ar": 0.703
+    },
+    {
+     "id": "y09",
+     "ar": 1
+    },
+    {
+     "id": "y10",
+     "ar": 0.787
+    },
+    {
+     "id": "y11",
+     "ar": 0.705
+    },
+    {
+     "id": "y12",
+     "ar": 1
+    },
+    {
+     "id": "y13",
+     "ar": 1.005
+    },
+    {
+     "id": "y14",
+     "ar": 1
+    },
+    {
+     "id": "y15",
+     "ar": 0.705
+    },
+    {
+     "id": "y16",
+     "ar": 1
+    },
+    {
+     "id": "y17",
+     "ar": 1
+    },
+    {
+     "id": "y18",
+     "ar": 0.705
+    },
+    {
+     "id": "y19",
+     "ar": 1
+    },
+    {
+     "id": "y20",
+     "ar": 1
+    },
+    {
+     "id": "y21",
+     "ar": 0.705
+    },
+    {
+     "id": "y22",
+     "ar": 1
+    },
+    {
+     "id": "y23",
+     "ar": 1
+    },
+    {
+     "id": "y24",
+     "ar": 1
+    },
+    {
+     "id": "y25",
+     "ar": 1
+    },
+    {
+     "id": "y26",
+     "ar": 1
+    },
+    {
+     "id": "y27",
+     "ar": 1
+    },
+    {
+     "id": "y28",
+     "ar": 1.425
+    },
+    {
+     "id": "y29",
+     "ar": 1.036
+    },
+    {
+     "id": "y30",
+     "ar": 0.858
+    },
+    {
+     "id": "y31",
+     "ar": 1.27
+    },
+    {
+     "id": "y32",
+     "ar": 0.545
+    }
+   ],
+   "lay": {
+    "bw": 1258,
+    "bar": 505,
+    "sx": 820,
+    "cx": 825
+   }
+  },
+  {
+   "key": "pasha-st",
+   "name": "Pasha\nTerletskiy",
+   "exp": "5 років досвіду на ринках Crypto та Forex",
+   "photo": "assets/pasha.webp",
+   "soc": [
+    {
+     "t": "Instagram",
+     "u": "https://www.instagram.com/pashaterletskiy",
+     "s": "Inst"
+    },
+    {
+     "t": "Telegram",
+     "u": "https://t.me/pashatrltsk",
+     "s": "TG"
+    },
+    {
+     "t": "YouTube",
+     "u": "https://www.youtube.com/@ptrltsk",
+     "s": "YT"
+    }
+   ],
+   "nfg": "",
+   "cap": "СЕРЕД ЙОГО УЧНІВ —\nYURA PUKALIAK,\nТОП 3 ПРОП-ТРЕЙДЕРІВ\nУКРАЇНИ\n\n5 РОКІВ ДОСВІДУ\nНА РИНКАХ\nCRYPTO ТА FOREX",
+   "amt": "$416.000+",
+   "lbl": "Виплат його учнів\nз Проп-фірм",
+   "lblm": "Виплат\nйого учнів\nз Проп-фірм",
+   "certTitle": "Виплати учнів Паші",
+   "certBtn": "Сертифікати виплат",
+   "certs": [
+    {
+     "id": "p01",
+     "ar": 1.293
+    },
+    {
+     "id": "p02",
+     "ar": 1.29,
+     "href": "https://nofakegains.com/cert/NFG-260812-BC7Z"
+    },
+    {
+     "id": "p03",
+     "ar": 1.29,
+     "href": "https://nofakegains.com/cert/NFG-260713-2M9Y"
+    },
+    {
+     "id": "p04",
+     "ar": 0.705
+    },
+    {
+     "id": "p05",
+     "ar": 1
+    },
+    {
+     "id": "p06",
+     "ar": 1
+    },
+    {
+     "id": "p07",
+     "ar": 1
+    },
+    {
+     "id": "p08",
+     "ar": 1
+    },
+    {
+     "id": "https://pub-91a340a26e3e4ff684020f0a1088dabb.r2.dev/cert/20261007-03ba6d70c5.jpg",
+     "ar": 1
+    },
+    {
+     "id": "https://pub-91a340a26e3e4ff684020f0a1088dabb.r2.dev/cert/20261007-88fd52690a.jpg",
+     "ar": 1
+    },
+    {
+     "id": "https://pub-91a340a26e3e4ff684020f0a1088dabb.r2.dev/cert/20261007-e93bc2ca43.jpg",
+     "ar": 1
+    }
+   ],
+   "lay": {
+    "bw": 1228,
+    "bar": 469,
+    "sx": 790,
+    "cx": 795
+   }
+  }
+ ],
+ "prog": {
+  "lessons": 36,
+  "practice": 24,
+  "stages": [
+   {
+    "t": "Liquidity",
+    "d": "У цьому блоці ви зрозумієте, як насправді влаштований ринок: хто на ньому заробляє, чому ціна взагалі рухається і чия участь стоїть за кожним рухом. Розберетеся, звідки беруться великі гравці, чого вони хочуть і чому дрібний трейдер так часто опиняється не на тому боці",
+    "l": 3,
+    "p": 2
+   },
+   {
+    "t": "Market Cycle & Structure",
+    "d": "Ринок ніколи не рухається хаотично — він проходить одні й ті самі фази, знову і знову. У цьому блоці ви навчитеся їх розпізнавати: побачите, коли ринок накопичує сили, коли реально йде в рух, а коли вже виснажився. Навчитеся визначати структуру — де вона тримається, а де ламається, і що це означає для наступного руху.\nУ результаті ви розумітимете, в якій фазі ринок знаходиться прямо зараз і чого від нього чекати далі — замість того, щоб заходити в угоду, коли рух уже закінчився",
+    "l": 2,
+    "p": 2
+   },
+   {
+    "t": "Liquidity on the chart",
+    "d": "Ліквідність не абстрактна — вона має конкретні місця на графіку. Ви навчитеся їх знаходити: рівні попереднього дня (PDH/PDL), максимуми й мінімуми сесій, рівні екстремуми, трендові зони. Розберетеся, як виглядає зняття ліквідності і чим воно відрізняється від справжнього пробою.\nПісля цього блоку ви бачитимете конкретні точки, куди ціна з високою ймовірністю піде далі",
+    "l": 3,
+    "p": 2
+   },
+   {
+    "t": "Imbalances",
+    "d": "За кожною свічкою стоїть баланс між покупцями і продавцями. Іноді цей баланс різко зривається — і ринок пізніше повертається, щоб його відновити. Ви навчитеся знаходити такі зони, розуміти природу їх появи і працювати з ними на практиці: розуміти, куди ціна може повернутися, звідки шукати вхід і де ставити ціль",
+    "l": 3,
+    "p": 2
+   },
+   {
+    "t": "Block Types",
+    "d": "Ви навчитеся визначати зони, з яких ринок почав рух, і повертатися до них як до точок входу. Розберете типи блоків, навчитеся відрізняти сильний блок від слабкого, розуміти, коли він ще працює, а коли вже втратив силу — і чітко бачити, де шукати точку входу",
+    "l": 2,
+    "p": 2
+   },
+   {
+    "t": "Sessions",
+    "d": "Сесії — це не просто різний час доби, а різна логіка ринку. Ви зрозумієте, як вони пов'язані між собою: що азійський діапазон готує ґрунт для Лондона, а Нью-Йорк може як продовжити рух, так і розвернути його. Розберетеся, яка сесія задає напрямок, а яка лише відпрацьовує вже закладене, і під які активи який час підходить.\nУ підсумку — знатимете, коли ваш інструмент дає структурний рух, а коли краще просто не втручатися",
+    "l": 3,
+    "p": 2
+   },
+   {
+    "t": "Order Flow",
+    "d": "Окремі елементи на графіку мало що означають, поки ви не бачите, як вони складаються в один рух. Ви навчитеся читати потік: звідки ринок вийшов, яку ліквідність зняв, через які зони пройшов і куди рухається далі. Зрозумієте, як пов'язати структуру, ліквідність та імбаланси в одну логіку — і перестанете торгувати окремі сигнали у відриві від контексту",
+    "l": 2,
+    "p": 2
+   },
+   {
+    "t": "TDA + POI/Target",
+    "d": "Аналіз починається не з молодшого таймфрейму, а зверху. Ви навчитеся проходити графік від старших таймфреймів до молодших: визначати загальний контекст, звужувати його до конкретних зон інтересу (POI) і доходити до точки входу без здогадок. Розберетеся, як ставити реалістичні цілі — не «скільки хочеться», а куди ціна логічно має дійти, і що робити, коли сценарій не підтверджується",
+    "l": 2,
+    "p": 2
+   },
+   {
+    "t": "Entry Model",
+    "d": "Знати, де ціна має бути, і зайти в угоду — різні речі. Ви навчитеся перетворювати підготовлений аналіз у конкретний вхід: що саме має статися в зоні, щоб ви натиснули кнопку, і чого чекати, якщо цього не сталося. Розберете моделі входу, навчитеся ставити стоп за логікою, а не навмання, і оцінювати угоду ще до того, як у неї зайшли",
+    "l": 3,
+    "p": 2
+   },
+   {
+    "t": "Context",
+    "d": "Контекст — це те, що відрізняє системну торгівлю від набору випадкових входів. У цьому блоці розберемо, що таке контекст, як його визначати і на що спиратися, щоб зрозуміти, в якому стані ринок зараз. Ментори YARD покажуть свій підхід на реальних прикладах — крок за кроком проведуть через власний аналіз і пояснять, чому приймають саме такі рішення",
+    "l": 2,
+    "p": 2
+   },
+   {
+    "t": "Props",
+    "d": "Ви зрозумієте, що таке проп-компанія і як вона насправді заробляє. Розберемо правила, які майже ніхто не читає уважно, — і саме через них найчастіше зливаються рахунки. Розберетеся, як працюють виплати: коли, скільки і за яких умов ви реально отримуєте гроші. І навчитеся обирати проп під себе, а не через рекламу",
+    "l": 3,
+    "p": 2
+   },
+   {
+    "t": "News",
+    "d": "Ви зрозумієте, які бувають економічні новини, звідки вони беруться і чому ринок реагує на них саме так. Розберемо основу: монетарну політику, інфляцію, ринок праці та економічну активність — що кожен показник означає і як вони пов'язані між собою. Навчитеся відрізняти новини, які справді впливають на ціну, від тих, що проходять непомітно, і розуміти, звідки береться рух у момент їх виходу",
+    "l": 3,
+    "p": 2
+   },
+   {
+    "t": "Trading Strategy",
+    "d": "Без чіткої стратегії кожна угода — окреме рішення на емоціях. Ви зрозумієте, навіщо трейдеру власна торгова стратегія, з чого вона складається і як її побудувати під себе. Розберемо, на що звертати увагу при створенні, як тестувати стратегію і як зрозуміти, що вона дійсно працює.\nДо блоку — безкоштовний шаблон журналу, щоб одразу почати фіксувати свої угоди і вести статистику",
+    "l": 2,
+    "p": 2
+   }
+  ]
+ },
+ "tariffs": [
+  {
+   "name": "Self",
+   "sub": "Повна програма\nдля самостійного навчання",
+   "price": "$260",
+   "cta": "Обрати\nSelf",
+   "pay": "",
+   "list": [
+    {
+     "t": "{N} етапів послідовної програми",
+     "on": true
+    },
+    {
+     "t": "30 днів інтенсивного групового навчання",
+     "on": false
+    },
+    {
+     "t": "персональний зворотній звʼязок",
+     "on": false
+    },
+    {
+     "t": "практичні завдання ~~з індивідуальною перевіркою~~",
+     "on": true
+    },
+    {
+     "t": "регулярні онлайн-сесії з менторами",
+     "on": false
+    },
+    {
+     "t": "∞ доступ до навчання",
+     "on": true
+    },
+    {
+     "t": "безкоштовний доступ у YARD PRIME на 1 місяць",
+     "on": true
+    }
+   ]
+  },
+  {
+   "name": "Group Mentorship",
+   "sub": "Усі переваги персонального\nменторшипу у груповому форматі",
+   "price": "$629",
+   "cta": "Обрати Group\nMentorship",
+   "pay": "Доступна\nоплата\n2 частинами",
+   "list": [
+    {
+     "t": "{N} етапів послідовної програми, на якій ми побудували власну торгівлю",
+     "on": true
+    },
+    {
+     "t": "30 днів інтенсивного групового навчання",
+     "on": true
+    },
+    {
+     "t": "персональний зворотній звʼязок",
+     "on": true
+    },
+    {
+     "t": "практичні завдання з індивідуальною перевіркою",
+     "on": true
+    },
+    {
+     "t": "регулярні онлайн-сесії з менторами",
+     "on": true
+    },
+    {
+     "t": "∞ доступ до навчання",
+     "on": true
+    },
+    {
+     "t": "безкоштовний доступ у YARD PRIME на 3 місяці",
+     "on": true
+    }
+   ]
+  }
+ ],
+ "faq": [
+  {
+   "q": "Чи підійде мені навчання, якщо я починаю з нуля?",
+   "qb": "Чи підійде мені\nнавчання,\nякщо я починаю з нуля?",
+   "a": "**Так**\nПрограма побудована послідовно — від базового розуміння ринку до формування торгової системи та самостійної роботи з нею\nЯкщо ти вже торгуєш, зможеш систематизувати наявні знання, знайти слабкі місця та перебудувати окремі елементи своєї торгівлі"
+  },
+  {
+   "q": "Чим SELF відрізняється від GROUP MENTORSHIP?",
+   "qb": "Чим SELF\nвідрізняється\nвід GROUP MENTORSHIP?",
+   "a": "В обох форматах ти отримуєш доступ до повної програми\n**SELF** — проходиш навчання самостійно у власному темпі\n**GROUP MENTORSHIP** — проходиш ту саму програму разом із менторами: онлайн-сесії, персональний фідбек, перевірка практичних завдань та робота над помилками"
+  },
+  {
+   "q": "Чи гарантуєте ви результат після навчання?",
+   "qb": "Чи гарантуєте\nви результат\nпісля навчання?",
+   "a": "**Ні**\nУ трейдингу неможливо гарантувати фінансовий результат\nРезультати менторів та учнів на сайті — підтвердження їхнього досвіду, а не обіцянка твого\nЗ нашого боку — програма, система, практика, робота менторів і зворотний зв’язок\nЗ твого — час та робота з ринком"
+  },
+  {
+   "q": "Скільки часу потрібно приділяти навчанню?",
+   "qb": "Скільки часу\nпотрібно приділяти\nнавчанню?",
+   "a": "Рекомендуємо закладати 2–3 години на день протягом активної частини навчання\nGroup Mentorship триває 30 днів, але доступ до програми залишається безстроково — тому повертатися до матеріалів можна у власному темпі"
+  },
+  {
+   "q": "Що буде після 30 днів GROUP MENTORSHIP?",
+   "qb": "Що буде\nпісля 30 днів\nGROUP MENTORSHIP?",
+   "a": "Після завершення ти зберігаєш безстроковий доступ до навчання та отримуєш 3 місяці доступу до YARD PRIME, де можеш продовжувати роботу в середовищі YARD поруч із досвідченими трейдерами нашого ком’юніті"
+  },
+  {
+   "q": "Чи можна оплатити GROUP MENTORSHIP частинами?",
+   "qb": "Чи можна оплатити\nGROUP MENTORSHIP частинами?",
+   "a": "**Так**\nВартість GROUP MENTORSHIP можна розділити на 2 платежі без комісії"
+  }
+ ],
+ "stats": {
+  "n16": {
+   "n": "",
+   "u": "модулів",
+   "d": "Програми, на якій\nми побудували власну\nторгівлю"
+  },
+  "inf": {
+   "n": "∞",
+   "u": "днів",
+   "d": "Доступу\nдо навчання"
+  },
+  "n0": {
+   "n": "0",
+   "u": "модулів",
+   "d": "Заради «обʼєму»\nпрограми"
+  },
+  "n2": {
+   "n": "2",
+   "u": "ментори",
+   "d": "З реальними результатами\nта спільним підходом\nзамість десятків\n«експертів» із суперечливими\nдумками",
+   "dm": "З реальними\nрезультатами\nта спільним підходом"
+  },
+  "n30": {
+   "n": "30",
+   "u": "днів",
+   "d": "Інтенсивного навчання\nз персональним зворотнім\nзвʼязком"
+  },
+  "n100": {
+   "n": "100+",
+   "u": "годин",
+   "d": "Групової та персональної роботи з менторами\nу форматі онлайн-конференцій, живого спілкування,\nперевірки знань та QA-сесій"
+  }
+ },
+ "man": [
+  "Ми не будемо\nвчити тебе всьому,\nщо знаєм.",
+  "Ми навчимо\nтебе тому,\nчим користуємось."
+ ],
+ "ftw": [
+  "Ми не можемо\nпройти цей\nшлях замість\nтебе",
+  "Але можемо зробити\nтак, щоб ти\nне проходив його\nнаосліп"
+ ],
+ "pub": {
+  "at": "2026-10-09T16:46:40.130Z",
+  "by": "yard.education2026@gmail.com",
+  "id": "68a5ba8b6350"
+ }
+};
+  async function api(op, body, q) {
+    console.log('API called in demo mode:', op, body, q);
+    if (op === 'me') {
+      return {
+        user: 'demo@yard.education (Перегляд)',
+        google: 'demo-google-id',
+        password: false,
+        r2: true,
+        media: 'https://pub-91a340a26e3e4ff684020f0a1088dabb.r2.dev/',
+        repo: 'lubimovbro33/yard-landing',
+        mock: false,
+        ready: true
+      };
+    }
+    if (op === 'content') {
+      return {
+        published: { content: clone(MOCK_CONTENT), sha: 'sha-live-prod' },
+        draft: null,
+        draftLink: 'https://yard.education/?preview'
+      };
+    }
+    if (op === 'publish') {
+      return {
+        pub: { at: new Date().toISOString(), by: 'demo@yard.education', id: 'pub-demo' },
+        sha: 'sha-new-' + Date.now()
+      };
+    }
+    if (op === 'draft') {
+      return { savedAt: new Date().toISOString() };
+    }
+    if (op === 'admins') {
+      return ['yard.education2026@gmail.com', 'demo@yard.education (Перегляд)'];
+    }
+    if (op === 'history') {
+      return [
+        { id: '68a5ba8b6350', at: '2026-10-09T16:46:40.130Z', by: 'yard.education2026@gmail.com', msg: 'Оновлення тарифів та дат' },
+        { id: '1a2b3c4d5e6f', at: '2026-10-06T12:30:15.000Z', by: 'lubimovbro33', msg: 'Додано нові кейси учнів' },
+        { id: '9f8e7d6c5b4a', at: '2026-10-01T09:15:00.000Z', by: 'lubimovbro33', msg: 'Реліз версії v401' }
+      ];
+    }
+    if (op === 'upload') {
+      return { url: 'https://pub-91a340a26e3e4ff684020f0a1088dabb.r2.dev/mock-preview.webp' };
+    }
+    return {};
+  }
+
+  /* ---------- state ---------- */
+  const S = { cfg: null, me: '', pub: null, sha: '', c: null, draftAt: '', draftLink: '', tab: 'cases', sel: { case: 0, mentor: 0 }, dev: 'desk' };
+  const LS = 'yard.admin.work';
+  const TABS = [['cases', 'Кейси', 'cases'], ['prog', 'Програма', 'prog'], ['tariffs', 'Тарифи', 'formats2'], ['mentors', 'Ментори', 'mentors'], ['faq', 'FAQ', 'faq'], ['texts', 'Тексти', 'specs'], ['links', 'Посилання й потік', 'oserver'], ['hist', 'Історія', ''], ['admins', 'Адміни', '']];
+  const strip = c => { const o = clone(c); delete o.pub; return o; };
+  const dirty = () => S.pub && S.c && !same(strip(S.c), strip(S.pub));
+  function get(p) { return p.reduce((o, k) => o == null ? o : o[k], S.c); }
+  function set(p, v) { let o = S.c; for (let i = 0; i < p.length - 1; i++) o = o[p[i]]; o[p[p.length - 1]] = v; changed(); }
+
+  let saveT = 0, pvT = 0, draftT = 0;
+  function changed(opts) {
+    clearTimeout(saveT); saveT = setTimeout(() => { try { localStorage.setItem(LS, JSON.stringify({ c: S.c, sha: S.sha, at: Date.now() })); } catch (e) {} }, 250);
+    status(); if (!(opts && opts.noPreview)) schedulePreview();
+    if (S.cfg && S.cfg.r2) { clearTimeout(draftT); draftT = setTimeout(saveDraft, 4000); }
+  }
+  function status(t) {
+    const e = $('st'), d = dirty(); e.classList.toggle('dirty', d); e.classList.toggle('ok', !d);
+    e.lastChild.textContent = t || (d ? 'Є неопубліковані зміни' + (S.draftAt ? ' · чернетку збережено ' + hm(S.draftAt) : '') : 'Усе опубліковано');
+    $('bPub').disabled = !d;
+  }
+  const hm = iso => { try { return new Date(iso).toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' }); } catch (e) { return ''; } };
+  const dt = iso => { try { return new Date(iso).toLocaleString('uk-UA', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Kyiv' }); } catch (e) { return iso; } };
+  async function saveDraft(force) {
+    if (!S.cfg.r2 || !dirty()) return;
+    try { const r = await api('draft', { content: S.c, base: S.draftAt, force: !!force, sha: S.sha }); S.draftAt = r.savedAt; status(); }
+    catch (e) { if (e.status === 409) conflict(e.data); else if (e.status !== 400) status('Чернетку не збережено: ' + e.message); }
+  }
+  function conflict(d) {
+    modal(h('div', null, h('h2', null, 'Хтось теж редагує'), h('p', null, 'Чернетку щойно зберіг ' + (d.draft && d.draft.by) + ' о ' + hm(d.draft && d.draft.savedAt) + '. Що зробити з твоїми змінами?'),
+      h('div', { class: 'mod-f' }, h('button', { class: 'btn', onclick: () => { S.c = d.draft.content; S.draftAt = d.draft.savedAt; closeModal(); render(); changed(); } }, 'Взяти їхню версію'),
+        h('button', { class: 'cta', onclick: () => { closeModal(); S.draftAt = d.draft.savedAt; saveDraft(true); } }, h('span', { class: 'cl' }, 'Залишити мою'), h('span', { class: 'ca', html: ARR })))));
+  }
+
+  /* ---------- preview ---------- */
+  const pvF = $('pvF'), pvBox = $('pvBox');
+  function pvUrl(jump) {
+    const t = TABS.find(x => x[0] === S.tab), q = new URLSearchParams({ preview: Date.now() });
+    if (S.tab === 'cases') { const vis = S.c.cases.map((c, i) => [c, i]).filter(x => x[0].show !== false), k = vis.findIndex(x => x[1] === S.sel.case); q.set('case', Math.max(0, k)); }
+    if (S.tab === 'prog' && S.sel.stage != null) q.set('stage', S.sel.stage);
+    if (t && t[2]) q.set('at', t[2]); if (jump) q.set('jump', 1);
+    return 'https://yard.education/?' + q;
+  }
+  function preview(jump) {
+    try { localStorage.setItem('yard.preview', JSON.stringify(S.c)); } catch (e) {}
+    if (jump) try { sessionStorage.removeItem('yard.at'); } catch (e) {}
+    pvF.src = pvUrl(jump); fitPreview();
+  }
+  function schedulePreview() { if (!$('auto').checked) return; clearTimeout(pvT); pvT = setTimeout(() => preview(false), 1300); }
+  function fitPreview() {
+    const W = pvBox.clientWidth, H = pvBox.clientHeight; if (!W || !H) return;
+    pvBox.classList.toggle('ph', S.dev === 'ph');
+    if (S.dev === 'desk') { const k = Math.min(W / 1920, H / 1080); Object.assign(pvF.style, { width: '1920px', height: '1080px', transform: 'scale(' + k + ')', left: (W - 1920 * k) / 2 + 'px', top: '0px' }); }
+    else { const k = Math.min((H - 16) / 844, (W - 16) / 390, 1); Object.assign(pvF.style, { width: '390px', height: '844px', transform: 'scale(' + k + ')', left: (W - 390 * k) / 2 + 'px', top: '8px' }); }
+  }
+  addEventListener('resize', fitPreview);
+  $('dev').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; S.dev = b.dataset.d; $('dev').querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b)); preview(false); });
+  $('pvRe').addEventListener('click', () => preview(false));
+  $('pvBig').addEventListener('click', () => { const on = document.body.classList.toggle('pv-big'); $('pvBig').textContent = on ? 'Згорнути' : 'Розгорнути'; requestAnimationFrame(fitPreview); });
+  $('pvFab').addEventListener('click', () => { document.body.classList.add('pv-open'); $('pvClose').hidden = false; preview(false); });
+  $('pvClose').addEventListener('click', () => document.body.classList.remove('pv-open'));
+
+  /* ---------- modal ---------- */
+  function modal(node, big) { $('modC').className = 'mod-c' + (big ? ' big' : ''); $('modC').replaceChildren(node); $('mod').hidden = false; }
+  function closeModal() { $('mod').hidden = true; $('modC').replaceChildren(); }
+  $('mod').addEventListener('mousedown', e => { if (e.target === $('mod') && !$('mod').dataset.lock) closeModal(); });
+  addEventListener('keydown', e => { if (e.key === 'Escape' && !$('mod').hidden && !$('mod').dataset.lock) closeModal(); });
+  function confirmBox(title, text, yes, fn, bad) {
+    modal(h('div', null, h('h2', null, title), text ? h('p', null, text) : null, h('div', { class: 'mod-f' }, h('button', { class: 'btn', onclick: closeModal }, 'Скасувати'),
+      h('button', { class: bad ? 'btn bad' : 'cta', onclick: () => { closeModal(); fn(); } }, bad ? yes : [h('span', { class: 'cl' }, yes), h('span', { class: 'ca', html: ARR })]))));
+  }
+
+  /* ---------- typography hints (Svitlo's rules) ---------- */
+  function typo(v, o) {
+    const out = [];
+    if (o.dots && /\.\s*(\n|$)/.test(v) && !/\.\.\.\s*$/.test(v)) out.push(['У текстах сайту крапок у кінці рядка немає — два речення = перенос', () => v.replace(/([^.])\.(\s*)(?=\n|$)/g, '$1$2')]);
+    if (/ {2,}/.test(v)) out.push(['Подвійні пробіли', () => v.replace(/ {2,}/g, ' ')]);
+    if (/\s+$/.test(v) || /^\s+/.test(v)) out.push(['Пробіли на початку чи в кінці', () => v.trim()]);
+    return out;
+  }
+
+  /* ---------- fields ---------- */
+  function field(label, p, o = {}) {
+    const v = get(p) == null ? '' : String(get(p)), multi = o.rows || o.multi;
+    const inp = multi ? h('textarea', { rows: o.rows || 3, placeholder: o.ph || '' }) : h('input', { type: o.type || 'text', placeholder: o.ph || '', inputmode: o.inputmode });
+    inp.value = v; if (o.type === 'number') inp.step = 'any';
+    const cnt = o.max ? h('span', { class: 'cnt' }) : null, wb = h('div', { class: 'warn', hidden: true }), lab = h('span', { class: 'cap' }, label);
+    const upd = () => { if (cnt) { const n = multi ? Math.max(...inp.value.split('\n').map(l => l.length)) : inp.value.length; cnt.textContent = (multi && o.lines ? inp.value.split('\n').length + ' ряд. · ' : '') + n + ' / ' + o.max; cnt.classList.toggle('over', n > o.max || (o.lines && inp.value.split('\n').length > o.lines)); } };
+    const check = () => { const w = typo(inp.value, o); wb.replaceChildren(...w.map(([t, fix]) => h('span', null, t, ' ', h('button', { type: 'button', onclick: () => { inp.value = fix(); commit(); check(); } }, 'Виправити')))); wb.hidden = !w.length; };
+    const commit = () => { let x = inp.value; if (o.type === 'number') x = x === '' ? 0 : +x; if (o.clean) x = o.clean(x); set(p, x); upd(); if (o.on) o.on(x); };
+    inp.addEventListener('input', commit); inp.addEventListener('blur', check); upd();
+    return h('div', { class: 'f ' + (o.col || 'c12') }, h('div', { class: 'lb' }, lab, cnt), inp, o.hint ? h('div', { class: 'hint', html: o.hint }) : null, wb);
+  }
+  function seg(label, p, opts, o = {}) {
+    const box = h('div', { class: 'seg' });
+    const draw = () => box.replaceChildren(...opts.map(([v, t]) => h('button', { type: 'button', class: get(p) === v ? 'on' : '', onclick: () => { set(p, v); draw(); if (o.on) o.on(v); } }, t)));
+    draw(); return h('div', { class: 'f ' + (o.col || 'c12') }, label ? h('span', { class: 'cap' }, label) : null, h('div', null, box));
+  }
+  function toggle(label, p, o = {}) {
+    const i = h('input', { type: 'checkbox' }); i.checked = o.inv ? get(p) === false : get(p) !== false;
+    i.addEventListener('change', () => { set(p, o.inv ? !i.checked : i.checked); if (o.on) o.on(i.checked); });
+    return h('label', { class: 'sw' }, i, label);
+  }
+  const MD = '<span class="md-hint">Новий рядок = перенос · <b>**жирний**</b> · <b>~~закреслений~~</b></span>';
+
+  /* ---------- images ---------- */
+  async function toBlob(cv, q) { const b = await new Promise(r => cv.toBlob(r, 'image/webp', q)); if (b && b.type === 'image/webp') return [b, 'webp']; return [await new Promise(r => cv.toBlob(r, 'image/jpeg', q)), 'jpg']; }
+  async function loadImg(file) { const u = URL.createObjectURL(file); const im = new Image(); im.src = u; await im.decode(); return im; }
+  async function processImage(src, o = {}) {
+    const c = o.crop || { x: 0, y: 0, w: src.naturalWidth || src.width, h: src.naturalHeight || src.height }, max = o.max || 1400, k = Math.min(1, max / Math.max(c.w, c.h));
+    const cv = document.createElement('canvas'); cv.width = Math.max(1, Math.round(c.w * k)); cv.height = Math.max(1, Math.round(c.h * k));
+    const x = cv.getContext('2d'); x.imageSmoothingQuality = 'high'; x.drawImage(src, c.x, c.y, c.w, c.h, 0, 0, cv.width, cv.height);
+    if (o.bw) { const d = x.getImageData(0, 0, cv.width, cv.height), a = d.data; for (let i = 0; i < a.length; i += 4) { const g = .2126 * a[i] + .7152 * a[i + 1] + .0722 * a[i + 2]; a[i] = a[i + 1] = a[i + 2] = g; } x.putImageData(d, 0, 0); }
+    let q = .86, [b, ext] = await toBlob(cv, q); while (b.size > (o.limit || 300) * 1024 && q > .45) { q -= .08; [b, ext] = await toBlob(cv, q); }
+    return { blob: b, ext, w: cv.width, h: cv.height };
+  }
+  function putFile(url, blob, type, prog) {
+    return new Promise((res, rej) => { const x = new XMLHttpRequest(); x.open('PUT', url); if (type) x.setRequestHeader('Content-Type', type);
+      x.upload.onprogress = e => { if (prog && e.lengthComputable) prog(e.loaded / e.total); };
+      x.onload = () => x.status < 300 ? res() : rej(new Error('Завантаження: ' + x.status)); x.onerror = () => rej(new Error('Не вдалося завантажити файл — перевір CORS у бакеті R2')); x.send(blob); });
+  }
+  async function upload(blob, kind, ext, prog) {
+    if (!S.cfg.r2) throw new Error('Сховище файлів (Cloudflare R2) ще не підключене');
+    const r = await api('upload', { kind, ext }); await putFile(r.put, blob, blob.type || ({ mp4: 'video/mp4', webm: 'video/webm', mov: 'video/quicktime' })[ext], prog); return r.url;
+  }
+  function noStore() { if (S.cfg && S.cfg.r2) return false; modal(h('div', null, h('h2', null, 'Сховище ще не підключене'), h('p', null, 'Фото, сертифікати й відео зберігаються в Cloudflare R2 — його ще не налаштовано, тому файл нікуди не завантажиться. Тексти, ціни, етапи й порядок можна міняти вже зараз'),
+    h('div', { class: 'mod-f' }, h('button', { class: 'cta', onclick: closeModal }, h('span', { class: 'cl' }, 'Зрозуміло'), h('span', { class: 'ca', html: ARR }))))); return true; }
+  function pickFiles(accept, multiple) { return new Promise(res => { const i = h('input', { type: 'file', accept, multiple }); i.onchange = () => res([...i.files]); i.click(); }); }
+  function dropZone(el, accept, fn) {
+    el.addEventListener('dragover', e => { if ([...e.dataTransfer.types].includes('Files')) { e.preventDefault(); el.classList.add('on'); } });
+    el.addEventListener('dragleave', () => el.classList.remove('on'));
+    el.addEventListener('drop', e => { if (!e.dataTransfer.files.length) return; e.preventDefault(); el.classList.remove('on'); fn([...e.dataTransfer.files].filter(f => accept.test(f.type))); });
+  }
+
+  /* case / mentor photo: b/w, focus by click */
+  function photoField(label, p, o = {}) {
+    const box = h('div', { class: 'ph-box' + (o.sq ? ' sq' : '') }), mk = h('i', { class: 'x' }), bar = h('div', { class: 'bar', hidden: true }, h('i'));
+    const draw = () => { const u = get(p); box.style.backgroundImage = u ? 'url(' + media(u) + ')' : ''; box.replaceChildren(u ? '' : h('span', { class: 'em' }, 'Без фото — на сайті мозаїка'));
+      if (u && o.pos) { const ps = (get(o.pos) || '50% 50%').split(' '); box.style.backgroundPosition = ps.join(' '); mk.style.left = ps[0]; mk.style.top = ps[1]; box.append(mk); } };
+    if (o.pos) box.addEventListener('click', e => { if (!get(p)) return; const r = box.getBoundingClientRect(); set(o.pos, Math.round((e.clientX - r.left) / r.width * 100) + '% ' + Math.round((e.clientY - r.top) / r.height * 100) + '%'); draw(); });
+    const go = async files => { const f = files[0]; if (!f || noStore()) return; try { bar.hidden = false; const im = await loadImg(f), r = await processImage(im, { bw: o.bw, max: o.max || 1100 });
+      const u = await upload(r.blob, o.kind || 'photo', r.ext, k => bar.firstChild.style.width = k * 100 + '%'); set(p, u); if (o.pos) set(o.pos, '50% 50%'); draw(); toast('Фото завантажено'); }
+      catch (e) { toast(e.message, true); } finally { bar.hidden = true; bar.firstChild.style.width = 0; } };
+    const dz = h('div', { class: 'drop' }, h('span', null, o.text || 'Перетягни фото сюди або'), h('div', { class: 'row' }, h('button', { type: 'button', class: 'btn sm', onclick: async () => go(await pickFiles('image/*')) }, 'Обрати файл'),
+      h('button', { type: 'button', class: 'btn sm ghost', onclick: () => { set(p, ''); draw(); } }, 'Прибрати')), bar,
+      h('span', { class: 'hint', html: (o.bw ? 'Автоматично ч/б, стиснення до 300 КБ. ' : 'Стиснення до 300 КБ. ') + (o.pos ? 'Клікни по фото, щоб обрати, що буде в центрі кадру.' : '') }));
+    dropZone(dz, /^image\//, go); draw();
+    return h('div', { class: 'f ' + (o.col || 'c12') }, h('span', { class: 'cap' }, label), h('div', { class: 'media' }, box, dz));
+  }
+
+  /* certificates: crop → webp → R2; link (NoFakeGains), order by drag, orbit flag for mentors */
+  function cropper(im, title) {
+    return new Promise(res => {
+      const W = im.naturalWidth, H = im.naturalHeight; let c = autoTrim(im);
+      const img = h('img', { src: im.src, draggable: 'false' }), wrap = h('div', { class: 'crop' }, img), sh = [0, 1, 2, 3].map(() => h('div', { class: 'sh' })), rc = h('div', { class: 'rc' }), hs = ['nw', 'ne', 'sw', 'se'].map(k => h('div', { class: 'hn', 'data-k': k }));
+      wrap.append(...sh, rc, ...hs);
+      const lay = () => { const k = img.clientWidth / W, x = c.x * k, y = c.y * k, w = c.w * k, hh = c.h * k, IW = img.clientWidth, IH = img.clientHeight;
+        Object.assign(rc.style, { left: x + 'px', top: y + 'px', width: w + 'px', height: hh + 'px' });
+        Object.assign(sh[0].style, { left: 0, top: 0, width: IW + 'px', height: y + 'px' }); Object.assign(sh[1].style, { left: 0, top: y + hh + 'px', width: IW + 'px', height: IH - y - hh + 'px' });
+        Object.assign(sh[2].style, { left: 0, top: y + 'px', width: x + 'px', height: hh + 'px' }); Object.assign(sh[3].style, { left: x + w + 'px', top: y + 'px', width: IW - x - w + 'px', height: hh + 'px' });
+        const pos = { nw: [x, y], ne: [x + w, y], sw: [x, y + hh], se: [x + w, y + hh] }; hs.forEach(e => { const [a, b] = pos[e.dataset.k]; e.style.left = a + 'px'; e.style.top = b + 'px'; }); };
+      let drag = null;
+      wrap.addEventListener('pointerdown', e => { const k = e.target.dataset.k || (e.target === rc ? 'move' : null); if (!k) return; e.preventDefault(); wrap.setPointerCapture(e.pointerId); drag = { k, x: e.clientX, y: e.clientY, c: { ...c } }; });
+      wrap.addEventListener('pointermove', e => { if (!drag) return; const s = W / img.clientWidth, dx = (e.clientX - drag.x) * s, dy = (e.clientY - drag.y) * s, o = drag.c; let { x, y, w, h: hh } = o;
+        if (drag.k === 'move') { x = Math.min(Math.max(0, o.x + dx), W - o.w); y = Math.min(Math.max(0, o.y + dy), H - o.h); }
+        else { if (drag.k.includes('w')) { x = Math.min(Math.max(0, o.x + dx), o.x + o.w - 20); w = o.x + o.w - x; } if (drag.k.includes('e')) w = Math.min(Math.max(20, o.w + dx), W - o.x);
+          if (drag.k.includes('n')) { y = Math.min(Math.max(0, o.y + dy), o.y + o.h - 20); hh = o.y + o.h - y; } if (drag.k.includes('s')) hh = Math.min(Math.max(20, o.h + dy), H - o.y); }
+        c = { x, y, w, h: hh }; lay(); });
+      wrap.addEventListener('pointerup', () => drag = null);
+      modal(h('div', null, h('h2', null, title || 'Обріж сертифікат'), h('p', null, 'Прибери рамки й поля — на сайті картка має пропорції самого сертифіката'), wrap,
+        h('div', { class: 'mod-f' }, h('button', { class: 'btn ghost', onclick: () => { c = autoTrim(im); lay(); } }, 'Автообрізка'), h('button', { class: 'btn ghost', onclick: () => { c = { x: 0, y: 0, w: W, h: H }; lay(); } }, 'Без обрізки'),
+          h('button', { class: 'btn', onclick: () => { closeModal(); res(null); } }, 'Пропустити'), h('button', { class: 'cta', onclick: () => { closeModal(); res(c); } }, h('span', { class: 'cl' }, 'Готово'), h('span', { class: 'ca', html: ARR })))), true);
+      requestAnimationFrame(lay); img.addEventListener('load', lay);
+    });
+  }
+  function autoTrim(im) {   // cut away flat borders (scans for the first rows / columns that differ from the edge colour)
+    const W = im.naturalWidth, H = im.naturalHeight, k = Math.min(1, 500 / Math.max(W, H)), w = Math.round(W * k), hh = Math.round(H * k);
+    const cv = document.createElement('canvas'); cv.width = w; cv.height = hh; const x = cv.getContext('2d'); x.drawImage(im, 0, 0, w, hh); const d = x.getImageData(0, 0, w, hh).data;
+    const px = (i, j) => { const o = (j * w + i) * 4; return [d[o], d[o + 1], d[o + 2], d[o + 3]]; }, ref = px(1, 1), diff = p => Math.abs(p[0] - ref[0]) + Math.abs(p[1] - ref[1]) + Math.abs(p[2] - ref[2]) + Math.abs(p[3] - ref[3]);
+    const rowBusy = j => { let n = 0; for (let i = 0; i < w; i += 2) if (diff(px(i, j)) > 40) n++; return n > w * .02; }, colBusy = i => { let n = 0; for (let j = 0; j < hh; j += 2) if (diff(px(i, j)) > 40) n++; return n > hh * .02; };
+    let t = 0, b = hh - 1, l = 0, r = w - 1; while (t < b && !rowBusy(t)) t++; while (b > t && !rowBusy(b)) b--; while (l < r && !colBusy(l)) l++; while (r > l && !colBusy(r)) r--;
+    if (b - t < hh * .2 || r - l < w * .2) return { x: 0, y: 0, w: W, h: H };
+    return { x: Math.max(0, l / k - 1), y: Math.max(0, t / k - 1), w: Math.min(W, (r - l + 1) / k + 2), h: Math.min(H, (b - t + 1) / k + 2) };
+  }
+  function certsField(label, p, o = {}) {
+    const grid = h('div', { class: 'certs' }); let dragI = -1;
+    const draw = () => {
+      const l = get(p) || [];
+      grid.replaceChildren(...l.map((c, i) => {
+        const im = h('div', { class: 'im', draggable: 'true', style: { backgroundImage: 'url(' + certSrc(c.id) + ')' } });
+        const link = h('input', { type: 'url', placeholder: 'Посилання NoFakeGains (необовʼязково)' }); link.value = c.href || '';
+        link.addEventListener('input', () => { const v = link.value.trim(); if (v) c.href = v; else delete c.href; changed(); });
+        const el = h('div', { class: 'crt' }, im, c.href ? h('span', { class: 'badge mint nfg' }, 'NFG') : null, link,
+          h('div', { class: 'row sp' }, o.orbit ? toggleInline(c, 'orbit', 'В орбіті') : h('span'), h('div', { class: 'row' },
+            h('button', { type: 'button', class: 'ic', title: 'Лівіше', onclick: () => mv(i, -1) }, '←'), h('button', { type: 'button', class: 'ic', title: 'Правіше', onclick: () => mv(i, 1) }, '→'),
+            h('button', { type: 'button', class: 'ic bad', title: 'Видалити', onclick: () => { l.splice(i, 1); changed(); draw(); } }, '×'))));
+        im.addEventListener('dragstart', () => { dragI = i; el.classList.add('drag'); }); im.addEventListener('dragend', () => { el.classList.remove('drag'); dragI = -1; });
+        el.addEventListener('dragover', e => { if (dragI >= 0) { e.preventDefault(); el.classList.add('over'); } }); el.addEventListener('dragleave', () => el.classList.remove('over'));
+        el.addEventListener('drop', e => { el.classList.remove('over'); if (dragI < 0 || dragI === i) return; e.preventDefault(); const [x] = l.splice(dragI, 1); l.splice(i, 0, x); changed(); draw(); });
+        return el; }),
+        h('button', { type: 'button', class: 'crt up', onclick: async () => add(await pickFiles('image/*', true)) }, '+ Додати сертифікати', h('br'), h('span', { class: 'hint' }, 'можна кілька одразу або перетягнути сюди')));
+    };
+    const toggleInline = (c, k, t) => { const i = h('input', { type: 'checkbox' }); i.checked = c[k] !== false; i.addEventListener('change', () => { if (i.checked) delete c[k]; else c[k] = false; changed(); }); return h('label', { class: 'sw', style: { fontSize: '12px' } }, i, t); };
+    const mv = (i, d) => { const l = get(p), j = i + d; if (j < 0 || j >= l.length) return; [l[i], l[j]] = [l[j], l[i]]; changed(); draw(); };
+    const add = async files => { if (!files.length || noStore()) return; if (!get(p)) set(p, []);
+      for (const f of files) { try { const im = await loadImg(f), c = await cropper(im, files.length > 1 ? 'Обріж: ' + f.name : null), r = await processImage(im, { crop: c || undefined, max: 1200 });
+          toast('Завантажую ' + f.name + '…'); const u = await upload(r.blob, 'cert', r.ext); get(p).push({ id: u, ar: +(r.w / r.h).toFixed(3) }); changed(); draw(); }
+        catch (e) { toast(e.message, true); } } toast('Сертифікати додано'); };
+    dropZone(grid, /^image\//, add); draw();
+    return h('div', { class: 'f ' + (o.col || 'c12') }, h('span', { class: 'cap' }, label), o.hint ? h('span', { class: 'hint', html: o.hint }) : null, grid);
+  }
+
+  /* video review: upload with progress, the cover from a chosen frame, the length filled in */
+  function videoField(p) {
+    const c = get(p), bar = h('div', { class: 'bar', hidden: true }, h('i')), vid = h('video', { controls: true, playsinline: true, preload: 'metadata', style: { width: '100%', borderRadius: '12px', background: '#000', maxHeight: '320px' } });
+    const poster = h('div', { class: 'ph-box wide' }), info = h('span', { class: 'hint' });
+    const draw = () => { vid.hidden = !c.video; if (c.video && vid.dataset.src !== c.video) { vid.src = media(c.video); vid.dataset.src = c.video; vid.crossOrigin = 'anonymous'; }
+      poster.style.backgroundImage = c.poster ? 'url(' + media(c.poster) + ')' : ''; poster.replaceChildren(c.poster ? '' : h('span', { class: 'em' }, 'Обкладинка зʼявиться тут')); };
+    const go = async files => { const f = files[0]; if (!f || noStore()) return; if (!/mp4|webm|quicktime/.test(f.type)) return toast('Потрібен файл MP4 (H.264) або WebM', true);
+      if (/quicktime/.test(f.type)) toast('MOV з iPhone може не грати в Chrome — краще MP4 (H.264)', true);
+      try { bar.hidden = false; const ext = /webm/.test(f.type) ? 'webm' : /quicktime/.test(f.type) ? 'mov' : 'mp4';
+        info.textContent = 'Завантажую ' + (f.size / 1048576).toFixed(0) + ' МБ…';
+        const u = await upload(f, 'video', ext, k => { bar.firstChild.style.width = k * 100 + '%'; info.textContent = 'Завантажую… ' + Math.round(k * 100) + '%'; });
+        c.video = u; vid.src = URL.createObjectURL(f); vid.dataset.src = u; changed(); info.textContent = 'Відео завантажено — обери кадр для обкладинки й натисни «Взяти цей кадр»';
+        vid.addEventListener('loadedmetadata', () => { if (!c.dur && vid.duration) { const m = Math.round(vid.duration / 60); c.dur = vid.duration >= 60 ? m + ' хв' : Math.round(vid.duration) + ' с'; changed(); render(); } }, { once: true });
+        draw(); } catch (e) { toast(e.message, true); info.textContent = ''; } finally { bar.hidden = true; } };
+    const grab = async () => { if (!vid.videoWidth) return toast('Спершу запусти відео й зупини на потрібному кадрі', true);
+      try { const cv = document.createElement('canvas'), k = Math.min(1, 1280 / vid.videoWidth); cv.width = Math.round(vid.videoWidth * k); cv.height = Math.round(vid.videoHeight * k); cv.getContext('2d').drawImage(vid, 0, 0, cv.width, cv.height);
+        const r = await processImage(cv, { max: 1280 }); c.poster = await upload(r.blob, 'poster', r.ext); changed(); draw(); toast('Обкладинку збережено'); }
+      catch (e) { toast('Не вдалося взяти кадр: ' + e.message, true); } };
+    const dz = h('div', { class: 'drop' }, h('span', null, 'Перетягни відео сюди або'), h('div', { class: 'row' }, h('button', { type: 'button', class: 'btn sm', onclick: async () => go(await pickFiles('video/mp4,video/webm,video/quicktime')) }, 'Обрати відео'),
+      h('button', { type: 'button', class: 'btn sm', onclick: grab }, 'Взяти цей кадр'), h('button', { type: 'button', class: 'btn sm ghost', onclick: async () => { const f = (await pickFiles('image/*'))[0]; if (!f) return; const r = await processImage(await loadImg(f), { max: 1280 }); c.poster = await upload(r.blob, 'poster', r.ext); changed(); draw(); } }, 'Своя обкладинка')),
+      bar, info, h('span', { class: 'hint' }, 'MP4 (H.264), до 1080p. Файл іде одразу в сховище, на сайті грає у вікні відгуку.'));
+    dropZone(dz, /^video\//, go); draw();
+    return h('div', { class: 'f c12' }, h('span', { class: 'cap' }, 'Відео-інтервʼю'), h('div', { class: 'media' }, h('div', { style: { flex: '1 1 300px', minWidth: 0 } }, vid), h('div', { class: 'f' }, h('span', { class: 'cap' }, 'Обкладинка'), poster)), dz);
+  }
+
+  /* reorderable list of rows */
+  function rows(list, o) {
+    const box = h('div', { class: 'items' }); let dragI = -1;
+    list.forEach((x, i) => {
+      const hd = h('span', { class: 'hd', title: 'Перетягни, щоб змінити порядок', draggable: 'true' }, '⋮⋮');
+      const el = h('div', { class: 'it' + (o.on === i ? ' on' : '') + (o.hid && o.hid(x) ? ' hid' : ''), onclick: e => { if (!e.target.closest('button,.hd,input,label')) o.pick(i); } }, hd, o.item(x, i),
+        h('div', { class: 'ops' }, h('button', { type: 'button', class: 'ic', title: 'Вище', onclick: () => o.move(i, i - 1) }, '↑'), h('button', { type: 'button', class: 'ic', title: 'Нижче', onclick: () => o.move(i, i + 1) }, '↓'),
+          o.dup ? h('button', { type: 'button', class: 'ic', title: 'Дублювати', onclick: () => o.dup(i) }, '⧉') : null, o.del ? h('button', { type: 'button', class: 'ic bad', title: 'Видалити', onclick: () => o.del(i) }, '×') : null));
+      hd.addEventListener('dragstart', e => { dragI = i; el.classList.add('drag'); e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setDragImage(el, 20, 20); });
+      hd.addEventListener('dragend', () => { el.classList.remove('drag'); dragI = -1; });
+      el.addEventListener('dragover', e => { if (dragI >= 0) { e.preventDefault(); el.classList.add('over'); } }); el.addEventListener('dragleave', () => el.classList.remove('over'));
+      el.addEventListener('drop', e => { el.classList.remove('over'); if (dragI >= 0 && dragI !== i) { e.preventDefault(); o.move(dragI, i); } });
+      box.append(el);
+    });
+    return box;
+  }
+  function moveIn(list, a, b) { if (b < 0 || b >= list.length || a === b) return false; const [x] = list.splice(a, 1); list.splice(b, 0, x); return true; }
+
+  /* ---------- sections ---------- */
+  const R = {};
+  const head = (t, p, extra) => h('div', { class: 'sec-h' }, h('div', null, h('h1', null, t), p ? h('p', null, p) : null), extra || null);
+  const KIND = [['text', 'Текстовий відгук'], ['video', 'Відео-інтервʼю'], ['none', 'Без відгуку']];
+
+  R.cases = () => {
+    const L = S.c.cases; if (S.sel.case >= L.length) S.sel.case = L.length - 1;
+    const list = rows(L, { on: S.sel.case, hid: c => c.show === false, pick: i => { S.sel.case = i; render(); preview(false); },
+      item: c => [h('div', { class: 'th', style: { backgroundImage: c.photo ? 'url(' + media(c.photo) + ')' : '', filter: 'grayscale(1)' } }),
+        h('div', { class: 'tt' }, h('b', null, (c.fn || 'Без імені') + ' ' + (c.ln || '')), h('span', null, [c.pay, c.top].filter(Boolean).join(' · ') || '—')),
+        h('span', { class: 'badge' + (c.kind === 'none' ? ' off' : '') }, KIND.find(k => k[0] === c.kind)[1]), c.show === false ? h('span', { class: 'badge off' }, 'Приховано') : null],
+      move: (a, b) => { if (moveIn(L, a, b)) { if (S.sel.case === a) S.sel.case = b; changed(); render(); } },
+      dup: i => { const x = clone(L[i]); x.fn += ' (копія)'; x.show = false; L.splice(i + 1, 0, x); S.sel.case = i + 1; changed(); render(); },
+      del: i => confirmBox('Видалити кейс?', (L[i].fn || '') + ' ' + (L[i].ln || '') + ' зникне з сайту після публікації. Відкотити можна в «Історії».', 'Видалити', () => {
+        if (L.filter(c => c.show !== false).length <= 1 && L[i].show !== false) return toast('На сайті має лишитися хоча б один кейс', true); L.splice(i, 1); S.sel.case = Math.max(0, i - 1); changed(); render(); }, true) });
+    const add = h('button', { class: 'add', onclick: () => { L.push({ show: true, kind: 'none', fn: 'Імʼя', ln: 'Прізвище', nick: '', year: String(new Date().getFullYear() - 1), pay: '$0', top: '', tc: 'трейдерів України за версією NOFAKEGAINS', loss: '', quote: '', video: '', poster: '', dur: '', ig: '', photo: '', pos: '50% 50%', nfg: '', certs: [] }); S.sel.case = L.length - 1; changed(); render(); } }, '+ Додати кейс');
+    const c = L[S.sel.case], P = k => ['cases', S.sel.case, k];
+    const ed = !c ? null : h('div', { class: 'plate' },
+      h('div', { class: 'row sp' }, h('h2', { style: { margin: 0 } }, (c.fn || '') + ' ' + (c.ln || '')), toggle('Показувати на сайті', P('show'), { on: () => render() })),
+      h('div', { class: 'grid', style: { marginTop: '18px' } },
+        field('Імʼя', P('fn'), { col: 'c4', max: 14 }), field('Прізвище', P('ln'), { col: 'c4', max: 14, hint: 'Можна лишити порожнім' }), field('Discord нікнейм', P('nick'), { col: 'c4', hint: 'Порожньо — поле сховане' }),
+        field('У трейдингу з', P('year'), { col: 'c3', max: 4, inputmode: 'numeric' }), field('Виплати з проп-фірм', P('pay'), { col: 'c3', max: 9, ph: '$164,111', hint: 'Тисячі через кому' }),
+        field('Рейтинг', P('top'), { col: 'c3', max: 8, ph: 'TOP 11', hint: 'Порожньо — сховано' }), field('Збитки на шляху', P('loss'), { col: 'c3', max: 9, ph: '~$13.700' }),
+        field('Примітка до рейтингу', P('tc'), { col: 'c6', max: 44 }), field('Instagram (посилання)', P('ig'), { col: 'c6', type: 'url', ph: 'https://www.instagram.com/…', hint: 'Порожньо — поле сховане' }),
+        photoField('Фото учня', P('photo'), { bw: true, pos: P('pos') }),
+        h('div', { class: 'f c12' }, h('h3', { style: { margin: '6px 0 0' } }, 'Відгук')),
+        seg(null, P('kind'), KIND, { on: () => render() }),
+        c.kind === 'text' ? field('Текст відгуку', P('quote'), { rows: 4, max: 220, dots: false, hint: 'Короткий відгук — до ~220 знаків, переноси як на сайті' }) : null,
+        c.kind === 'video' ? videoField(['cases', S.sel.case]) : null,
+        c.kind === 'video' ? field('Тривалість (підпис під відео)', P('dur'), { col: 'c4', max: 8, ph: '12 хв' }) : null,
+        c.kind === 'none' ? h('div', { class: 'hint c12' }, 'Блок відгуку на сайті прихований') : null,
+        h('div', { class: 'f c12' }, h('h3', { style: { margin: '6px 0 0' } }, 'Підтвердження виплат')),
+        field('Сертифікат NoFakeGains (посилання)', P('nfg'), { type: 'url', ph: 'https://nofakegains.com/cert/NFG-…', hint: 'Якщо сертифікатів-картинок немає — кнопка «Сертифікат NoFakeGains» веде сюди' }),
+        certsField('Сертифікати виплат (вікно «Виплати учня»)', P('certs'), { hint: 'Сертифікат із посиланням NFG відкриває його у новій вкладці; якщо є хоча б один такий — кнопка називається «Сертифікат NoFakeGains»' })));
+    return [head('Кейси', 'Учні в тому порядку, як на сайті. Приховані не видно, але вони зберігаються'), h('div', { class: 'stack' }, list, add), h('div', { style: { height: '14px' } }), ed];
+  };
+
+  R.prog = () => {
+    const L = S.c.prog.stages; if (S.sel.stage != null && S.sel.stage >= L.length) S.sel.stage = L.length - 1;
+    const list = rows(L, { on: S.sel.stage, pick: i => { S.sel.stage = S.sel.stage === i ? null : i; render(); preview(false); },
+      item: (s, i) => [h('span', { class: 'no' }, String(i + 1).padStart(2, '0')), h('div', { class: 'tt' }, h('b', null, s.t || 'Без назви'), h('span', null, s.l + ' ' + plu(s.l, ['урок', 'уроки', 'уроків']) + ' · ' + s.p + ' практичних'))],
+      move: (a, b) => { if (moveIn(L, a, b)) { if (S.sel.stage === a) S.sel.stage = b; changed(); render(); } },
+      del: i => confirmBox('Видалити етап «' + L[i].t + '»?', 'Кількість етапів на сайті перерахується сама.', 'Видалити', () => { if (L.length <= 1) return toast('Має лишитися хоча б один етап', true); L.splice(i, 1); S.sel.stage = null; changed(); render(); }, true) });
+    const s = S.sel.stage != null ? L[S.sel.stage] : null, P = k => ['prog', 'stages', S.sel.stage, k];
+    const ed = s ? h('div', { class: 'plate' }, h('h2', null, 'Етап ' + String(S.sel.stage + 1).padStart(2, '0')), h('div', { class: 'grid' },
+      field('Назва', P('t'), { col: 'c6', max: 26 }), field('Уроків', P('l'), { col: 'c3', type: 'number' }), field('Практичних', P('p'), { col: 'c3', type: 'number' }),
+      field('Опис', P('d'), { rows: 8, max: 700, hint: 'Суцільний абзац із крапками; підсумкове речення («У результаті…», «Після цього блоку…») — з нового рядка, без крапки в кінці' }))) : h('p', { class: 'hint' }, 'Обери етап, щоб редагувати назву й опис');
+    return [head('Програма', 'Етапи йдуть по порядку. «' + L.length + ' етапів» на сайті — у шкалі, блоці 3 і тарифах — рахується саме'),
+      h('div', { class: 'plate' }, h('div', { class: 'grid' }, field('Уроків у шапці програми', ['prog', 'lessons'], { col: 'c4', type: 'number', hint: 'Сума по етапах: ' + L.reduce((a, x) => a + (+x.l || 0), 0) }), field('Практичних завдань у шапці', ['prog', 'practice'], { col: 'c4', type: 'number', hint: 'Сума по етапах: ' + L.reduce((a, x) => a + (+x.p || 0), 0) }))),
+      h('div', { style: { height: '12px' } }), h('div', { class: 'stack' }, list, h('button', { class: 'add', onclick: () => { L.push({ t: 'Новий етап', d: 'Опис етапу\nУ результаті ви', l: 2, p: 2 }); S.sel.stage = L.length - 1; changed(); render(); } }, '+ Додати етап')), h('div', { style: { height: '14px' } }), ed];
+  };
+  const plu = (n, f) => { n = Math.abs(+n || 0) % 100; const d = n % 10; return f[n > 10 && n < 15 ? 2 : d === 1 ? 0 : d >= 2 && d <= 4 ? 1 : 2]; };
+
+  R.tariffs = () => {
+    const card = i => { const t = S.c.tariffs[i], P = k => ['tariffs', i, k];
+      const items = h('div', { class: 'items' }); const drawItems = () => items.replaceChildren(...t.list.map((x, j) => { const inp = h('input', { type: 'text', style: { flex: 1, background: 'transparent', border: 0, outline: 'none', fontSize: '15px' } }); inp.value = x.t;
+        inp.addEventListener('input', () => { x.t = inp.value; changed(); }); const on = h('input', { type: 'checkbox', title: 'Входить у тариф' }); on.checked = x.on; on.addEventListener('change', () => { x.on = on.checked; changed(); });
+        return h('div', { class: 'it', style: { cursor: 'default' } }, h('label', { class: 'sw' }, on), inp, h('div', { class: 'ops' }, h('button', { type: 'button', class: 'ic', onclick: () => { if (moveIn(t.list, j, j - 1)) { changed(); drawItems(); } } }, '↑'), h('button', { type: 'button', class: 'ic', onclick: () => { if (moveIn(t.list, j, j + 1)) { changed(); drawItems(); } } }, '↓'), h('button', { type: 'button', class: 'ic bad', onclick: () => { t.list.splice(j, 1); changed(); drawItems(); } }, '×'))); }),
+        h('button', { class: 'add', onclick: () => { t.list.push({ t: 'новий пункт', on: true }); changed(); drawItems(); } }, '+ Пункт'));
+      drawItems();
+      return h('div', { class: 'plate c12', style: { margin: 0 } }, h('h2', null, i ? 'Group Mentorship' : 'Self'), h('div', { class: 'grid' },
+        field('Назва', P('name'), { col: 'c8', max: 18 }), field('Ціна', P('price'), { col: 'c4', max: 6, ph: '$629' }),
+        field('Підзаголовок', P('sub'), { rows: 2, max: 30, lines: 2 }), field('Кнопка', P('cta'), { rows: 2, max: 14, lines: 3, hint: 'Кожен рядок — окремий рядок на кнопці' }),
+        i ? field('Плашка «оплата частинами»', P('pay'), { rows: 3, max: 14, hint: 'Останній рядок — внизу плашки. Порожньо — плашки немає' }) : null,
+        h('div', { class: 'f c12' }, h('span', { class: 'cap' }, 'Список'), h('span', { class: 'hint', html: 'Вимкнений перемикач — пункт закреслений (не входить). <b>{N} етапів</b> — підставиться кількість етапів. Закреслити частину: ~~так~~' }), items))); };
+    return [head('Тарифи', 'Self і Group Mentorship: ціни, списки, кнопки. Рядки списків обох карток стоять навпроти — тримай однакову кількість'), h('div', { class: 'grid' }, card(0), card(1))];
+  };
+
+  R.mentors = () => {
+    const i = S.sel.mentor, m = S.c.mentors[i], P = (...k) => ['mentors', i, ...k];
+    const soc = h('div', { class: 'items' }); const drawSoc = () => soc.replaceChildren(...m.soc.map((s, j) => h('div', { class: 'it', style: { cursor: 'default' } },
+      ...[['t', 'Назва', '110px'], ['u', 'https://…', null], ['s', 'Коротко', '70px']].map(([k, ph, w]) => { const x = h('input', { type: 'text', placeholder: ph, style: { flex: w ? '0 0 ' + w : 1, minWidth: 0, background: 'transparent', border: 0, outline: 'none', fontSize: '14px' } }); x.value = s[k] || ''; x.addEventListener('input', () => { s[k] = x.value; changed(); }); return x; }),
+      h('div', { class: 'ops' }, h('button', { type: 'button', class: 'ic bad', onclick: () => { m.soc.splice(j, 1); changed(); drawSoc(); } }, '×')))),
+      h('button', { class: 'add', onclick: () => { m.soc.push({ t: 'Telegram', u: 'https://t.me/', s: 'TG' }); changed(); drawSoc(); } }, '+ Соцмережа'));
+    drawSoc();
+    return [head('Ментори', 'Дошки менторів розраховані на двох — тексти й фото міняються, кількість ні', h('div', { class: 'seg' }, ...S.c.mentors.map((x, k) => h('button', { class: k === i ? 'on' : '', onclick: () => { S.sel.mentor = k; render(); } }, x.name.replace(/\n/g, ' '))))),
+      h('div', { class: 'plate' }, h('div', { class: 'grid' },
+        field('Імʼя (2 рядки)', P('name'), { col: 'c6', rows: 2, lines: 2, max: 12 }), field('Досвід (рядок під іменем)', P('exp'), { col: 'c6', rows: 2, max: 46 }),
+        photoField('Фото', P('photo'), { sq: true, kind: 'photo', max: 900, text: 'Перетягни фото ментора або' }),
+        h('div', { class: 'f c12' }, h('span', { class: 'cap' }, 'Соцмережі'), h('span', { class: 'hint' }, '«Коротко» — підпис на телефоні (Inst, TG, YT)'), soc),
+        field('Сума на плашці', P('amt'), { col: 'c4', max: 12, hint: 'Ширина плашки розрахована під нинішню довжину' }), field('Підпис плашки', P('lbl'), { col: 'c4', rows: 2, lines: 2, max: 20 }), field('Підпис на телефоні', P('lblm'), { col: 'c4', rows: 3, lines: 3, max: 14 }),
+        field('Текст біля фото (капсом)', P('cap'), { col: 'c6', rows: 8, max: 22, hint: 'Кожен рядок — окремо; порожній рядок — відступ' }),
+        h('div', { class: 'f c6' }, field('NoFakeGains (бейдж на фото)', P('nfg'), { type: 'url', hint: 'Порожньо — бейджа немає' }), field('Заголовок вікна сертифікатів', P('certTitle'), { max: 26 }), field('Кнопка сертифікатів', P('certBtn'), { max: 22 })),
+        certsField('Сертифікати (орбіта + вікно)', P('certs'), { orbit: true, hint: '«В орбіті» — картка крутиться біля дошки; вимкнений — лише у вікні' }),
+        h('details', { class: 'c12' }, h('summary', { class: 'cap', style: { cursor: 'pointer' } }, 'Геометрія дошки (для дизайнера)'), h('div', { class: 'grid', style: { marginTop: '12px' } },
+          ...['bw', 'bar', 'sx', 'cx'].map(k => field({ bw: 'Ширина дошки', bar: 'Ширина плашки суми', sx: 'X плашки підпису', cx: 'X сертифікатів' }[k], P('lay', k), { col: 'c3', type: 'number' })))))) ];
+  };
+
+  R.faq = () => {
+    const L = S.c.faq; if (S.sel.faq != null && S.sel.faq >= L.length) S.sel.faq = null;
+    const list = rows(L, { on: S.sel.faq, pick: i => { S.sel.faq = S.sel.faq === i ? null : i; render(); },
+      item: (f, i) => [h('span', { class: 'no' }, String(i + 1).padStart(2, '0')), h('div', { class: 'tt' }, h('b', null, f.q))],
+      move: (a, b) => { if (moveIn(L, a, b)) { changed(); render(); } } });   // v402: no add / delete — the board is drawn for exactly 6 questions
+    const f = S.sel.faq != null ? L[S.sel.faq] : null, P = k => ['faq', S.sel.faq, k];
+    const ed = f ? h('div', { class: 'plate' }, h('div', { class: 'grid' },
+      field('Питання', P('q'), { max: 60 }), field('Як питання стоїть на плашці', P('qb'), { rows: 3, lines: 3, max: 24, hint: 'Ті самі слова, розбиті на 2–3 рядки' }),
+      field('Відповідь', P('a'), { rows: 6, dots: true, hint: MD }))) : null;
+    return [head('FAQ', 'Доска FAQ розрахована на 6 питань' + (L.length !== 6 ? ' — зараз ' + L.length + ', перевір превʼю' : '')), h('div', { class: 'stack' }, list), h('div', { style: { height: '14px' } }), ed];
+  };
+
+  R.texts = () => {
+    const ST = [['n16', 'Модулів (число = кількість етапів)'], ['n30', 'Днів навчання'], ['n100', 'Годин роботи'], ['inf', 'Доступ'], ['n2', 'Ментори'], ['n0', 'Модулів «заради обʼєму»']];
+    return [head('Тексти', 'Плашки блоку «30 днів Group Mentorship», маніфест і фрази футера'),
+      ...ST.map(([k, t]) => { const P = x => ['stats', k, x]; return h('div', { class: 'plate' }, h('h2', null, t), h('div', { class: 'grid' },
+        k === 'n16' ? h('div', { class: 'f c3' }, h('span', { class: 'cap' }, 'Число'), h('div', { style: { fontSize: '30px', fontWeight: 300 } }, String(S.c.prog.stages.length))) : field('Число', P('n'), { col: 'c3', max: 4 }),
+        field('Одиниця', P('u'), { col: 'c3', max: 10 }), field('Опис — монітор (рядки як на сайті)', P('d'), { col: 'c6', rows: 4, dots: true }),
+        field('Опис — телефон (необовʼязково)', P('dm'), { rows: 3, dots: true, hint: 'Порожньо — той самий текст, рядки розставляться самі' }))); }),
+      h('div', { class: 'plate' }, h('h2', null, 'Маніфест (машинка в блоці 3)'), h('div', { class: 'grid' }, field('Фраза 1', ['man', 0], { col: 'c6', rows: 3 }), field('Фраза 2', ['man', 1], { col: 'c6', rows: 3 }))),
+      h('div', { class: 'plate' }, h('h2', null, 'Футер (машинка)'), h('div', { class: 'grid' }, field('Фраза 1', ['ftw', 0], { col: 'c6', rows: 4, dots: true }), field('Фраза 2', ['ftw', 1], { col: 'c6', rows: 4, dots: true })))];
+  };
+
+  /* Kyiv wall time ⇄ ISO with the right offset (summer +03:00, winter +02:00) */
+  function kyivParts(ms) { const p = {}; new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Kyiv', hourCycle: 'h23', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }).formatToParts(new Date(ms)).forEach(x => p[x.type] = x.value); return p; }
+  function kyivISO(d, t) {
+    const [Y, M, D] = d.split('-').map(Number), [hh, mm] = t.split(':').map(Number), want = Date.UTC(Y, M - 1, D, hh, mm); let utc = want - 3 * 36e5;
+    for (let i = 0; i < 3; i++) { const p = kyivParts(utc); utc += want - Date.UTC(+p.year, +p.month - 1, +p.day, +p.hour, +p.minute); }
+    const off = Math.round((want - utc) / 6e4), s = off >= 0 ? '+' : '-', a = Math.abs(off); return d + 'T' + t + ':00' + s + String(Math.floor(a / 60)).padStart(2, '0') + ':' + String(a % 60).padStart(2, '0');
+  }
+  R.links = () => {
+    const st = S.c.stream.start, ms = Date.parse(st), p = st && !isNaN(ms) ? kyivParts(ms) : null;
+    const di = h('input', { type: 'date' }), ti = h('input', { type: 'time' }); if (p) { di.value = p.year + '-' + p.month + '-' + p.day; ti.value = p.hour + ':' + p.minute; } else ti.value = '18:00';
+    const on = h('input', { type: 'checkbox' }); on.checked = !!st;
+    const info = h('div', { class: 'hint' });
+    const upd = () => { if (on.checked && di.value && ti.value) S.c.stream.start = kyivISO(di.value, ti.value); else S.c.stream.start = ''; changed();
+      const x = Date.parse(S.c.stream.start); info.textContent = !S.c.stream.start ? 'Відліку немає' : x < Date.now() ? 'Ця дата вже минула — відлік не показується' : 'Відлік показує: до старту ' + Math.floor((x - Date.now()) / 864e5) + ' дн.'; };
+    [di, ti].forEach(e => e.addEventListener('change', upd)); on.addEventListener('change', upd); setTimeout(() => { const x = Date.parse(S.c.stream.start); info.textContent = !S.c.stream.start ? 'Відліку немає' : x < Date.now() ? 'Ця дата вже минула — відлік не показується' : 'Відлік показує: до старту ' + Math.floor((x - Date.now()) / 864e5) + ' дн.'; });
+    return [head('Посилання й потік', 'Куди ведуть кнопки й коли стартує наступний потік'),
+      h('div', { class: 'plate' }, h('h2', null, 'Старт потоку'), h('div', { class: 'grid' }, h('div', { class: 'f c12' }, h('label', { class: 'sw' }, on, 'Показувати відлік на першому екрані')),
+        h('div', { class: 'f c4' }, h('span', { class: 'cap' }, 'Дата'), di), h('div', { class: 'f c4' }, h('span', { class: 'cap' }, 'Час (Київ)'), ti), h('div', { class: 'f c12' }, info))),
+      h('div', { class: 'plate' }, h('h2', null, 'Посилання'), h('div', { class: 'grid' },
+        field('Discord — YARD Open Server', ['links', 'discord'], { type: 'url', hint: 'Кнопки «Увійти в YARD Open Server», футер, «підтримку YARD» у формі' }),
+        field('Telegram підтримки', ['links', 'support'], { type: 'url', hint: 'Кнопка в блоці «Підтримка»' }),
+        h('p', { class: 'hint c12' }, 'Соцмережі менторів — у розділі «Ментори», посилання учнів — у кейсах. Кнопки «Обрати навчання» ведуть до тарифів, тарифи відкривають форму заявки')))];
+  };
+
+  R.hist = () => {
+    const box = h('div', { class: 'hist' }, h('p', { class: 'hint' }, 'Завантажую…'));
+    api('history').then(r => box.replaceChildren(...(r.list.length ? [] : [h('p', { class: 'hint' }, 'Ще немає публікацій')]), ...r.list.map((x, i) => h('div', { class: 'it' }, h('div', { class: 'tt' }, h('b', null, x.message.replace(/^admin:\s*/, '')), h('span', null, dt(x.date) + (i === 0 ? ' · зараз на сайті' : ''))),
+      i ? h('button', { class: 'btn sm', onclick: () => confirmBox('Відкотити сайт до цієї версії?', dt(x.date) + ' — ' + x.message.replace(/^admin:\s*/, '') + '. Поточна версія лишиться в історії', 'Відкотити', async () => {
+        try { const r2 = await api('rollback', { commit: x.commit }); S.pub = r2.content; S.sha = r2.sha; S.c = clone(r2.content); localStorage.removeItem(LS); toast('Відкочено — сайт оновиться за хвилину'); render(); preview(false); watchLive(r2.pub.id); } catch (e) { toast(e.message, true); } }) }, 'Відкотити') : h('span', { class: 'badge mint' }, 'Зараз')))))
+      .catch(e => box.replaceChildren(h('p', { class: 'warn' }, e.message)));
+    return [head('Історія', 'Кожна публікація зберігається. Відкат створює нову публікацію з тим старим вмістом'), h('div', { class: 'plate' }, box)];
+  };
+
+  /* who may sign in: owners come from Vercel (ADMIN_EMAILS) and can't be removed here; owners add / remove the rest */
+  R.admins = () => {
+    const box = h('div', { class: 'plate' }, h('p', { class: 'hint' }, 'Завантажую…'));
+    const draw = r => {
+      const row = (email, meta, btn) => h('div', { class: 'it' }, h('div', { class: 'tt' }, h('b', null, email), h('span', null, meta)), btn);
+      const owners = r.owners.map(e => row(e, e === r.me ? 'власник · це ти' : 'власник', h('span', { class: 'badge off' }, 'Власник')));
+      const rest = r.list.map(a => row(a.email, (a.email === r.me ? 'це ти · ' : '') + 'додав ' + (a.by || '—') + (a.at ? ', ' + dt(a.at) : ''),
+        r.canEdit ? h('button', { class: 'btn sm bad', onclick: () => confirmBox('Прибрати адміна?', a.email + ' більше не зможе увійти в адмінку', 'Прибрати', async () => {
+          try { draw(await api('admins', { remove: a.email })); toast('Доступ прибрано'); } catch (e) { toast(e.message, true); } }, true) }, 'Прибрати') : null));
+      const inp = h('input', { type: 'email', placeholder: 'name@gmail.com', autocomplete: 'off', spellcheck: 'false' });
+      const add = async () => { const v = inp.value.trim(); if (!v) return inp.focus(); try { draw(await api('admins', { add: v })); toast('Додано: ' + v.toLowerCase()); } catch (e) { toast(e.message, true); } };
+      inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); add(); } });
+      box.replaceChildren(h('h2', null, 'Хто має доступ'), h('div', { class: 'hist' }, owners, rest), ...[
+        r.canEdit ? [h('h3', null, 'Додати адміна'), h('div', { class: 'grid' }, h('label', { class: 'f c8' }, h('span', { class: 'cap' }, 'Пошта Google'), inp),
+          h('div', { class: 'f c4', style: { justifyContent: 'flex-end' } }, h('button', { class: 'btn', style: { height: '40px' }, onclick: add }, 'Додати'))),
+          h('p', { class: 'hint', style: { marginTop: '12px' } }, 'Новий адмін входить на цій сторінці через Google з цією поштою. Власників змінюють лише в налаштуваннях Vercel (ADMIN_EMAILS).')]
+          : h('p', { class: 'hint', style: { marginTop: '12px' } }, 'Додавати й прибирати адмінів можуть лише власники.')].flat());
+    };
+    api('admins').then(draw).catch(e => box.replaceChildren(h('p', { class: 'warn' }, e.message)));
+    return [head('Адміни', 'Хто може входити в адмінку'), box];
+  };
+
+  /* ---------- render ---------- */
+  function tabs() { $('tabs').replaceChildren(...TABS.map(([k, t]) => h('button', { class: S.tab === k ? 'on' : '', onclick: () => { S.tab = k; render(); preview(true); scrollTo(0, 0); } }, t))); }
+  function render() { const y = scrollY; tabs(); $('ed').replaceChildren(...R[S.tab]().flat().filter(Boolean)); status(); scrollTo(0, y); }
+
+  /* ---------- publish ---------- */
+  function summary() {
+    const a = S.pub, b = S.c, out = [];
+    const nm = c => ((c.fn || '') + ' ' + (c.ln || '')).trim();
+    if (!same(a.cases, b.cases)) { const n0 = out.length;
+      if (a.cases.length === b.cases.length) b.cases.forEach((c, i) => { if (!same(c, a.cases[i])) out.push('Кейси: ' + (nm(c) === nm(a.cases[i]) ? '' : nm(a.cases[i]) + ' → ') + nm(c)); });
+      else { const an = a.cases.map(nm), bn = b.cases.map(nm); bn.filter(x => !an.includes(x)).forEach(x => out.push('Кейси: новий — ' + x)); an.filter(x => !bn.includes(x)).forEach(x => out.push('Кейси: прибрано — ' + x)); }
+      if (out.length === n0) out.push('Кейси: порядок'); }
+    if (!same(a.prog, b.prog)) out.push('Програма' + (a.prog.stages.length !== b.prog.stages.length ? ': ' + a.prog.stages.length + ' → ' + b.prog.stages.length + ' етапів' : ''));
+    if (!same(a.tariffs, b.tariffs)) out.push('Тарифи' + (a.tariffs.some((t, i) => t.price !== b.tariffs[i].price) ? ': ціни ' + b.tariffs.map(t => t.price).join(' / ') : ''));
+    if (!same(a.mentors, b.mentors)) out.push('Ментори');
+    if (!same(a.faq, b.faq)) out.push('FAQ');
+    if (!same(a.stats, b.stats) || !same(a.man, b.man) || !same(a.ftw, b.ftw)) out.push('Тексти');
+    if (!same(a.links, b.links)) out.push('Посилання');
+    if (!same(a.stream, b.stream)) out.push('Старт потоку');
+    return out;
+  }
+  $('bPub').addEventListener('click', () => {
+    const ch = summary(), msg = h('input', { type: 'text', placeholder: 'Коротко, що змінилось (необовʼязково)' }); msg.value = ch.join('; ').slice(0, 90);
+    modal(h('div', null, h('h2', null, 'Опублікувати?'), h('p', null, 'Зміни з’являться на yard.education приблизно за хвилину'), h('ul', { class: 'chg' }, ...ch.map(x => h('li', null, x))),
+      h('div', { class: 'f', style: { marginTop: '16px' } }, h('span', { class: 'cap' }, 'Підпис в історії'), msg),
+      h('div', { class: 'mod-f' }, h('button', { class: 'btn', onclick: closeModal }, 'Ще ні'), h('button', { class: 'cta', onclick: () => publish(msg.value) }, h('span', { class: 'cl' }, 'Опублікувати'), h('span', { class: 'ca', html: ARR })))));
+  });
+  async function publish(message) {
+    const steps = h('div', { class: 'steps' }, ...['Зберігаю на GitHub', 'Vercel викладає сайт', 'Готово'].map(t => h('div', null, h('i'), t)));
+    const mark = (k, ok) => steps.children[k].className = ok ? 'ok' : 'on';
+    $('mod').dataset.lock = 1; modal(h('div', null, h('h2', null, 'Публікую'), steps, h('div', { class: 'mod-f' })));
+    mark(0);
+    try { const r = await api('publish', { content: S.c, sha: S.sha, message }); mark(0, 1); mark(1);
+      S.c.pub = r.pub; S.pub = clone(S.c); S.sha = r.sha; S.draftAt = r.pub.at; localStorage.removeItem(LS); status();
+      const ok = await watchLive(r.pub.id); mark(1, 1); mark(2, ok); steps.children[2].lastChild.textContent = ok ? 'Готово — сайт оновлено' : 'Збережено. Сайт оновиться за кілька хвилин';
+      delete $('mod').dataset.lock; steps.parentNode.querySelector('.mod-f').append(h('a', { class: 'btn', href: '/', target: '_blank' }, 'Відкрити сайт'), h('button', { class: 'cta', onclick: closeModal }, h('span', { class: 'cl' }, 'Добре'), h('span', { class: 'ca', html: ARR })));
+    } catch (e) { delete $('mod').dataset.lock; closeModal(); toast(e.message, true); }
+  }
+  async function watchLive(id) {   // the deploy is done when the live content.js carries this publication's id
+    for (let i = 0; i < 60; i++) { await new Promise(r => setTimeout(r, i ? 4000 : 2500)); try { const t = await (await fetch('/content.js?v=' + Date.now(), { cache: 'no-store' })).text(); if (t.includes(id)) return true; } catch (e) {} }
+    return false;
+  }
+
+  /* ---------- phone check ---------- */
+  $('bPhone').addEventListener('click', async () => {
+    if (!S.cfg.r2) return toast('Для перевірки на телефоні потрібне сховище R2 — поки дивись превʼю в режимі «Телефон»', true);
+    try { await saveDraft(); } catch (e) {}
+    const url = location.origin + S.draftLink, inp = h('input', { type: 'text', readonly: true }); inp.value = url;
+    modal(h('div', null, h('h2', null, 'Перевір на телефоні'), h('p', null, 'Відкрий це посилання на телефоні — там сайт із чернеткою (зверху буде позначка «Чернетка»). Посилання не публічне, але не пересилай його стороннім'),
+      h('div', { class: 'f' }, inp), h('div', { class: 'mod-f' }, h('button', { class: 'btn', onclick: () => { navigator.clipboard && navigator.clipboard.writeText(url); toast('Скопійовано'); } }, 'Скопіювати'), h('a', { class: 'btn', href: url, target: '_blank' }, 'Відкрити тут'), h('button', { class: 'cta', onclick: closeModal }, h('span', { class: 'cl' }, 'Закрити'), h('span', { class: 'ca', html: ARR })))));
+  });
+
+  /* ---------- start ---------- */
+  $('bOut').addEventListener('click', () => confirmBox('Вийти з адмінки?', 'Незбережені в чернетку зміни лишаться в цьому браузері', 'Вийти', async () => { await api('logout', {}).catch(() => {}); location.reload(); }));
+  async function load() {
+    const r = await api('content');
+    S.pub = r.published.content; S.sha = r.published.sha; S.draftLink = r.draftLink; S.c = clone(S.pub);
+    let local = null; try { local = JSON.parse(localStorage.getItem(LS) || 'null'); } catch (e) {}
+    let draft = r.draft && !same(strip(r.draft.content), strip(S.pub)) ? r.draft : null;
+    if (draft && draft.sha !== S.sha) {   // the draft grew from an older version — the site was published (or changed in the repo) since; continuing it would undo that
+      const d = draft; draft = null; S.draftAt = d.savedAt;
+      setTimeout(() => modal(h('div', null, h('h2', null, 'Чернетка застаріла'), h('p', null, 'Спільну чернетку (' + d.by + ', ' + dt(d.savedAt) + ') почали до останнього оновлення сайту. Якщо продовжити її, зміни, опубліковані після неї, зникнуть'),
+        h('div', { class: 'mod-f' }, h('button', { class: 'btn', onclick: () => { S.c = clone(d.content); closeModal(); render(); changed(); preview(false); } }, 'Все одно відкрити чернетку'),
+          h('button', { class: 'cta', onclick: () => { closeModal(); toast('Відкрито сайт як зараз'); } }, h('span', { class: 'cl' }, 'Почати з того, що на сайті'), h('span', { class: 'ca', html: ARR }))))), 400);
+    }
+    if (draft) { S.c = clone(draft.content); S.draftAt = draft.savedAt; }
+    if (local && local.c && !same(strip(local.c), strip(S.pub)) && !same(strip(local.c), strip(S.c))) {
+      modal(h('div', null, h('h2', null, 'Є незбережені зміни'), h('p', null, 'У цьому браузері лишилися зміни від ' + dt(new Date(local.at).toISOString()) + ', яких немає ' + (draft ? 'в спільній чернетці' : 'на сайті') + '. Продовжити з ними?' + (local.sha && local.sha !== S.sha ? ' Увага: сайт відтоді оновлювали — продовження перезапише ті оновлення' : '')),
+        h('div', { class: 'mod-f' }, h('button', { class: 'btn', onclick: () => { localStorage.removeItem(LS); closeModal(); } }, 'Відкинути'), h('button', { class: 'cta', onclick: () => { S.c = local.c; closeModal(); render(); changed(); } }, h('span', { class: 'cl' }, 'Продовжити'), h('span', { class: 'ca', html: ARR })))));
+    } else if (draft) toast('Відкрито чернетку: ' + draft.by + ', ' + dt(draft.savedAt));
+    $('login').hidden = true; $('app').hidden = false; $('who').textContent = S.me; render(); preview(true);
+  }
+  function showLogin(cfg) {
+    $('login').hidden = false; $('app').hidden = true;
+    if (!cfg.ready) { $('lgSetup').hidden = false; $('lgSetup').innerHTML = 'Адмінку ще не підключено: у Vercel потрібні змінні <code>GITHUB_TOKEN</code> і <code>ADMIN_EMAILS</code>' + (cfg.google ? '' : ', для входу — <code>GOOGLE_CLIENT_ID</code> або <code>ADMIN_PASSWORD</code>') + '. Інструкція — docs/admin-setup.md'; }
+    if (cfg.google) { const s = document.createElement('script'); s.src = 'https://accounts.google.com/gsi/client'; s.async = true; s.onload = () => {
+        google.accounts.id.initialize({ client_id: cfg.google, callback: r => login({ credential: r.credential }), ux_mode: 'popup' });
+        google.accounts.id.renderButton($('gBtn'), { theme: 'filled_black', size: 'large', shape: 'pill', text: 'signin_with', locale: 'uk', width: 300 }); }; document.head.appendChild(s); }
+    else $('gBtn').hidden = true;
+    $('pwForm').hidden = !cfg.password;
+  }
+  $('pwForm').addEventListener('submit', e => { e.preventDefault(); const f = new FormData(e.target); login({ email: f.get('email'), password: f.get('password') }); });
+  async function login(b) { $('lgErr').textContent = ''; try { const r = await api('login', b); S.me = r.user; await load(); } catch (e) { $('lgErr').textContent = e.message; } }
+  (async () => {
+    try { S.cfg = await api('me'); } catch (e) { S.cfg = { ready: false }; $('lgErr').textContent = e.message; }
+    if (S.cfg.user) { S.me = S.cfg.user; try { await load(); } catch (e) { showLogin(S.cfg); $('lgErr').textContent = e.message; } } else showLogin(S.cfg);
+  })();
+  addEventListener('beforeunload', e => { if (dirty() && !S.cfg.r2) { e.preventDefault(); e.returnValue = ''; } });
+})();
+</script>
+</body>
+</html>

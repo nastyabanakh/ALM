@@ -13,6 +13,7 @@
  * — Fluid REM Scaling & Longhand CSS box model
  */
 import ButtonComposite from '../components/ButtonComposite.astro';
+import content from '../data/content.json';
 
 interface FaqItem {
   question: string;
@@ -20,48 +21,12 @@ interface FaqItem {
   isOpen?: boolean;
 }
 
-const faqItems: FaqItem[] = [
-  {
-    question: 'Do I need to own land before contacting ALM?',
-    answer: 'No. You can contact ALM while you are still looking. The team can discuss potential lots or teardown properties, but a specific property still needs project-level review.',
-    isOpen: true
-  },
-  {
-    question: 'Can ALM work with plans I already have?',
-    answer: 'Yes. If you already have architectural drawings, engineering, or conceptual plans, ALM can review them, assess site feasibility, and provide an accurate construction quote.',
-    isOpen: false
-  },
-  {
-    question: 'What happens if there is an older home on the property?',
-    answer: 'ALM handles full teardown, site preparation, utility disconnections, and grading as part of the overall build agreement.',
-    isOpen: false
-  },
-  {
-    question: 'How is the construction cost determined?',
-    answer: 'Pricing is based on your specific property conditions, selected architectural plans, finish levels, and approved engineering specifications—locked in before groundbreaking.',
-    isOpen: false
-  },
-  {
-    question: 'Who handles permits and city inspections?',
-    answer: 'ALM manages all municipal filings, architectural submissions, structural reviews, inspections, and final occupancy certificate closeout.',
-    isOpen: false
-  },
-  {
-    question: 'Can I change materials or finishes?',
-    answer: 'Yes. Any finish or scope adjustment is formally quoted, timeline-verified, and signed off in writing prior to execution on site.',
-    isOpen: false
-  },
-  {
-    question: 'What is included in the finished home?',
-    answer: 'Every agreed interior and exterior finish—flooring, cabinetry, countertops, fixtures, appliances, mechanical connections, and paint—is fully resolved for move-in.',
-    isOpen: false
-  },
-  {
-    question: 'Does ALM provide a builder warranty?',
-    answer: 'Yes. All structural, mechanical, and workmanship warranty terms are clearly detailed in your signed project contract.',
-    isOpen: false
-  }
-];
+const rawFaq = content.faq || [];
+const faqItems: FaqItem[] = rawFaq.map((item, idx) => ({
+  question: item.question,
+  answer: item.answer,
+  isOpen: idx === 0
+}));
 ---
 
 <section class="faq" id="faq" aria-label="Common Questions and Answers">

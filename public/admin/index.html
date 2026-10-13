@@ -1,0 +1,757 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>ALM · Панель керування сайтом</title>
+<link rel="icon" href="/favicon.ico">
+<style>
+  :root{
+    --bg:#0A0A0A;
+    --ink:#F4F4F0;
+    --accent:#D4AF37;
+    --accent-glow:rgba(212,175,55,0.18);
+    --plate:#161616;
+    --plate-hover:#1F1F1F;
+    --dark:#0F0F0F;
+    --l06:rgba(244,244,240,.06);
+    --l10:rgba(244,244,240,.1);
+    --l20:rgba(244,244,240,.2);
+    --l45:rgba(244,244,240,.45);
+    --l60:rgba(244,244,240,.6);
+    --warn:#E5A955;
+    --bad:#E85D4E;
+    --good:#4EBA75;
+    --r:20px;
+    --rs:12px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--ink);font:400 14px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;letter-spacing:-.01em;-webkit-font-smoothing:antialiased}
+  body{min-height:100vh;background-image:radial-gradient(rgba(244,244,240,.06) 1px,transparent 1.2px);background-size:24px 24px;background-attachment:fixed}
+  button,input,textarea,select{font:inherit;color:inherit;letter-spacing:inherit}
+  button{cursor:pointer;border:0;background:none;padding:0}
+  a{color:inherit}
+  [hidden]{display:none!important}
+  ::selection{background:var(--accent);color:#000}
+
+  /* Shared pieces */
+  .cap{font-size:11px;line-height:1.1;letter-spacing:.06em;text-transform:uppercase;font-weight:600;color:var(--l45)}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:38px;padding:0 15px;border-radius:10px;background:var(--l06);font-weight:500;font-size:13px;white-space:nowrap;transition:all .15s}
+  .btn:hover{background:var(--l10)}
+  .btn:disabled{opacity:.4;cursor:default}
+  .btn.sm{height:30px;padding:0 11px;font-size:12px;border-radius:8px}
+  .btn.ghost{background:none;box-shadow:inset 0 0 0 1px var(--l10)}
+  .btn.ghost:hover{background:var(--l06)}
+  .btn.bad{color:var(--bad)}
+  .btn.bad:hover{background:rgba(232,93,78,.15)}
+  .btn.accent{background:var(--accent);color:#000;font-weight:600}
+  .btn.accent:hover{filter:brightness(1.1)}
+  
+  .cta{display:inline-flex;gap:3px;height:42px;color:#000;font-weight:600;font-size:14px;letter-spacing:-.01em;transition:opacity .15s}
+  .cta .cl{display:flex;align-items:center;padding:0 18px;border-radius:12px;background:var(--accent);white-space:nowrap}
+  .cta .ca{width:42px;border-radius:12px;background:var(--accent);display:grid;place-items:center}
+  .cta:hover{opacity:.92}
+  .cta:disabled{opacity:.35;cursor:default}
+
+  /* Login */
+  .login{min-height:100vh;display:grid;place-items:center;padding:24px}
+  .lg-box{width:min(420px,100%);background:var(--plate);border-radius:24px;padding:36px 30px;box-shadow:0 24px 60px rgba(0,0,0,.6);border:1px solid var(--l06)}
+  .lg-logo{font-size:38px;font-weight:800;letter-spacing:-.03em;margin-bottom:4px;color:var(--ink)}
+  .lg-logo span{color:var(--accent)}
+  .lg-sub{color:var(--l60);font-size:14px;margin-bottom:28px}
+  .lg-f{display:grid;gap:12px}
+  .lg-err{color:var(--bad);font-size:13px;min-height:1.2em;margin-top:12px}
+
+  /* Top bar */
+  .top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:16px;padding:12px 24px;background:rgba(10,10,10,.82);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--l06)}
+  .brand{display:flex;align-items:baseline;gap:8px;font-weight:800;font-size:24px;letter-spacing:-.02em;line-height:1}
+  .brand em{font-style:normal;font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:600;color:var(--accent)}
+  .tabs{display:flex;gap:3px;padding:4px;border-radius:14px;background:var(--l06);overflow-x:auto;scrollbar-width:none}
+  .tabs::-webkit-scrollbar{display:none}
+  .tabs button{height:32px;padding:0 13px;border-radius:10px;font-size:12px;letter-spacing:.03em;text-transform:uppercase;font-weight:600;color:var(--l60);white-space:nowrap;transition:all .15s}
+  .tabs button:hover{color:var(--ink)}
+  .tabs button.on{background:var(--ink);color:#000}
+  .acts{margin-left:auto;display:flex;align-items:center;gap:12px}
+  .st{font-size:13px;color:var(--l60);white-space:nowrap;display:flex;align-items:center;gap:8px}
+  .st i{width:8px;height:8px;border-radius:50%;background:var(--l20)}
+  .st.dirty i{background:var(--warn);box-shadow:0 0 8px var(--warn)}
+  .st.ok i{background:var(--good);box-shadow:0 0 8px var(--good)}
+  .who{font-size:12px;color:var(--l45);background:var(--l06);padding:4px 10px;border-radius:20px}
+
+  /* Layout */
+  .wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(400px,46%);gap:24px;padding:16px 24px 80px;align-items:start}
+  .ed{min-width:0}
+  .pv{position:sticky;top:74px;height:calc(100vh - 90px);display:flex;flex-direction:column;gap:10px}
+  .pv-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:space-between}
+  .pv-box{position:relative;flex:1;border-radius:var(--r);overflow:hidden;background:var(--dark);border:1px solid var(--l10)}
+  .pv-box iframe{position:absolute;left:0;top:0;border:0;transform-origin:0 0;background:#000}
+  .seg{display:inline-flex;padding:3px;border-radius:10px;background:var(--dark);gap:2px}
+  .seg button{height:28px;padding:0 10px;border-radius:8px;font-size:12px;font-weight:500;color:var(--l60);white-space:nowrap}
+  .seg button.on{background:var(--accent);color:#000;font-weight:600}
+
+  /* Form & plates */
+  .sec-h{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin:16px 0 20px}
+  .sec-h h1{margin:0;font-weight:700;font-size:36px;letter-spacing:-.03em}
+  .sec-h p{margin:6px 0 0;color:var(--l60);font-size:14px}
+  .plate{background:var(--plate);border-radius:var(--r);padding:22px;border:1px solid var(--l06)}
+  .plate+.plate,.stack>*+*{margin-top:14px}
+  .plate h2{margin:0 0 16px;font-weight:600;font-size:20px;letter-spacing:-.02em}
+  .plate h3{margin:20px 0 10px;font-weight:600;font-size:15px;color:var(--ink)}
+  .grid{display:grid;gap:14px;grid-template-columns:repeat(12,minmax(0,1fr))}
+  .c3{grid-column:span 3}.c4{grid-column:span 4}.c6{grid-column:span 6}.c8{grid-column:span 8}.c12{grid-column:1/-1}
+  .f{display:flex;flex-direction:column;gap:6px;min-width:0}
+  .f .lb{display:flex;justify-content:space-between;gap:10px}
+  .f .cnt{font-size:11px;color:var(--l45);font-variant-numeric:tabular-nums}
+  .f input[type=text],.f input[type=password],.f input[type=email],.f textarea{width:100%;background:var(--dark);border:0;border-radius:10px;padding:10px 12px;outline:none;box-shadow:inset 0 0 0 1px rgba(244,244,240,.08);transition:box-shadow .15s;font-size:14px}
+  .f input:focus,.f textarea:focus{box-shadow:inset 0 0 0 1px var(--accent)}
+  .f textarea{resize:vertical;min-height:56px;line-height:1.4}
+  .hint{font-size:12px;color:var(--l45);line-height:1.35}
+
+  /* Items lists */
+  .items{display:flex;flex-direction:column;gap:8px}
+  .it{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:14px;background:var(--dark);cursor:pointer;transition:all .15s;border:1px solid transparent}
+  .it:hover{background:var(--plate-hover);border-color:var(--l10)}
+  .it.on{border-color:var(--accent)}
+  .it .no{font-size:12px;color:var(--l45);font-variant-numeric:tabular-nums;width:24px}
+  .it .th{width:50px;height:40px;border-radius:8px;background:#222 center/cover;flex:none}
+  .it .tt{flex:1;min-width:0}
+  .it .tt b{display:block;font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .it .tt span{font-size:12px;color:var(--l60);display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .it .ops{display:flex;gap:4px}
+
+  /* Media field */
+  .media{display:flex;gap:16px;align-items:flex-start}
+  .ph-box{width:140px;height:95px;border-radius:10px;background:#222 center/cover no-repeat;flex:none;overflow:hidden;border:1px solid var(--l10);position:relative}
+  .ph-box .em{position:absolute;inset:0;display:grid;place-items:center;color:var(--l45);font-size:11px;text-align:center;padding:8px}
+  .drop{border-radius:12px;box-shadow:inset 0 0 0 1px var(--l20);padding:12px;color:var(--l60);font-size:12px;display:flex;flex-direction:column;gap:8px;align-items:flex-start;flex:1}
+  .bar{height:4px;border-radius:2px;background:var(--l10);overflow:hidden;width:100%}
+  .bar i{display:block;height:100%;background:var(--accent);width:0;transition:width .2s}
+
+  /* Modal */
+  .mod{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.75);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:grid;place-items:center;padding:20px}
+  .mod-c{width:min(580px,100%);max-height:calc(100vh - 40px);overflow:auto;background:var(--plate);border-radius:24px;padding:30px;border:1px solid var(--l10)}
+  .mod-c h2{margin:0 0 12px;font-size:28px;font-weight:700;letter-spacing:-.03em}
+  .mod-f{display:flex;justify-content:flex-end;gap:10px;margin-top:24px}
+  .steps{display:grid;gap:12px;margin:20px 0}
+  .steps div{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--l60)}
+  .steps div i{width:10px;height:10px;border-radius:50%;background:var(--l20)}
+  .steps div.on{color:var(--ink)} .steps div.on i{background:var(--accent);box-shadow:0 0 8px var(--accent)}
+  .steps div.ok{color:var(--good)} .steps div.ok i{background:var(--good)}
+
+  /* Toast */
+  #toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:90;background:var(--ink);color:#000;padding:10px 18px;border-radius:12px;font-size:13px;font-weight:600;box-shadow:0 10px 30px rgba(0,0,0,.5);transition:opacity .2s,transform .2s}
+  #toast.bad{background:var(--bad);color:#fff}
+</style>
+</head>
+<body>
+
+<!-- 1. LOGIN SCREEN -->
+<div id="login" class="login">
+  <div class="lg-box">
+    <div class="lg-logo">ALM<span>.</span></div>
+    <div class="lg-sub">Панель керування контентом сайту ALM</div>
+    <form id="pwForm" class="lg-f">
+      <div class="f">
+        <span class="cap">Логін</span>
+        <input type="text" name="user" required autocomplete="username" placeholder="admin" autofocus>
+      </div>
+      <div class="f">
+        <span class="cap">Пароль</span>
+        <input type="password" name="password" required autocomplete="current-password" placeholder="••••••••">
+      </div>
+      <button type="submit" class="btn accent" style="height:44px;margin-top:8px;">Увійти в кабінет</button>
+      <div id="lgErr" class="lg-err"></div>
+    </form>
+    <div id="lgSetup" class="hint" style="margin-top:16px;">
+      За замовчуванням (у режимі налаштування): логін <code>admin</code>, пароль <code>alm2026</code>.
+    </div>
+  </div>
+</div>
+
+<!-- 2. MAIN APP -->
+<div id="app" hidden>
+  <header class="top">
+    <div class="brand">ALM <em>Адмін</em></div>
+    <div id="tabs" class="tabs"></div>
+    <div class="acts">
+      <div id="st" class="st"><i aria-hidden="true"></i><span>Завантаження...</span></div>
+      <button id="bPub" class="cta" disabled>
+        <span class="cl">Опублікувати</span>
+        <span class="ca">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 13L13 1M13 1H4M13 1V10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+      </button>
+      <span id="who" class="who"></span>
+      <button id="bOut" class="btn sm ghost">Вийти</button>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <!-- Editor Column -->
+    <div id="ed" class="ed"></div>
+
+    <!-- Live Preview Column -->
+    <div class="pv">
+      <div class="pv-bar">
+        <div id="dev" class="seg">
+          <button type="button" class="on" data-d="desk">Комп'ютер</button>
+          <button type="button" data-d="ph">Мобільний</button>
+        </div>
+        <div style="display:flex;gap:6px;align-items:center;">
+          <button id="pvRe" class="btn sm ghost" title="Перезавантажити прев'ю">Оновити</button>
+          <a href="/" target="_blank" class="btn sm ghost" title="Відкрити сайт у новій вкладці">Відкрити сайт ↗</a>
+        </div>
+      </div>
+      <div id="pvBox" class="pv-box">
+        <iframe id="pvF" src="/" title="Сайт прев'ю"></iframe>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Modal Container -->
+<div id="mod" class="mod" hidden>
+  <div id="modC" class="mod-c"></div>
+</div>
+
+<!-- Toast -->
+<div id="toast" hidden></div>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const h = (tag, attrs, ...children) => {
+    const el = document.createElement(tag);
+    if (attrs) {
+      for (const [k, v] of Object.entries(attrs)) {
+        if (k === 'class') el.className = v;
+        else if (k === 'html') el.innerHTML = v;
+        else if (k.startsWith('on')) el.addEventListener(k.slice(2).toLowerCase(), v);
+        else if (v !== null && v !== undefined) el.setAttribute(k, v);
+      }
+    }
+    for (const c of children.flat()) {
+      if (c == null) continue;
+      el.append(typeof c === 'string' || typeof c === 'number' ? document.createTextNode(c) : c);
+    }
+    return el;
+  };
+  const clone = o => JSON.parse(JSON.stringify(o));
+  const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+
+  function toast(msg, bad) {
+    const t = $('toast');
+    t.textContent = msg;
+    t.className = bad ? 'bad' : '';
+    t.hidden = false;
+    clearTimeout(toast.T);
+    toast.T = setTimeout(() => t.hidden = true, 3000);
+  }
+
+  /* API Client */
+  async function api(op, body = {}) {
+    const isGet = op === 'content' || op === 'history' || op === 'me';
+    const url = '/api/admin?op=' + encodeURIComponent(op);
+    const opts = {
+      method: isGet ? 'GET' : 'POST',
+      headers: { 'Content-Type': 'application/json' }
+    };
+    if (!isGet) opts.body = JSON.stringify(body);
+    const res = await fetch(url, opts);
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.message || 'Помилка ' + res.status);
+    return data;
+  }
+
+  /* State */
+  const S = {
+    me: '',
+    sha: '',
+    pub: null,
+    c: null,
+    tab: 'hero',
+    sel: { point: 0, stage: 0, faq: 0 },
+    dev: 'desk'
+  };
+  const LS = 'alm.admin.draft';
+  const TABS = [
+    ['hero', 'Головний екран'],
+    ['starting', 'Стартові точки'],
+    ['featured', 'Головний проєкт'],
+    ['completed', 'Готовий будинок'],
+    ['faq', 'Часті питання (FAQ)'],
+    ['contacts', 'Контакти й футер'],
+    ['hist', 'Історія змін']
+  ];
+
+  const strip = c => { const o = clone(c); delete o.pub; return o; };
+  const dirty = () => S.pub && S.c && !same(strip(S.c), strip(S.pub));
+  function get(path) { return path.reduce((o, k) => o == null ? o : o[k], S.c); }
+  function set(path, val) {
+    let o = S.c;
+    for (let i = 0; i < path.length - 1; i++) o = o[path[i]];
+    o[path[path.length - 1]] = val;
+    changed();
+  }
+
+  let saveT = 0, pvT = 0;
+  function changed() {
+    clearTimeout(saveT);
+    saveT = setTimeout(() => {
+      try { localStorage.setItem(LS, JSON.stringify({ c: S.c, sha: S.sha, at: Date.now() })); } catch (e) {}
+    }, 300);
+    status();
+    clearTimeout(pvT);
+    pvT = setTimeout(preview, 600);
+  }
+
+  function status() {
+    const e = $('st'), d = dirty();
+    e.classList.toggle('dirty', d);
+    e.classList.toggle('ok', !d);
+    e.lastChild.textContent = d ? 'Є неопубліковані зміни' : 'Усе опубліковано';
+    $('bPub').disabled = !d;
+  }
+
+  /* Preview sync */
+  function preview() {
+    const pvF = $('pvF');
+    // Send live message to preview frame if available
+    try {
+      pvF.contentWindow.postMessage({ type: 'ALM_CONTENT_UPDATE', content: S.c }, '*');
+    } catch (e) {}
+  }
+
+  function fitPreview() {
+    const pvBox = $('pvBox'), pvF = $('pvF');
+    const W = pvBox.clientWidth, H = pvBox.clientHeight;
+    if (!W || !H) return;
+    if (S.dev === 'desk') {
+      const k = Math.min(W / 1920, H / 1080);
+      Object.assign(pvF.style, {
+        width: '1920px', height: '1080px',
+        transform: 'scale(' + k + ')',
+        left: (W - 1920 * k) / 2 + 'px', top: '0px',
+        borderRadius: '0px'
+      });
+    } else {
+      const k = Math.min((H - 24) / 844, (W - 24) / 390, 1);
+      Object.assign(pvF.style, {
+        width: '390px', height: '844px',
+        transform: 'scale(' + k + ')',
+        left: (W - 390 * k) / 2 + 'px', top: '12px',
+        borderRadius: '24px'
+      });
+    }
+  }
+  addEventListener('resize', fitPreview);
+  $('dev').addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    S.dev = b.dataset.d;
+    $('dev').querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b));
+    fitPreview();
+  });
+  $('pvRe').addEventListener('click', () => { $('pvF').src = '/?v=' + Date.now(); });
+
+  /* Form builder helpers */
+  function field(label, path, opts = {}) {
+    const val = get(path) ?? '';
+    const isMulti = opts.rows || opts.multi;
+    const inp = isMulti
+      ? h('textarea', { rows: opts.rows || 3, placeholder: opts.ph || '' })
+      : h('input', { type: opts.type || 'text', placeholder: opts.ph || '' });
+    inp.value = val;
+    const lab = h('span', { class: 'cap' }, label);
+    inp.addEventListener('input', () => { set(path, inp.value); });
+    return h('div', { class: 'f ' + (opts.col || 'c12') }, h('div', { class: 'lb' }, lab), inp, opts.hint ? h('div', { class: 'hint' }, opts.hint) : null);
+  }
+
+  function imageField(label, path, opts = {}) {
+    const box = h('div', { class: 'ph-box' });
+    const bar = h('div', { class: 'bar', hidden: true }, h('i'));
+    const draw = () => {
+      const u = get(path);
+      box.style.backgroundImage = u ? `url(${u})` : '';
+      box.replaceChildren(u ? '' : h('span', { class: 'em' }, 'Немає фото'));
+    };
+    const uploadFile = async file => {
+      if (!file) return;
+      bar.hidden = false;
+      try {
+        const reader = new FileReader();
+        reader.onload = async () => {
+          const base64 = reader.result.split(',')[1];
+          const r = await api('upload', { filename: file.name, base64 });
+          set(path, r.url);
+          draw();
+          toast('Зображення збережено');
+        };
+        reader.readAsDataURL(file);
+      } catch (err) {
+        toast(err.message, true);
+      } finally {
+        bar.hidden = true;
+      }
+    };
+    const inpFile = h('input', { type: 'file', accept: 'image/*', style: 'display:none' });
+    inpFile.onchange = () => uploadFile(inpFile.files[0]);
+    const dz = h('div', { class: 'drop' },
+      h('span', null, 'Завантажити нове фото або вказати шлях'),
+      h('div', { style: 'display:flex;gap:6px' },
+        h('button', { type: 'button', class: 'btn sm', onclick: () => inpFile.click() }, 'Обрати файл'),
+        h('button', { type: 'button', class: 'btn sm ghost', onclick: () => { set(path, ''); draw(); } }, 'Очистити')
+      ),
+      inpFile, bar
+    );
+    draw();
+    return h('div', { class: 'f ' + (opts.col || 'c12') },
+      h('span', { class: 'cap' }, label),
+      h('div', { class: 'media' }, box, dz)
+    );
+  }
+
+  /* Section Renderers */
+  const R = {
+    hero: () => [
+      h('div', { class: 'sec-h' }, h('div', null, h('h1', null, 'Головний екран (Hero)'), h('p', null, 'Перший екран сайту, заголовок, бейдж та блок About'))),
+      h('div', { class: 'plate grid' },
+        h('h2', { class: 'c12' }, 'Основні тексти Hero'),
+        field('Бейдж над заголовком', ['hero', 'badgeText'], { col: 'c12' }),
+        field('Головний заголовок H1', ['hero', 'title'], { col: 'c12', rows: 2 }),
+        field('Тег картки About', ['hero', 'aboutTag'], { col: 'c4' }),
+        field('Текст картки About', ['hero', 'aboutText'], { col: 'c8', rows: 2 }),
+        field('Текст кнопки CTA', ['hero', 'ctaText'], { col: 'c6' }),
+        field('Посилання кнопки CTA', ['hero', 'ctaHref'], { col: 'c6' })
+      ),
+      h('div', { class: 'plate grid' },
+        h('h2', { class: 'c12' }, 'Фонове медіа'),
+        imageField('Постер відео (фонове фото)', ['hero', 'videoPoster'], { col: 'c12' }),
+        field('Шлях до відео MP4', ['hero', 'videoUrl'], { col: 'c12', hint: 'Файл у папці /assets/video/...' })
+      )
+    ],
+
+    starting: () => {
+      const items = get(['startingPoints', 'items']) || [];
+      const selIdx = Math.min(S.sel.point, items.length - 1);
+      const cur = items[selIdx];
+
+      return [
+        h('div', { class: 'sec-h' }, h('div', null, h('h1', null, 'Стартові точки (Starting Points)'), h('p', null, '4 варіанти початку співпраці клієнта з ALM'))),
+        h('div', { class: 'plate grid' },
+          field('Заголовок верхньої планки', ['startingPoints', 'barTitle'], { col: 'c12' })
+        ),
+        h('div', { class: 'plate' },
+          h('h2', null, 'Список карток'),
+          h('div', { class: 'items', style: 'margin-bottom:20px;' },
+            ...items.map((it, idx) => h('div', {
+              class: 'it ' + (idx === selIdx ? 'on' : ''),
+              onclick: () => { S.sel.point = idx; render(); }
+            },
+              h('span', { class: 'no' }, it.num),
+              h('div', { class: 'th', style: `background-image:url(${it.image})` }),
+              h('div', { class: 'tt' }, h('b', null, it.title), h('span', null, it.note))
+            ))
+          ),
+          cur ? h('div', { class: 'grid', style: 'padding-top:16px;border-top:1px solid var(--l10);' },
+            h('h3', { class: 'c12' }, `Редагування картки ${cur.num} ${cur.title}`),
+            field('Номер', ['startingPoints', 'items', selIdx, 'num'], { col: 'c2' }),
+            field('Заголовок', ['startingPoints', 'items', selIdx, 'title'], { col: 'c10' }),
+            field('Опис / нотатка', ['startingPoints', 'items', selIdx, 'note'], { col: 'c12', rows: 2 }),
+            imageField('Зображення картки', ['startingPoints', 'items', selIdx, 'image'], { col: 'c12' })
+          ) : null
+        )
+      ];
+    },
+
+    featured: () => {
+      const stages = get(['featuredHome', 'stages']) || [];
+      const specs = get(['featuredHome', 'specs']) || [];
+      const selStage = Math.min(S.sel.stage, stages.length - 1);
+      const curStage = stages[selStage];
+
+      return [
+        h('div', { class: 'sec-h' }, h('div', null, h('h1', null, 'Головний проєкт (Featured Project)'), h('p', null, 'Розбір етапів будівництва та характеристики вілли'))),
+        h('div', { class: 'plate grid' },
+          h('h2', { class: 'c12' }, 'Опис проєкту'),
+          field('Назва проєкту', ['featuredHome', 'title'], { col: 'c6' }),
+          field('Підзаголовок', ['featuredHome', 'subtitle'], { col: 'c6' })
+        ),
+        h('div', { class: 'plate' },
+          h('h2', null, 'Характеристики проєкту (Specs)'),
+          h('div', { class: 'grid' },
+            ...specs.map((sp, idx) => [
+              field(sp.label, ['featuredHome', 'specs', idx, 'value'], { col: 'c6' })
+            ]).flat()
+          )
+        ),
+        h('div', { class: 'plate' },
+          h('h2', null, 'Етапи будівництва (Breakdown Gallery)'),
+          h('div', { class: 'items', style: 'margin-bottom:20px;' },
+            ...stages.map((stg, idx) => h('div', {
+              class: 'it ' + (idx === selStage ? 'on' : ''),
+              onclick: () => { S.sel.stage = idx; render(); }
+            },
+              h('span', { class: 'no' }, stg.num),
+              h('div', { class: 'th', style: `background-image:url(${stg.image})` }),
+              h('div', { class: 'tt' }, h('b', null, stg.title), h('span', null, stg.stageTitle))
+            ))
+          ),
+          curStage ? h('div', { class: 'grid', style: 'padding-top:16px;border-top:1px solid var(--l10);' },
+            h('h3', { class: 'c12' }, `Редагування етапу ${curStage.num}`),
+            field('Назва під-етапу', ['featuredHome', 'stages', selStage, 'stageTitle'], { col: 'c6' }),
+            field('Головна дія етапу', ['featuredHome', 'stages', selStage, 'title'], { col: 'c6' }),
+            field('Детальний опис', ['featuredHome', 'stages', selStage, 'desc'], { col: 'c12', rows: 2 }),
+            imageField('Фото етапу', ['featuredHome', 'stages', selStage, 'image'], { col: 'c12' })
+          ) : null
+        )
+      ];
+    },
+
+    completed: () => {
+      const specs = get(['completedHome', 'specs']) || [];
+      return [
+        h('div', { class: 'sec-h' }, h('div', null, h('h1', null, 'Готовий будинок (The Completed Home)'), h('p', null, 'Секція 11: Що входить у готовий будинок'))),
+        h('div', { class: 'plate grid' },
+          field('Лейбл верхньої планки', ['completedHome', 'barLabel'], { col: 'c12' })
+        ),
+        h('div', { class: 'plate grid' },
+          h('h2', { class: 'c12' }, 'Пункти комплектації'),
+          ...specs.map((sp, idx) => [
+            field(sp.label, ['completedHome', 'specs', idx, 'value'], { col: 'c12', rows: 2 })
+          ]).flat()
+        )
+      ];
+    },
+
+    faq: () => {
+      const items = get(['faq']) || [];
+      const selIdx = Math.min(S.sel.faq, items.length - 1);
+      const cur = items[selIdx];
+
+      return [
+        h('div', { class: 'sec-h' },
+          h('div', null, h('h1', null, 'Часті питання (FAQ)'), h('p', null, 'Список запитань та відповідей на сайті')),
+          h('button', {
+            class: 'btn accent sm',
+            onclick: () => {
+              items.push({ question: 'Нове запитання', answer: 'Відповідь на запитання...' });
+              set(['faq'], items);
+              S.sel.faq = items.length - 1;
+              render();
+            }
+          }, '+ Додати запитання')
+        ),
+        h('div', { class: 'plate' },
+          h('div', { class: 'items', style: 'margin-bottom:20px;' },
+            ...items.map((item, idx) => h('div', {
+              class: 'it ' + (idx === selIdx ? 'on' : ''),
+              onclick: () => { S.sel.faq = idx; render(); }
+            },
+              h('span', { class: 'no' }, `${idx + 1}.`),
+              h('div', { class: 'tt' }, h('b', null, item.question), h('span', null, item.answer)),
+              h('div', { class: 'ops' },
+                h('button', {
+                  class: 'btn sm bad',
+                  onclick: (e) => {
+                    e.stopPropagation();
+                    if (confirm('Видалити це запитання?')) {
+                      items.splice(idx, 1);
+                      set(['faq'], items);
+                      S.sel.faq = Math.max(0, idx - 1);
+                      render();
+                    }
+                  }
+                }, 'Видалити')
+              )
+            ))
+          ),
+          cur ? h('div', { class: 'grid', style: 'padding-top:16px;border-top:1px solid var(--l10);' },
+            h('h3', { class: 'c12' }, `Редагування питання #${selIdx + 1}`),
+            field('Запитання', ['faq', selIdx, 'question'], { col: 'c12' }),
+            field('Відповідь', ['faq', selIdx, 'answer'], { col: 'c12', rows: 4 })
+          ) : null
+        )
+      ];
+    },
+
+    contacts: () => [
+      h('div', { class: 'sec-h' }, h('div', null, h('h1', null, 'Контакти й футер'), h('p', null, 'Контактні дані, телефон, email та зона обслуговування'))),
+      h('div', { class: 'plate grid' },
+        h('h2', { class: 'c12' }, 'Контактна інформація'),
+        field('Email', ['contacts', 'email'], { col: 'c6' }),
+        field('Телефон', ['contacts', 'phone'], { col: 'c6' }),
+        field('Регіон будівництва (Service Area)', ['contacts', 'serviceArea'], { col: 'c12' })
+      ),
+      h('div', { class: 'plate grid' },
+        h('h2', { class: 'c12' }, 'SEO мета-теги'),
+        field('Заголовок сайту (Title)', ['meta', 'title'], { col: 'c12' }),
+        field('Опис сайту (Meta Description)', ['meta', 'description'], { col: 'c12', rows: 2 })
+      )
+    ],
+
+    hist: () => {
+      const box = h('div', { class: 'plate' }, h('p', { class: 'hint' }, 'Завантаження історії комітів...'));
+      api('history').then(list => {
+        box.replaceChildren(
+          h('h2', null, 'Історія останніх змін на GitHub'),
+          h('div', { class: 'items' },
+            ...list.map(item => h('div', { class: 'it' },
+              h('span', { class: 'no', style: 'font-family:monospace;width:60px;' }, item.id),
+              h('div', { class: 'tt' },
+                h('b', null, item.msg),
+                h('span', null, `${item.by} · ${new Date(item.at).toLocaleString('uk-UA')}`)
+              )
+            ))
+          )
+        );
+      }).catch(err => {
+        box.replaceChildren(h('p', { class: 'hint' }, 'Не вдалося завантажити історію: ' + err.message));
+      });
+      return [
+        h('div', { class: 'sec-h' }, h('div', null, h('h1', null, 'Історія публікацій'), h('p', null, 'Усі попередні зміни зберігаються в Git на GitHub'))),
+        box
+      ];
+    }
+  };
+
+  /* Render Tabs & Content */
+  function tabs() {
+    $('tabs').replaceChildren(...TABS.map(([k, t]) => h('button', {
+      class: S.tab === k ? 'on' : '',
+      onclick: () => { S.tab = k; render(); scrollTo(0, 0); }
+    }, t)));
+  }
+
+  function render() {
+    tabs();
+    $('ed').replaceChildren(...R[S.tab]().flat().filter(Boolean));
+    status();
+  }
+
+  /* Publish modal */
+  $('bPub').addEventListener('click', () => {
+    const msg = h('input', { type: 'text', placeholder: 'Коротко: що змінилося (напр. Оновлено телефон)' });
+    modal(h('div', null,
+      h('h2', null, 'Опублікувати зміни на сайті?'),
+      h('p', { class: 'hint' }, 'Після публікації новий коміт буде надіслано в GitHub, і Vercel оновить сайт за ~40-60 секунд.'),
+      h('div', { class: 'f', style: 'margin-top:16px;' },
+        h('span', { class: 'cap' }, 'Коментар до коміту'),
+        msg
+      ),
+      h('div', { class: 'mod-f' },
+        h('button', { class: 'btn', onclick: closeModal }, 'Скасувати'),
+        h('button', {
+          class: 'cta',
+          onclick: () => doPublish(msg.value)
+        }, h('span', { class: 'cl' }, 'Опублікувати зараз'))
+      )
+    ));
+  });
+
+  async function doPublish(message) {
+    const steps = h('div', { class: 'steps' },
+      h('div', null, h('i'), 'Збереження в GitHub репозиторій'),
+      h('div', null, h('i'), 'Vercel автоматично збирає оновлений сайт'),
+      h('div', null, h('i'), 'Готово')
+    );
+    const mark = (k, state) => {
+      steps.children[k].className = state === 'ok' ? 'ok' : 'on';
+    };
+    modal(h('div', null,
+      h('h2', null, 'Публікація...'),
+      steps,
+      h('div', { class: 'mod-f' })
+    ));
+    mark(0, 'on');
+
+    try {
+      const res = await api('publish', { content: S.c, sha: S.sha, message });
+      mark(0, 'ok');
+      mark(1, 'on');
+      S.pub = clone(S.c);
+      S.sha = res.sha;
+      status();
+      setTimeout(() => {
+        mark(1, 'ok');
+        mark(2, 'ok');
+        $('modC').querySelector('.mod-f').replaceChildren(
+          h('button', { class: 'btn accent', onclick: closeModal }, 'Чудово')
+        );
+      }, 1500);
+    } catch (err) {
+      closeModal();
+      toast('Помилка публікації: ' + err.message, true);
+    }
+  }
+
+  function modal(node) {
+    $('modC').replaceChildren(node);
+    $('mod').hidden = false;
+  }
+  function closeModal() {
+    $('mod').hidden = true;
+    $('modC').replaceChildren();
+  }
+  $('mod').addEventListener('mousedown', e => { if (e.target === $('mod')) closeModal(); });
+
+  /* Auth & Load */
+  $('pwForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    $('lgErr').textContent = '';
+    const f = new FormData(e.target);
+    try {
+      const r = await api('login', { user: f.get('user'), password: f.get('password') });
+      S.me = r.user;
+      await initApp();
+    } catch (err) {
+      $('lgErr').textContent = err.message;
+    }
+  });
+
+  $('bOut').addEventListener('click', async () => {
+    if (confirm('Вийти з адмін-панелі?')) {
+      await api('logout');
+      location.reload();
+    }
+  });
+
+  async function initApp() {
+    $('login').hidden = true;
+    $('app').hidden = false;
+    $('who').textContent = S.me;
+
+    const r = await api('content');
+    S.pub = r.published.content;
+    S.sha = r.published.sha;
+    S.c = clone(S.pub);
+
+    // Check local draft
+    try {
+      const local = JSON.parse(localStorage.getItem(LS) || 'null');
+      if (local && local.c && !same(strip(local.c), strip(S.pub))) {
+        if (confirm('Знайдено незбережені чернетки у цьому браузері. Відновити їх?')) {
+          S.c = local.c;
+        }
+      }
+    } catch (e) {}
+
+    render();
+    fitPreview();
+  }
+
+  (async () => {
+    try {
+      const me = await api('me');
+      if (me.user) {
+        S.me = me.user;
+        await initApp();
+      }
+    } catch (e) {
+      console.log('Not logged in:', e);
+    }
+  })();
+})();
+</script>
+</body>
+</html>

@@ -1,6 +1,9 @@
 ---
 import HeaderNav from '../components/HeaderNav.astro';
 import GlassCard from '../components/GlassCard.astro';
+import content from '../data/content.json';
+
+const hero = content.hero;
 ---
 
 <section class="hero" id="hero-section" aria-label="Hero Section">
@@ -13,9 +16,9 @@ import GlassCard from '../components/GlassCard.astro';
       loop
       playsinline
       preload="none"
-      poster="/assets/images/hero-house.webp"
+      poster={hero.videoPoster || "/assets/images/hero-house.webp"}
     >
-      <source src="/assets/video/a1b54a75-926d-4ee7-95db-ec5462efbb29.mp4" type="video/mp4" media="(min-width: 768px)" />
+      <source src={hero.videoUrl || "/assets/video/a1b54a75-926d-4ee7-95db-ec5462efbb29.mp4"} type="video/mp4" media="(min-width: 768px)" />
     </video>
     <div class="hero__overlay"></div>
   </div>
@@ -52,20 +55,20 @@ import GlassCard from '../components/GlassCard.astro';
       <div class="hero__badge">
         <span class="hero__badge-bullet" aria-hidden="true"></span>
         <span class="hero__badge-text text-s text-opacity-subtle">
-          Local, Family-Owned Custom Home Builder
+          {hero.badgeText}
         </span>
       </div>
       <h1 class="hero__title h1 text-color-white">
-        Build the Home You Want—Without Managing the Build Yourself
+        {hero.title}
       </h1>
     </div>
 
     <!-- Glassmorphic About Card (Figma Frame 361 — 385x261px) -->
     <GlassCard
-      tag="About //"
-      text="ALM builds custom single-family homes in Service Area to Confirm, shaped around your property, plans, and priorities."
-      buttonText="REQUEST A CONSULTATION"
-      buttonHref="#consultation"
+      tag={hero.aboutTag}
+      text={hero.aboutText}
+      buttonText={hero.ctaText}
+      buttonHref={hero.ctaHref}
       ariaLabel="About ALM summary"
     />
   </div>

@@ -1,0 +1,149 @@
+{
+  "meta": {
+    "title": "ALM — Local, Family-Owned Custom Home Builder",
+    "description": "Build the home you want—without managing the build yourself. Custom single-family new construction shaped around your property, plans, and priorities."
+  },
+  "contacts": {
+    "email": "ALMStudio@gmail.com",
+    "phone": "+1 (206) 555-0192",
+    "serviceArea": "Greater Seattle & Eastside (Bellevue, Kirkland, Redmond)"
+  },
+  "hero": {
+    "badgeText": "Local, Family-Owned Custom Home Builder",
+    "title": "Build the Home You Want—Without Managing the Build Yourself",
+    "aboutTag": "About //",
+    "aboutText": "ALM builds custom single-family homes in Service Area to Confirm, shaped around your property, plans, and priorities.",
+    "ctaText": "REQUEST A CONSULTATION",
+    "ctaHref": "#contact",
+    "videoPoster": "/assets/images/hero-house.webp",
+    "videoUrl": "/assets/video/a1b54a75-926d-4ee7-95db-ec5462efbb29.mp4"
+  },
+  "startingPoints": {
+    "barTitle": "You Can Start Before Everything Is Decided",
+    "items": [
+      {
+        "id": "step-1",
+        "num": "01.",
+        "title": "Still looking for property",
+        "image": "/assets/images/property-search.webp",
+        "note": "Tell us the area and vision you have in mind. We can assess potential land and parcels before you commit."
+      },
+      {
+        "id": "step-2",
+        "num": "02.",
+        "title": "You already own a lot",
+        "image": "/assets/images/property-aerial.webp",
+        "note": "ALM will evaluate your property topography, zoning, utilities, and orientation to shape your custom build."
+      },
+      {
+        "id": "step-3",
+        "num": "03.",
+        "title": "There is an older home",
+        "image": "/assets/images/property-teardown.webp",
+        "note": "Assess teardown scope, permit paths, site clearing, and infrastructure before designing your new home."
+      },
+      {
+        "id": "step-4",
+        "num": "04.",
+        "title": "You have plans or a reference",
+        "image": "/assets/images/property-plans.webp",
+        "note": "Bring your existing sketches, architectural drafts, or inspirational references for early feasibility review."
+      }
+    ]
+  },
+  "featuredHome": {
+    "barTitle": "Featured Project Breakdown",
+    "title": "Contemporary West Bellevue Residence",
+    "subtitle": "4,850 sq ft custom build crafted around a challenging hillside topography.",
+    "specs": [
+      { "index": "01//", "label": "Project type:", "value": "Custom Single-Family Residence" },
+      { "index": "02//", "label": "Location:", "value": "West Bellevue, WA" },
+      { "index": "03//", "label": "Starting point:", "value": "Full Teardown & Slope Stabilization" },
+      { "index": "04//", "label": "Home size:", "value": "4,850 sq ft" },
+      { "index": "05//", "label": "Architectural style:", "value": "Pacific Northwest Contemporary" }
+    ],
+    "stages": [
+      {
+        "id": "stage-01",
+        "num": "01//",
+        "stageTitle": "Lot Assessment & Teardown",
+        "title": "Clearing the Site & Groundwork",
+        "desc": "Initial slope stabilization, teardown permits, and soil preparation to establish solid foundations.",
+        "image": "/assets/images/construction-backyard.webp"
+      },
+      {
+        "id": "stage-02",
+        "num": "02//",
+        "stageTitle": "Framing & Structural Core",
+        "title": "Architectural Framing",
+        "desc": "Heavy timber beams, steel-reinforced spans, and soaring ceiling volumes taking shape.",
+        "image": "/assets/images/property-search.webp"
+      },
+      {
+        "id": "stage-03",
+        "num": "03//",
+        "stageTitle": "Envelope & Rough-ins",
+        "title": "High-Efficiency Enclosure",
+        "desc": "Weather-tight barrier, triple-pane architectural glazing, and complete MEP integration.",
+        "image": "/assets/images/property-aerial.webp"
+      },
+      {
+        "id": "stage-04",
+        "num": "04//",
+        "stageTitle": "Interior Finishes & Handover",
+        "title": "Custom Millwork & Delivery",
+        "desc": "Handcrafted cabinetry, bespoke stone surfaces, and flawless final move-in detailing.",
+        "image": "/assets/images/property-teardown.webp"
+      }
+    ]
+  },
+  "completedHome": {
+    "barLabel": "The completed home",
+    "specs": [
+      { "label": "SURFACES & ENVELOPE:", "value": "Interior walls, hardwood flooring, and exterior siding" },
+      { "label": "CABINETRY & KITCHEN:", "value": "Custom millwork, countertops, and agreed appliances" },
+      { "label": "BATHROOMS & FIXTURES:", "value": "Designer plumbing, tilework, mirrors, and lighting" },
+      { "label": "MECHANICAL SYSTEMS:", "value": "Fully connected HVAC, electrical, and plumbing" },
+      { "label": "PERMITS & CLOSEOUT:", "value": "Passed city inspections and final sign-off for move-in" }
+    ]
+  },
+  "faq": [
+    {
+      "question": "Do I need to own land before contacting ALM?",
+      "answer": "No. You can contact ALM while you are still looking. The team can discuss potential lots or teardown properties, but a specific property still needs project-level review."
+    },
+    {
+      "question": "Can ALM work with plans I already have?",
+      "answer": "Yes. If you already have architectural drawings, engineering, or conceptual plans, ALM can review them, assess site feasibility, and provide an accurate construction quote."
+    },
+    {
+      "question": "What happens if there is an older home on the property?",
+      "answer": "ALM handles full teardown, site preparation, utility disconnections, and grading as part of the overall build agreement."
+    },
+    {
+      "question": "How is the construction cost determined?",
+      "answer": "Pricing is based on your specific property conditions, selected architectural plans, finish levels, and approved engineering specifications—locked in before groundbreaking."
+    },
+    {
+      "question": "Who handles permits and city inspections?",
+      "answer": "ALM manages all municipal filings, architectural submissions, structural reviews, inspections, and final occupancy certificate closeout."
+    },
+    {
+      "question": "Can I change materials or finishes?",
+      "answer": "Yes. Any finish or scope adjustment is formally quoted, timeline-verified, and signed off in writing prior to execution on site."
+    },
+    {
+      "question": "What is included in the finished home?",
+      "answer": "Every agreed interior and exterior finish—flooring, cabinetry, countertops, fixtures, appliances, mechanical connections, and paint—is fully resolved for move-in."
+    },
+    {
+      "question": "Does ALM provide a builder warranty?",
+      "answer": "Yes. Every ALM custom home includes a comprehensive builder warranty package covering structural components, mechanical systems, and workmanship."
+    }
+  ],
+  "pub": {
+    "at": "2026-10-13T20:00:00.000Z",
+    "by": "admin",
+    "id": "init-alm"
+  }
+}
