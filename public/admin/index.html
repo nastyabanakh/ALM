@@ -409,25 +409,29 @@
     });
   }
 
+  const imagePreviews = {};
+
   function imageField(label, path, opts = {}) {
     const box = h('div', { class: 'ph-box' });
     const bar = h('div', { class: 'bar', hidden: true }, h('i'));
     const draw = () => {
       const u = get(path);
-      box.style.backgroundImage = u ? `url(${u})` : '';
-      box.replaceChildren(u ? '' : h('span', { class: 'em' }, 'Немає фото'));
+      const displayUrl = imagePreviews[u] || u;
+      box.style.backgroundImage = displayUrl ? `url("${displayUrl}")` : '';
+      box.replaceChildren(displayUrl ? '' : h('span', { class: 'em' }, 'Немає фото'));
     };
     const uploadFile = async file => {
       if (!file) return;
       bar.hidden = false;
       try {
-        toast('Оптимізація та стиснення фото...');
+        toast('Оптимізація та збереження фото...');
         const { base64, ext } = await processImage(file);
         const cleanName = file.name.replace(/\.[^/.]+$/, "") + '.' + ext;
         const r = await api('upload', { filename: cleanName, base64, ext });
+        imagePreviews[r.url] = `data:image/webp;base64,${base64}`;
         set(path, r.url);
-        draw();
-        toast('Фото оптимізовано та збережено!');
+        render();
+        toast('Фото успішно завантажено!');
       } catch (err) {
         toast(err.message, true);
       } finally {
@@ -440,7 +444,7 @@
       h('span', null, 'Завантажити нове фото або вказати шлях'),
       h('div', { style: 'display:flex;gap:6px' },
         h('button', { type: 'button', class: 'btn sm', onclick: () => inpFile.click() }, 'Обрати файл'),
-        h('button', { type: 'button', class: 'btn sm ghost', onclick: () => { set(path, ''); draw(); } }, 'Очистити')
+        h('button', { type: 'button', class: 'btn sm ghost', onclick: () => { set(path, ''); render(); } }, 'Очистити')
       ),
       inpFile, bar
     );
@@ -484,14 +488,17 @@
         h('div', { class: 'plate' },
           h('h2', null, 'Список карток'),
           h('div', { class: 'items', style: 'margin-bottom:20px;' },
-            ...items.map((it, idx) => h('div', {
-              class: 'it ' + (idx === selIdx ? 'on' : ''),
-              onclick: () => { S.sel.point = idx; render(); }
-            },
-              h('span', { class: 'no' }, it.num),
-              h('div', { class: 'th', style: `background-image:url(${it.image})` }),
-              h('div', { class: 'tt' }, h('b', null, it.title), h('span', null, it.note))
-            ))
+            ...items.map((it, idx) => {
+              const thumbUrl = imagePreviews[it.image] || it.image;
+              return h('div', {
+                class: 'it ' + (idx === selIdx ? 'on' : ''),
+                onclick: () => { S.sel.point = idx; render(); }
+              },
+                h('span', { class: 'no' }, it.num),
+                h('div', { class: 'th', style: thumbUrl ? `background-image:url("${thumbUrl}")` : '' }),
+                h('div', { class: 'tt' }, h('b', null, it.title), h('span', null, it.note))
+              );
+            })
           ),
           cur ? h('div', { class: 'grid', style: 'padding-top:16px;border-top:1px solid var(--l10);' },
             h('h3', { class: 'c12' }, `Редагування картки ${cur.num} ${cur.title}`),
@@ -529,14 +536,17 @@
         h('div', { class: 'plate' },
           h('h2', null, 'Етапи будівництва (Breakdown Gallery)'),
           h('div', { class: 'items', style: 'margin-bottom:20px;' },
-            ...stages.map((stg, idx) => h('div', {
-              class: 'it ' + (idx === selStage ? 'on' : ''),
-              onclick: () => { S.sel.stage = idx; render(); }
-            },
-              h('span', { class: 'no' }, stg.num),
-              h('div', { class: 'th', style: `background-image:url(${stg.image})` }),
-              h('div', { class: 'tt' }, h('b', null, stg.title), h('span', null, stg.stageTitle))
-            ))
+            ...stages.map((stg, idx) => {
+              const thumbUrl = imagePreviews[stg.image] || stg.image;
+              return h('div', {
+                class: 'it ' + (idx === selStage ? 'on' : ''),
+                onclick: () => { S.sel.stage = idx; render(); }
+              },
+                h('span', { class: 'no' }, stg.num),
+                h('div', { class: 'th', style: thumbUrl ? `background-image:url("${thumbUrl}")` : '' }),
+                h('div', { class: 'tt' }, h('b', null, stg.title), h('span', null, stg.stageTitle))
+              );
+            })
           ),
           curStage ? h('div', { class: 'grid', style: 'padding-top:16px;border-top:1px solid var(--l10);' },
             h('h3', { class: 'c12' }, `Редагування етапу ${curStage.num}`),
