@@ -14,34 +14,22 @@
  * — Smooth 60/120fps direct scroll synchronization (no lag jitter)
  */
 import ButtonComposite from '../components/ButtonComposite.astro';
+import content from '../data/content.json';
+
+const completedData = content.completedHome;
 
 interface SpecItem {
   label: string;
   value: string;
 }
 
-const specs: SpecItem[] = [
-  {
-    label: 'SURFACES & ENVELOPE:',
-    value: 'Interior walls, hardwood flooring, and exterior siding'
-  },
-  {
-    label: 'CABINETRY & KITCHEN:',
-    value: 'Custom millwork, countertops, and agreed appliances'
-  },
-  {
-    label: 'BATHROOMS & FIXTURES:',
-    value: 'Designer plumbing, tilework, mirrors, and lighting'
-  },
-  {
-    label: 'MECHANICAL SYSTEMS:',
-    value: 'Fully connected HVAC, electrical, and plumbing'
-  },
-  {
-    label: 'PERMITS & CLOSEOUT:',
-    value: 'Passed city inspections and final sign-off for move-in'
-  }
-];
+const specs: SpecItem[] = completedData.specs || [];
+const collageImages = completedData.images || {
+  bathroom: '/assets/section-10/bathroom.webp',
+  office: '/assets/section-10/office.webp',
+  kitchen: '/assets/section-10/kitchen.webp',
+  livingRoom: '/assets/section-10/living-room.webp'
+};
 ---
 
 <section class="completed-home" id="completed-home" aria-label="The Completed Home">
@@ -82,7 +70,7 @@ const specs: SpecItem[] = [
           <!-- Bathroom (Full Height) -->
           <div class="completed-home__bathroom-box">
             <img
-              src="/assets/section-10/bathroom.webp"
+              src={collageImages.bathroom}
               alt="Designer custom bathroom with vanity and ambient lighting"
               class="completed-home__photo"
               loading="lazy"
@@ -94,7 +82,7 @@ const specs: SpecItem[] = [
           <div class="completed-home__stack-box">
             <div class="completed-home__stack-top">
               <img
-                src="/assets/section-10/office.webp"
+                src={collageImages.office}
                 alt="Luxury custom home private office with large windows"
                 class="completed-home__photo"
                 loading="lazy"
@@ -103,7 +91,7 @@ const specs: SpecItem[] = [
             </div>
             <div class="completed-home__stack-bottom">
               <img
-                src="/assets/section-10/kitchen.webp"
+                src={collageImages.kitchen}
                 alt="High-end modern kitchen with integrated appliances"
                 class="completed-home__photo"
                 loading="lazy"
@@ -119,7 +107,7 @@ const specs: SpecItem[] = [
             <!-- Living Room Panorama (Exact viewport height) -->
             <div class="completed-home__living-box">
               <img
-                src="/assets/section-10/living-room.webp"
+                src={collageImages.livingRoom}
                 alt="Spacious living room with high ceilings and custom finishes"
                 class="completed-home__photo"
                 loading="lazy"
