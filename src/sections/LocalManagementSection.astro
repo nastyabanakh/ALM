@@ -14,28 +14,19 @@
  *     - Right: 3 key principles (Family-owned, Locally focused, Field experience) with dividers + "Our background" highlight (18rem uppercase)
  */
 
-interface PrincipleItem {
-  title: string;
-  description: string;
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  content: CollectionEntry<'pages'>['data']['content'];
 }
 
-const principles: PrincipleItem[] = [
-  {
-    title: 'Family-owned',
-    description: 'The owners take personal accountability for every home bearing the ALM name.'
-  },
-  {
-    title: 'Locally focused',
-    description: 'We build nearby so owners can stay actively involved on-site and manage approvals.'
-  },
-  {
-    title: 'Field experience',
-    description: 'We build nearby so owners can stay actively involved on-site and manage approvals.'
-  }
-];
+const { content } = Astro.props;
+const section = content.localManagement;
+const principles = section.principles;
+const cmsContent = (Astro.props as any).content;
 ---
 
-<section class="local-management" id="local-management" aria-label="Built and Managed Locally">
+<section data-cms-section="localManagement" class="local-management" id="local-management" aria-label="Built and Managed Locally">
   <!-- Top 120rem Spacer -->
   <div class="local-management__top-spacer" aria-hidden="true"></div>
 
@@ -45,16 +36,16 @@ const principles: PrincipleItem[] = [
     <div class="local-management__bar">
       <div class="local-management__bar-main">
         <span class="local-management__bullet" aria-hidden="true"></span>
-        <span class="local-management__bar-label text-m">Built and managed locally</span>
+        <span class="local-management__bar-label text-m">{section.barLabel}</span>
       </div>
-      <span class="local-management__bar-index text-m">12//</span>
+      <span class="local-management__bar-index text-m" data-cms-path="sections.localManagement.barIndex">{cmsContent.sections.localManagement.barIndex}</span>
     </div>
     <div class="local-management__divider" aria-hidden="true"></div>
 
     <!-- 2. CENTERED STATEMENT HEADLINE -->
     <div class="local-management__headline-box">
       <h2 class="local-management__headline h2">
-        By focusing exclusively on local projects, our owners stay directly involved on-site with every property, trade crew, and municipal approval process.
+        {section.headline}
       </h2>
     </div>
 
@@ -64,12 +55,12 @@ const principles: PrincipleItem[] = [
       <!-- Left Column: Owner Photo -->
       <div class="local-management__media-box">
         <img
-          src="/assets/section-12/owner-portrait.webp"
-          alt="ALM founder and leadership"
+          src={section.ownerImage}
+          alt={cmsContent.sections.localManagement.photoAlt}
           class="local-management__photo"
           loading="lazy"
           decoding="async"
-        />
+         data-cms-path-alt="sections.localManagement.photoAlt"/>
       </div>
 
       <!-- Right Column: Principles & Background -->
@@ -92,9 +83,9 @@ const principles: PrincipleItem[] = [
 
         <!-- Our Background Highlight Block -->
         <div class="local-management__background-block">
-          <span class="local-management__background-label">Our background</span>
+          <span class="local-management__background-label">{section.backgroundLabel}</span>
           <p class="local-management__background-text">
-            While ALM is a new brand, our leadership brings over 8 years of dedicated hands-on exterior construction expertise.
+            {section.backgroundText}
           </p>
         </div>
 

@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>ALM · CMS content</title>
+  <style>
+    :root{font:14px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#f4f4f4;background:#0b0b0b}
+    *{box-sizing:border-box}body{margin:0}button,input,textarea{font:inherit}button{cursor:pointer}
+    button{border:0;border-radius:9px;background:#f4f4f4;color:#111;padding:9px 14px;font-weight:650}
+    button.secondary{background:#222;color:#fff}button:disabled{opacity:.5;cursor:default}
+    input,textarea{width:100%;background:#171717;color:#fff;border:1px solid #333;border-radius:8px;padding:10px}
+    textarea{min-height:110px;resize:vertical}label{display:block;margin:14px 0;font-weight:600}
+    label small{display:block;color:#aaa;font-weight:400;margin-top:3px}label input,label textarea{display:block;margin-top:6px}
+    a{color:#fff}h1{font-size:26px}h2{font-size:18px}
+    header{display:flex;align-items:center;gap:16px;padding:14px 26px;border-bottom:1px solid #252525}
+    header h1{margin:0}header .right{margin-left:auto}
+    #app{display:grid;grid-template-columns:76px minmax(0,1fr);min-height:100vh}.app-main{min-width:0}
+    .mode-rail{position:sticky;top:0;height:calc(100vh - 20px);display:flex;flex-direction:column;align-items:center;gap:7px;padding:18px 10px;background:#fff;color:#111;border-radius:26px;margin:10px 0 10px 10px;box-shadow:0 12px 50px #0005}
+    .rail-logo{display:grid;place-items:center;width:42px;height:42px;font-size:23px;font-weight:800;margin-bottom:25px}
+    .mode-rail a,.mode-rail button{display:grid;place-items:center;width:46px;height:46px;border-radius:13px;color:#555;text-decoration:none;background:transparent;padding:0}
+    .mode-rail a:hover,.mode-rail button:hover{background:#eee;color:#111}.mode-rail a.on{background:#161616;color:#fff}
+    .mode-rail #logout{margin-top:auto;border-top:1px solid #e5e5e5;border-radius:0;height:58px;padding-top:13px}
+    .ui-icon{display:inline-block;width:19px;height:19px;background:currentColor;mask:var(--icon) center/contain no-repeat;-webkit-mask:var(--icon) center/contain no-repeat}
+    .icon-btn{display:grid;place-items:center;width:34px;height:34px;padding:0;border:1px solid #333;background:#171717;color:#ddd}.icon-btn:hover{background:#f4f4f4;color:#111}.icon-btn:disabled{opacity:.35}
+    main{display:grid;grid-template-columns:280px minmax(0,1fr);min-height:calc(100vh - 70px)}
+    main>aside{padding:26px;border-right:1px solid #252525}section{padding:26px;max-width:900px;width:100%;margin:auto}
+    .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:12px 0}.stack{display:grid;gap:7px}
+    .item{display:block;width:100%;text-align:left;background:#191919;color:#fff}.item.selected{outline:1px solid #fff}
+    .hint{color:#999;font-size:12px}.error,.ok{color:#fff}
+    .gallery-row{display:grid;grid-template-columns:1fr 1fr auto auto;gap:8px;margin:8px 0}
+    #login{max-width:420px;margin:12vh auto;padding:28px;background:#151515;border:1px solid #292929;border-radius:16px}
+    #fields{padding:18px 22px;border:1px solid #292929;border-radius:13px;background:#141414}
+    #fields label{font-size:12px;color:#aaa}#fields input,#fields textarea{font-size:14px;color:#fff}
+    header h1{font-size:18px}.header-actions{display:flex;gap:5px;margin-left:auto}
+    @media(max-width:700px){#app{grid-template-columns:58px minmax(0,1fr)}.mode-rail{margin:5px 0 5px 5px;height:calc(100vh - 10px);padding:10px 4px;border-radius:17px}.mode-rail a,.mode-rail button{width:42px;height:42px}main{display:block}main>aside{border-right:0;border-bottom:1px solid #333;padding:14px}section{padding:14px}.gallery-row{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <div id="login">
+    <h1>Sign in to CMS</h1>
+    <form id="login-form">
+      <label>Username<input name="user" autocomplete="username" required></label>
+      <label>Password<input name="password" type="password" autocomplete="current-password" required></label>
+      <button>Sign in</button>
+    </form>
+    <p id="login-message" class="error" role="alert"></p>
+  </div>
+  <div id="app" hidden>
+    <nav class="mode-rail" aria-label="Workspace navigation">
+      <div class="rail-logo" aria-label="ALM">A</div>
+      <a href="/admin/" title="Page editor" aria-label="Page editor"><span class="ui-icon" data-icon="panels-top-left"></span></a>
+      <a class="on" href="/cms/" aria-current="page" title="CMS content" aria-label="CMS content"><span class="ui-icon" data-icon="files"></span></a>
+      <a href="/admin/#media" title="Media library" aria-label="Media library"><span class="ui-icon" data-icon="images"></span></a>
+      <a href="/admin/#const" title="Const variables" aria-label="Const variables"><span class="ui-icon" data-icon="variable"></span></a>
+      <button id="logout" type="button" title="Log out" aria-label="Log out"><span class="ui-icon" data-icon="log-out"></span></button>
+    </nav>
+    <div class="app-main">
+    <header><h1>CMS content</h1><div class="header-actions"><button id="undo" class="icon-btn" type="button" title="Undo (Ctrl/Cmd+Z)" aria-label="Undo"><span class="ui-icon" data-icon="undo-2"></span></button><button id="redo" class="icon-btn" type="button" title="Redo (Ctrl/Cmd+Shift+Z)" aria-label="Redo"><span class="ui-icon" data-icon="redo-2"></span></button></div></header>
+    <main>
+      <aside>
+        <div class="row"><button id="posts">Posts</button><button id="projects" class="secondary">Portfolio</button></div>
+        <button id="create" class="secondary">+ New entry</button>
+        <h2 id="list-title">Posts</h2>
+        <div id="list" class="stack"></div>
+      </aside>
+      <section>
+        <div id="welcome">Select an entry or create a new one.</div>
+        <div id="editor" hidden>
+          <h2 id="editor-title">New entry</h2>
+          <p class="hint">Drafts are saved locally and shared between browser tabs. Publishing works locally.</p>
+          <div id="fields"></div>
+          <div class="row"><button id="save">Save draft</button><button id="publish" class="secondary">Publish locally</button><a id="preview" target="_blank" hidden>Draft preview ↗</a><a id="open-page" target="_blank" hidden>Open published page ↗</a></div>
+          <p id="message" role="status"></p>
+          <div id="history"></div>
+        </div>
+      </section>
+    </main>
+    </div>
+  </div>
+  <script type="module">
+    import { slugify } from '/cms/slug.mjs';
+    (() => {
+      const $ = id => document.getElementById(id);
+      document.querySelectorAll('[data-icon]').forEach(el => el.style.setProperty('--icon', `url('/admin/icons/${el.dataset.icon}.svg')`));
+      const state = { collection: 'posts', id: null, draftRevision: null, data: null, fields: null, publishedSlug: null, pageReady: false };
+      const history = { undo: [], redo: [], key: '', at: 0 };
+      const clone = value => structuredClone(value);
+      function updateHistoryButtons() {
+        $('undo').disabled = !history.undo.length;
+        $('redo').disabled = !history.redo.length;
+      }
+      function recordChange(key) {
+        if (!state.data) return;
+        const now = Date.now();
+        if (key !== history.key || now - history.at > 850) {
+          history.undo.push({ kind: 'content', content: clone(state.data) });
+          if (history.undo.length > 100) history.undo.shift();
+        }
+        history.key = key;
+        history.at = now;
+        history.redo.length = 0;
+        updateHistoryButtons();
+      }
+      function recordUpload(url) {
+        history.undo.push({ kind: 'upload', url, token: null, metadata: null });
+        history.redo.length = 0;
+        history.key = '';
+        updateHistoryButtons();
+      }
+      async function mediaRequest(op, body) {
+        const response = await fetch('/api/admin?op=' + op, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+        const result = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(result.message || `Request failed: ${response.status}`);
+        return result;
+      }
+      async function applyHistory(direction) {
+        const source = history[direction];
+        if (!source.length || !state.data) return;
+        const target = history[direction === 'undo' ? 'redo' : 'undo'];
+        const entry = source.at(-1);
+        if (entry.kind === 'upload') {
+          try {
+            if (direction === 'undo') {
+              const result = await mediaRequest('media-stash', { url: entry.url });
+              entry.token = result.token; entry.metadata = result.metadata;
+            } else await mediaRequest('media-unstash', { url: entry.url, token: entry.token, metadata: entry.metadata });
+            source.pop(); target.push(entry);
+          } catch (error) { showMessage(error.message, true); }
+          updateHistoryButtons();
+          return;
+        }
+        target.push({ kind: 'content', content: clone(state.data) });
+        state.data = source.pop().content;
+        history.key = '';
+        renderEditor();
+        updateHistoryButtons();
+      }
+      function resetHistory() {
+        history.undo.length = 0; history.redo.length = 0; history.key = '';
+        updateHistoryButtons();
+      }
+      $('undo').onclick = () => applyHistory('undo');
+      $('redo').onclick = () => applyHistory('redo');
+      document.addEventListener('keydown', event => {
+        if (!(event.ctrlKey || event.metaKey) || event.altKey) return;
+        const key = event.key.toLowerCase();
+        if (key !== 'z' && key !== 'y') return;
+        event.preventDefault();
+        applyHistory(key === 'y' || event.shiftKey ? 'redo' : 'undo');
+      });
+      updateHistoryButtons();
+      async function request(op, params = {}, body) {
+        const url = '/api/cms?' + new URLSearchParams({ op, ...params });
+        const response = await fetch(url, body === undefined ? {} : { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+        const result = await response.json().catch(() => ({}));
+        if (!response.ok) {
+          const detail = result.details?.map(issue => `${issue.path.join('.')}: ${issue.message}`).join('; ');
+          throw new Error(detail || result.message || `Error ${response.status}`);
+        }
+        return result;
+      }
+      const get = (object, path) => path.split('.').reduce((value, key) => value?.[key], object);
+      function set(object, path, value) {
+        const keys = path.split('.');
+        let target = object;
+        for (const key of keys.slice(0, -1)) target = target[key] ||= {};
+        target[keys.at(-1)] = value;
+      }
+      function showMessage(message, error = false) {
+        $('message').textContent = message;
+        $('message').className = error ? 'error' : 'ok';
+      }
+      async function upload(file) {
+        if (!file || file.size > 5 * 1024 * 1024) throw new Error('File must be 5 MB or smaller');
+        const base64 = await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(String(reader.result).split(',')[1]);
+          reader.onerror = () => reject(new Error('Could not read file'));
+          reader.readAsDataURL(file);
+        });
+        const url = (await request('upload', {}, { base64 })).url;
+        recordUpload(url);
+        return url;
+      }
+      async function refreshList() {
+        const { entries } = await request('list', { collection: state.collection });
+        $('list').replaceChildren();
+        for (const entry of entries) {
+          const button = document.createElement('button');
+          button.className = 'item' + (state.id === entry.id ? ' selected' : '');
+          button.textContent = `${entry.title || 'Untitled'} · ${entry.draft ? 'draft' : 'published'}`;
+          button.onclick = () => loadEntry(entry.id);
+          $('list').append(button);
+        }
+      }
+      function renderGallery(container) {
+        const items = state.data.gallery ||= [];
+        const list = document.createElement('div');
+        function draw() {
+          list.replaceChildren();
+          items.forEach((image, index) => {
+            const row = document.createElement('div'); row.className = 'gallery-row';
+            for (const key of ['src', 'alt']) {
+              const input = document.createElement('input');
+              input.placeholder = key === 'src' ? '/assets/…' : 'Alt text';
+              input.value = image[key] || '';
+              input.oninput = () => { if (image[key] !== input.value) { recordChange(`gallery:${index}:${key}`); image[key] = input.value; } };
+              row.append(input);
+            }
+            const choose = document.createElement('input'); choose.type = 'file'; choose.accept = 'image/png,image/jpeg,image/webp'; choose.hidden = true;
+            choose.onchange = async () => {
+              try { const url = await upload(choose.files[0]); recordChange(`gallery:${index}:src`); image.src = url; row.querySelector('input').value = image.src; showMessage('Image uploaded'); }
+              catch (error) { showMessage(error.message, true); }
+            };
+            const uploadButton = document.createElement('button'); uploadButton.type = 'button'; uploadButton.className = 'secondary'; uploadButton.textContent = 'Upload';
+            uploadButton.onclick = () => choose.click(); row.append(uploadButton, choose);
+            const remove = document.createElement('button'); remove.type = 'button'; remove.className = 'secondary'; remove.textContent = 'Remove';
+            remove.onclick = () => { recordChange('gallery:remove'); items.splice(index, 1); draw(); };
+            row.append(remove); list.append(row);
+          });
+        }
+        const add = document.createElement('button'); add.type = 'button'; add.className = 'secondary'; add.textContent = '+ Image';
+        add.onclick = () => { recordChange('gallery:add'); items.push({ src: '', alt: '' }); draw(); };
+        container.append(list, add); draw();
+      }
+      function renderEditor() {
+        $('welcome').hidden = true; $('editor').hidden = false;
+        $('editor-title').textContent = state.id ? 'Edit entry' : 'New entry';
+        $('fields').replaceChildren(); showMessage('');
+        for (const field of state.fields[state.collection]) {
+          const label = document.createElement('label'); label.textContent = field.label;
+          if (field.type === 'gallery') renderGallery(label);
+          else {
+            const input = document.createElement(field.type === 'textarea' ? 'textarea' : 'input');
+            if (input.tagName === 'INPUT') input.type = field.type === 'datetime' ? 'datetime-local' : 'text';
+            let value = get(state.data, field.key) || '';
+            if (field.type === 'datetime' && value) value = value.slice(0, 16);
+            input.value = value;
+            if (field.required) input.required = true;
+            input.oninput = () => { const value = field.type === 'datetime' && input.value ? new Date(input.value).toISOString() : input.value; if (get(state.data, field.key) !== value) { recordChange(field.key); set(state.data, field.key, value); } };
+            if (field.type === 'slug') {
+              const hint = document.createElement('small');
+              hint.textContent = 'Use letters, numbers, and hyphens for the URL. Spaces become hyphens.';
+              input.onblur = () => {
+                const normalized = slugify(input.value);
+                if (normalized && input.value !== normalized) {
+                  input.value = normalized;
+                  input.dispatchEvent(new Event('input'));
+                  showMessage(`URL changed to “${normalized}”. Save the draft.`);
+                }
+              };
+              label.append(hint);
+            }
+            label.append(input);
+            if (field.type === 'media') {
+              const choose = document.createElement('input'); choose.type = 'file'; choose.accept = 'image/png,image/jpeg,image/webp'; choose.hidden = true;
+              choose.onchange = async () => {
+                try { input.value = await upload(choose.files[0]); input.dispatchEvent(new Event('input')); showMessage('Image uploaded'); }
+                catch (error) { showMessage(error.message, true); }
+              };
+              const button = document.createElement('button'); button.type = 'button'; button.className = 'secondary'; button.textContent = 'Upload image';
+              button.onclick = () => choose.click(); label.append(button, choose);
+            }
+          }
+          $('fields').append(label);
+        }
+        updatePublishedLink();
+        const preview = $('preview');
+        preview.hidden = !state.id || !state.draftRevision;
+        preview.href = '/api/cms?' + new URLSearchParams({ op: 'preview', collection: state.collection, id: state.id || '' });
+        renderHistory();
+      }
+      function updatePublishedLink() {
+        const link = $('open-page');
+        link.hidden = !state.publishedSlug || !state.pageReady;
+        if (state.publishedSlug) link.href = `/${state.collection === 'posts' ? 'blog' : 'portfolio'}/${encodeURIComponent(state.publishedSlug)}/`;
+        else link.removeAttribute('href');
+      }
+      async function renderHistory() {
+        const area = $('history'); area.replaceChildren();
+        if (!state.id) return;
+        const id = state.id, collection = state.collection;
+        try {
+          const { versions } = await request('history', { collection, id });
+          if (id !== state.id || collection !== state.collection || !versions.length) return;
+          const title = document.createElement('h2'); title.textContent = 'Previous versions'; area.append(title);
+          versions.forEach(version => {
+            const row = document.createElement('div'); row.className = 'row';
+            const date = document.createElement('span'); date.textContent = new Date(version.at).toLocaleString('uk-UA');
+            const button = document.createElement('button'); button.className = 'secondary'; button.textContent = 'Restore as draft';
+            button.onclick = async () => {
+              try {
+                const result = await request('restore-draft', { collection }, {
+                  id, revision: version.revision, expectedDraftRevision: state.draftRevision
+                });
+                recordChange('restore-version');
+                state.data = result.draft.data; state.draftRevision = result.draft.revision;
+                renderEditor(); showMessage('Previous version restored as draft. Review and publish it.');
+              } catch (error) { showMessage(error.message, true); }
+            };
+            row.append(date, button); area.append(row);
+          });
+        } catch (error) { showMessage(error.message, true); }
+      }
+      async function loadEntry(id) {
+        try {
+          const entry = await request('entry', { collection: state.collection, id });
+          state.id = id;
+          state.draftRevision = entry.draft?.revision || null;
+          state.data = structuredClone(entry.draft?.data || entry.published);
+          resetHistory();
+          state.publishedSlug = entry.published?.slug || null;
+          state.pageReady = Boolean(entry.published);
+          renderEditor(); await refreshList();
+        } catch (error) { showMessage(error.message, true); }
+      }
+      function createEntry() {
+        state.id = null; state.draftRevision = null; state.publishedSlug = null; state.pageReady = false;
+        state.data = state.collection === 'posts'
+          ? { title: '', slug: '', excerpt: '', body: '', seo: { title: '', description: '' } }
+          : { title: '', slug: '', summary: '', body: '', gallery: [], seo: { title: '', description: '' } };
+        resetHistory();
+        renderEditor(); refreshList();
+      }
+      async function save() {
+        const result = await request('save-draft', { collection: state.collection }, {
+          id: state.id || undefined, data: state.data, expectedDraftRevision: state.draftRevision
+        });
+        state.id = result.id; state.draftRevision = result.draft.revision; state.data = result.draft.data;
+        showMessage('Draft saved'); renderEditor(); showMessage('Draft saved'); await refreshList();
+        return result;
+      }
+      async function selectCollection(collection) {
+        state.collection = collection; state.id = null; state.data = null; state.draftRevision = null; state.publishedSlug = null; state.pageReady = false;
+        $('editor').hidden = true; $('welcome').hidden = false;
+        $('list-title').textContent = collection === 'posts' ? 'Posts' : 'Portfolio';
+        $('posts').className = collection === 'posts' ? '' : 'secondary';
+        $('projects').className = collection === 'projects' ? '' : 'secondary';
+        await refreshList();
+      }
+      $('posts').onclick = () => selectCollection('posts');
+      $('projects').onclick = () => selectCollection('projects');
+      $('create').onclick = createEntry;
+      $('save').onclick = async () => { try { await save(); } catch (error) { showMessage(error.message, true); } };
+      $('publish').onclick = async () => {
+        try {
+          const normalized = slugify(state.data.slug);
+          if (!normalized) throw new Error('Enter a URL using Latin letters or numbers');
+          if (state.data.slug !== normalized) {
+            recordChange('slug');
+            state.data.slug = normalized;
+            renderEditor();
+            showMessage(`URL changed to “${normalized}”. Publishing at this URL.`);
+          }
+          await save();
+          const result = await request('publish', { collection: state.collection }, { id: state.id, expectedDraftRevision: state.draftRevision });
+          state.draftRevision = null;
+          state.publishedSlug = state.data.slug;
+          state.pageReady = false;
+          await refreshList(); renderEditor();
+          showMessage('Local file saved. Waiting for the page to update…');
+          const url = `/${state.collection === 'posts' ? 'blog' : 'portfolio'}/${encodeURIComponent(state.publishedSlug)}/`;
+          for (let attempt = 0; attempt < 12; attempt++) {
+            const response = await fetch(url, { cache: 'no-store' }).catch(() => null);
+            if (response?.ok) { state.pageReady = true; break; }
+            await new Promise(resolve => setTimeout(resolve, 350));
+          }
+          updatePublishedLink();
+          showMessage(state.pageReady ? 'Page is ready to view.' : 'File saved, but the page is still building. Refresh in a few seconds.', !state.pageReady);
+        } catch (error) { showMessage(error.message, true); }
+      };
+      $('logout').onclick = async () => {
+        await fetch('/api/admin?op=logout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' });
+        location.reload();
+      };
+      $('login-form').onsubmit = async event => {
+        event.preventDefault();
+        const data = Object.fromEntries(new FormData(event.target));
+        try {
+          const response = await fetch('/api/admin?op=login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+          if (!response.ok) throw new Error((await response.json()).message);
+          $('login').hidden = true; $('app').hidden = false;
+          state.fields = (await request('schema')).collections;
+          await refreshList();
+        } catch (error) { $('login-message').textContent = error.message; }
+      };
+      (async () => {
+        try {
+          const me = await (await fetch('/api/admin?op=me')).json();
+          if (!me.user) return;
+          state.fields = (await request('schema')).collections;
+          $('login').hidden = true; $('app').hidden = false;
+          await refreshList();
+        } catch (error) { $('login-message').textContent = error.message; }
+      })();
+    })();
+  </script>
+</body>
+</html>

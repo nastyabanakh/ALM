@@ -1,0 +1,9 @@
+---
+import fs from 'node:fs';
+import path from 'node:path';
+
+const htmlPath = path.join(process.cwd(), 'public/admin/index.html');
+const html = fs.readFileSync(htmlPath, 'utf-8');
+---
+<!DOCTYPE html>
+<Fragment set:html={html} />

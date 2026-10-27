@@ -1,0 +1,29 @@
+{
+  "id": "821c5403-fc32-46aa-8ab1-e1fed5eeda95",
+  "slug": "new",
+  "title": "new",
+  "summary": "fdsf",
+  "cover": {
+    "src": "/assets/uploads/cdc490d1-af1a-4984-902b-2490ee005bf2.png",
+    "alt": "ed"
+  },
+  "gallery": [
+    {
+      "src": "/assets/uploads/3a713a8d-8917-4e3b-81c7-11e22b8823ff.png",
+      "alt": ""
+    },
+    {
+      "src": "/assets/uploads/fee0b819-a945-4370-a2a0-2beae54a5bc0.png",
+      "alt": ""
+    },
+    {
+      "src": "/assets/uploads/41508419-4406-43ee-b71d-10b774977090.jpg",
+      "alt": ""
+    }
+  ],
+  "body": "vd",
+  "seo": {
+    "title": "new",
+    "description": "new"
+  }
+}

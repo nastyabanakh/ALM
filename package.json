@@ -4,14 +4,19 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "astro dev",
+    "dev:cms": "node --env-file=.env.local ./node_modules/astro/astro.js dev",
     "start": "astro dev",
     "build": "astro build",
+    "test:cms": "node --test tests/*.test.mjs",
+    "cms:manifest": "node cms/manifest-cli.mjs",
     "preview": "astro preview",
     "astro": "astro"
   },
   "dependencies": {
+    "@astrojs/compiler": "2.13.1",
     "astro": "^5.3.0",
     "gsap": "^3.15.0",
-    "lenis": "^1.3.26"
+    "lenis": "^1.3.26",
+    "lucide-static": "^0.575.0"
   }
 }

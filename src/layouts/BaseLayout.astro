@@ -14,6 +14,28 @@ import '../styles/reset.css';
 import '../styles/base.css';
 import '../styles/typography.css';
 import AnimationsInit from '../components/AnimationsInit.astro';
+import { mediaMetadata } from '../../cms/media-library.mjs';
+import { getEntry } from 'astro:content';
+import { HOME_PAGE_ID } from '../../cms/model.mjs';
+import { resolveContentConstants } from '../../cms/constants.mjs';
+import { listSitePages } from '../../cms/page-list.mjs';
+const home = await getEntry('pages', HOME_PAGE_ID);
+const pagePath = Astro.url.pathname;
+const homeContent = home?.data.content;
+const sitePages = await listSitePages();
+const renderedHomeContent = resolveContentConstants(homeContent, sitePages, pagePath);
+const pageContent = pagePath === '/' ? homeContent : homeContent?.pageOverrides?.[pagePath];
+const pageSettings = renderedHomeContent?.pageSettings?.[pagePath] || {};
+const pageTitle = pageSettings.seoTitle || title;
+const pageDescription = pageSettings.seoDescription || description;
+const ogTitle = pageSettings.ogTitle || pageTitle;
+const ogDescription = pageSettings.ogDescription || pageDescription;
+const staticDataJson = JSON.stringify({
+  staticText: pageContent?.staticText || {}, staticAttributes: pageContent?.staticAttributes || {},
+  consts: homeContent?.consts || {}
+}).replace(/</g, '\\u003c');
+const mediaJson = JSON.stringify(await mediaMetadata()).replace(/</g, '\\u003c');
+const linksJson = JSON.stringify({ settings: homeContent?.linkSettings || {}, pages: sitePages }).replace(/</g, '\\u003c');
 ---
 
 <!DOCTYPE html>
@@ -21,16 +43,31 @@ import AnimationsInit from '../components/AnimationsInit.astro';
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{title}</title>
-    <meta name="description" content={description} />
+    <title>{pageTitle}</title>
+    <meta name="description" content={pageDescription} />
+    {pageSettings.noIndex && <meta name="robots" content="noindex,nofollow" />}
+    {pageSettings.canonical && <link rel="canonical" href={pageSettings.canonical} />}
+    <meta property="og:title" content={ogTitle} />
+    <meta property="og:description" content={ogDescription} />
+    {pageSettings.ogImage && <meta property="og:image" content={pageSettings.ogImage} />}
     <meta name="generator" content={Astro.generator} />
-    <link rel="preload" as="image" href="/assets/images/hero-house.webp" fetchpriority="high" />
+    {pagePath === '/' && renderedHomeContent?.hero?.videoPoster && <link rel="preload" as="image" href={renderedHomeContent.hero.videoPoster} fetchpriority="high" />}
+    {pageSettings.headCode && <Fragment set:html={pageSettings.headCode} />}
   </head>
   <body>
     <div class="page-wrapper">
       <slot />
     </div>
     <AnimationsInit />
+    <script id="cms-static-text" type="application/json" set:html={staticDataJson} />
+    <script is:inline src="/admin/static-text.js"></script>
+    <script id="cms-links-data" type="application/json" set:html={linksJson} />
+    <script is:inline src="/admin/link-runtime.js"></script>
+    <script is:inline src="/admin/const-affordance.js"></script>
+    <script id="cms-media-data" type="application/json" set:html={mediaJson} />
+    <script is:inline src="/admin/media-runtime.js"></script>
+    <script is:inline src="/admin/page-settings-runtime.js"></script>
+    {pageSettings.bodyCode && <Fragment set:html={pageSettings.bodyCode} />}
 
     <!-- Fallback for freshly uploaded CMS assets during Vercel build window -->
     <script is:inline>

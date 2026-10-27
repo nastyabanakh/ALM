@@ -1,17 +1,17 @@
 <!doctype html>
-<html lang="uk">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
-<title>ALM · Панель керування сайтом</title>
+<title>ALM · Site editor</title>
 <link rel="icon" href="/favicon.ico">
 <style>
   :root{
     --bg:#0A0A0A;
     --ink:#F4F4F0;
-    --accent:#D4AF37;
-    --accent-glow:rgba(212,175,55,0.18);
+    --accent:#F7F7F7;
+    --accent-glow:rgba(255,255,255,0.12);
     --plate:#161616;
     --plate-hover:#1F1F1F;
     --dark:#0F0F0F;
@@ -20,15 +20,15 @@
     --l20:rgba(244,244,240,.2);
     --l45:rgba(244,244,240,.45);
     --l60:rgba(244,244,240,.6);
-    --warn:#E5A955;
-    --bad:#E85D4E;
-    --good:#4EBA75;
+    --warn:#C8C8C8;
+    --bad:#FFFFFF;
+    --good:#FFFFFF;
     --r:20px;
     --rs:12px;
   }
   *{box-sizing:border-box}
   html,body{margin:0;background:var(--bg);color:var(--ink);font:400 14px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;letter-spacing:-.01em;-webkit-font-smoothing:antialiased}
-  body{min-height:100vh;background-image:radial-gradient(rgba(244,244,240,.06) 1px,transparent 1.2px);background-size:24px 24px;background-attachment:fixed}
+  body{min-height:100vh;background:#0c0c0c}
   button,input,textarea,select{font:inherit;color:inherit;letter-spacing:inherit}
   button{cursor:pointer;border:0;background:none;padding:0}
   a{color:inherit}
@@ -64,12 +64,25 @@
   .lg-err{color:var(--bad);font-size:13px;min-height:1.2em;margin-top:12px}
 
   /* Top bar */
-  .top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:16px;padding:12px 24px;background:rgba(10,10,10,.82);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--l06)}
-  .brand{display:flex;align-items:baseline;gap:8px;font-weight:800;font-size:24px;letter-spacing:-.02em;line-height:1}
-  .brand em{font-style:normal;font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:600;color:var(--accent)}
-  .tabs{display:flex;gap:3px;padding:4px;border-radius:14px;background:var(--l06);overflow-x:auto;scrollbar-width:none}
+  #app{display:grid;grid-template-columns:68px minmax(0,1fr);min-height:100vh}
+  .app-main{min-width:0}
+  .mode-rail{position:sticky;top:0;height:100vh;z-index:30;display:flex;flex-direction:column;align-items:center;gap:8px;padding:16px 8px;background:#121212;border-right:1px solid var(--l10)}
+  .rail-logo{font-size:18px;font-weight:800;letter-spacing:-.06em;margin-bottom:24px}
+  .mode-rail a{display:grid;place-items:center;width:50px;height:50px;border-radius:12px;color:var(--l60);text-decoration:none;font-size:10px;font-weight:700;letter-spacing:.01em}
+  .mode-rail button{display:grid;place-items:center;width:50px;height:50px;border-radius:12px;color:var(--l60);font-size:10px;font-weight:700;letter-spacing:.01em}
+  .mode-rail a:hover{background:var(--l06);color:var(--ink)}
+  .mode-rail button:hover{background:var(--l06);color:var(--ink)}
+  .mode-rail a.on{background:var(--accent);color:#111}
+  .mode-rail button.on{background:var(--accent);color:#111}
+  .mode-rail a span:first-child{font-size:17px;line-height:1}
+  .mode-rail button span:first-child{font-size:17px;line-height:1}
+  .top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:16px;padding:12px 24px;min-height:64px;background:rgba(12,12,12,.94);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--l06)}
+  .top-title{font-size:15px;font-weight:650;white-space:nowrap}
+  .section-bar{position:sticky;top:64px;z-index:19;background:rgba(12,12,12,.96);border-bottom:1px solid var(--l06);padding:13px 24px 15px}
+  .section-label{display:block;margin-bottom:9px;color:var(--l45);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.12em}
+  .tabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:thin;scrollbar-color:#3b3b3b transparent}
   .tabs::-webkit-scrollbar{display:none}
-  .tabs button{height:32px;padding:0 13px;border-radius:10px;font-size:12px;letter-spacing:.03em;text-transform:uppercase;font-weight:600;color:var(--l60);white-space:nowrap;transition:all .15s}
+  .tabs button{height:34px;padding:0 12px;border-radius:8px;background:#191919;font-size:12px;font-weight:600;color:var(--l60);white-space:nowrap;transition:all .15s}
   .tabs button:hover{color:var(--ink)}
   .tabs button.on{background:var(--ink);color:#000}
   .acts{margin-left:auto;display:flex;align-items:center;gap:12px}
@@ -80,11 +93,17 @@
   .who{font-size:12px;color:var(--l45);background:var(--l06);padding:4px 10px;border-radius:20px}
 
   /* Layout */
-  .wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(400px,46%);gap:24px;padding:16px 24px 80px;align-items:start}
-  .ed{min-width:0}
-  .pv{position:sticky;top:74px;height:calc(100vh - 90px);display:flex;flex-direction:column;gap:10px}
+  .wrap{display:grid;grid-template-columns:clamp(200px,var(--editor-width,35%),50%) 8px minmax(0,1fr);gap:10px;padding:20px 24px 80px;align-items:start}
+  .ed{min-width:0;background:#151515;border:1px solid var(--l06);border-radius:16px;padding:20px}
+  .pane-resizer{position:sticky;top:170px;align-self:start;height:calc(100vh - 190px);min-height:300px;border-radius:8px;cursor:col-resize;touch-action:none;background:transparent}
+  .pane-resizer::before{content:"";position:absolute;top:0;bottom:0;left:3px;width:2px;border-radius:2px;background:var(--l10)}
+  .pane-resizer:hover::before,.pane-resizer:focus-visible::before{background:var(--accent)}
+  .pv{position:sticky;top:155px;height:calc(100vh - 170px);min-height:500px;display:flex;flex-direction:column;gap:10px}
   .pv-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:space-between}
-  .pv-box{position:relative;flex:1;border-radius:var(--r);overflow:hidden;background:var(--dark);border:1px solid var(--l10)}
+  .pv-address{display:flex;align-items:center;gap:9px;min-width:0;padding:8px 10px;border:1px solid var(--l10);border-radius:9px;background:#151515;color:var(--l60);font-size:12px}
+  .pv-address select{max-width:210px;min-width:120px;border:0;background:#242424;padding:6px 8px;border-radius:6px;outline:0}
+  .pv-address code{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .pv-box{position:relative;flex:1;border-radius:14px;overflow:hidden;background:var(--dark);border:1px solid var(--l10)}
   .pv-box iframe{position:absolute;left:0;top:0;border:0;transform-origin:0 0;background:#000}
   .seg{display:inline-flex;padding:3px;border-radius:10px;background:var(--dark);gap:2px}
   .seg button{height:28px;padding:0 10px;border-radius:8px;font-size:12px;font-weight:500;color:var(--l60);white-space:nowrap}
@@ -92,7 +111,7 @@
 
   /* Form & plates */
   .sec-h{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin:16px 0 20px}
-  .sec-h h1{margin:0;font-weight:700;font-size:36px;letter-spacing:-.03em}
+  .sec-h h1{margin:0;font-weight:700;font-size:25px;letter-spacing:-.03em}
   .sec-h p{margin:6px 0 0;color:var(--l60);font-size:14px}
   .plate{background:var(--plate);border-radius:var(--r);padding:22px;border:1px solid var(--l06)}
   .plate+.plate,.stack>*+*{margin-top:14px}
@@ -107,6 +126,44 @@
   .f input:focus,.f textarea:focus{box-shadow:inset 0 0 0 1px var(--accent)}
   .f textarea{resize:vertical;min-height:56px;line-height:1.4}
   .hint{font-size:12px;color:var(--l45);line-height:1.35}
+  .auto-fields{display:grid;gap:0}
+  .auto-field{padding:15px 0;border-top:1px solid var(--l06)}
+  .auto-field.selected{margin:0 -10px;padding:15px 10px;border-radius:9px;background:#232323;box-shadow:inset 3px 0 0 var(--accent)}
+  .auto-field:first-child{border-top:0}
+  .auto-field .cap{display:block;margin-bottom:8px;letter-spacing:0;text-transform:none;font-size:12px;color:var(--l60)}
+  .auto-field input,.auto-field textarea{display:block;width:100%;padding:10px 11px;border:1px solid var(--l10);border-radius:9px;background:#0e0e0e;color:var(--ink);outline:0;resize:vertical;line-height:1.45}
+  .auto-field input:focus,.auto-field textarea:focus{border-color:var(--accent)}
+  .auto-field textarea{min-height:72px}
+  .auto-field .hint{margin-top:6px}
+  .auto-field .media-preview{width:100%;height:120px;object-fit:cover;background:#222;border-radius:8px;margin-bottom:8px}
+  .auto-field .field-actions{display:flex;gap:8px;margin-top:8px}
+  .field-count{margin:5px 0 16px;color:var(--l45);font-size:12px}
+  .workspace-view{padding:24px;min-height:calc(100vh - 64px)}
+  .media-layout{display:grid;grid-template-columns:210px minmax(0,1fr) 290px;gap:18px;min-height:calc(100vh - 150px)}
+  .media-folders,.media-detail{background:#151515;border:1px solid var(--l06);border-radius:14px;padding:16px;min-width:0}
+  .media-main{min-width:0}
+  .media-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
+  .media-head h1{margin:0;font-size:25px}
+  .media-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:10px}
+  .asset-tile{display:flex;flex-direction:column;gap:8px;min-width:0;text-align:left;padding:8px;border:1px solid var(--l10);border-radius:11px;background:#171717;color:var(--ink)}
+  .asset-tile:hover,.asset-tile.on{border-color:var(--accent)}
+  .asset-tile.unused .asset-thumb{opacity:.5}
+  .asset-thumb{display:grid;place-items:center;width:100%;aspect-ratio:1.25;border-radius:7px;background:#252525;overflow:hidden;color:var(--l45);font-size:25px}
+  .asset-thumb img{width:100%;height:100%;object-fit:cover}
+  .asset-tile span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px}
+  .folder-link{display:block;width:100%;text-align:left;padding:7px 9px;border-radius:7px;color:var(--l60);font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .folder-link:hover,.folder-link.on{background:var(--l10);color:var(--ink)}
+  .media-detail img,.media-detail video{display:block;width:100%;max-height:180px;object-fit:contain;background:#242424;border-radius:9px;margin:12px 0}
+  .media-detail h2{margin:0;font-size:17px;word-break:break-word}
+  .media-detail .auto-field{padding:12px 0}
+  .media-detail .hint{word-break:break-all}
+  .picker-grid{max-height:50vh;overflow:auto}
+  .settings-view{max-width:760px;margin:auto}
+  .settings-view h1{font-size:27px;margin:0 0 16px}
+  .settings-group{background:#151515;border:1px solid var(--l06);border-radius:14px;padding:20px;margin:14px 0}
+  .settings-group h2{font-size:16px;margin:0 0 10px}
+  @media(max-width:1100px){.wrap{grid-template-columns:1fr}.pane-resizer{display:none}.pv{position:relative;top:auto;height:620px}.ed{order:2}.pv{order:1}.media-layout{grid-template-columns:170px minmax(0,1fr)}.media-detail{grid-column:1/-1}}
+  @media(max-width:700px){#app{grid-template-columns:54px minmax(0,1fr)}.mode-rail{padding:12px 2px}.mode-rail a,.mode-rail button{width:46px}.top{padding:10px 14px;flex-wrap:wrap}.section-bar{position:relative;top:auto;padding:12px 14px}.wrap{padding:14px;gap:14px}.acts{gap:6px}.who{display:none}.st span{display:none}.pv{height:460px;min-height:0}.media-layout{display:block}.media-folders,.media-detail{margin:12px 0}.workspace-view{padding:14px}}
 
   /* Items lists */
   .items{display:flex;flex-direction:column;gap:8px}
@@ -142,6 +199,82 @@
   /* Toast */
   #toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:90;background:var(--ink);color:#000;padding:10px 18px;border-radius:12px;font-size:13px;font-weight:600;box-shadow:0 10px 30px rgba(0,0,0,.5);transition:opacity .2s,transform .2s}
   #toast.bad{background:var(--bad);color:#fff}
+  #toast.bad{color:#111}
+  /* Monochrome workspace */
+  .ui-icon{display:inline-block;width:19px;height:19px;flex:none;background:currentColor;mask:var(--icon) center/contain no-repeat;-webkit-mask:var(--icon) center/contain no-repeat}
+  #app{grid-template-columns:76px minmax(0,1fr)}
+  .mode-rail{background:#fff;color:#141414;border:0;border-radius:26px;margin:10px 0 10px 10px;height:calc(100vh - 20px);padding:18px 10px;gap:7px;box-shadow:0 12px 50px #0005}
+  .rail-logo{display:grid;place-items:center;width:42px;height:42px;margin:0 0 25px;font-size:23px;font-weight:800;color:#111}
+  .mode-rail button,.mode-rail a{width:46px;height:46px;border-radius:13px;color:#555;background:transparent}
+  .mode-rail button:hover,.mode-rail a:hover{background:#eee;color:#111}
+  .mode-rail button.on,.mode-rail a.on{background:#161616;color:#fff}
+  .mode-rail .rail-logout{margin-top:auto;border-top:1px solid #e5e5e5;border-radius:0;padding-top:13px;height:58px}
+  .top{background:#0b0b0b;padding:15px 28px;min-height:70px;border-bottom:1px solid #252525}
+  .top-title{font-size:18px;letter-spacing:-.03em}
+  .acts{gap:10px}
+  .st{font-size:12px;color:#999}.st i,.st.dirty i,.st.ok i{background:#aaa;box-shadow:none}
+  .history-actions{display:flex;gap:4px;margin:0 4px}
+  .icon-btn{display:grid;place-items:center;flex:none;width:34px;height:34px;border:1px solid #303030;border-radius:9px;color:#ccc;text-decoration:none;background:#161616}
+  .icon-btn:hover,.icon-btn.active{background:#f3f3f3;color:#111;border-color:#f3f3f3}
+  .icon-btn:disabled{opacity:.35;cursor:default;background:#161616;color:#aaa;border-color:#303030}
+  .cta{height:38px;gap:0}.cta .cl{background:#f4f4f4;color:#101010;border-radius:9px;padding:0 17px;font-size:13px}.cta .ca{display:none}
+  .wrap{padding:20px 26px 60px;gap:12px}
+  .ed{background:#101010;border:1px solid #252525;border-radius:15px;padding:20px}
+  .pv{top:90px;height:calc(100vh - 112px);min-height:460px;gap:9px}
+  .pane-resizer{top:90px;height:calc(100vh - 112px)}
+  .pv-address{display:flex;gap:8px;width:100%;padding:6px 7px 6px 11px;background:#151515;border-color:#303030;color:#ddd}
+  .pv-address select{min-width:130px;max-width:220px;background:#222;border:0;color:#fff;font-size:12px;font-weight:600;padding:7px 9px}
+  .pv-address code{flex:1;min-width:0;font-family:inherit;font-size:12px;color:#999}
+  .pv-address .icon-btn{width:30px;height:30px;background:transparent;border:0}.pv-address .icon-btn:hover{background:#333;color:#fff}
+  .section-bar{position:static;background:none;border:0;padding:0;display:flex;align-items:center;gap:10px;min-height:34px}
+  .section-label{margin:0;color:#999;letter-spacing:.07em;white-space:nowrap}
+  .section-bar select{min-width:0;max-width:100%;width:min(360px,100%);height:33px;border:1px solid #303030;border-radius:8px;background:#191919;color:#f4f4f4;padding:0 9px;font-size:12px;outline:0}
+  .pv-bar{justify-content:flex-end;gap:8px}.pv-bar .hint{margin-right:auto;font-size:11px}
+  .seg{border:1px solid #303030;background:#151515;padding:2px;border-radius:9px}.seg button{display:grid;place-items:center;width:30px;height:29px;padding:0}.seg button.on{background:#f4f4f4;color:#111}
+  .pv-box{border-radius:11px;border-color:#303030}
+  .sec-h{margin:0 0 12px}.sec-h h1{font-size:20px}.field-count{font-size:11px;margin:0 0 12px}
+  .auto-field{padding:12px 0}.auto-field.selected{background:#232323;box-shadow:inset 3px 0 0 #fff}
+  .auto-field input,.auto-field textarea{background:#171717;border-color:#333}.auto-field input:focus,.auto-field textarea:focus{border-color:#fff}
+  .plate,.settings-group,.media-folders,.media-detail{background:#141414;border-color:#292929;border-radius:12px}
+  .asset-tile{background:#171717}.asset-tile:hover,.asset-tile.on{border-color:#fff}
+  .btn.bad{color:#fff}.btn.bad:hover{background:#333}
+  .lg-box{border-radius:16px}.lg-logo span{color:#fff}
+  .st.dirty{color:#fff}.st.ok{color:#999}
+  .steps div.ok{color:#fff}.steps div.ok i{background:#fff}
+  .settings-view{max-width:none}
+  .const-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:7px}
+  .const-badge{display:inline-flex;align-items:center;gap:5px;border:1px solid #777;border-radius:5px;padding:3px 6px;color:#fff;background:#303030;font-size:10px;letter-spacing:.08em;font-weight:700;text-transform:uppercase}
+  .const-badge .ui-icon{width:12px;height:12px}
+  .const-value{font-size:14px;word-break:break-word;color:#fff}
+  .const-note{font-size:11px;color:#aaa;margin-top:6px}
+  .const-list{display:grid;gap:6px;margin:18px 0}
+  .const-list button{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 12px;border:1px solid #292929;border-radius:9px;background:#171717;text-align:left}
+  .const-list button.on,.const-list button:hover{border-color:#eee;background:#242424}
+  .const-list button span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#aaa;font-size:11px}
+  .const-detail{border-top:1px solid #333;padding-top:18px}
+  .const-detail .auto-field{border:0}
+  .input-shell{position:relative;min-width:0;width:100%}
+  .input-shell input,.input-shell textarea{padding-right:43px!important}
+  .input-shell[data-bound] input,.input-shell[data-bound] textarea{border-style:dashed;cursor:pointer}
+  .input-const{position:absolute;right:5px;top:5px;width:30px;height:30px;display:grid;place-items:center;border-radius:6px;color:#888;opacity:.45;transition:opacity .15s,background .15s,color .15s}
+  .input-shell:hover .input-const,.input-shell:focus-within .input-const{opacity:1}
+  .input-const:hover,.input-shell[data-bound] .input-const{color:#fff;background:#333;opacity:1}
+  .input-const .ui-icon{width:17px;height:17px}
+  .input-auto{position:absolute;right:10px;top:12px;font-size:10px;color:#aaa;font-weight:700;letter-spacing:.06em;pointer-events:none}
+  .link-editor{display:grid;gap:10px;padding:12px;border:1px solid #303030;border-radius:10px;background:#141414}
+  .link-row{display:grid;grid-template-columns:64px minmax(0,1fr);gap:9px;align-items:center}
+  .link-row>span{font-size:11px;color:#999}
+  .link-row select{width:100%;min-width:0;padding:9px 10px;border:1px solid #333;border-radius:8px;background:#1b1b1b;color:#eee;outline:0}
+  .link-row .seg{display:flex}.link-row .seg button{width:auto;flex:1;font-size:11px}
+  .section-bar{min-width:0;overflow:hidden}
+  .tabs{display:flex;flex:1;min-width:0;gap:5px;overflow-x:auto;scrollbar-width:none;overscroll-behavior-x:contain}
+  .tabs::-webkit-scrollbar{display:none}
+  .tabs button{flex:none;height:31px;padding:0 11px;border:1px solid transparent;background:#191919;font-size:11px;max-width:230px;overflow:hidden;text-overflow:ellipsis}
+  .tabs button.on{background:#f4f4f4;color:#111}
+  @media(max-width:1100px){.pv{top:auto;height:600px}.pane-resizer{display:none}}
+  @media(max-width:700px){#app{grid-template-columns:58px minmax(0,1fr)}.mode-rail{margin:5px 0 5px 5px;height:calc(100vh - 10px);padding:10px 4px;border-radius:17px}.mode-rail button,.mode-rail a{width:42px;height:42px}.top{padding:11px 13px;gap:8px}.top-title{font-size:14px}.st span{display:none}.history-actions{margin:0}.wrap{padding:12px}.pv{height:470px}.pv-address code{display:none}.pv-bar .hint{display:none}}
+
+.inspector-back{display:inline-flex;align-items:center;padding:8px 0;margin-bottom:18px;color:#aaa;background:none;border:0;font:inherit;font-size:12px;cursor:pointer;text-decoration:none}.inspector-back:hover{color:#fff}.inspector-eyebrow{font-size:10px;letter-spacing:1.4px;color:#65d48a;margin:0 0 24px}.element-list{display:grid;gap:8px;margin:20px 0}.element-card,.collection-card{display:flex;align-items:center;gap:12px;width:100%;padding:14px;border:1px solid #303030;border-radius:10px;background:#171717;color:#eee;text-align:left;cursor:pointer;font:inherit;transition:border-color .15s,background .15s}.element-card:hover{border-color:#4caf70;background:#1b211d}.element-card img{width:48px;height:44px;object-fit:cover;border-radius:5px;background:#252525}.element-symbol{width:32px;color:#75d995;font-size:22px;text-align:center}.element-copy{flex:1;min-width:0}.element-copy small{display:block;color:#929292;font-size:10px;margin-bottom:5px}.element-copy strong{display:block;font-size:12px;font-weight:500;white-space:nowrap;text-overflow:ellipsis;overflow:hidden}.collection-card{margin-bottom:8px;flex-direction:column;align-items:flex-start;background:#191c21;border-color:#313a48}.collection-card:hover{border-color:#718ec2}.collection-card small{color:#99a8c1;font-size:11px}.record-list{display:grid;gap:8px;margin-top:16px}.record-card{display:flex;align-items:center;border:1px solid #333;border-radius:9px;background:#171717;padding:8px;gap:6px}.record-card:hover{border-color:#596b8c}.record-card.dragging{opacity:.35}.drag-grip{cursor:grab;color:#666;font-size:22px}.record-open{display:flex;align-items:center;gap:10px;flex:1;min-width:0;background:none;border:0;color:#eee;font:inherit;text-align:left;cursor:pointer;padding:7px}.record-open small{color:#777;font-size:10px}.record-open strong{flex:1;font-size:12px;font-weight:500;line-height:1.5}.record-order{display:flex;flex-direction:column;gap:3px}.record-order button{background:#222;border:1px solid #383838;border-radius:4px;color:#ccc;cursor:pointer;padding:2px 6px}.record-order button:disabled{opacity:.25;cursor:default}
 </style>
 </head>
 <body>
@@ -150,67 +283,74 @@
 <div id="login" class="login">
   <div class="lg-box">
     <div class="lg-logo">ALM<span>.</span></div>
-    <div class="lg-sub">Панель керування контентом сайту ALM</div>
+    <div class="lg-sub">ALM site content editor</div>
     <form id="pwForm" class="lg-f">
       <div class="f">
-        <span class="cap">Логін</span>
+        <span class="cap">Username</span>
         <input type="text" name="user" required autocomplete="username" placeholder="admin" autofocus>
       </div>
       <div class="f">
-        <span class="cap">Пароль</span>
+        <span class="cap">Password</span>
         <input type="password" name="password" required autocomplete="current-password" placeholder="••••••••">
       </div>
-      <button type="submit" class="btn accent" style="height:44px;margin-top:8px;">Увійти в кабінет</button>
+      <button type="submit" class="btn accent" style="height:44px;margin-top:8px;">Sign in</button>
       <div id="lgErr" class="lg-err"></div>
     </form>
     <div id="lgSetup" class="hint" style="margin-top:16px;">
-      За замовчуванням (у режимі налаштування): логін <code>admin</code>, пароль <code>alm2026</code>.
+      Set your local username and password in <code>.env.local</code>.
     </div>
   </div>
 </div>
 
 <!-- 2. MAIN APP -->
 <div id="app" hidden>
+  <aside class="mode-rail" aria-label="Workspace navigation">
+    <div class="rail-logo" aria-label="ALM">A</div>
+    <button id="modeAdmin" class="on" type="button" title="Page editor" aria-label="Page editor"><span class="ui-icon" data-icon="panels-top-left"></span></button>
+    <button id="modeCms" type="button" title="CMS collections" aria-label="CMS collections"><span class="ui-icon" data-icon="files"></span></button>
+    <button id="modeMedia" type="button" title="Media library" aria-label="Media library"><span class="ui-icon" data-icon="images"></span></button>
+    <button id="modeConst" type="button" title="Const variables" aria-label="Const variables"><span class="ui-icon" data-icon="variable"></span></button>
+    <button id="modeSettings" type="button" title="Page settings" aria-label="Page settings"><span class="ui-icon" data-icon="settings-2"></span></button>
+    <button id="bOut" class="rail-logout" type="button" title="Log out" aria-label="Log out"><span class="ui-icon" data-icon="log-out"></span></button>
+  </aside>
+  <div class="app-main">
   <header class="top">
-    <div class="brand">ALM <em>Адмін</em></div>
-    <div id="tabs" class="tabs"></div>
+    <div class="top-title">Page editor</div>
     <div class="acts">
-      <div id="st" class="st"><i aria-hidden="true"></i><span>Завантаження...</span></div>
+      <div id="st" class="st"><i aria-hidden="true"></i><span>Loading…</span></div>
+      <div class="history-actions"><button id="undo" class="icon-btn" type="button" title="Undo (Ctrl/Cmd+Z)" aria-label="Undo"><span class="ui-icon" data-icon="undo-2"></span></button><button id="redo" class="icon-btn" type="button" title="Redo (Ctrl/Cmd+Shift+Z)" aria-label="Redo"><span class="ui-icon" data-icon="redo-2"></span></button></div>
       <button id="bPub" class="cta" disabled>
-        <span class="cl">Опублікувати</span>
-        <span class="ca">
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 13L13 1M13 1H4M13 1V10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </span>
+        <span class="cl">Publish</span>
       </button>
-      <span id="who" class="who"></span>
-      <button id="bOut" class="btn sm ghost">Вийти</button>
     </div>
   </header>
-  <div id="tokenWarn" style="display:none;background:#2A1B05;color:#F2B37A;padding:10px 24px;font-size:13px;border-bottom:1px solid rgba(242,179,122,.2);align-items:center;gap:10px;">
-    <span>⚠️ <b>Не налаштовано GITHUB_TOKEN:</b> Щоб зберігати зміни на сайті, додайте змінну <code>GITHUB_TOKEN</code> у налаштуваннях Vercel (Project → Settings → Environment Variables).</span>
+  <div id="tokenWarn" style="display:none;background:#1b1b1b;color:#f4f4f4;padding:10px 24px;font-size:13px;border-bottom:1px solid #444;align-items:center;gap:10px;">
+    <span>Remote publishing is not configured. Edit static content locally with <code>npm run dev:cms</code>.</span>
   </div>
-
-  <main class="wrap">
+  <main id="adminWorkspace" class="wrap">
     <!-- Editor Column -->
     <div id="ed" class="ed"></div>
+    <div id="paneResizer" class="pane-resizer" role="separator" aria-orientation="vertical" aria-label="Editor width" tabindex="0"></div>
 
     <!-- Live Preview Column -->
     <div class="pv">
+      <div class="pv-address"><span class="ui-icon" data-icon="globe-2"></span><select id="pageSelect" aria-label="Choose page"></select><code id="pageUrl">http://127.0.0.1:3001/</code><button id="pvRe" class="icon-btn" type="button" title="Reload preview" aria-label="Reload preview"><span class="ui-icon" data-icon="rotate-cw"></span></button><a id="pvOpen" href="/" target="_blank" class="icon-btn" title="Open page" aria-label="Open page"><span class="ui-icon" data-icon="external-link"></span></a></div>
+      <nav id="sectionBar" class="section-bar" aria-label="Page sections"><span class="section-label">Sections</span><div id="tabs" class="tabs" role="tablist"></div></nav>
       <div class="pv-bar">
         <div id="dev" class="seg">
-          <button type="button" class="on" data-d="desk">Комп'ютер</button>
-          <button type="button" data-d="ph">Мобільний</button>
+          <button type="button" class="on" data-d="desk" title="Desktop" aria-label="Desktop"><span class="ui-icon" data-icon="monitor"></span></button>
+          <button type="button" data-d="tab" title="Tablet" aria-label="Tablet"><span class="ui-icon" data-icon="tablet"></span></button>
+          <button type="button" data-d="ph" title="Phone" aria-label="Phone"><span class="ui-icon" data-icon="smartphone"></span></button>
         </div>
-        <div style="display:flex;gap:6px;align-items:center;">
-          <button id="pvRe" class="btn sm ghost" title="Перезавантажити прев'ю">Оновити</button>
-          <a href="/" target="_blank" class="btn sm ghost" title="Відкрити сайт у новій вкладці">Відкрити сайт ↗</a>
-        </div>
+        <button id="pvClicks" type="button" class="icon-btn active" aria-pressed="true" title="Preview links disabled" aria-label="Toggle preview links"><span class="ui-icon" data-icon="mouse-pointer-click"></span></button>
       </div>
       <div id="pvBox" class="pv-box">
-        <iframe id="pvF" src="/" title="Сайт прев'ю"></iframe>
+        <iframe id="pvF" src="/?cms-preview=1" title="Draft preview"></iframe>
       </div>
     </div>
   </main>
+  <div id="workspaceView" class="workspace-view" hidden></div>
+  </div>
 </div>
 
 <!-- Modal Container -->
@@ -221,9 +361,11 @@
 <!-- Toast -->
 <div id="toast" hidden></div>
 
+<script src="/admin/content-structure.js"></script>
 <script>
 (() => {
   const $ = id => document.getElementById(id);
+  document.querySelectorAll('[data-icon]').forEach(el => el.style.setProperty('--icon', `url('/admin/icons/${el.dataset.icon}.svg')`));
   const h = (tag, attrs, ...children) => {
     const el = document.createElement(tag);
     if (attrs) {
@@ -254,7 +396,7 @@
 
   /* API Client */
   async function api(op, body = {}) {
-    const isGet = op === 'content' || op === 'history' || op === 'me';
+    const isGet = ['content', 'history', 'manifest', 'me', 'media-list', 'pages-list'].includes(op);
     const url = '/api/admin?op=' + encodeURIComponent(op);
     const opts = {
       method: isGet ? 'GET' : 'POST',
@@ -263,7 +405,12 @@
     if (!isGet) opts.body = JSON.stringify(body);
     const res = await fetch(url, opts);
     const data = await res.json().catch(() => ({}));
-    if (!res.ok) throw new Error(data.message || 'Помилка ' + res.status);
+    if (!res.ok) {
+      const fields = Array.isArray(data.details)
+        ? data.details.slice(0, 3).map(item => `${item.path.join('.')}: ${item.message}`).join('; ')
+        : '';
+      throw new Error(fields || data.message || 'Request failed: ' + res.status);
+    }
     return data;
   }
 
@@ -271,59 +418,272 @@
   const S = {
     me: '',
     sha: '',
+    draftRevision: null,
     pub: null,
     c: null,
-    tab: 'hero',
-    sel: { point: 0, stage: 0, faq: 0 },
-    dev: 'desk'
+    tab: null,
+    sections: [],
+    activeField: null,
+    activeGroup: null,
+    collectionKey: null,
+    collectionItem: null,
+    mode: 'admin',
+    media: null,
+    mediaFolder: '/assets',
+    selectedAsset: null,
+    constKey: null,
+    page: '/',
+    pages: [],
+    dev: 'desk',
+    blockPreviewClicks: true
   };
   const LS = 'alm.admin.draft';
-  const TABS = [
-    ['hero', 'Головний екран'],
-    ['starting', 'Стартові точки'],
-    ['featured', 'Головний проєкт'],
-    ['completed', 'Готовий будинок'],
-    ['faq', 'Часті питання (FAQ)'],
-    ['contacts', 'Контакти й футер'],
-    ['hist', 'Історія змін']
-  ];
-
   const strip = c => { const o = clone(c); delete o.pub; return o; };
   const dirty = () => S.pub && S.c && !same(strip(S.c), strip(S.pub));
+  const constRef = value => {
+    const match = typeof value === 'string' && /^\{\{const\.([a-z][a-zA-Z0-9]*)(?:\|(tel|mailto))?\}\}$/.exec(value.trim());
+    return match ? { key: match[1], format: match[2] || null } : null;
+  };
+  const constToken = (key, format) => `{{const.${key}${format ? `|${format}` : ''}}}`;
+  const resolveConst = value => {
+    const ref = constRef(value);
+    if (!ref) return value;
+    const text = S.c?.consts?.[ref.key]?.value;
+    if (typeof text !== 'string') return value;
+    if (ref.format === 'tel') return `tel:${text.replace(/[^+\d]/g, '')}`;
+    if (ref.format === 'mailto') return `mailto:${text.trim()}`;
+    return text;
+  };
+  function constUsage(key) {
+    let count = 0;
+    const walk = value => {
+      if (typeof value === 'string') { if (constRef(value)?.key === key) count++; }
+      else if (Array.isArray(value)) value.forEach(walk);
+      else if (value && typeof value === 'object') Object.values(value).forEach(walk);
+    };
+    for (const [name, value] of Object.entries(S.c || {})) if (name !== 'consts') walk(value);
+    return count;
+  }
+  const history = { undo: [], redo: [], key: '', at: 0, busy: false };
+  function updateHistoryButtons() {
+    $('undo').disabled = history.busy || !history.undo.length;
+    $('redo').disabled = history.busy || !history.redo.length;
+  }
+  function recordChange(key) {
+    if (!S.c) return;
+    const now = Date.now();
+    if (key !== history.key || now - history.at > 850) {
+      history.undo.push({ kind: 'content', content: clone(S.c) });
+      if (history.undo.length > 100) history.undo.shift();
+    }
+    history.key = key;
+    history.at = now;
+    history.redo.length = 0;
+    updateHistoryButtons();
+  }
+  function recordMediaChange(url, before, after) {
+    recordAction({ kind: 'media', url, before, after });
+  }
+  function recordAction(action) {
+    history.undo.push(action);
+    if (history.undo.length > 100) history.undo.shift();
+    history.redo.length = 0;
+    history.key = '';
+    updateHistoryButtons();
+  }
+  async function applyHistory(direction) {
+    const source = history[direction];
+    if (!source.length || !S.c || history.busy) return;
+    history.busy = true;
+    updateHistoryButtons();
+    const target = direction === 'undo' ? history.redo : history.undo;
+    const entry = source.at(-1);
+    if (entry.kind === 'replace' || entry.kind === 'upload' || entry.kind === 'folder') {
+      try {
+        if (entry.kind === 'replace') {
+          const result = await api('media-swap-backup', { url: entry.url, backup: entry.backup });
+          entry.backup = result.backup;
+        } else if (entry.kind === 'upload') {
+          if (direction === 'undo') {
+            const result = await api('media-stash', { url: entry.url });
+            entry.token = result.token;
+            entry.metadata = result.metadata;
+          } else await api('media-unstash', { url: entry.url, token: entry.token, metadata: entry.metadata });
+        } else if (direction === 'undo') await api('media-folder-remove', { folder: entry.folder });
+        else await api('media-folder', { parent: entry.parent, name: entry.name });
+        source.pop(); target.push(entry);
+        await loadMedia();
+        if (S.mode === 'media') renderMedia();
+        preview();
+        toast(direction === 'undo' ? 'Change undone' : 'Change redone');
+      } catch (error) { toast(error.message, true); }
+      history.busy = false;
+      updateHistoryButtons();
+      return;
+    }
+    if (entry.kind === 'media') {
+      try {
+        await api('media-update', { url: entry.url, ...(direction === 'undo' ? entry.before : entry.after) });
+        source.pop(); target.push(entry);
+        await loadMedia();
+        if (S.mode === 'media') renderMedia();
+        toast(direction === 'undo' ? 'Media change undone' : 'Media change redone');
+      } catch (error) { toast(error.message, true); }
+      history.busy = false;
+      updateHistoryButtons();
+      return;
+    }
+    target.push({ kind: 'content', content: clone(S.c) });
+    S.c = source.pop().content;
+    history.key = '';
+    changed();
+    if (S.mode === 'settings') renderPageSettings();
+    else if (S.mode === 'media') renderMedia();
+    else if (S.mode === 'const') renderConst();
+    else if (S.mode === 'cms') renderCollections();
+    else render();
+    history.busy = false;
+    updateHistoryButtons();
+  }
+  $('undo').addEventListener('click', () => applyHistory('undo'));
+  $('redo').addEventListener('click', () => applyHistory('redo'));
+  document.addEventListener('keydown', event => {
+    if (!(event.ctrlKey || event.metaKey) || event.altKey) return;
+    const key = event.key.toLowerCase();
+    if (key !== 'z' && key !== 'y') return;
+    event.preventDefault();
+    applyHistory(key === 'y' || event.shiftKey ? 'redo' : 'undo');
+  });
+  updateHistoryButtons();
   function get(path) { return path.reduce((o, k) => o == null ? o : o[k], S.c); }
   function set(path, val) {
+    if (same(get(path), val)) return;
+    recordChange('content:' + path.join('.'));
     let o = S.c;
     for (let i = 0; i < path.length - 1; i++) o = o[path[i]];
     o[path[path.length - 1]] = val;
     changed();
   }
 
-  let saveT = 0, pvT = 0;
+  let saveT = 0, saveChain = Promise.resolve();
+  function saveDraftNow() {
+    clearTimeout(saveT);
+    const content = clone(S.c);
+    saveChain = saveChain.catch(() => {}).then(async () => {
+      const r = await api('save-draft', { content, expectedDraftRevision: S.draftRevision });
+      S.draftRevision = r.draftRevision;
+      try { localStorage.removeItem(LS); } catch (e) {}
+    });
+    return saveChain;
+  }
   function changed() {
     clearTimeout(saveT);
     saveT = setTimeout(() => {
       try { localStorage.setItem(LS, JSON.stringify({ c: S.c, sha: S.sha, at: Date.now() })); } catch (e) {}
-    }, 300);
+      saveDraftNow().catch(err => toast('Draft was not saved: ' + err.message, true));
+    }, 500);
     status();
-    clearTimeout(pvT);
-    pvT = setTimeout(preview, 600);
+    preview();
   }
+
+  function preview() {
+    if (S.c) {
+      $('pvF').contentWindow?.postMessage({ type: 'CMS_DRAFT_UPDATE', content: S.c, pages: S.pages, blockClicks: S.blockPreviewClicks }, location.origin);
+      if (S.mode === 'const') $('pvF').contentWindow?.postMessage({ type: 'CMS_HIGHLIGHT_CONST', key: S.constKey }, location.origin);
+    }
+  }
+  $('pvF').addEventListener('load', () => {
+    try {
+      const path = $('pvF').contentWindow.location.pathname;
+      if (path !== S.page && S.pages.some(page => page.path === path)) {
+        S.page = path;
+        S.sections = [];
+        S.tab = null;
+        S.activeField = null;
+        $('pageSelect').value = path;
+        $('pageUrl').textContent = location.origin + path;
+        $('pvOpen').href = path;
+        if (S.mode === 'admin') render();
+      }
+    } catch { /* The preview can navigate to an external site. */ }
+    preview();
+  });
+  addEventListener('message', event => {
+    if (event.origin !== location.origin || event.source !== $('pvF').contentWindow) return;
+    if (event.data?.type === 'CMS_PREVIEW_READY') preview();
+    if (event.data?.type === 'CMS_STRUCTURE' && event.data.page === S.page && Array.isArray(event.data.sections)) {
+      S.sections = event.data.sections;
+      if (!S.sections.some(section => section.id === S.tab)) S.tab = S.sections[0]?.id || null;
+      if (S.mode === 'admin') render();
+      if (S.mode === 'cms') renderCollections();
+      return;
+    }
+    if (event.data?.type === 'CMS_ACTIVE_SECTION' && event.data.page === S.page && S.sections.some(section => section.id === event.data.id)) {
+      if (S.tab !== event.data.id) {
+        S.tab = event.data.id;
+        S.activeGroup = null;
+        if (S.mode === 'admin') render();
+      }
+      return;
+    }
+    if (event.data?.type === 'CMS_GROUP_FOCUS' && typeof event.data.id === 'string') {
+      const section = S.sections.find(section => section.fields.some(field => field.groupId === event.data.id));
+      if (!section) return;
+      const fields = section.fields.filter(field => field.groupId === event.data.id);
+      const path = fields.map(CMSStructure.arrayPath).find(Boolean);
+      if (path) {
+        S.collectionKey = path.join('.');
+        S.collectionItem = fields.find(field => CMSStructure.arrayPath(field))?.path[path.length] ?? null;
+        setMode('cms');
+      } else {
+        S.tab = section.id;
+        S.activeGroup = event.data.id;
+        setMode('admin');
+      }
+      $('pvF').contentWindow?.postMessage({ type: 'CMS_SELECT_GROUP', id: event.data.id }, location.origin);
+      return;
+    }
+    if (event.data?.type === 'CMS_FIELD_FOCUS' && typeof event.data.id === 'string') {
+      selectField(event.data.id, false);
+      return;
+    }
+    if (event.data?.type === 'CMS_CONST_FOCUS' && typeof event.data.key === 'string') {
+      S.constKey = event.data.key;
+      setMode('const');
+      return;
+    }
+    if (event.data?.type === 'CMS_STATIC_EDIT' && S.c) {
+      const { key, base, value, page } = event.data;
+      if (page !== S.page) return;
+      if (typeof key !== 'string' || key.length > 250 || typeof base !== 'string' || typeof value !== 'string' || value.length > 5000) return;
+      recordChange('static:' + page + ':' + key);
+      const content = page === '/' ? S.c : ((S.c.pageOverrides ||= {})[page] ||= {});
+      content.staticText ||= {};
+      if (value === base) delete content.staticText[key];
+      else content.staticText[key] = { base, value };
+      changed();
+      const section = S.sections.find(item => item.fields.some(field => field.source === 'staticText' && field.key === key));
+      if (section) S.tab = section.id;
+      if (S.mode !== 'admin') setMode('admin');
+      render();
+      return;
+    }
+    if (event.data?.type !== 'CMS_INLINE_EDIT' || !Array.isArray(event.data.path) || !S.c) return;
+    const path = event.data.path;
+    const section = S.sections.find(item => item.fields.some(field => field.source === 'content' && JSON.stringify(field.path) === JSON.stringify(path)));
+    if (!section) return;
+    set(path, event.data.value);
+    S.tab = section.id;
+    if (S.mode !== 'admin') setMode('admin');
+    render();
+  });
 
   function status() {
     const e = $('st'), d = dirty();
     e.classList.toggle('dirty', d);
     e.classList.toggle('ok', !d);
-    e.lastChild.textContent = d ? 'Є неопубліковані зміни' : 'Усе опубліковано';
+    e.lastChild.textContent = d ? 'Unpublished changes' : 'Published locally';
     $('bPub').disabled = !d;
-  }
-
-  /* Preview sync */
-  function preview() {
-    const pvF = $('pvF');
-    // Send live message to preview frame if available
-    try {
-      pvF.contentWindow.postMessage({ type: 'ALM_CONTENT_UPDATE', content: S.c }, '*');
-    } catch (e) {}
   }
 
   function fitPreview() {
@@ -339,12 +699,14 @@
         borderRadius: '0px'
       });
     } else {
-      const k = Math.min((H - 24) / 844, (W - 24) / 390, 1);
+      const deviceWidth = S.dev === 'tab' ? 768 : 390;
+      const deviceHeight = S.dev === 'tab' ? 1024 : 844;
+      const k = Math.min((H - 24) / deviceHeight, (W - 24) / deviceWidth, 1);
       Object.assign(pvF.style, {
-        width: '390px', height: '844px',
+        width: deviceWidth + 'px', height: deviceHeight + 'px',
         transform: 'scale(' + k + ')',
-        left: (W - 390 * k) / 2 + 'px', top: '12px',
-        borderRadius: '24px'
+        left: (W - deviceWidth * k) / 2 + 'px', top: '12px',
+        borderRadius: S.dev === 'tab' ? '16px' : '24px'
       });
     }
   }
@@ -355,20 +717,52 @@
     $('dev').querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b));
     fitPreview();
   });
-  $('pvRe').addEventListener('click', () => { $('pvF').src = '/?v=' + Date.now(); });
-
-  /* Form builder helpers */
-  function field(label, path, opts = {}) {
-    const val = get(path) ?? '';
-    const isMulti = opts.rows || opts.multi;
-    const inp = isMulti
-      ? h('textarea', { rows: opts.rows || 3, placeholder: opts.ph || '' })
-      : h('input', { type: opts.type || 'text', placeholder: opts.ph || '' });
-    inp.value = val;
-    const lab = h('span', { class: 'cap' }, label);
-    inp.addEventListener('input', () => { set(path, inp.value); });
-    return h('div', { class: 'f ' + (opts.col || 'c12') }, h('div', { class: 'lb' }, lab), inp, opts.hint ? h('div', { class: 'hint' }, opts.hint) : null);
+  function switchPage(path) {
+    S.page = path;
+    S.sections = [];
+    S.tab = null;
+    S.activeField = null;
+    S.activeGroup = null;
+    S.collectionKey = null;
+    S.collectionItem = null;
+    $('pageUrl').textContent = location.origin + path;
+    $('pageSelect').value = path;
+    $('pvOpen').href = path;
+    $('pvF').src = path + (path.includes('?') ? '&' : '?') + 'cms-preview=1&v=' + Date.now();
+    if (S.mode === 'admin') render();
+    if (S.mode === 'settings') renderPageSettings();
   }
+  $('pageSelect').addEventListener('change', event => switchPage(event.target.value));
+  $('pvRe').addEventListener('click', () => { $('pvF').src = S.page + '?cms-preview=1&v=' + Date.now(); });
+  $('pvClicks').addEventListener('click', () => {
+    S.blockPreviewClicks = !S.blockPreviewClicks;
+    $('pvClicks').classList.toggle('active', S.blockPreviewClicks);
+    $('pvClicks').title = S.blockPreviewClicks ? 'Preview links disabled' : 'Preview links enabled';
+    $('pvClicks').setAttribute('aria-pressed', String(S.blockPreviewClicks));
+    preview();
+  });
+  const resizePane = clientX => {
+    const wrap = document.querySelector('.wrap');
+    const rect = wrap.getBoundingClientRect();
+    const available = rect.width - 48;
+    const width = Math.max(200, Math.min(available * .5, clientX - rect.left - 24));
+    wrap.style.setProperty('--editor-width', `${width}px`);
+    $('paneResizer').setAttribute('aria-valuenow', String(Math.round(width)));
+    fitPreview();
+  };
+  $('paneResizer').addEventListener('pointerdown', event => {
+    $('paneResizer').setPointerCapture(event.pointerId);
+    resizePane(event.clientX);
+  });
+  $('paneResizer').addEventListener('pointermove', event => {
+    if ($('paneResizer').hasPointerCapture(event.pointerId)) resizePane(event.clientX);
+  });
+  $('paneResizer').addEventListener('keydown', event => {
+    if (!['ArrowLeft', 'ArrowRight'].includes(event.key)) return;
+    event.preventDefault();
+    const current = $('ed').getBoundingClientRect().width;
+    resizePane(document.querySelector('.wrap').getBoundingClientRect().left + 24 + current + (event.key === 'ArrowRight' ? 20 : -20));
+  });
 
   /* Client-side image optimization: Canvas -> WebP compression */
   function processImage(file, max = 1600, quality = 0.85) {
@@ -394,7 +788,7 @@
         ctx.imageSmoothingQuality = 'high';
         ctx.drawImage(img, 0, 0, w, h);
         cv.toBlob(blob => {
-          if (!blob) return reject(new Error('Не вдалося оптимізувати зображення'));
+          if (!blob) return reject(new Error('Could not optimize image'));
           const reader = new FileReader();
           reader.onload = () => {
             const base64 = reader.result.split(',')[1];
@@ -404,346 +798,793 @@
           reader.readAsDataURL(blob);
         }, 'image/webp', quality);
       };
-      img.onerror = () => reject(new Error('Помилка відкриття файлу'));
+      img.onerror = () => reject(new Error('Could not open file'));
       img.src = URL.createObjectURL(file);
     });
   }
 
-  const imagePreviews = {};
-
-  function imageField(label, path, opts = {}) {
-    const box = h('div', { class: 'ph-box' });
-    const bar = h('div', { class: 'bar', hidden: true }, h('i'));
-    const draw = () => {
-      const u = get(path);
-      const displayUrl = imagePreviews[u] || u;
-      box.style.backgroundImage = displayUrl ? `url("${displayUrl}")` : '';
-      box.replaceChildren(displayUrl ? '' : h('span', { class: 'em' }, 'Немає фото'));
-    };
-    const uploadFile = async file => {
-      if (!file) return;
-      bar.hidden = false;
-      try {
-        toast('Оптимізація та збереження фото...');
-        const { base64, ext } = await processImage(file);
-        const cleanName = file.name.replace(/\.[^/.]+$/, "") + '.' + ext;
-        const r = await api('upload', { filename: cleanName, base64, ext });
-        imagePreviews[r.url] = `data:image/webp;base64,${base64}`;
-        set(path, r.url);
-        render();
-        toast('Фото успішно завантажено!');
-      } catch (err) {
-        toast(err.message, true);
-      } finally {
-        bar.hidden = true;
-      }
-    };
-    const inpFile = h('input', { type: 'file', accept: 'image/*', style: 'display:none' });
-    inpFile.onchange = () => uploadFile(inpFile.files[0]);
-    const dz = h('div', { class: 'drop' },
-      h('span', null, 'Завантажити нове фото або вказати шлях'),
-      h('div', { style: 'display:flex;gap:6px' },
-        h('button', { type: 'button', class: 'btn sm', onclick: () => inpFile.click() }, 'Обрати файл'),
-        h('button', { type: 'button', class: 'btn sm ghost', onclick: () => { set(path, ''); render(); } }, 'Очистити')
-      ),
-      inpFile, bar
-    );
-    draw();
-    return h('div', { class: 'f ' + (opts.col || 'c12') },
-      h('span', { class: 'cap' }, label),
-      h('div', { class: 'media' }, box, dz)
-    );
+  function fieldValue(item) {
+    if (!S.c) return item.value || '';
+    if (item.source === 'content') return get(item.path) ?? '';
+    if (item.source === 'pageSetting') return S.c.pageSettings?.[S.page]?.[item.key] || '';
+    const pageContent = S.page === '/' ? S.c : S.c.pageOverrides?.[S.page];
+    const collection = item.source === 'staticText' ? pageContent?.staticText : pageContent?.staticAttributes;
+    const saved = collection?.[item.key];
+    return saved?.base === item.base ? saved.value : item.base;
   }
 
-  /* Section Renderers */
-  const R = {
-    hero: () => [
-      h('div', { class: 'sec-h' }, h('div', null, h('h1', null, 'Головний екран (Hero)'), h('p', null, 'Перший екран сайту, заголовок, бейдж та блок About'))),
-      h('div', { class: 'plate grid' },
-        h('h2', { class: 'c12' }, 'Основні тексти Hero'),
-        field('Бейдж над заголовком', ['hero', 'badgeText'], { col: 'c12' }),
-        field('Головний заголовок H1', ['hero', 'title'], { col: 'c12', rows: 2 }),
-        field('Тег картки About', ['hero', 'aboutTag'], { col: 'c4' }),
-        field('Текст картки About', ['hero', 'aboutText'], { col: 'c8', rows: 2 }),
-        field('Текст кнопки CTA', ['hero', 'ctaText'], { col: 'c6' }),
-        field('Посилання кнопки CTA', ['hero', 'ctaHref'], { col: 'c6' })
-      ),
-      h('div', { class: 'plate grid' },
-        h('h2', { class: 'c12' }, 'Фонове медіа'),
-        imageField('Постер відео (фонове фото)', ['hero', 'videoPoster'], { col: 'c12' }),
-        field('Шлях до відео MP4', ['hero', 'videoUrl'], { col: 'c12', hint: 'Файл у папці /assets/video/...' })
-      )
-    ],
-
-    starting: () => {
-      const items = get(['startingPoints', 'items']) || [];
-      const selIdx = Math.min(S.sel.point, items.length - 1);
-      const cur = items[selIdx];
-
-      return [
-        h('div', { class: 'sec-h' }, h('div', null, h('h1', null, 'Стартові точки (Starting Points)'), h('p', null, '4 варіанти початку співпраці клієнта з ALM'))),
-        h('div', { class: 'plate grid' },
-          field('Заголовок верхньої планки', ['startingPoints', 'barTitle'], { col: 'c12' })
-        ),
-        h('div', { class: 'plate' },
-          h('h2', null, 'Список карток'),
-          h('div', { class: 'items', style: 'margin-bottom:20px;' },
-            ...items.map((it, idx) => {
-              const thumbUrl = imagePreviews[it.image] || it.image;
-              return h('div', {
-                class: 'it ' + (idx === selIdx ? 'on' : ''),
-                onclick: () => { S.sel.point = idx; render(); }
-              },
-                h('span', { class: 'no' }, it.num),
-                h('div', { class: 'th', style: thumbUrl ? `background-image:url("${thumbUrl}")` : '' }),
-                h('div', { class: 'tt' }, h('b', null, it.title), h('span', null, it.note))
-              );
-            })
-          ),
-          cur ? h('div', { class: 'grid', style: 'padding-top:16px;border-top:1px solid var(--l10);' },
-            h('h3', { class: 'c12' }, `Редагування картки ${cur.num} ${cur.title}`),
-            field('Номер', ['startingPoints', 'items', selIdx, 'num'], { col: 'c2' }),
-            field('Заголовок', ['startingPoints', 'items', selIdx, 'title'], { col: 'c10' }),
-            field('Опис / нотатка', ['startingPoints', 'items', selIdx, 'note'], { col: 'c12', rows: 2 }),
-            imageField('Зображення картки', ['startingPoints', 'items', selIdx, 'image'], { col: 'c12' })
-          ) : null
-        )
-      ];
-    },
-
-    featured: () => {
-      const stages = get(['featuredHome', 'stages']) || [];
-      const specs = get(['featuredHome', 'specs']) || [];
-      const selStage = Math.min(S.sel.stage, stages.length - 1);
-      const curStage = stages[selStage];
-
-      return [
-        h('div', { class: 'sec-h' }, h('div', null, h('h1', null, 'Головний проєкт (Featured Project)'), h('p', null, 'Розбір етапів будівництва та характеристики вілли'))),
-        h('div', { class: 'plate grid' },
-          h('h2', { class: 'c12' }, 'Опис проєкту'),
-          field('Назва проєкту', ['featuredHome', 'title'], { col: 'c6' }),
-          field('Підзаголовок', ['featuredHome', 'subtitle'], { col: 'c6' }),
-          imageField('Головне фото кухні (панорама)', ['featuredHome', 'heroKitchenImage'], { col: 'c12' })
-        ),
-        h('div', { class: 'plate' },
-          h('h2', null, 'Характеристики проєкту (Specs)'),
-          h('div', { class: 'grid' },
-            ...specs.map((sp, idx) => [
-              field(sp.label, ['featuredHome', 'specs', idx, 'value'], { col: 'c6' })
-            ]).flat()
-          )
-        ),
-        h('div', { class: 'plate' },
-          h('h2', null, 'Етапи будівництва (Breakdown Gallery)'),
-          h('div', { class: 'items', style: 'margin-bottom:20px;' },
-            ...stages.map((stg, idx) => {
-              const thumbUrl = imagePreviews[stg.image] || stg.image;
-              return h('div', {
-                class: 'it ' + (idx === selStage ? 'on' : ''),
-                onclick: () => { S.sel.stage = idx; render(); }
-              },
-                h('span', { class: 'no' }, stg.num),
-                h('div', { class: 'th', style: thumbUrl ? `background-image:url("${thumbUrl}")` : '' }),
-                h('div', { class: 'tt' }, h('b', null, stg.title), h('span', null, stg.stageTitle))
-              );
-            })
-          ),
-          curStage ? h('div', { class: 'grid', style: 'padding-top:16px;border-top:1px solid var(--l10);' },
-            h('h3', { class: 'c12' }, `Редагування етапу ${curStage.num}`),
-            field('Назва під-етапу', ['featuredHome', 'stages', selStage, 'stageTitle'], { col: 'c6' }),
-            field('Головна дія етапу', ['featuredHome', 'stages', selStage, 'title'], { col: 'c6' }),
-            field('Детальний опис', ['featuredHome', 'stages', selStage, 'desc'], { col: 'c12', rows: 2 }),
-            imageField('Фото етапу', ['featuredHome', 'stages', selStage, 'image'], { col: 'c12' })
-          ) : null
-        )
-      ];
-    },
-
-    completed: () => {
-      const specs = get(['completedHome', 'specs']) || [];
-      return [
-        h('div', { class: 'sec-h' }, h('div', null, h('h1', null, 'Готовий будинок (The Completed Home)'), h('p', null, 'Секція 11: Що входить у готовий будинок та фотогалерея'))),
-        h('div', { class: 'plate grid' },
-          field('Лейбл верхньої планки', ['completedHome', 'barLabel'], { col: 'c12' })
-        ),
-        h('div', { class: 'plate grid' },
-          h('h2', { class: 'c12' }, 'Фотографії колажу будинку'),
-          imageField('Ванна кімната (Bathroom)', ['completedHome', 'images', 'bathroom'], { col: 'c6' }),
-          imageField('Кабінет (Office)', ['completedHome', 'images', 'office'], { col: 'c6' }),
-          imageField('Кухня (Kitchen)', ['completedHome', 'images', 'kitchen'], { col: 'c6' }),
-          imageField('Вітальня (Living Room)', ['completedHome', 'images', 'livingRoom'], { col: 'c6' })
-        ),
-        h('div', { class: 'plate grid' },
-          h('h2', { class: 'c12' }, 'Пункти комплектації'),
-          ...specs.map((sp, idx) => [
-            field(sp.label, ['completedHome', 'specs', idx, 'value'], { col: 'c12', rows: 2 })
-          ]).flat()
-        )
-      ];
-    },
-
-    faq: () => {
-      const items = get(['faq']) || [];
-      const selIdx = Math.min(S.sel.faq, items.length - 1);
-      const cur = items[selIdx];
-
-      return [
-        h('div', { class: 'sec-h' },
-          h('div', null, h('h1', null, 'Часті питання (FAQ)'), h('p', null, 'Список запитань та відповідей на сайті')),
-          h('button', {
-            class: 'btn accent sm',
-            onclick: () => {
-              items.push({ question: 'Нове запитання', answer: 'Відповідь на запитання...' });
-              set(['faq'], items);
-              S.sel.faq = items.length - 1;
-              render();
-            }
-          }, '+ Додати запитання')
-        ),
-        h('div', { class: 'plate' },
-          h('div', { class: 'items', style: 'margin-bottom:20px;' },
-            ...items.map((item, idx) => h('div', {
-              class: 'it ' + (idx === selIdx ? 'on' : ''),
-              onclick: () => { S.sel.faq = idx; render(); }
-            },
-              h('span', { class: 'no' }, `${idx + 1}.`),
-              h('div', { class: 'tt' }, h('b', null, item.question), h('span', null, item.answer)),
-              h('div', { class: 'ops' },
-                h('button', {
-                  class: 'btn sm bad',
-                  onclick: (e) => {
-                    e.stopPropagation();
-                    if (confirm('Видалити це запитання?')) {
-                      items.splice(idx, 1);
-                      set(['faq'], items);
-                      S.sel.faq = Math.max(0, idx - 1);
-                      render();
-                    }
-                  }
-                }, 'Видалити')
-              )
-            ))
-          ),
-          cur ? h('div', { class: 'grid', style: 'padding-top:16px;border-top:1px solid var(--l10);' },
-            h('h3', { class: 'c12' }, `Редагування питання #${selIdx + 1}`),
-            field('Запитання', ['faq', selIdx, 'question'], { col: 'c12' }),
-            field('Відповідь', ['faq', selIdx, 'answer'], { col: 'c12', rows: 4 })
-          ) : null
-        )
-      ];
-    },
-
-    contacts: () => [
-      h('div', { class: 'sec-h' }, h('div', null, h('h1', null, 'Контакти й футер'), h('p', null, 'Контактні дані, телефон, email та зона обслуговування'))),
-      h('div', { class: 'plate grid' },
-        h('h2', { class: 'c12' }, 'Контактна інформація'),
-        field('Email', ['contacts', 'email'], { col: 'c6' }),
-        field('Телефон', ['contacts', 'phone'], { col: 'c6' }),
-        field('Регіон будівництва (Service Area)', ['contacts', 'serviceArea'], { col: 'c12' })
-      ),
-      h('div', { class: 'plate grid' },
-        h('h2', { class: 'c12' }, 'SEO мета-теги'),
-        field('Заголовок сайту (Title)', ['meta', 'title'], { col: 'c12' }),
-        field('Опис сайту (Meta Description)', ['meta', 'description'], { col: 'c12', rows: 2 })
-      )
-    ],
-
-    hist: () => {
-      const box = h('div', { class: 'plate' }, h('p', { class: 'hint' }, 'Завантаження історії комітів...'));
-      api('history').then(list => {
-        box.replaceChildren(
-          h('h2', null, 'Історія останніх змін на GitHub'),
-          h('div', { class: 'items' },
-            ...list.map(item => h('div', { class: 'it' },
-              h('span', { class: 'no', style: 'font-family:monospace;width:60px;' }, item.id),
-              h('div', { class: 'tt' },
-                h('b', null, item.msg),
-                h('span', null, `${item.by} · ${new Date(item.at).toLocaleString('uk-UA')}`)
-              )
-            ))
-          )
-        );
-      }).catch(err => {
-        box.replaceChildren(h('p', { class: 'hint' }, 'Не вдалося завантажити історію: ' + err.message));
-      });
-      return [
-        h('div', { class: 'sec-h' }, h('div', null, h('h1', null, 'Історія публікацій'), h('p', null, 'Усі попередні зміни зберігаються в Git на GitHub'))),
-        box
-      ];
+  function assignField(item, value) {
+    if (item.source === 'content') {
+      let owner = S.c;
+      for (const key of item.path.slice(0, -1)) owner = owner[key];
+      owner[item.path.at(-1)] = value;
+      return;
     }
-  };
+    if (item.source === 'pageSetting') {
+      (S.c.pageSettings ||= {})[S.page] ||= {};
+      S.c.pageSettings[S.page][item.key] = value;
+      return;
+    }
+    const property = item.source === 'staticText' ? 'staticText' : 'staticAttributes';
+    const pageContent = S.page === '/' ? S.c : ((S.c.pageOverrides ||= {})[S.page] ||= {});
+    pageContent[property] ||= {};
+    if (value === item.base) delete pageContent[property][item.key];
+    else pageContent[property][item.key] = { base: item.base, value };
+  }
+  function writeField(item, value) {
+    if (same(fieldValue(item), value)) return;
+    const config = item.linkType && item.source !== 'pageSetting' ? { ...linkConfig(item), type: item.linkType } : null;
+    recordChange(`${item.source}:${S.page}:${item.path?.join('.') || item.key}`);
+    assignField(item, value);
+    if (config) (S.c.linkSettings ||= {})[linkKey(item)] = config;
+    changed();
+  }
 
-  /* Render Tabs & Content */
+  function validAttribute(item, value) {
+    if (constRef(value)) return Boolean(S.c?.consts?.[constRef(value).key]);
+    if (value === '') return true;
+    if (item.mode === 'href') return /^(#|\/(?!\/)|https?:\/\/|mailto:|tel:)/i.test(value);
+    if (item.mode === 'src' || item.mode === 'poster' || item.mode === 'data-image') return /^\/assets\//.test(value);
+    return true;
+  }
+
+  function valueControl(item, options = {}) {
+    const raw = String(options.value ?? fieldValue(item));
+    const ref = constRef(raw);
+    const input = options.multi ? h('textarea', { rows: options.rows || 3 }) : h('input', { type: 'text' });
+    const resolved = ref ? (S.c.consts?.[ref.key]?.value ?? raw) : raw;
+    input.value = options.display ? options.display(resolved) : item.htmlLines ? resolved.replace(/<br\s*\/?\s*>/gi, '\n') : resolved;
+    input.setAttribute('aria-label', item.label || item.key || 'Value');
+    if (ref) {
+      input.readOnly = true;
+      input.title = `Const: ${S.c.consts?.[ref.key]?.label || ref.key}. Double-click to edit everywhere.`;
+      input.addEventListener('dblclick', () => { S.constKey = ref.key; setMode('const'); });
+    } else input.addEventListener('input', () => {
+      const value = options.encode ? options.encode(input.value) : item.htmlLines ? input.value.replace(/\n/g, '<br />') : input.value;
+      if (validAttribute(item, value)) writeField(item, value);
+    });
+    input.addEventListener('focus', () => { if (item.id) selectField(item.id, true); });
+    input.addEventListener('blur', () => {
+      if (ref) return;
+      const value = options.encode ? options.encode(input.value) : input.value;
+      if (!validAttribute(item, value)) { toast('Check the link value', true); input.value = options.display ? options.display(String(fieldValue(item))) : String(fieldValue(item)); }
+    });
+    const shell = h('div', { class: 'input-shell', ...(ref ? { 'data-bound': ref.key } : {}) }, input);
+    if (options.connect !== false) shell.append(h('button', {
+      class: 'input-const', type: 'button', title: ref ? `Connected to ${S.c.consts?.[ref.key]?.label || ref.key}` : 'Connect Const',
+      'aria-label': ref ? 'Manage connected Const' : 'Connect Const', onclick: () => openConstPicker(item)
+    }, h('span', { class: 'ui-icon', style: "--icon:url('/admin/icons/variable.svg')" })));
+    return shell;
+  }
+
+  const linkKey = item => `${S.page}|${item.id || `content:${item.path?.join('.')}:href`}`;
+  const automaticHref = setting => {
+    const page = S.pages.find(page => page.id === setting.pageId);
+    if (!page) return null;
+    return setting.type === 'page' ? page.path : setting.sectionId ? `${page.path === S.page ? '' : page.path}#${encodeURIComponent(setting.sectionId)}` : null;
+  };
+  function linkConfig(item) {
+    const saved = S.c.linkSettings?.[linkKey(item)];
+    if (saved) return saved;
+    const value = String(resolveConst(fieldValue(item)));
+    const defaults = { type: 'url', target: item.target === '_blank' ? '_blank' : '_self', page: S.page, source: item.source, ...(item.path ? { path: item.path } : { key: item.key }) };
+    if (/^tel:/i.test(value)) return { ...defaults, type: 'phone' };
+    if (/^mailto:/i.test(value)) return { ...defaults, type: 'email' };
+    const [route, fragment] = value.split('#');
+    const page = S.pages.find(page => page.path === (route || S.page));
+    let sectionId = fragment;
+    try { if (fragment) sectionId = decodeURIComponent(fragment); } catch {}
+    if (page && (value.startsWith('/') || value.startsWith('#'))) return { ...defaults, type: fragment ? 'section' : 'page', pageId: page.id, ...(fragment ? { sectionId } : {}) };
+    return defaults;
+  }
+  function updateLink(item, patch, value) {
+    history.key = '';
+    recordChange('link:' + linkKey(item));
+    const config = { ...linkConfig(item), ...patch };
+    (S.c.linkSettings ||= {})[linkKey(item)] = config;
+    if (value !== undefined) assignField(item, value);
+    else if (['page', 'section'].includes(config.type)) {
+      const href = automaticHref(config);
+      assignField(item, href ?? '');
+    }
+    changed();
+  }
+  const sectionCache = new Map();
+  async function pageSections(page) {
+    if (page.path === S.page && S.sections.length) return S.sections.filter(section => section.anchorId).map(section => ({ id: section.anchorId, label: section.label }));
+    if (!sectionCache.has(page.path)) sectionCache.set(page.path, (async () => {
+      const response = await fetch(page.path, { cache: 'no-store' });
+      if (!response.ok) throw new Error('Could not load page sections');
+      const document = new DOMParser().parseFromString(await response.text(), 'text/html');
+      return [...document.querySelectorAll('main section[id],main header[id],main footer[id]')].filter(element => !element.parentElement?.closest('section,header,footer')).map(element => ({ id: element.id, label: element.getAttribute('aria-label') || element.querySelector('h1,h2,h3')?.textContent.trim() || element.id }));
+    })().catch(error => { sectionCache.delete(page.path); throw error; }));
+    return sectionCache.get(page.path);
+  }
+  function linkEditor(item) {
+    const config = linkConfig(item);
+    const box = h('div', { class: 'link-editor' });
+    const row = (label, control) => h('div', { class: 'link-row' }, h('span', null, label), control);
+    const type = h('select', { 'aria-label': 'Link type' }, ...[['url', 'URL'], ['page', 'Page'], ['section', 'Page section'], ['email', 'Email'], ['phone', 'Phone']].map(([value, label]) => h('option', { value }, label)));
+    type.value = config.type;
+    type.onchange = () => {
+      const patch = { type: type.value };
+      let value = '';
+      if (['page', 'section'].includes(type.value)) patch.pageId = config.pageId || S.pages.find(page => page.path === S.page)?.id || S.pages[0]?.id;
+      else value = '';
+      updateLink(item, patch, ['page', 'section'].includes(type.value) ? undefined : value);
+      render();
+    };
+    box.append(row('Type', type));
+    if (['page', 'section'].includes(config.type)) {
+      const select = h('select', { 'aria-label': 'Target page' }, h('option', { value: '' }, 'Choose page'), ...S.pages.map(page => h('option', { value: page.id }, `${page.title} · ${page.path}`)));
+      select.value = config.pageId || '';
+      select.onchange = () => { updateLink(item, { pageId: select.value, sectionId: '' }); render(); };
+      box.append(row('Page', select));
+      if (config.type === 'section') {
+        const sections = h('select', { 'aria-label': 'Target section' }, h('option', { value: '' }, 'Choose section'));
+        box.append(row('Section', sections));
+        const page = S.pages.find(page => page.id === config.pageId);
+        if (page) pageSections(page).then(list => {
+          sections.replaceChildren(h('option', { value: '' }, 'Choose section'), ...list.map(section => h('option', { value: section.id }, `${section.label} · #${section.id}`)));
+          if (config.sectionId && !list.some(section => section.id === config.sectionId)) sections.append(h('option', { value: config.sectionId }, `Missing section · #${config.sectionId}`));
+          sections.value = config.sectionId || '';
+        }).catch(error => { sections.replaceChildren(h('option', { value: '' }, error.message)); });
+        sections.onchange = () => { updateLink(item, { sectionId: sections.value }); render(); };
+      }
+      const input = h('input', { type: 'text', readonly: '', value: automaticHref(config) || '', 'aria-label': 'Automatic link value', title: 'Generated from the page route and section ID' });
+      box.append(row('Value', h('div', { class: 'input-shell' }, input, h('span', { class: 'input-auto' }, 'AUTO'))));
+    } else {
+      const linkedItem = { ...item, linkType: config.type };
+      box.append(row(config.type === 'url' ? 'URL' : config.type === 'email' ? 'Email' : 'Phone', valueControl(linkedItem, {
+        display: value => value.replace(/^(mailto:|tel:)/i, ''),
+        encode: value => !value ? '' : config.type === 'phone' ? 'tel:' + value.replace(/[^+\d]/g, '') : config.type === 'email' ? 'mailto:' + value.replace(/^mailto:/i, '') : value
+      })));
+    }
+    const target = h('div', { class: 'seg' }, ...[['_self', 'This tab'], ['_blank', 'New tab']].map(([value, label]) => h('button', { type: 'button', class: config.target === value ? 'on' : '', 'aria-pressed': String(config.target === value), onclick: () => { updateLink(item, { target: value }); render(); } }, label)));
+    box.append(row('Open in', target));
+    return box;
+  }
+
+  function editorField(item) {
+    const raw = String(fieldValue(item));
+    const initial = item.htmlLines ? raw.replace(/<br\s*\/?\s*>/gi, '\n') : raw;
+    const body = [];
+    if (item.valueType === 'boolean') {
+      const input = h('input', { type: 'checkbox', 'aria-label': item.label }); input.checked = fieldValue(item);
+      input.onchange = () => writeField(item, input.checked); body.push(input);
+    } else if (item.valueType === 'number') {
+      const input = h('input', { type: 'number', 'aria-label': item.label }); input.value = fieldValue(item);
+      input.onchange = () => { if (input.value !== '' && Number.isFinite(input.valueAsNumber)) writeField(item, input.valueAsNumber); }; body.push(input);
+    } else if (item.mode === 'href') body.push(linkEditor(item));
+    else if (['src', 'poster', 'data-image'].includes(item.mode)) {
+      const isVideo = item.mediaType === 'video' || /\.(mp4|webm)(\?|$)/i.test(initial);
+      const mediaVersion = S.media?.assets.find(asset => asset.url === initial)?.updatedAt;
+      body.push(isVideo ? h('div', { class: 'asset-thumb', style: 'height:120px;' }, 'Video')
+        : initial ? h('img', { class: 'media-preview', src: initial + (mediaVersion ? '?cmsv=' + encodeURIComponent(mediaVersion) : ''), alt: '' })
+        : h('p', { class: 'hint' }, 'No media selected'));
+      body.push(h('div', { class: 'field-actions' }, h('button', { class: 'btn sm ghost', type: 'button', onclick: () => { selectField(item.id, true); openMediaPicker(item); } }, 'Replace image…')));
+    } else body.push(valueControl(item, { multi: item.htmlLines || item.mode === 'text' && (initial.length > 95 || initial.includes('\n')) }));
+    return h('div', { class: 'auto-field' + (S.activeField === item.id ? ' selected' : ''), 'data-field-id': item.id },
+      h('label', { class: 'cap' }, item.label), ...body);
+  }
+
+  function selectField(id, fromPanel) {
+    if (S.mode === 'cms' && fromPanel) {
+      $('pvF').contentWindow?.postMessage({ type: 'CMS_HIGHLIGHT_FIELD', id }, location.origin);
+      return;
+    }
+    const owner = S.sections.flatMap(section => section.fields).find(field => field.id === id);
+    const collectionPath = owner && CMSStructure.arrayPath(owner);
+    if (collectionPath && !fromPanel) {
+      S.collectionKey = collectionPath.join('.'); S.collectionItem = owner.path[collectionPath.length]; setMode('cms'); return;
+    }
+    if (!fromPanel && owner) S.activeGroup = owner.groupId;
+    if (S.mode !== 'admin') setMode('admin');
+    else if (!fromPanel) render();
+    S.activeField = id;
+    const section = S.sections.find(item => item.fields.some(field => field.id === id));
+    if (section && S.tab !== section.id) {
+      S.tab = section.id;
+      render();
+    } else {
+      $('ed').querySelectorAll('.auto-field').forEach(row => row.classList.toggle('selected', row.dataset.fieldId === id));
+    }
+    const row = [...$('ed').querySelectorAll('.auto-field')].find(item => item.dataset.fieldId === id);
+    if (!fromPanel) row?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    $('pvF').contentWindow?.postMessage({ type: 'CMS_HIGHLIGHT_FIELD', id }, location.origin);
+  }
+
+  const isImageAsset = url => /\.(png|jpe?g|webp|gif|avif|svg)(\?|$)/i.test(url);
+  const isVideoAsset = url => /\.(mp4|webm)(\?|$)/i.test(url);
+  const assetThumb = asset => h('div', { class: 'asset-thumb' },
+    isImageAsset(asset.url) ? h('img', { src: asset.url + '?cmsv=' + encodeURIComponent(asset.updatedAt || ''), alt: '' })
+      : isVideoAsset(asset.url) ? '▶' : '▣');
+  const assetUsed = asset => asset.used || JSON.stringify(S.c || {}).includes(asset.url);
+
+  async function loadMedia() {
+    S.media = await api('media-list');
+    const values = Object.fromEntries(S.media.assets.map(asset => [asset.url, {
+      name: asset.name, alt: asset.alt, updatedAt: asset.updatedAt
+    }]));
+    $('pvF').contentWindow?.postMessage({ type: 'CMS_MEDIA_UPDATE', media: values }, location.origin);
+    return S.media;
+  }
+
+  function readFileBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(String(reader.result).split(',')[1]);
+      reader.onerror = () => reject(new Error('Could not read file'));
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function replacementBase64(file, asset) {
+    const extension = asset.url.split('.').at(-1).toLowerCase();
+    if (extension === 'mp4') {
+      if (file.type !== 'video/mp4') throw new Error('MP4 video required');
+      return readFileBase64(file);
+    }
+    const mime = { png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', webp: 'image/webp' }[extension];
+    if (!mime || !file.type.startsWith('image/')) throw new Error('This format cannot be replaced');
+    return new Promise((resolve, reject) => {
+      const image = new Image();
+      const objectUrl = URL.createObjectURL(file);
+      image.onload = () => {
+        try {
+          const canvas = document.createElement('canvas');
+          canvas.width = image.naturalWidth;
+          canvas.height = image.naturalHeight;
+          canvas.getContext('2d').drawImage(image, 0, 0);
+          canvas.toBlob(async blob => {
+            URL.revokeObjectURL(objectUrl);
+            if (!blob) return reject(new Error('Could not prepare image'));
+            try { resolve(await readFileBase64(blob)); } catch (error) { reject(error); }
+          }, mime, .9);
+        } catch (error) { URL.revokeObjectURL(objectUrl); reject(error); }
+      };
+      image.onerror = () => { URL.revokeObjectURL(objectUrl); reject(new Error('Image could not be opened')); };
+      image.src = objectUrl;
+    });
+  }
+
+  async function uploadAsset(file, folder) {
+    if (!file) return;
+    if (file.size > 96 * 1024 * 1024) throw new Error('Maximum file size is 96 MB');
+    const base64 = await readFileBase64(file);
+    const result = await api('media-upload', { folder, filename: file.name, base64 });
+    recordAction({ kind: 'upload', url: result.url, metadata: result.metadata, token: null });
+    await loadMedia();
+    return result.url;
+  }
+
+  function folderButtons(folder, choose) {
+    return S.media.folders.map(path => h('button', { type: 'button', class: 'folder-link' + (folder === path ? ' on' : ''),
+      style: `padding-left:${9 + Math.max(0, path.split('/').length - 2) * 11}px`, onclick: () => choose(path) },
+      '▸ ' + (path === '/assets' ? 'All media' : path.split('/').at(-1))));
+  }
+
+  function assetTiles(folder, select, filter = '') {
+    const query = filter.toLocaleLowerCase();
+    return S.media.assets.filter(asset =>
+      (folder === '/assets' || asset.folder === folder) &&
+      (!query || `${asset.name} ${asset.url}`.toLocaleLowerCase().includes(query))
+    ).map(asset => h('button', { type: 'button', class: 'asset-tile' + (S.selectedAsset === asset.url ? ' on' : '') + (assetUsed(asset) ? '' : ' unused'),
+      title: assetUsed(asset) ? asset.name : `${asset.name} · Unused`,
+      onclick: () => select(asset) }, assetThumb(asset), h('span', { title: asset.name }, asset.name)));
+  }
+
+  function uploadButton(folder, done) {
+    const input = h('input', { type: 'file', accept: 'image/png,image/jpeg,image/webp,video/mp4', hidden: true });
+    input.addEventListener('change', async () => {
+      try {
+        const url = await uploadAsset(input.files?.[0], folder);
+        if (url) { toast('Media uploaded'); done(url); }
+      } catch (error) { toast(error.message, true); }
+    });
+    return h('span', null, h('button', { class: 'btn sm accent', type: 'button', onclick: () => input.click() }, 'Upload'), input);
+  }
+
+  function renderMedia() {
+    if (!S.media) return;
+    const folder = S.mediaFolder;
+    const selected = S.media.assets.find(asset => asset.url === S.selectedAsset);
+    const search = h('input', { type: 'search', placeholder: 'Search media…', style: 'max-width:230px;background:#171717;border:1px solid #333;border-radius:8px;padding:8px;' });
+    const grid = h('div', { class: 'media-grid' });
+    const drawGrid = () => grid.replaceChildren(...assetTiles(folder, asset => { S.selectedAsset = asset.url; renderMedia(); }, search.value));
+    search.addEventListener('input', drawGrid);
+    drawGrid();
+    const folders = h('aside', { class: 'media-folders' },
+      h('h2', { style: 'font-size:14px;margin:0 0 12px;' }, 'Folders'),
+      ...folderButtons(folder, value => { S.mediaFolder = value; renderMedia(); }),
+      h('button', { class: 'btn sm ghost', type: 'button', style: 'margin-top:14px;', onclick: async () => {
+        const name = prompt('New folder name');
+        if (!name) return;
+        try { const result = await api('media-folder', { parent: folder, name }); recordAction({ kind: 'folder', folder: result.folder, parent: folder, name }); await loadMedia(); renderMedia(); }
+        catch (error) { toast(error.message, true); }
+      } }, '+ Folder'));
+    const main = h('div', { class: 'media-main' },
+      h('div', { class: 'media-head' }, h('h1', null, 'Media'), uploadButton(folder, url => { S.selectedAsset = url; renderMedia(); })),
+      search, h('p', { class: 'hint' }, `${grid.children.length} files · ${folder}`), grid);
+    const detail = h('aside', { class: 'media-detail' });
+    if (selected) {
+      const name = h('input', { type: 'text' }); name.value = selected.name;
+      const alt = h('textarea', { rows: 3 }); alt.value = selected.alt;
+      const save = async () => {
+        try {
+          const before = { name: selected.name, alt: selected.alt };
+          const after = { name: name.value, alt: alt.value };
+          if (same(before, after)) return;
+          await api('media-update', { url: selected.url, ...after });
+          recordMediaChange(selected.url, before, after);
+          await loadMedia(); renderMedia();
+        }
+        catch (error) { toast(error.message, true); }
+      };
+      name.addEventListener('change', save);
+      alt.addEventListener('change', save);
+      const file = h('input', { type: 'file', accept: isVideoAsset(selected.url) ? 'video/mp4' : 'image/*', hidden: true });
+      file.addEventListener('change', async () => {
+        if (!file.files?.[0]) return;
+        try {
+          const base64 = await replacementBase64(file.files[0], selected);
+          const result = await api('media-replace', { url: selected.url, base64 });
+          recordAction({ kind: 'replace', url: selected.url, backup: result.backup });
+          await loadMedia(); renderMedia(); toast('Replaced everywhere');
+        } catch (error) { toast(error.message, true); }
+      });
+      detail.replaceChildren(h('h2', null, selected.name),
+        isImageAsset(selected.url) ? h('img', { src: selected.url + '?cmsv=' + encodeURIComponent(selected.updatedAt), alt: '' }) :
+          isVideoAsset(selected.url) ? h('video', { src: selected.url + '?cmsv=' + encodeURIComponent(selected.updatedAt), controls: '' }) : null,
+        h('p', { class: 'hint' }, selected.url),
+        h('p', { class: 'hint' }, assetUsed(selected) ? 'Used on site or in draft' : 'Not used on site or in draft'),
+        h('div', { class: 'auto-field' }, h('label', { class: 'cap' }, 'Media name'), name),
+        h('div', { class: 'auto-field' }, h('label', { class: 'cap' }, 'Shared alt text'), alt),
+        selected.replaceable ? h('div', null, h('button', { class: 'btn sm ghost', type: 'button', onclick: () => file.click() }, 'Replace everywhere'), file) : null);
+    } else detail.replaceChildren(h('p', { class: 'hint' }, 'Select media to edit its name, alt text, or file.'));
+    $('workspaceView').replaceChildren(h('div', { class: 'media-layout' }, folders, main, detail));
+  }
+
+  async function openMediaPicker(item) {
+    try { if (!S.media) await loadMedia(); }
+    catch (error) { toast(error.message, true); return; }
+    let folder = '/assets';
+    const wantedVideo = item.mediaType === 'video' || isVideoAsset(String(fieldValue(item)));
+    const draw = () => {
+      const list = S.media.assets.filter(asset =>
+        (folder === '/assets' || asset.folder === folder) && (wantedVideo ? isVideoAsset(asset.url) : isImageAsset(asset.url)));
+      modal(h('div', null,
+        h('h2', null, 'Replace image…'),
+        h('p', { class: 'hint' }, 'Choose a file from a folder or upload a new one.'),
+        h('div', { style: 'display:flex;gap:5px;overflow:auto;margin:14px 0;' },
+          ...S.media.folders.map(path => h('button', { class: 'btn sm ghost', type: 'button', onclick: () => { folder = path; draw(); } }, path.split('/').at(-1) || 'All'))),
+        h('div', { class: 'media-grid picker-grid' }, ...list.map(asset => h('button', { class: 'asset-tile' + (assetUsed(asset) ? '' : ' unused'), type: 'button',
+          onclick: () => { writeField(item, asset.url); closeModal(); if (S.mode === 'settings') renderPageSettings(); else if (S.mode === 'cms') renderCollections(); else render(); } }, assetThumb(asset), h('span', null, asset.name)))),
+        h('div', { class: 'mod-f' }, uploadButton(folder, url => { writeField(item, url); closeModal(); if (S.mode === 'settings') renderPageSettings(); else if (S.mode === 'cms') renderCollections(); else render(); }),
+          h('button', { class: 'btn', type: 'button', onclick: closeModal }, 'Cancel'))));
+      $('modC').style.width = 'min(900px,100%)';
+    };
+    draw();
+  }
+
+  function openConstPicker(item) {
+    const entries = Object.entries(S.c?.consts || {});
+    const current = constRef(String(fieldValue(item)));
+    const candidates = entries.filter(([, entry]) => item.linkType ? entry.type === item.linkType : item.mode !== 'href' || ['phone', 'email', 'url'].includes(entry.type));
+    modal(h('div', null,
+      h('h2', null, 'Connect Const'),
+      h('p', { class: 'hint' }, 'This field will use one shared value. Editing the Const updates every connected field.'),
+      h('div', { class: 'const-list' }, ...candidates.map(([key, entry]) => h('button', {
+        type: 'button', onclick: () => {
+          const format = item.mode === 'href' ? entry.type === 'phone' ? 'tel' : entry.type === 'email' ? 'mailto' : null : null;
+          writeField(item, constToken(key, format));
+          closeModal();
+          if (S.mode === 'settings') renderPageSettings(); else render();
+        }
+      }, h('strong', null, entry.label), h('span', null, `${entry.value || 'Empty'} · ${constUsage(key)} uses`)))),
+      !candidates.length ? h('p', { class: 'hint' }, 'No compatible Const yet. Add one from the Const tab.') : null,
+      h('div', { class: 'mod-f' },
+        current ? h('button', { class: 'btn ghost', type: 'button', onclick: () => { S.constKey = current.key; closeModal(); setMode('const'); } }, 'Edit Const') : null,
+        current ? h('button', { class: 'btn ghost', type: 'button', onclick: () => { writeField(item, resolveConst(fieldValue(item))); closeModal(); if (S.mode === 'settings') renderPageSettings(); else if (S.mode === 'cms') renderCollections(); else render(); } }, 'Unlink') : null,
+        h('button', { class: 'btn ghost', type: 'button', onclick: closeModal }, 'Cancel'))));
+  }
+
+  function addConstDialog() {
+    const key = h('input', { type: 'text', placeholder: 'companyPhone' });
+    const label = h('input', { type: 'text', placeholder: 'Company phone' });
+    const value = h('input', { type: 'text', placeholder: 'Value' });
+    const type = h('select', { style: 'width:100%;padding:10px;background:#171717;border:1px solid #333;border-radius:9px;' },
+      ...['text', 'phone', 'email', 'url'].map(kind => h('option', { value: kind }, kind)));
+    modal(h('div', null, h('h2', null, 'New Const'),
+      h('p', { class: 'hint' }, 'The key is stable in code. Choose a clear name before connecting it to fields.'),
+      h('div', { class: 'auto-field' }, h('label', { class: 'cap' }, 'Key'), key),
+      h('div', { class: 'auto-field' }, h('label', { class: 'cap' }, 'Label'), label),
+      h('div', { class: 'auto-field' }, h('label', { class: 'cap' }, 'Type'), type),
+      h('div', { class: 'auto-field' }, h('label', { class: 'cap' }, 'Value'), value),
+      h('div', { class: 'mod-f' },
+        h('button', { class: 'btn ghost', type: 'button', onclick: closeModal }, 'Cancel'),
+        h('button', { class: 'btn accent', type: 'button', onclick: () => {
+          const name = key.value.trim();
+          if (!/^[a-z][a-zA-Z0-9]*$/.test(name)) return toast('Use a key like companyPhone', true);
+          if (S.c.consts?.[name]) return toast('This key already exists', true);
+          if (!label.value.trim()) return toast('Add a label', true);
+          recordChange('const:create:' + name);
+          (S.c.consts ||= {})[name] = { label: label.value.trim(), type: type.value, value: value.value };
+          S.constKey = name;
+          changed(); closeModal(); renderConst();
+        } }, 'Create Const'))));
+  }
+
+  function renderConst() {
+    if (!S.c) return;
+    const entries = Object.entries(S.c.consts || {});
+    if (!entries.some(([key]) => key === S.constKey)) S.constKey = entries[0]?.[0] || null;
+    const selected = S.constKey && S.c.consts[S.constKey];
+    const list = h('div', { class: 'const-list' }, ...entries.map(([key, entry]) => h('button', {
+      type: 'button', class: key === S.constKey ? 'on' : '', onclick: () => { S.constKey = key; renderConst(); }
+    }, h('strong', null, entry.label), h('span', null, `${constUsage(key)} uses`))));
+    const detail = selected ? h('div', { class: 'const-detail' },
+      h('div', { class: 'const-top' }, h('span', { class: 'const-badge' }, 'Const'), h('strong', null, selected.label)),
+      h('p', { class: 'const-note' }, `${constUsage(S.constKey)} connected fields · changes update every use in the draft preview`),
+      h('div', { class: 'auto-field' }, h('label', { class: 'cap' }, 'Key · used in code'),
+        h('input', { type: 'text', value: S.constKey, readonly: '' })),
+      h('div', { class: 'auto-field' }, h('label', { class: 'cap' }, 'Label'),
+        (() => { const input = h('input', { type: 'text' }); input.value = selected.label;
+          input.addEventListener('input', () => set(['consts', S.constKey, 'label'], input.value)); return input; })()),
+      h('div', { class: 'auto-field' }, h('label', { class: 'cap' }, 'Type'),
+        (() => { const input = h('select', { style: 'width:100%;padding:10px;background:#171717;border:1px solid #333;border-radius:9px;' },
+          ...['text', 'phone', 'email', 'url'].map(kind => h('option', { value: kind }, kind)));
+          input.value = selected.type; input.addEventListener('change', () => { set(['consts', S.constKey, 'type'], input.value); renderConst(); }); return input; })()),
+      h('div', { class: 'auto-field' }, h('label', { class: 'cap' }, 'Value'),
+        (() => { const input = h('textarea', { rows: 3 }); input.value = selected.value;
+          input.addEventListener('input', () => set(['consts', S.constKey, 'value'], input.value)); return input; })()),
+      constUsage(S.constKey) === 0 ? h('button', { class: 'btn sm ghost', type: 'button', onclick: () => {
+        if (!confirm(`Delete ${selected.label}?`)) return;
+        recordChange('const:delete:' + S.constKey);
+        delete S.c.consts[S.constKey];
+        S.constKey = null;
+        changed(); renderConst();
+      } }, 'Delete unused Const') : null) : h('p', { class: 'hint' }, 'Create a Const to share a value across the site.');
+    $('ed').replaceChildren(h('div', { class: 'sec-h' }, h('div', null, h('h1', null, 'Const'),
+      h('p', null, 'Shared values for this site. Edit once, update everywhere.'))),
+      h('button', { class: 'btn sm accent', type: 'button', onclick: addConstDialog }, '+ New Const'), list, detail);
+    $('pvF').contentWindow?.postMessage({ type: 'CMS_HIGHLIGHT_CONST', key: S.constKey }, location.origin);
+  }
+
+  async function setMode(mode) {
+    S.mode = mode;
+    document.querySelector('.top-title').textContent = ({ admin: 'Page editor', cms: 'CMS collections', media: 'Media', const: 'Const', settings: 'Page settings' })[mode] || 'Page editor';
+    $('modeCms').classList.toggle('on', mode === 'cms');
+    $('modeAdmin').classList.toggle('on', mode === 'admin');
+    $('modeMedia').classList.toggle('on', mode === 'media');
+    $('modeConst').classList.toggle('on', mode === 'const');
+    $('modeSettings').classList.toggle('on', mode === 'settings');
+    $('sectionBar').hidden = mode !== 'admin';
+    $('adminWorkspace').hidden = mode === 'media';
+    $('workspaceView').hidden = mode !== 'media';
+    if (mode === 'admin') { render(); requestAnimationFrame(fitPreview); }
+    if (mode === 'media') {
+      $('workspaceView').replaceChildren(h('p', { class: 'hint' }, 'Loading media library…'));
+      try { await loadMedia(); renderMedia(); } catch (error) { $('workspaceView').textContent = error.message; }
+    }
+    if (mode === 'cms') { renderCollections(); requestAnimationFrame(fitPreview); }
+    if (mode === 'settings') renderPageSettings();
+    if (mode === 'const') { renderConst(); requestAnimationFrame(fitPreview); }
+    else $('pvF').contentWindow?.postMessage({ type: 'CMS_HIGHLIGHT_CONST', key: null }, location.origin);
+  }
+  $('modeCms').addEventListener('click', () => setMode('cms'));
+  $('modeAdmin').addEventListener('click', () => setMode('admin'));
+  $('modeMedia').addEventListener('click', () => setMode('media'));
+  $('modeConst').addEventListener('click', () => setMode('const'));
+  $('modeSettings').addEventListener('click', () => setMode('settings'));
+
   function tabs() {
-    $('tabs').replaceChildren(...TABS.map(([k, t]) => h('button', {
-      class: S.tab === k ? 'on' : '',
-      onclick: () => { S.tab = k; render(); scrollTo(0, 0); }
-    }, t)));
+    const container = $('tabs');
+    const previousScroll = container.scrollLeft;
+    const sections = S.sections || [];
+    container.replaceChildren(...sections.map((section, index) => h('button', {
+      type: 'button', role: 'tab', 'aria-selected': String(S.tab === section.id), class: S.tab === section.id ? 'on' : '',
+      title: section.label,
+      onclick: () => {
+        S.tab = section.id;
+        S.activeGroup = null;
+        render();
+        $('pvF').contentWindow?.postMessage({ type: 'CMS_FOCUS_SECTION', id: section.id }, location.origin);
+      }
+    }, `${String(index + 1).padStart(2, '0')} · ${section.label}`)));
+    container.scrollLeft = previousScroll;
+    const active = container.querySelector('.on');
+    if (active) {
+      const left = active.offsetLeft - container.offsetLeft;
+      if (left < container.scrollLeft) container.scrollLeft = left;
+      else if (left + active.offsetWidth > container.scrollLeft + container.clientWidth) container.scrollLeft = left + active.offsetWidth - container.clientWidth;
+    }
+    if (!sections.length) container.replaceChildren(h('span', { class: 'hint' }, 'Loading sections...'));
+  }
+  $('tabs').addEventListener('wheel', event => {
+    if (Math.abs(event.deltaY) <= Math.abs(event.deltaX) || $('tabs').scrollWidth <= $('tabs').clientWidth) return;
+    event.preventDefault(); $('tabs').scrollLeft += event.deltaY;
+  }, { passive: false });
+
+  function extraContentFields(section) {
+    const contentKey = section.contentKey;
+    const sectionData = contentKey && S.c?.sections?.[contentKey];
+    if (!sectionData) return [];
+    const bound = new Set(section.fields.filter(field => field.source === 'content').map(field => field.path.join('.')));
+    const result = [];
+    const visit = (value, path) => {
+      if (typeof value === 'string') {
+        if (bound.has(path.join('.')) || ['id'].includes(String(path.at(-1)))) return;
+        const key = String(path.at(-1));
+        const mode = /^\/assets\//.test(value) ? 'src' : /href|link|url/i.test(key) ? 'href' : 'text';
+        result.push({ id: `content:${path.join('.')}:${mode}`, source: 'content', path, mode,
+          label: path.slice(2).join(' · ').replace(/([a-z])([A-Z])/g, '$1 $2'),
+          value, htmlLines: /<br\s*\/?\s*>/i.test(value), mediaType: /\.(mp4|webm)(\?|$)/i.test(value) ? 'video' : 'image' });
+      } else if (Array.isArray(value)) value.forEach((item, index) => visit(item, [...path, index]));
+      else if (value && typeof value === 'object') {
+        for (const [key, item] of Object.entries(value)) if (key !== 'id' && key !== 'active') visit(item, [...path, key]);
+      }
+    };
+    visit(sectionData, ['sections', contentKey]);
+    return result;
   }
 
   function render() {
     tabs();
-    $('ed').replaceChildren(...R[S.tab]().flat().filter(Boolean));
+    const section = S.sections?.find(item => item.id === S.tab);
+    if (!section) {
+      $('ed').replaceChildren(h('p', { class: 'hint' }, 'Loading page structure…'));
+      status();
+      return;
+    }
+    const fields = [...section.fields, ...extraContentFields(section)];
+    const groups = CMSStructure.groups(fields);
+    const selected = groups.find(group => group.id === S.activeGroup);
+    const collections = CMSStructure.collections(S.c, S.sections).filter(collection => collection.sections.some(item => item.id === section.id));
+    const heading = h('div', { class: 'sec-h' }, h('h1', null, selected ? selected.label : section.label));
+    if (selected) {
+      $('ed').replaceChildren(backButton(section.label, () => { S.activeGroup = null; render(); }), heading,
+        h('p', { class: 'inspector-eyebrow' }, selected.type === 'component' ? 'COMPONENT · PROPERTIES' : 'ELEMENT · PROPERTIES'),
+        h('div', { class: 'auto-fields' }, ...selected.fields.map(editorField)));
+    } else {
+      $('ed').replaceChildren(heading, h('p', { class: 'hint' }, 'Select an element on the canvas or open a card to edit its properties.'),
+        h('div', { class: 'element-list' }, ...groups.map(group => elementCard(group, () => {
+          S.activeGroup = group.id; render();
+          $('pvF').contentWindow?.postMessage({ type: 'CMS_SELECT_GROUP', id: group.id }, location.origin);
+        }))),
+        ...collections.map(collection => h('button', { type: 'button', class: 'collection-card', onclick: () => {
+          S.collectionKey = collection.key; S.collectionItem = null; setMode('cms');
+        } }, h('span', null, '▤  ' + collection.label), h('small', null, `${collection.items.length} items · CMS →`))));
+    }
     status();
+  }
+
+  function backButton(label, action) {
+    return h('button', { class: 'inspector-back', type: 'button', onclick: action }, '← ' + label);
+  }
+  function elementCard(group, action) {
+    const image = group.fields.find(field => ['src', 'poster'].includes(field.mode));
+    const text = group.fields.find(field => field.mode === 'text');
+    return h('button', { class: 'element-card', type: 'button', onclick: action },
+      image ? h('img', { src: resolveConst(fieldValue(image)), alt: '', loading: 'lazy' }) : h('span', { class: 'element-symbol' }, group.type === 'component' ? '◇' : 'T'),
+      h('span', { class: 'element-copy' }, h('small', null, group.label), h('strong', null, String(text ? resolveConst(fieldValue(text)) : image ? fieldValue(image).split('/').at(-1) : group.label).replace(/<[^>]*>/g, '').slice(0, 75))), h('span', null, '›'));
+  }
+  function moveCollectionItem(collection, from, to) {
+    if (from === to || from < 0 || to < 0 || from >= collection.items.length || to >= collection.items.length) return;
+    // Keep link overrides attached to the record when its array position changes.
+    recordChange('collection:move:' + collection.key + ':' + Date.now());
+    const permutation = collection.items.map((_, index) => index);
+    permutation.splice(to, 0, permutation.splice(from, 1)[0]);
+    const next = permutation.map(index => collection.items[index]);
+    const remapped = {};
+    for (const [key, config] of Object.entries(S.c.linkSettings || {})) {
+      const prefix = collection.path;
+      if (config.source === 'content' && config.path?.slice(0, prefix.length).join('.') === collection.key && typeof config.path[prefix.length] === 'number') {
+        const path = [...config.path]; path[prefix.length] = permutation.indexOf(path[prefix.length]);
+        const id = `content:${path.join('.')}:href`;
+        remapped[`${config.page}|${id}`] = { ...config, path };
+      } else remapped[key] = config;
+    }
+    S.c.linkSettings = remapped;
+    let owner = S.c; for (const key of collection.path.slice(0, -1)) owner = owner[key];
+    owner[collection.path.at(-1)] = next;
+    S.collectionItem = null;
+    changed(); renderCollections();
+  }
+  function renderCollections() {
+    if (!S.c) return;
+    const collections = CMSStructure.collections(S.c, S.sections);
+    const collection = collections.find(item => item.key === S.collectionKey);
+    const head = h('div', { class: 'sec-h' }, h('h1', null, collection ? collection.label : 'Collections'));
+    if (!collection) {
+      S.collectionItem = null;
+      $('ed').replaceChildren(head, h('p', { class: 'hint' }, 'Repeated content, one source. Select a collection, then open a record.'),
+        ...collections.map(item => h('button', { class: 'collection-card', type: 'button', onclick: () => { S.collectionKey = item.key; renderCollections(); } },
+          h('strong', null, item.label), h('small', null, `${item.items.length} items · ${item.sections.map(section => section.label).join(', ') || 'Page content'} →`))),
+        h('a', { class: 'inspector-back', href: '/cms/' }, 'Articles & portfolio ↗'));
+      status(); return;
+    }
+    const back = backButton('All collections', () => { S.collectionKey = null; S.collectionItem = null; renderCollections(); });
+    const item = S.collectionItem !== null && collection.items[S.collectionItem];
+    if (item) {
+      $('ed').replaceChildren(backButton(collection.label, () => { S.collectionItem = null; renderCollections(); }),
+        h('div', { class: 'sec-h' }, h('h1', null, CMSStructure.itemTitle(item, S.collectionItem))),
+        h('p', { class: 'inspector-eyebrow' }, `CMS RECORD · ${S.collectionItem + 1} / ${collection.items.length}`),
+        ...CMSStructure.itemFields(item, [...collection.path, S.collectionItem]).map(editorField));
+      status(); return;
+    }
+    const search = h('input', { type: 'search', placeholder: 'Search records…', 'aria-label': 'Search records' });
+    const list = h('div', { class: 'record-list' });
+    const draw = () => {
+      list.replaceChildren(...collection.items.flatMap((item, index) => {
+        const label = CMSStructure.itemTitle(item, index);
+        if (!label.toLowerCase().includes(search.value.toLowerCase())) return [];
+        const row = h('div', { class: 'record-card', draggable: 'true', 'data-index': index });
+        row.addEventListener('dragstart', event => { event.dataTransfer.setData('text/plain', `${collection.key}|${index}`); event.dataTransfer.effectAllowed = 'move'; row.classList.add('dragging'); });
+        row.addEventListener('dragend', () => row.classList.remove('dragging'));
+        row.addEventListener('dragover', event => { event.preventDefault(); event.dataTransfer.dropEffect = 'move'; });
+        row.addEventListener('drop', event => {
+          event.preventDefault(); const [key, from] = event.dataTransfer.getData('text/plain').split('|');
+          if (key === collection.key) moveCollectionItem(collection, Number(from), index);
+        });
+        row.append(h('span', { class: 'drag-grip', title: 'Drag to reorder' }, '⠿'),
+          h('button', { class: 'record-open', type: 'button', onclick: () => { S.collectionItem = index; renderCollections(); } },
+            h('small', null, String(index + 1).padStart(2, '0')), h('strong', null, label), h('span', null, '›')),
+          h('div', { class: 'record-order' },
+            h('button', { type: 'button', 'aria-label': `Move ${label} up`, ...(index === 0 ? { disabled: '' } : {}), onclick: () => moveCollectionItem(collection, index, index - 1) }, '↑'),
+            h('button', { type: 'button', 'aria-label': `Move ${label} down`, ...(index === collection.items.length - 1 ? { disabled: '' } : {}), onclick: () => moveCollectionItem(collection, index, index + 1) }, '↓')));
+        return [row];
+      }));
+      if (!list.childElementCount) list.append(h('p', { class: 'hint' }, 'No records found.'));
+    };
+    search.addEventListener('input', draw); draw();
+    $('ed').replaceChildren(back, head, h('p', { class: 'hint' }, `${collection.items.length} records · Drag to reorder or use the arrows. Open a card to edit.`), search, list);
+    status();
+  }
+
+  function renderPageSettings() {
+    if (!S.c) return;
+    const page = S.pages.find(item => item.path === S.page);
+    const settings = S.c.pageSettings?.[S.page] || {};
+    const textField = (label, key, options = {}) => {
+      const value = settings[key] || (S.page === '/' && key === 'seoTitle' ? S.c.meta?.title || '' : S.page === '/' && key === 'seoDescription' ? S.c.meta?.description || '' : '');
+      const item = { source: 'pageSetting', key, mode: key === 'canonical' ? 'href' : 'text', ...(key === 'canonical' ? { linkType: 'url' } : {}), label };
+      const control = valueControl(item, { value, multi: options.multi, rows: options.rows, connect: !['headCode', 'bodyCode'].includes(key) });
+      if (key === 'name') control.querySelector('input,textarea').addEventListener('change', event => {
+        const option = [...$('pageSelect').options].find(item => item.value === S.page);
+        if (option) option.textContent = `${event.target.value || page?.title || 'Page'} · ${S.page}`;
+      });
+      return h('div', { class: 'auto-field' }, h('label', { class: 'cap' }, label), control,
+        options.hint ? h('p', { class: 'hint' }, options.hint) : null);
+    };
+    const pageChooser = h('select', { style: 'width:100%;padding:10px;background:#222;border:1px solid #444;border-radius:8px;' },
+      ...S.pages.map(item => h('option', { value: item.path }, `${S.c.pageSettings?.[item.path]?.name || item.title} · ${item.path}`)));
+    pageChooser.value = S.page;
+    pageChooser.addEventListener('change', () => switchPage(pageChooser.value));
+    const noIndex = h('input', { type: 'checkbox' });
+    noIndex.checked = Boolean(settings.noIndex);
+    noIndex.addEventListener('change', () => writeField({ source: 'pageSetting', key: 'noIndex' }, noIndex.checked));
+    const image = settings.ogImage;
+    const groups = [
+      h('div', { class: 'settings-group' }, h('h2', null, 'General'),
+        h('div', { class: 'auto-field' }, h('label', { class: 'cap' }, 'Page'), pageChooser),
+        textField('Page name', 'name'),
+        h('div', { class: 'auto-field' }, h('label', { class: 'cap' }, 'Address'),
+          h('input', { type: 'text', value: S.page, readonly: '' }),
+          h('p', { class: 'hint' }, 'The Astro route defines this page URL. Move the route file to change it.'))),
+      h('div', { class: 'settings-group' }, h('h2', null, 'SEO'),
+        textField('Title tag', 'seoTitle'), textField('Meta description', 'seoDescription', { multi: true }),
+        textField('Canonical URL', 'canonical', { hint: 'Full URL for the canonical page, if needed.' }),
+        h('label', { style: 'display:flex;gap:8px;align-items:center;margin-top:14px;' }, noIndex, 'Do not index this page')),
+      h('div', { class: 'settings-group' }, h('h2', null, 'Open Graph'),
+        textField('Social title', 'ogTitle'), textField('Social description', 'ogDescription', { multi: true }),
+        h('div', { class: 'auto-field' }, h('span', { class: 'cap' }, 'Social image'),
+          image ? h('img', { class: 'media-preview', src: image, alt: '' }) : h('p', { class: 'hint' }, 'Not selected'),
+          h('div', { class: 'field-actions' },
+            h('button', { class: 'btn sm ghost', type: 'button', onclick: () => openMediaPicker({ source: 'pageSetting', key: 'ogImage', mode: 'src', mediaType: 'image', label: 'Open Graph image' }) }, 'Replace image…'),
+            image ? h('button', { class: 'btn sm ghost', type: 'button', onclick: () => { writeField({ source: 'pageSetting', key: 'ogImage' }, ''); renderPageSettings(); } }, 'Clear') : null))),
+      h('div', { class: 'settings-group' }, h('h2', null, 'Custom code'),
+        h('p', { class: 'hint' }, 'Head and body code is applied after local publishing.'),
+        textField('Inside <head>', 'headCode', { multi: true, rows: 6 }),
+        textField('Before </body>', 'bodyCode', { multi: true, rows: 6 }))
+    ];
+    $('ed').replaceChildren(h('div', { class: 'settings-view' },
+      h('h1', null, 'Page settings'), ...groups,
+      h('button', { class: 'btn sm ghost', type: 'button', onclick: async () => {
+        try {
+          const history = await api('history');
+          modal(h('div', null, h('h2', null, 'Version history'),
+            ...history.map(item => h('p', { class: 'hint' }, `${item.id} · ${new Date(item.at).toLocaleString('uk-UA')}`)),
+            h('div', { class: 'mod-f' }, h('button', { class: 'btn', onclick: closeModal }, 'Close'))));
+        } catch (error) { toast(error.message, true); }
+      } }, 'Version history')));
   }
 
   /* Publish modal */
   $('bPub').addEventListener('click', () => {
-    const msg = h('input', { type: 'text', placeholder: 'Коротко: що змінилося (напр. Оновлено телефон)' });
+    const msg = h('input', { type: 'text', placeholder: 'What changed? (optional)' });
     modal(h('div', null,
-      h('h2', null, 'Опублікувати зміни на сайті?'),
-      h('p', { class: 'hint' }, 'Після публікації новий коміт буде надіслано в GitHub, і Vercel оновить сайт за ~40-60 секунд.'),
+      h('h2', null, 'Publish changes locally?'),
+      h('p', { class: 'hint' }, 'Changes will appear on the local site after refresh.'),
       h('div', { class: 'f', style: 'margin-top:16px;' },
-        h('span', { class: 'cap' }, 'Коментар до коміту'),
+        h('span', { class: 'cap' }, 'Comment'),
         msg
       ),
       h('div', { class: 'mod-f' },
-        h('button', { class: 'btn', onclick: closeModal }, 'Скасувати'),
+        h('button', { class: 'btn', onclick: closeModal }, 'Cancel'),
         h('button', {
           class: 'cta',
           onclick: () => doPublish(msg.value)
-        }, h('span', { class: 'cl' }, 'Опублікувати зараз'))
+        }, h('span', { class: 'cl' }, 'Publish now'))
       )
     ));
   });
 
   async function doPublish(message) {
     const steps = h('div', { class: 'steps' },
-      h('div', null, h('i'), 'Збереження в GitHub репозиторій'),
-      h('div', null, h('i'), 'Vercel автоматично збирає оновлений сайт'),
-      h('div', null, h('i'), 'Готово')
+      h('div', null, h('i'), 'Saving to local project'),
+      h('div', null, h('i'), 'Done')
     );
     const mark = (k, state) => {
       steps.children[k].className = state === 'ok' ? 'ok' : 'on';
     };
     modal(h('div', null,
-      h('h2', null, 'Публікація...'),
+      h('h2', null, 'Publishing…'),
       steps,
       h('div', { class: 'mod-f' })
     ));
     mark(0, 'on');
 
     try {
-      const res = await api('publish', { content: S.c, sha: S.sha, message });
+      for (const setting of Object.values(S.c.linkSettings || {})) {
+        if (!['page', 'section'].includes(setting.type)) continue;
+        const page = S.pages.find(page => page.id === setting.pageId);
+        if (!page) throw new Error('Choose an existing page for every automatic link');
+        if (setting.type === 'section') {
+          const sections = await pageSections(page);
+          if (!sections.some(section => section.id === setting.sectionId)) throw new Error(`Choose an existing section on ${page.title}`);
+        }
+      }
+      await saveDraftNow();
+      const res = await api('publish', { expectedDraftRevision: S.draftRevision, message });
       mark(0, 'ok');
       mark(1, 'on');
       S.pub = clone(S.c);
       S.sha = res.sha;
+      S.draftRevision = null;
       status();
-      setTimeout(() => {
-        mark(1, 'ok');
-        mark(2, 'ok');
-        $('modC').querySelector('.mod-f').replaceChildren(
-          h('button', { class: 'btn accent', onclick: closeModal }, 'Чудово')
-        );
-      }, 1500);
+      mark(1, 'ok');
+      $('modC').querySelector('.mod-f').replaceChildren(
+        h('button', { class: 'btn accent', onclick: () => { closeModal(); $('pvF').src = S.page + '?cms-preview=1&v=' + Date.now(); } }, 'Done')
+      );
     } catch (err) {
       closeModal();
-      toast('Помилка публікації: ' + err.message, true);
+      toast('Publish failed: ' + err.message, true);
     }
   }
 
   function modal(node) {
+    $('modC').style.width = '';
     $('modC').replaceChildren(node);
     $('mod').hidden = false;
   }
@@ -768,7 +1609,7 @@
   });
 
   $('bOut').addEventListener('click', async () => {
-    if (confirm('Вийти з адмін-панелі?')) {
+    if (confirm('Log out of the editor?')) {
       await api('logout');
       location.reload();
     }
@@ -777,7 +1618,6 @@
   async function initApp() {
     $('login').hidden = true;
     $('app').hidden = false;
-    $('who').textContent = S.me;
 
     const me = await api('me').catch(() => ({ ready: true }));
     if (!me.ready) {
@@ -786,23 +1626,98 @@
       $('tokenWarn').style.display = 'none';
     }
 
-    const r = await api('content');
+    let r;
+    try {
+      r = await api('content');
+      if (!r.published?.content || typeof r.published.content !== 'object') {
+        throw new Error('Published content was not returned. Restart the local CMS and refresh.');
+      }
+    } catch (err) {
+      $('st').lastChild.textContent = 'Could not load content';
+      $('st').classList.add('dirty');
+      $('ed').replaceChildren(h('div', { class: 'plate' }, h('h2', null, 'Could not load fields'), h('p', null, err.message)));
+      return;
+    }
     S.pub = r.published.content;
     S.sha = r.published.sha;
-    S.c = clone(S.pub);
+    S.draftRevision = r.draftRevision;
+    S.c = clone(r.draft || S.pub);
+    try {
+      const result = await api('pages-list');
+      S.pages = result.pages || [];
+    } catch (error) {
+      S.pages = [{ id: 'route:index.astro', path: '/', title: 'Home', kind: 'static' }];
+      toast('Page list: ' + error.message, true);
+    }
+    $('pageSelect').replaceChildren(...S.pages.map(page => h('option', { value: page.path }, `${page.title} · ${page.path}`)));
+    $('pageSelect').value = S.page;
+    $('pageUrl').textContent = location.origin + S.page;
+    $('pvOpen').href = S.page;
 
     // Check local draft
     try {
       const local = JSON.parse(localStorage.getItem(LS) || 'null');
-      if (local && local.c && !same(strip(local.c), strip(S.pub))) {
-        if (confirm('Знайдено незбережені чернетки у цьому браузері. Відновити їх?')) {
+      if (!r.draft && local && local.c && !same(strip(local.c), strip(S.pub))) {
+        if (confirm('Unsaved drafts were found in this browser. Restore them?')) {
           S.c = local.c;
         }
       }
     } catch (e) {}
 
-    render();
+    // Rebase older local drafts onto the selected canonical phone Const.
+    let migratedConst = false;
+    const legacyContent = !S.c.consts;
+    const migrateLegacyPhone = !S.c.consts?.companyPhone || Boolean(S.c.consts?.headerPhone || S.c.consts?.footerPhone);
+    if (!S.c.consts) { S.c.consts = clone(S.pub.consts || {}); migratedConst = true; }
+    const canonicalPhone = S.pub.consts?.companyPhone;
+    if (canonicalPhone && !S.c.consts.companyPhone) {
+      S.c.consts.companyPhone = clone(canonicalPhone); migratedConst = true;
+    }
+    const replaceOldPhoneRefs = value => {
+      if (Array.isArray(value)) { value.forEach(replaceOldPhoneRefs); return; }
+      if (!value || typeof value !== 'object') return;
+      for (const [key, item] of Object.entries(value)) {
+        if (key === 'consts') continue;
+        const ref = constRef(item);
+        if (ref && ['headerPhone', 'footerPhone'].includes(ref.key)) {
+          value[key] = constToken('companyPhone', ref.format); migratedConst = true;
+        } else replaceOldPhoneRefs(item);
+      }
+    };
+    if (canonicalPhone && migrateLegacyPhone) {
+      replaceOldPhoneRefs(S.c);
+      for (const key of ['headerPhone', 'footerPhone']) {
+        if (key in S.c.consts) { delete S.c.consts[key]; migratedConst = true; }
+      }
+      const phone = constToken('companyPhone');
+      const phoneHref = constToken('companyPhone', 'tel');
+      if (S.c.sections?.headerNav) {
+        if (S.c.sections.headerNav.phone !== phone) { S.c.sections.headerNav.phone = phone; migratedConst = true; }
+        if (S.c.sections.headerNav.phoneHref !== phoneHref) { S.c.sections.headerNav.phoneHref = phoneHref; migratedConst = true; }
+      }
+      if (S.c.contacts) {
+        if (S.c.contacts.phone !== phone) { S.c.contacts.phone = phone; migratedConst = true; }
+        if (S.c.contacts.phoneHref !== phoneHref) { S.c.contacts.phoneHref = phoneHref; migratedConst = true; }
+      }
+    }
+    const legacyBindings = [
+      [S.c.contacts, 'email', S.c.consts?.email?.value, constToken('email')],
+      [S.c.contacts, 'emailHref', 'mailto:ALMStudio@gmail.com', constToken('email', 'mailto')],
+      [S.c.contacts, 'serviceArea', S.c.consts?.serviceArea?.value, constToken('serviceArea')]
+    ];
+    for (const [owner, key, oldValue, token] of legacyBindings) {
+      if (legacyContent && owner && typeof oldValue === 'string' && owner[key] === oldValue) { owner[key] = token; migratedConst = true; }
+    }
+    if (legacyContent && S.c.contacts && constRef(S.c.contacts.email)?.key === 'email' && !S.c.contacts.emailHref) {
+      S.c.contacts.emailHref = constToken('email', 'mailto'); migratedConst = true;
+    }
+    if (migratedConst) changed();
+
+    if (S.mode === 'const') renderConst(); else render();
     fitPreview();
+    preview();
+    if (location.hash === '#media') setMode('media');
+    if (location.hash === '#const') setMode('const');
   }
 
   (async () => {

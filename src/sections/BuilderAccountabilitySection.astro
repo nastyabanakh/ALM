@@ -14,37 +14,19 @@
  */
 import ButtonComposite from '../components/ButtonComposite.astro';
 
-interface CommitmentItem {
-  titleLine1: string;
-  titleLine2?: string;
-  description: string;
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  content: CollectionEntry<'pages'>['data']['content'];
 }
 
-const commitments: CommitmentItem[] = [
-  {
-    titleLine1: 'Defined',
-    titleLine2: 'Project Scope',
-    description: 'The signed contract lists the full scope of work, transparent payment milestones, project timelines, and clear build responsibilities.'
-  },
-  {
-    titleLine1: 'Documented',
-    titleLine2: 'Changes',
-    description: 'If an adjustment affects cost, scope, or schedule, it is formally reviewed and signed off before any work begins.'
-  },
-  {
-    titleLine1: 'Inspections',
-    titleLine2: '& Closeout',
-    description: 'Every required city inspection is scheduled, managed, and passed through to final permit completion and legal occupancy.'
-  },
-  {
-    titleLine1: 'Builder',
-    titleLine2: 'Warranty',
-    description: 'Coverage details, timeframes, exclusions, and warranty claim procedures are fully defined in the signed agreement.'
-  }
-];
+const { content } = Astro.props;
+const section = content.builderAccountability;
+const commitments = section.commitments;
+const cmsContent = (Astro.props as any).content;
 ---
 
-<section class="builder-accountability" id="builder-accountability" aria-label="Builder Accountability">
+<section data-cms-section="builderAccountability" class="builder-accountability" id="builder-accountability" aria-label="Builder Accountability">
   <!-- Top 120rem Spacer -->
   <div class="builder-accountability__top-spacer" aria-hidden="true"></div>
 
@@ -54,19 +36,19 @@ const commitments: CommitmentItem[] = [
     <div class="builder-accountability__bar">
       <div class="builder-accountability__bar-main">
         <span class="builder-accountability__bullet" aria-hidden="true"></span>
-        <span class="builder-accountability__bar-label text-m">Builder accountability</span>
+        <span class="builder-accountability__bar-label text-m">{section.barLabel}</span>
       </div>
-      <span class="builder-accountability__bar-index text-m">13//</span>
+      <span class="builder-accountability__bar-index text-m" data-cms-path="sections.builderAccountability.barIndex">{cmsContent.sections.builderAccountability.barIndex}</span>
     </div>
     <div class="builder-accountability__divider" aria-hidden="true"></div>
 
     <!-- 2. SECTION HEADER (TITLE & DESCRIPTION) -->
     <div class="builder-accountability__header">
       <h2 class="builder-accountability__title h2">
-        Clear Commitments in Writing: From Scope to Warranty
+        {section.title}
       </h2>
       <p class="builder-accountability__desc text-m">
-        The agreement records what is included, how changes are approved, and which warranty terms apply.
+        {section.description}
       </p>
     </div>
 
@@ -97,8 +79,9 @@ const commitments: CommitmentItem[] = [
     <!-- 4. CENTERED CTA BUTTON -->
     <div class="builder-accountability__cta-wrap">
       <ButtonComposite
-        text="SCHEDULE A CONSULTATION"
-        href="#contact"
+        text={section.ctaText}
+        href={cmsContent.sections.builderAccountability.ctaHref}
+        cmsHrefPath="sections.builderAccountability.ctaHref"
         variant="dark"
       />
     </div>

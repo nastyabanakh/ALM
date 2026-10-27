@@ -7,29 +7,23 @@ interface NavItem {
   href: string;
 }
 
-const navItems: NavItem[] = [
-  { num: '01/', label: 'CUSTOM HOMES', href: '#custom-homes' },
-  { num: '02/', label: 'PROCESS', href: '#process' },
-  { num: '03/', label: 'PROJECTS', href: '#projects' },
-  { num: '04/', label: 'ABOUT ALM', href: '#about' },
-  { num: '05/', label: 'FAQ', href: '#faq' },
-  { num: '06/', label: 'CONTACT', href: '#contact' },
-];
+const header = (Astro.props as any).content.sections.headerNav;
+const navItems: NavItem[] = header.navItems;
 ---
 
 <header class="header-nav" role="banner">
   <div class="header-nav__left">
-    <a href="/" class="header-nav__logo text-logo text-color-white" aria-label="ALM Home">
-      ALM
+    <a href="/" class="header-nav__logo text-logo text-color-white" aria-label="ALM Home" data-cms-path="sections.headerNav.logo">
+      {header.logo}
     </a>
 
     <nav class="header-nav__menu u-hide-phone" aria-label="Main Navigation">
       <ul class="header-nav__list">
-        {navItems.map((item) => (
+        {navItems.map((item, index) => (
           <li class="header-nav__item">
-            <a href={item.href} class="header-nav__link">
-              <span class="header-nav__item-num">{item.num}</span>
-              <span class="header-nav__item-label">{item.label}</span>
+            <a href={item.href} class="header-nav__link" data-cms-path-href={`sections.headerNav.navItems.${index}.href`}>
+              <span class="header-nav__item-num" data-cms-path={`sections.headerNav.navItems.${index}.num`}>{item.num}</span>
+              <span class="header-nav__item-label" data-cms-path={`sections.headerNav.navItems.${index}.label`}>{item.label}</span>
             </a>
           </li>
         ))}
@@ -38,13 +32,13 @@ const navItems: NavItem[] = [
   </div>
 
   <div class="header-nav__right">
-    <a href="tel:+12065550199" class="header-nav__phone" aria-label="Call +1 (206) 555-0199">
+    <a href={header.phoneHref} class="header-nav__phone" aria-label={`Call ${header.phone}`} data-cms-path-href="sections.headerNav.phoneHref">
       <span class="header-nav__bullet" aria-hidden="true"></span>
-      <span class="header-nav__phone-number font-semibold">+1 (206) 555-0199</span>
+      <span class="header-nav__phone-number font-semibold" data-cms-path="sections.headerNav.phone">{header.phone}</span>
     </a>
 
     <div class="header-nav__cta u-hide-phone">
-      <ButtonComposite text="DISCUSS YOUR PROJECT" href="#contact" />
+      <ButtonComposite text={header.ctaText} href={header.ctaHref} cmsTextPath="sections.headerNav.ctaText" cmsHrefPath="sections.headerNav.ctaHref" />
     </div>
 
     <button
@@ -62,17 +56,17 @@ const navItems: NavItem[] = [
   <!-- Mobile Dropdown Menu (Hidden by default, opened on toggle) -->
   <div class="header-nav__mobile-menu" id="mobile-nav-menu" aria-hidden="true" inert>
     <ul class="header-nav__mobile-list">
-      {navItems.map((item) => (
+      {navItems.map((item, index) => (
         <li class="header-nav__mobile-item">
-          <a href={item.href} class="header-nav__mobile-link">
-            <span class="header-nav__item-num">{item.num}</span>
-            <span class="header-nav__item-label">{item.label}</span>
+          <a href={item.href} class="header-nav__mobile-link" data-cms-path-href={`sections.headerNav.navItems.${index}.href`}>
+            <span class="header-nav__item-num" data-cms-path={`sections.headerNav.navItems.${index}.num`}>{item.num}</span>
+            <span class="header-nav__item-label" data-cms-path={`sections.headerNav.navItems.${index}.label`}>{item.label}</span>
           </a>
         </li>
       ))}
     </ul>
     <div class="header-nav__mobile-cta">
-      <ButtonComposite text="DISCUSS YOUR PROJECT" href="#contact" fullWidth={true} />
+      <ButtonComposite text={header.ctaText} href={header.ctaHref} cmsTextPath="sections.headerNav.ctaText" cmsHrefPath="sections.headerNav.ctaHref" fullWidth={true} />
     </div>
   </div>
 </header>

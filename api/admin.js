@@ -2,6 +2,11 @@
 import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
+import { HOME_PAGE_ID } from '../cms/model.mjs';
+import { CmsError, getEntry, listHistory, publishDraft, saveDraft, uploadImage } from '../cms/store.mjs';
+import { discoverPage } from '../cms/source-manifest.mjs';
+import { createMediaFolder, listMedia, removeEmptyMediaFolder, replaceMedia, stashMedia, swapMediaBackup, unstashMedia, updateMedia, uploadMedia } from '../cms/media-library.mjs';
+import { listSitePages } from '../cms/page-list.mjs';
 
 /**
  * Vercel Serverless Function — ALM Admin API
@@ -11,10 +16,11 @@ import path from 'node:path';
 
 const GITHUB_REPO = process.env.GITHUB_REPO || 'nastyabanakh/ALM';
 const GITHUB_BRANCH = process.env.GITHUB_BRANCH || 'main';
-const GITHUB_TOKEN = process.env.GITHUB_TOKEN || '';
+const LOCAL_MODE = process.env.CMS_LOCAL_MODE === '1';
+const GITHUB_TOKEN = LOCAL_MODE ? '' : (process.env.GITHUB_TOKEN || '');
 const ADMIN_USER = process.env.ADMIN_USER || 'admin';
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'alm2026';
-const JWT_SECRET = process.env.JWT_SECRET || 'alm-secret-session-key-change-in-env';
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || '';
+const JWT_SECRET = process.env.JWT_SECRET || '';
 
 // Helper: parse cookies
 function parseCookies(cookieHeader) {
@@ -39,10 +45,12 @@ function signToken(payload) {
 
 // Verify a session token
 function verifyToken(token) {
-  if (!token || !token.includes('.')) return null;
+  if (!JWT_SECRET || !token || !token.includes('.')) return null;
   const [data, signature] = token.split('.');
   const expectedSignature = crypto.createHmac('sha256', JWT_SECRET).update(data).digest('base64url');
-  if (signature !== expectedSignature) return null;
+  const actual = Buffer.from(signature || '');
+  const expected = Buffer.from(expectedSignature);
+  if (actual.length !== expected.length || !crypto.timingSafeEqual(actual, expected)) return null;
   try {
     const payload = JSON.parse(Buffer.from(data, 'base64url').toString('utf8'));
     if (payload.exp && Date.now() > payload.exp) return null;
@@ -53,7 +61,7 @@ function verifyToken(token) {
 }
 
 // Check session in request
-function checkAuth(req) {
+export function checkAuth(req) {
   const cookies = parseCookies(req.headers.cookie);
   const token = cookies.alm_session;
   return verifyToken(token);
@@ -61,7 +69,7 @@ function checkAuth(req) {
 
 // GitHub API helper
 async function githubRequest(endpoint, options = {}) {
-  if (!GITHUB_TOKEN) throw new Error('GITHUB_TOKEN не налаштовано у змінних середовища Vercel');
+  if (!GITHUB_TOKEN) throw new Error('GITHUB_TOKEN is not configured in Vercel environment variables');
   const url = `https://api.github.com/repos/${GITHUB_REPO}${endpoint}`;
   const res = await fetch(url, {
     ...options,
@@ -74,7 +82,7 @@ async function githubRequest(endpoint, options = {}) {
   });
   if (!res.ok) {
     const errText = await res.text();
-    throw new Error(`GitHub API помилка (${res.status}): ${errText}`);
+    throw new Error(`GitHub API error (${res.status}): ${errText}`);
   }
   return res.json();
 }
@@ -88,19 +96,23 @@ export default async function handler(req, res) {
   const body = req.body || {};
 
   try {
+    if (!ADMIN_PASSWORD || !JWT_SECRET) {
+      return res.status(503).json({ message: 'Set ADMIN_PASSWORD and JWT_SECRET on the server' });
+    }
     // 1. GET /api/admin?op=me
     if (op === 'me') {
       const session = checkAuth(req);
       return res.status(200).json({
         user: session ? session.user : null,
         repo: GITHUB_REPO,
-        ready: Boolean(GITHUB_TOKEN),
+        ready: LOCAL_MODE,
         hasPassword: Boolean(ADMIN_PASSWORD)
       });
     }
 
     // 2. POST /api/admin?op=login
     if (op === 'login') {
+      if (req.method !== 'POST') return res.status(405).json({ message: 'Method not allowed' });
       const { user, email, password } = body;
       const inputUser = (user || email || '').trim();
       const inputPass = (password || '').trim();
@@ -119,46 +131,35 @@ export default async function handler(req, res) {
         return res.status(200).json({ ok: true, user: inputUser });
       }
 
-      return res.status(401).json({ message: 'Невірний логін або пароль адміністратора' });
+      return res.status(401).json({ message: 'Invalid username or password' });
     }
 
     // 3. POST /api/admin?op=logout
     if (op === 'logout') {
+      if (req.method !== 'POST') return res.status(405).json({ message: 'Method not allowed' });
       res.setHeader('Set-Cookie', 'alm_session=; Path=/; HttpOnly; SameSite=Strict; Max-Age=0');
       return res.status(200).json({ ok: true });
     }
 
     // 4. GET /api/admin?op=content
     if (op === 'content') {
-      // Allow read for authenticated or fallback
-      let publishedContent = null;
-      let sha = 'local-dev-sha';
-
-      if (GITHUB_TOKEN) {
-        try {
-          const fileData = await githubRequest(`/contents/src/data/content.json?ref=${GITHUB_BRANCH}`);
-          const contentStr = Buffer.from(fileData.content, 'base64').toString('utf8');
-          publishedContent = JSON.parse(contentStr);
-          sha = fileData.sha;
-        } catch (e) {
-          console.warn('Fallback to local reading:', e.message);
-        }
+      if (!checkAuth(req)) return res.status(401).json({ message: 'Admin sign-in required' });
+      if (LOCAL_MODE) {
+        const page = await getEntry('pages', HOME_PAGE_ID);
+        return res.status(200).json({
+          published: { content: page.published.content, sha: page.publishedRevision },
+          draft: page.draft?.data.content || null,
+          draftRevision: page.draft?.revision || null,
+          draftLink: '/?preview'
+        });
       }
-
-      if (!publishedContent) {
-        try {
-          const localPath = path.join(process.cwd(), 'src/data/content.json');
-          if (fs.existsSync(localPath)) {
-            publishedContent = JSON.parse(fs.readFileSync(localPath, 'utf8'));
-          }
-        } catch (e) {
-          console.error(e);
-        }
-      }
-
+      if (!GITHUB_TOKEN) return res.status(503).json({ message: 'Remote content access is not configured' });
+      const file = await githubRequest(`/contents/src/content/pages/${HOME_PAGE_ID}.json?ref=${GITHUB_BRANCH}`);
+      const page = JSON.parse(Buffer.from(file.content, 'base64').toString('utf8'));
       return res.status(200).json({
-        published: { content: publishedContent, sha },
+        published: { content: page.content, sha: file.sha },
         draft: null,
+        draftRevision: null,
         draftLink: '/?preview'
       });
     }
@@ -166,84 +167,83 @@ export default async function handler(req, res) {
     // --- All routes below require valid session ---
     const session = checkAuth(req);
     if (!session) {
-      return res.status(401).json({ message: 'Потрібна авторизація адміністратора' });
+      return res.status(401).json({ message: 'Admin sign-in required' });
     }
 
-    // 5. POST /api/admin?op=publish
-    if (op === 'publish') {
-      const { content, message } = body;
-      if (!content) return res.status(400).json({ message: 'Немає вмісту для публікації' });
+    if (op === 'manifest') {
+      if (req.method !== 'GET') return res.status(405).json({ message: 'Method not allowed' });
+      if (!LOCAL_MODE) return res.status(501).json({ message: 'Code manifest is available locally only' });
+      return res.status(200).json(await discoverPage('src/pages/index.astro'));
+    }
+    if (op === 'pages-list') {
+      if (req.method !== 'GET') return res.status(405).json({ message: 'Method not allowed' });
+      if (!LOCAL_MODE) return res.status(501).json({ message: 'Page list is available locally only' });
+      return res.status(200).json({ pages: await listSitePages() });
+    }
 
-      const pubMeta = {
-        at: new Date().toISOString(),
-        by: session.user,
-        id: crypto.randomBytes(6).toString('hex')
-      };
-      content.pub = pubMeta;
+    if (op?.startsWith('media-')) {
+      if (!LOCAL_MODE) return res.status(501).json({ message: 'Media library is available locally only' });
+      if (op === 'media-list' && req.method === 'GET') return res.status(200).json(await listMedia());
+      if (req.method !== 'POST') return res.status(405).json({ message: 'Method not allowed' });
+      if (op === 'media-upload') return res.status(200).json(await uploadMedia(body));
+      if (op === 'media-update') return res.status(200).json(await updateMedia(body));
+      if (op === 'media-replace') return res.status(200).json(await replaceMedia(body));
+      if (op === 'media-swap-backup') return res.status(200).json(await swapMediaBackup(body));
+      if (op === 'media-stash') return res.status(200).json(await stashMedia(body));
+      if (op === 'media-unstash') return res.status(200).json(await unstashMedia(body));
+      if (op === 'media-folder') return res.status(200).json(await createMediaFolder(body));
+      if (op === 'media-folder-remove') return res.status(200).json(await removeEmptyMediaFolder(body));
+      return res.status(404).json({ message: 'Unknown media operation' });
+    }
 
-      const fileContent = JSON.stringify(content, null, 2);
-      const base64Content = Buffer.from(fileContent, 'utf8').toString('base64');
-      const commitMessage = message ? `CMS: ${message}` : `CMS: Оновлення контенту (${pubMeta.id})`;
-
-      let newSha = `sha-${Date.now()}`;
-
-      if (GITHUB_TOKEN) {
-        // 1. Get current SHA if not provided
-        let currentSha = body.sha;
-        if (!currentSha || currentSha === 'local-dev-sha') {
-          const currentFile = await githubRequest(`/contents/src/data/content.json?ref=${GITHUB_BRANCH}`);
-          currentSha = currentFile.sha;
-        }
-
-        // 2. Commit update to src/data/content.json
-        const updateRes = await githubRequest(`/contents/src/data/content.json`, {
-          method: 'PUT',
-          body: JSON.stringify({
-            message: commitMessage,
-            content: base64Content,
-            sha: currentSha,
-            branch: GITHUB_BRANCH
-          })
-        });
-        newSha = updateRes.content.sha;
-
-        // 3. Also sync public/content.json in the same repo if exists
-        try {
-          const pubFile = await githubRequest(`/contents/public/content.json?ref=${GITHUB_BRANCH}`).catch(() => null);
-          await githubRequest(`/contents/public/content.json`, {
-            method: 'PUT',
-            body: JSON.stringify({
-              message: `Sync public/content.json (${pubMeta.id})`,
-              content: base64Content,
-              sha: pubFile ? pubFile.sha : undefined,
-              branch: GITHUB_BRANCH
-            })
-          });
-        } catch (syncErr) {
-          console.warn('Sync public/content.json skipped/failed:', syncErr.message);
-        }
-      } else {
-        if (process.env.VERCEL || process.env.AWS_REGION || !process.env.NODE_ENV || process.env.NODE_ENV === 'production') {
-          throw new Error('У Vercel не налаштовано змінну GITHUB_TOKEN! Перейдіть у Vercel Dashboard → Settings → Environment Variables і додайте GITHUB_TOKEN.');
-        }
-        // In local development mode without token, write directly to local file
-        const localPath = path.join(process.cwd(), 'src/data/content.json');
-        fs.writeFileSync(localPath, fileContent, 'utf8');
-        const publicPath = path.join(process.cwd(), 'public/content.json');
-        fs.writeFileSync(publicPath, fileContent, 'utf8');
-      }
-
-      return res.status(200).json({
-        ok: true,
-        pub: pubMeta,
-        sha: newSha
+    if (LOCAL_MODE && op === 'save-draft') {
+      if (req.method !== 'POST') return res.status(405).json({ message: 'Method not allowed' });
+      const page = await getEntry('pages', HOME_PAGE_ID);
+      const saved = await saveDraft('pages', {
+        id: HOME_PAGE_ID,
+        data: { ...page.published, content: { ...page.published.content, ...body.content } },
+        expectedDraftRevision: body.expectedDraftRevision || null
       });
+      return res.status(200).json({ draftRevision: saved.draft.revision });
+    }
+
+    if (LOCAL_MODE && op === 'publish') {
+      if (req.method !== 'POST') return res.status(405).json({ message: 'Method not allowed' });
+      const pageDraft = await getEntry('pages', HOME_PAGE_ID);
+      const sitePages = await listSitePages();
+      for (const setting of Object.values(pageDraft.draft?.data.content?.linkSettings || {})) {
+        if (!['page', 'section'].includes(setting.type)) continue;
+        if (!sitePages.some(page => page.id === setting.pageId)) throw new CmsError(422, 'Choose an existing page for every automatic link');
+        if (setting.type === 'section' && !setting.sectionId) throw new CmsError(422, 'Choose a section for every page section link');
+      }
+      const result = await publishDraft('pages', {
+        id: HOME_PAGE_ID,
+        expectedDraftRevision: body.expectedDraftRevision
+      });
+      return res.status(200).json({ ok: true, sha: result.publishedRevision, state: result.state });
+    }
+
+    if (LOCAL_MODE && op === 'history') {
+      const items = await listHistory('pages', HOME_PAGE_ID);
+      return res.status(200).json(items.map(item => ({
+        id: item.revision.slice(0, 7), at: item.at, by: 'CMS', msg: 'Previous home page version'
+      })));
+    }
+
+    if (LOCAL_MODE && op === 'upload') {
+      if (req.method !== 'POST') return res.status(405).json({ message: 'Method not allowed' });
+      return res.status(200).json(await uploadImage({ base64: body.base64 }));
+    }
+
+    if (op === 'save-draft' || op === 'publish') {
+      return res.status(501).json({ message: 'Publishing the new CMS remotely is not configured. Work locally.' });
     }
 
     // 6. POST /api/admin?op=upload
     if (op === 'upload') {
+      if (req.method !== 'POST') return res.status(405).json({ message: 'Method not allowed' });
       const { filename, base64, ext = 'webp' } = body;
-      if (!base64) return res.status(400).json({ message: 'Відсутні дані зображення' });
+      if (!base64) return res.status(400).json({ message: 'Image data is missing' });
 
       const safeName = (filename || `upload-${Date.now()}.${ext}`)
         .toLowerCase()
@@ -256,7 +256,7 @@ export default async function handler(req, res) {
         await githubRequest(`/contents/${targetPath}`, {
           method: 'PUT',
           body: JSON.stringify({
-            message: `CMS: Завантаження зображення ${safeName}`,
+            message: `CMS: Image upload ${safeName}`,
             content: base64,
             sha: existing ? existing.sha : undefined,
             branch: GITHUB_BRANCH
@@ -264,8 +264,8 @@ export default async function handler(req, res) {
         });
         return res.status(200).json({ url: `/assets/uploads/${safeName}` });
       } else {
-        if (process.env.VERCEL || process.env.AWS_REGION || !process.env.NODE_ENV || process.env.NODE_ENV === 'production') {
-          throw new Error('Для завантаження фото на Vercel потрібен GITHUB_TOKEN у Environment Variables');
+        if (!LOCAL_MODE) {
+          throw new Error('Vercel image uploads require GITHUB_TOKEN in environment variables');
         }
         // Local dev save
         const uploadDir = path.join(process.cwd(), 'public/assets/uploads');
@@ -279,7 +279,7 @@ export default async function handler(req, res) {
     // 7. GET /api/admin?op=history
     if (op === 'history') {
       if (GITHUB_TOKEN) {
-        const commits = await githubRequest(`/commits?path=src/data/content.json&per_page=10`);
+        const commits = await githubRequest(`/commits?path=src/content/pages/${HOME_PAGE_ID}.json&per_page=10`);
         const historyList = commits.map(c => ({
           id: c.sha.slice(0, 7),
           at: c.commit.author.date,
@@ -289,13 +289,13 @@ export default async function handler(req, res) {
         return res.status(200).json(historyList);
       }
       return res.status(200).json([
-        { id: 'local-1', at: new Date().toISOString(), by: session.user, msg: 'Локальна розробка' }
+        { id: 'local-1', at: new Date().toISOString(), by: session.user, msg: 'Local development' }
       ]);
     }
 
-    return res.status(404).json({ message: `Невідома операція: ${op}` });
+    return res.status(404).json({ message: `Unknown operation: ${op}` });
   } catch (error) {
     console.error('Admin API Error:', error);
-    return res.status(500).json({ message: error.message || 'Внутрішня помилка сервера' });
+    return res.status(error instanceof CmsError ? error.status : 500).json({ message: error.message || 'Internal server error', details: error.details });
   }
 }

@@ -1,0 +1,677 @@
+{
+  "id": "00000000-0000-4000-8000-000000000001",
+  "slug": "home",
+  "template": "alm-home",
+  "title": "Головна сторінка ALM",
+  "content": {
+    "consts": {
+      "companyPhone": { "label": "Company phone", "type": "phone", "value": "+1 (206) 555-0192" },
+      "email": { "label": "Email", "type": "email", "value": "ALMStudio@gmail.com" },
+      "serviceArea": { "label": "Service area", "type": "text", "value": "Greater Seattle & Eastside (Bellevue, Kirkland, Redmond)" },
+      "address": { "label": "Street address", "type": "text", "value": "" }
+    },
+    "sections": {
+      "budgetSelections": {
+        "barTitle": "The finished standard",
+        "barIndex": "06//",
+        "title": "Clear Upfront Choices Prevent Cost Surprises",
+        "desc": "Scope, site prep, and finishes are fully defined upfront so costs stay predictable.",
+        "choices": [
+          {
+            "title": "Real-Project Pricing",
+            "desc": "Every quote is grounded in your actual site conditions and plans, locked into a signed agreement."
+          },
+          {
+            "title": "Early Selections",
+            "desc": "Cabinetry, tile, fixtures, and appliances are chosen early to keep procurement on schedule and budget."
+          },
+          {
+            "title": "Approved Changes Only",
+            "desc": "Any design or scope update is priced, timeline-checked, and approved in writing before work begins."
+          }
+        ],
+        "ctaText": "Schedule a Consultation",
+        "ctaHref": "#consultation"
+      },
+      "builderAccountability": {
+        "barIndex": "13//",
+        "ctaHref": "#contact"
+      },
+      "completedHome": {
+        "barLabel": "The completed home",
+        "barIndex": "11//",
+        "title": "MOVE IN AFTER HANDOFF, NOT AFTER MORE CONSTRUCTION",
+        "desc": "Every major finish is complete before you turn the key. We deliver homes ready for living, with all interior, exterior, and mechanical systems fully resolved.",
+        "photoAlt": "Designer custom bathroom with vanity and ambient lighting",
+        "photoAlt2": "Luxury custom home private office with large windows",
+        "photoAlt3": "High-end modern kitchen with integrated appliances",
+        "photoAlt4": "Spacious living room with high ceilings and custom finishes",
+        "ctaText": "SCHEDULE A CONSULTATION",
+        "ctaHref": "#contact"
+      },
+      "faq": {
+        "photoSrc": "/assets/section-14/faq-kitchen.webp",
+        "photoAlt": "Custom kitchen with dining area built by ALM",
+        "title": "What to Know Before You Build",
+        "ctaText": "SCHEDULE A CONSULTATION",
+        "ctaHref": "#contact"
+      },
+      "featuredHome": {
+        "heroImgAlt": "Featured completed home — open modern kitchen and dining room with large glass doors to wooded patio",
+        "barTitle": "Featured completed home",
+        "barIndex": "09//",
+        "title": "FROM CONCEPT TO COMPLETION",
+        "span": "PROJECT",
+        "span2": "BREAKDOWN"
+      },
+      "finalCtaForm": {
+        "barLabel": "Start the conversation",
+        "barIndex": "15//",
+        "title": "Tell Us What You Have. We’ll Tell You What Comes Next.",
+        "desc": "Share the property, plans, or references you have now. ALM will review them before the consultation and identify what still needs to be checked.",
+        "stepTitle": "Step 1 — Required fields",
+        "stepDesc": "Your contact details and current starting point",
+        "label": "Name",
+        "inputPlaceholder": "First and last name",
+        "label2": "Email",
+        "inputPlaceholder2": "you@example.com",
+        "label3": "Phone",
+        "inputPlaceholder3": "Phone number",
+        "label4": "Preferred Project Location",
+        "inputPlaceholder4": "City or area",
+        "label5": "Where are you starting?",
+        "option": "Select starting point...",
+        "option2": "Looking for property",
+        "option3": "Own a vacant lot",
+        "option4": "Own a teardown home",
+        "option5": "Have plans",
+        "option6": "Have a reference or early idea",
+        "option7": "Other",
+        "label6": "Project Message",
+        "inputPlaceholder5": "What would you like to build, and what do you already have in place?",
+        "stepTitle2": "Step 2 — Optional project details",
+        "stepDesc2": "Add what you know. “Not sure” is a valid answer.",
+        "label7": "Existing home on property? (optional)",
+        "option8": "Select an option...",
+        "option9": "Yes",
+        "option10": "No",
+        "option11": "Not sure",
+        "option12": "I do not own property yet",
+        "label8": "Approximate Home Size (optional)",
+        "inputPlaceholder6": "Square footage, if known",
+        "label9": "Architectural Style (optional)",
+        "inputPlaceholder7": "Modern, transitional, traditional, or another direction",
+        "label10": "Estimated Budget (optional)",
+        "option13": "Select an option...",
+        "option14": "Under $1.5M",
+        "option15": "$1.5M - $2.5M",
+        "option16": "$2.5M+",
+        "option17": "Prefer to discuss",
+        "option18": "Not sure yet",
+        "label11": "Desired Timeline (optional)",
+        "option19": "Select an option...",
+        "option20": "Exploring",
+        "option21": "Planning soon",
+        "option22": "Target start date",
+        "option23": "Not sure yet",
+        "label12": "Plans Status (optional)",
+        "option24": "Select an option...",
+        "option25": "Completed",
+        "option26": "Preliminary",
+        "option27": "In development",
+        "option28": "No plans",
+        "option29": "Reference only",
+        "backBtn": "← Back to Step 1",
+        "successTitle": "Thank you!",
+        "successText": "ALM will review your project details and contact you to arrange the consultation.",
+        "specLabel": "DOCUMENTATION:",
+        "specValue": "No completed plans required",
+        "specLabel2": "STARTING POINT:",
+        "specValue2": "Open to vacant lots, teardown homes, or early ideas",
+        "specLabel3": "ESTIMATION:",
+        "specValue3": "Pricing and scope tailored individually",
+        "photoSrc": "/assets/section-15-patio.webp",
+        "photoAlt": "Custom home living area and patio built by ALM",
+        "nextStepButtonText": "NEXT STEP",
+        "submitButtonText": "SCHEDULE A CONSULTATION"
+      },
+      "finishedStandard": {
+        "barTitle": "The finished standard",
+        "barIndex": "05//",
+        "title": "Premium Means Finished Details, Not Left for Later",
+        "desc": "Premium is not a label. It is the layout, materials, kitchen, bathrooms, lighting, exterior work, and how those decisions fit together.",
+        "showcaseItems": [
+          {
+            "id": "daily-layout",
+            "title": "Daily<br />Layout",
+            "subtitle": "Living, private, and outdoor spaces shaped for how your family actually lives.",
+            "cardTitle": "Daily Layout",
+            "image": "/assets/section-05/daily-layout.webp",
+            "active": true
+          },
+          {
+            "id": "turnkey-interiors",
+            "title": "Turnkey<br />Interiors",
+            "subtitle": "Cabinetry, fixtures, surfaces, and lighting delivered fully complete.",
+            "cardTitle": "Turnkey Interiors",
+            "image": "/assets/section-05/turnkey-interiors.webp",
+            "active": false
+          },
+          {
+            "id": "cohesive-finishes",
+            "title": "Cohesive<br />Finishes",
+            "subtitle": "Key finishes are chosen with the full interior and exterior in view.",
+            "cardTitle": "Cohesive Finishes",
+            "image": "/assets/section-05/cohesive-finishes.webp",
+            "active": false
+          },
+          {
+            "id": "outdoor-living",
+            "title": "Outdoor<br />Living",
+            "subtitle": "Facades, glazing, and terraces planned together—never as afterthoughts.",
+            "cardTitle": "Outdoor Living",
+            "image": "/assets/section-05/outdoor-living.webp",
+            "active": false
+          }
+        ]
+      },
+      "footer": {
+        "copyright": "© ALM — YEAR TO ADD",
+        "brandLogo": "ALM",
+        "brandTrademark": "®",
+        "navLinks": [
+          {
+            "label": "CUSTOM HOMES",
+            "href": "#construction"
+          },
+          {
+            "label": "PROCESS",
+            "href": "#process"
+          },
+          {
+            "label": "PROJECTS",
+            "href": "#projects"
+          },
+          {
+            "label": "ABOUT ALM",
+            "href": "#about"
+          },
+          {
+            "label": "FAQ",
+            "href": "#faq"
+          },
+          {
+            "label": "CONTACT",
+            "href": "#contact"
+          }
+        ],
+        "legalLinks": [
+          {
+            "label": "PRIVACY POLICY",
+            "href": "#privacy"
+          },
+          {
+            "label": "TERMS, IF REQUIRED",
+            "href": "#terms"
+          }
+        ],
+        "ctaText": "SCHEDULE A CONSULTATION",
+        "ctaHref": "#contact"
+      },
+      "hero": {
+        "serviceMarker": "SERVICE AREA",
+        "serviceMarker2": "SERVICE AREA"
+      },
+      "localManagement": {
+        "barIndex": "12//",
+        "photoAlt": "ALM founder and leadership"
+      },
+      "newConstruction": {
+        "photoSrc": "/assets/images/hero-house-left.webp",
+        "photoAlt": "Custom luxury home architecture by ALM - Left View",
+        "photoSrc2": "/assets/images/hero-house-right.webp",
+        "photoAlt2": "Custom luxury home architecture by ALM - Right View",
+        "barTitle": "Custom Single-Family New Construction",
+        "barNum": "02//",
+        "title": "A NEW HOME, NOT A RENOVATION",
+        "desc": "If an older house sits on the property, the project can begin with teardown and site preparation. The result is a completely new home, completed inside and out through final permit closeout.",
+        "galleryImgSrc": "/assets/images/construction-backyard.webp",
+        "galleryImgAlt": "Finished landscaped backyard and custom exterior",
+        "galleryImgSrc2": "/assets/images/construction-patio.webp",
+        "galleryImgAlt2": "Cozy illuminated outdoor living patio",
+        "featureNum": "02//",
+        "featureTitle": "ALM BUILDS PREMIUM SINGLE-FAMILY HOMES FROM THE GROUND UP",
+        "featureText": "Built around the approved plans and your family’s priorities",
+        "featureText2": "Managed from exterior to finishes and final approval",
+        "ctaPrompt": "OWN AN OLDER HOME?",
+        "ctaPrompt2": "TELL US ABOUT THE PROPERTY AND THE NEW HOME YOU ARE CONSIDERING.",
+        "ctaText": "SCHEDULE A CONSULTATION",
+        "ctaHref": "#consultation"
+      },
+      "process": {
+        "barTitle": "Process",
+        "barIndex": "07//",
+        "span": "FROM",
+        "span2": "FIRST",
+        "span3": "CALL",
+        "span4": "TO",
+        "span5": "FINAL",
+        "span6": "APPROVAL",
+        "steps": [
+          {
+            "id": "step-01",
+            "num": "01//",
+            "title": "Consultation",
+            "desc": "We discuss the property, plans, preferred home, priorities, and known constraints.",
+            "image": "/assets/section-06/step-01.webp"
+          },
+          {
+            "id": "step-02",
+            "num": "02//",
+            "title": "Site & Plan Audit",
+            "desc": "ALM reviews property conditions and plans to identify needed engineering or design specialists.",
+            "image": "/assets/section-06/step-02.webp"
+          },
+          {
+            "id": "step-03",
+            "num": "03//",
+            "title": "Engineering & Permits",
+            "desc": "Existing plans are adapted with local architects and engineers to secure city approvals.",
+            "image": "/assets/section-06/step-03.webp"
+          },
+          {
+            "id": "step-04",
+            "num": "04//",
+            "title": "Budget & Selections",
+            "desc": "Scope, finishes, appliances, and materials are finalized and documented into a fixed agreement.",
+            "image": "/assets/section-06/step-04.webp"
+          },
+          {
+            "id": "step-05",
+            "num": "05//",
+            "title": "Construction",
+            "desc": "ALM manages on-site execution, subcontractors, and mandatory city inspections.",
+            "image": "/assets/section-06/step-05.webp"
+          },
+          {
+            "id": "step-06",
+            "num": "06//",
+            "title": "Final Handover",
+            "desc": "We walk the finished home together, resolve punch-list details, and close out all permits.",
+            "image": "/assets/section-06/step-06.webp"
+          }
+        ]
+      },
+      "propertyReview": {
+        "barTitle": "Before construction",
+        "barNum": "03//",
+        "title": "REVIEW THE PROPERTY BEFORE THE PROJECT GETS EXPENSIVE",
+        "desc": "A vacant lot, an older home, and an existing plan require different checks. Reviewing them early can expose site, approval, and cost issues before construction starts.",
+        "fallbackImgSrc": "/assets/video-frames/frame_001.jpg",
+        "fallbackImgAlt": "Aerial view of residential neighborhood and property for custom home review",
+        "reviewSteps": [
+          {
+            "title": "APPROVALPATH",
+            "tag": "Teardown scope //",
+            "text": "Compare the property with the size and type of home you want to build."
+          },
+          {
+            "title": "TEARDOWN<br />SCOPE",
+            "tag": "Teardown scope //",
+            "text": "Clarify demolition, site preparation, and necessary property connections."
+          },
+          {
+            "title": "PLAN<br />ADAPTATION",
+            "tag": "Plan adaptation //",
+            "text": "Identify where an existing plan may need to change for the site or local requirements."
+          },
+          {
+            "title": "APPROVAL<br />PATH",
+            "tag": "Approval path //",
+            "text": "Outline the architects, engineers, city reviews, permits, and inspections the project may require."
+          }
+        ],
+        "cardButtonText": "SCHEDULE A CONSULTATION",
+        "cardButtonHref": "#consultation"
+      },
+      "singlePointContact": {
+        "barTitle": "Single point of contact",
+        "barIndex": "04//",
+        "span": "ONE",
+        "span2": "BUILDER.ZERO",
+        "span3": "CONTRACTOR",
+        "span4": "CHAOS.",
+        "desc": "ALM handles every permit, trade, and municipal inspection. You communicate strictly with one dedicated team.",
+        "accordionItems": [
+          {
+            "id": "accordion-01",
+            "num": "01//",
+            "title": "PLANS &\nOther",
+            "shortTitle": "Plans & Engineering",
+            "description": "Use your existing plans or bring in the local architects and engineers needed to adapt them.",
+            "image": "/assets/section-04/plans-engineering.webp",
+            "active": true
+          },
+          {
+            "id": "accordion-02",
+            "num": "02//",
+            "title": "PERMITS &\nCITY REVIEWS",
+            "shortTitle": "Permits & city reviews",
+            "description": "ALM coordinates directly with local building departments, managing plan submissions, zoning approvals, and permit issuance.",
+            "image": "/assets/section-04/permits-city-reviews.webp",
+            "active": false
+          },
+          {
+            "id": "accordion-03",
+            "num": "03//",
+            "title": "CONTRACTORS &\nCONSTRUCTION",
+            "shortTitle": "Contractors & construction",
+            "description": "A single dedicated team oversees site work, trade contractors, material deliveries, and schedule adherence from groundbreak to finish.",
+            "image": "/assets/section-04/contractors-construction.webp",
+            "active": false
+          },
+          {
+            "id": "accordion-04",
+            "num": "04//",
+            "title": "INSPECTIONS &\nCLOSEOUT",
+            "shortTitle": "Inspections & closeout",
+            "description": "We schedule and walk all required municipal inspections, resolve punch lists, and deliver a clean, move-in ready home.",
+            "image": "/assets/section-04/inspections-closeout.webp",
+            "active": false
+          }
+        ]
+      },
+      "startingPoints": {
+        "barTitle": "You Can Start Before Everything Is Decided",
+        "barIndex": "01//",
+        "title": "Bring the Property, Plans, References, or Idea You Have",
+        "desc": "You do not need a finished plan before the first call. Show ALM what you have, and the team will explain what needs to happen next.",
+        "counterCurrent": "02",
+        "counterTotal": "/ 04",
+        "ctaText": "REQUEST A CONSULTATION",
+        "ctaHref": "#consultation"
+      },
+      "headerNav": {
+        "logo": "ALM",
+        "phone": "{{const.companyPhone}}",
+        "ctaText": "DISCUSS YOUR PROJECT",
+        "ctaHref": "#contact",
+        "navItems": [
+          {
+            "num": "01/",
+            "label": "CUSTOM HOMES",
+            "href": "#custom-homes"
+          },
+          {
+            "num": "02/",
+            "label": "PROCESS",
+            "href": "#process"
+          },
+          {
+            "num": "03/",
+            "label": "PROJECTS",
+            "href": "#projects"
+          },
+          {
+            "num": "04/",
+            "label": "ABOUT ALM",
+            "href": "#about"
+          },
+          {
+            "num": "05/",
+            "label": "FAQ",
+            "href": "#faq"
+          },
+          {
+            "num": "06/",
+            "label": "CONTACT",
+            "href": "#contact"
+          }
+        ],
+        "phoneHref": "{{const.companyPhone|tel}}"
+      }
+    },
+    "meta": {
+      "title": "ALM — Local, Family-Owned Custom Home Builder",
+      "description": "Build the home you want—without managing the build yourself. Custom single-family new construction shaped around your property, plans, and priorities."
+    },
+    "contacts": {
+      "email": "{{const.email}}",
+      "emailHref": "{{const.email|mailto}}",
+      "phone": "{{const.companyPhone}}",
+      "phoneHref": "{{const.companyPhone|tel}}",
+      "serviceArea": "{{const.serviceArea}}"
+    },
+    "hero": {
+      "badgeText": "Local, Family-Owned Custom Home Builder",
+      "title": "Build the Home You Want—Without Managing the Build Yoursel",
+      "aboutTag": "About //",
+      "aboutText": "ALM builds custom single-family homes in Service Area to Confirm, shaped around your property, plans, and priorities.",
+      "ctaText": "REQUEST A CONSULTATION",
+      "ctaHref": "#contact",
+      "videoPoster": "/assets/test/e9ba6f9d-09ca-4765-b2c1-e0f990a78e3d.png",
+      "videoUrl": "/assets/video/a1b54a75-926d-4ee7-95db-ec5462efbb29.mp4"
+    },
+    "startingPoints": {
+      "barTitle": "You Can Start Before Everything Is Decided",
+      "items": [
+        {
+          "id": "step-1",
+          "num": "01.",
+          "title": "Still looking for property",
+          "image": "/assets/images/property-search.webp",
+          "note": "Tell us the area and vision you have in mind. We can assess potential land and parcels before you commit."
+        },
+        {
+          "id": "step-2",
+          "num": "02.",
+          "title": "You already own a lot",
+          "image": "/assets/images/property-aerial.webp",
+          "note": "ALM will evaluate your property topography, zoning, utilities, and orientation to shape your custom build."
+        },
+        {
+          "id": "step-3",
+          "num": "03.",
+          "title": "There is an older home",
+          "image": "/assets/images/property-teardown.webp",
+          "note": "Assess teardown scope, permit paths, site clearing, and infrastructure before designing your new home."
+        },
+        {
+          "id": "step-4",
+          "num": "04.",
+          "title": "You have plans or a reference",
+          "image": "/assets/images/property-plans.webp",
+          "note": "Bring your existing sketches, architectural drafts, or inspirational references for early feasibility review."
+        }
+      ]
+    },
+    "featuredHome": {
+      "barTitle": "Featured Project Breakdown",
+      "title": "Contemporary West Bellevue Residence",
+      "subtitle": "4,850 sq ft custom build crafted around a challenging hillside topography.",
+      "heroKitchenImage": "/assets/section-09/hero-kitchen-2.webp",
+      "cardCtaText": "Schedule a Consultation",
+      "cardCtaHref": "#consultation",
+      "specs": [
+        {
+          "index": "01//",
+          "label": "Project type:",
+          "value": "Custom Single-Family Residence"
+        },
+        {
+          "index": "02//",
+          "label": "Location:",
+          "value": "West Bellevue, WA"
+        },
+        {
+          "index": "03//",
+          "label": "Starting point:",
+          "value": "Full Teardown & Slope Stabilization"
+        },
+        {
+          "index": "04//",
+          "label": "Home size:",
+          "value": "4,850 sq ft"
+        },
+        {
+          "index": "05//",
+          "label": "Architectural style:",
+          "value": "Pacific Northwest Contemporary"
+        }
+      ],
+      "stages": [
+        {
+          "id": "stage-01",
+          "num": "01//",
+          "stageTitle": "Lot Assessment & Teardown",
+          "title": "Clearing the Site & Groundwork",
+          "desc": "Initial slope stabilization, teardown permits, and soil preparation to establish solid foundations.",
+          "image": "/assets/section-09/breakdown-card-01.webp"
+        },
+        {
+          "id": "stage-02",
+          "num": "02//",
+          "stageTitle": "Framing & Structural Core",
+          "title": "Architectural Framing",
+          "desc": "Heavy timber beams, steel-reinforced spans, and soaring ceiling volumes taking shape.",
+          "image": "/assets/section-09/breakdown-02.webp"
+        },
+        {
+          "id": "stage-03",
+          "num": "03//",
+          "stageTitle": "Envelope & Rough-ins",
+          "title": "High-Efficiency Enclosure",
+          "desc": "Weather-tight barrier, triple-pane architectural glazing, and complete MEP integration.",
+          "image": "/assets/section-09/breakdown-card-03.webp"
+        },
+        {
+          "id": "stage-04",
+          "num": "04//",
+          "stageTitle": "Interior Finishes & Handover",
+          "title": "Custom Millwork & Delivery",
+          "desc": "Handcrafted cabinetry, bespoke stone surfaces, and flawless final move-in detailing.",
+          "image": "/assets/images/construction-backyard.webp"
+        }
+      ]
+    },
+    "completedHome": {
+      "barLabel": "The completed home",
+      "images": {
+        "bathroom": "/assets/section-10/bathroom.webp",
+        "office": "/assets/section-10/office.webp",
+        "kitchen": "/assets/section-10/kitchen.webp",
+        "livingRoom": "/assets/section-10/living-room.webp"
+      },
+      "specs": [
+        {
+          "label": "SURFACES & ENVELOPE:",
+          "value": "Interior walls, hardwood flooring, and exterior siding"
+        },
+        {
+          "label": "CABINETRY & KITCHEN:",
+          "value": "Custom millwork, countertops, and agreed appliances"
+        },
+        {
+          "label": "BATHROOMS & FIXTURES:",
+          "value": "Designer plumbing, tilework, mirrors, and lighting"
+        },
+        {
+          "label": "MECHANICAL SYSTEMS:",
+          "value": "Fully connected HVAC, electrical, and plumbing"
+        },
+        {
+          "label": "PERMITS & CLOSEOUT:",
+          "value": "Passed city inspections and final sign-off for move-in"
+        }
+      ]
+    },
+    "faq": [
+      {
+        "question": "Do I need to own land before contacting ALM?",
+        "answer": "No. You can contact ALM while you are still looking. The team can discuss potential lots or teardown properties, but a specific property still needs project-level review."
+      },
+      {
+        "question": "Can ALM work with plans I already have?",
+        "answer": "Yes. If you already have architectural drawings, engineering, or conceptual plans, ALM can review them, assess site feasibility, and provide an accurate construction quote."
+      },
+      {
+        "question": "What happens if there is an older home on the property?",
+        "answer": "ALM handles full teardown, site preparation, utility disconnections, and grading as part of the overall build agreement."
+      },
+      {
+        "question": "How is the construction cost determined?",
+        "answer": "Pricing is based on your specific property conditions, selected architectural plans, finish levels, and approved engineering specifications—locked in before groundbreaking."
+      },
+      {
+        "question": "Who handles permits and city inspections?",
+        "answer": "ALM manages all municipal filings, architectural submissions, structural reviews, inspections, and final occupancy certificate closeout."
+      },
+      {
+        "question": "Can I change materials or finishes?",
+        "answer": "Yes. Any finish or scope adjustment is formally quoted, timeline-verified, and signed off in writing prior to execution on site."
+      },
+      {
+        "question": "What is included in the finished home?",
+        "answer": "Every agreed interior and exterior finish—flooring, cabinetry, countertops, fixtures, appliances, mechanical connections, and paint—is fully resolved for move-in."
+      },
+      {
+        "question": "Does ALM provide a builder warranty?",
+        "answer": "Yes. Every ALM custom home includes a comprehensive builder warranty package covering structural components, mechanical systems, and workmanship."
+      }
+    ],
+    "localManagement": {
+      "barLabel": "Built and managed locally",
+      "headline": "By focusing exclusively on local projects, our owners stay directly involved on-site with every property, trade crew, and municipal approval process.",
+      "ownerImage": "/assets/section-12/owner-portrait.webp",
+      "principles": [
+        {
+          "title": "Family-owned",
+          "description": "The owners take personal accountability for every home bearing the ALM name."
+        },
+        {
+          "title": "Locally focused",
+          "description": "We build nearby so owners can stay actively involved on-site and manage approvals."
+        },
+        {
+          "title": "Field experience",
+          "description": "We build nearby so owners can stay actively involved on-site and manage approvals."
+        }
+      ],
+      "backgroundLabel": "Our background",
+      "backgroundText": "While ALM is a new brand, our leadership brings over 8 years of dedicated hands-on exterior construction expertise."
+    },
+    "builderAccountability": {
+      "barLabel": "Builder accountability",
+      "title": "Clear Commitments in Writing: From Scope to Warranty",
+      "description": "The agreement records what is included, how changes are approved, and which warranty terms apply.",
+      "commitments": [
+        {
+          "titleLine1": "Defined",
+          "titleLine2": "Project Scope",
+          "description": "The signed contract lists the full scope of work, transparent payment milestones, project timelines, and clear build responsibilities."
+        },
+        {
+          "titleLine1": "Documented",
+          "titleLine2": "Changes",
+          "description": "If an adjustment affects cost, scope, or schedule, it is formally reviewed and signed off before any work begins."
+        },
+        {
+          "titleLine1": "Inspections",
+          "titleLine2": "& Closeout",
+          "description": "Every required city inspection is scheduled, managed, and passed through to final permit completion and legal occupancy."
+        },
+        {
+          "titleLine1": "Builder",
+          "titleLine2": "Warranty",
+          "description": "Coverage details, timeframes, exclusions, and warranty claim procedures are fully defined in the signed agreement."
+        }
+      ],
+      "ctaText": "SCHEDULE A CONSULTATION"
+    },
+    "pub": {
+      "at": "2026-10-27T15:54:40.041Z",
+      "by": "admin",
+      "id": "abd32acc818b"
+    }
+  }
+}

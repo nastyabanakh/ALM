@@ -1,5 +1,9 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { getEntry } from 'astro:content';
+import { HOME_PAGE_ID } from '../../cms/model.mjs';
+import { resolveContentConstants } from '../../cms/constants.mjs';
+import { listSitePages } from '../../cms/page-list.mjs';
 import HeroSection from '../sections/HeroSection.astro';
 import StartingPointsSection from '../sections/StartingPointsSection.astro';
 import NewConstructionSection from '../sections/NewConstructionSection.astro';
@@ -15,27 +19,32 @@ import BuilderAccountabilitySection from '../sections/BuilderAccountabilitySecti
 import FaqSection from '../sections/FaqSection.astro';
 import FinalCtaFormSection from '../sections/FinalCtaFormSection.astro';
 import FooterSection from '../sections/FooterSection.astro';
+
+const home = await getEntry('pages', HOME_PAGE_ID);
+if (!home) throw new Error('Головну сторінку CMS не знайдено');
+const content = resolveContentConstants(home.data.content, await listSitePages());
 ---
 
 <BaseLayout
-  title="ALM — Local, Family-Owned Custom Home Builder"
-  description="Build the home you want—without managing the build yourself. Custom single-family new construction shaped around your property, plans, and priorities."
+  title={content.meta.title}
+  description={content.meta.description}
 >
   <main>
-    <HeroSection />
-    <StartingPointsSection />
-    <NewConstructionSection />
-    <PropertyReviewSection />
-    <SinglePointContactSection />
-    <FinishedStandardSection />
-    <BudgetSelectionsSection />
-    <ProcessSection />
-    <FeaturedHomeSection />
-    <CompletedHomeSection />
-    <LocalManagementSection />
-    <BuilderAccountabilitySection />
-    <FaqSection />
-    <FinalCtaFormSection />
-    <FooterSection />
+    <HeroSection content={content} />
+    <StartingPointsSection content={content} />
+    <NewConstructionSection content={content} />
+    <PropertyReviewSection content={content} />
+    <SinglePointContactSection content={content} />
+    <FinishedStandardSection content={content} />
+    <BudgetSelectionsSection content={content} />
+    <ProcessSection content={content} />
+    <FeaturedHomeSection content={content} />
+    <CompletedHomeSection content={content} />
+    <LocalManagementSection content={content} />
+    <BuilderAccountabilitySection content={content} />
+    <FaqSection content={content} />
+    <FinalCtaFormSection content={content} />
+    <FooterSection content={content} />
   </main>
+  <script is:inline src="/admin/preview-fields.js"></script>
 </BaseLayout>

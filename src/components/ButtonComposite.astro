@@ -8,6 +8,8 @@ interface Props {
   as?: 'a' | 'button';
   type?: 'button' | 'submit' | 'reset';
   id?: string;
+  cmsTextPath?: string;
+  cmsHrefPath?: string;
 }
 
 const {
@@ -18,7 +20,9 @@ const {
   class: className = '',
   as = 'a',
   type = 'button',
-  id
+  id,
+  cmsTextPath,
+  cmsHrefPath
 } = Astro.props;
 
 const Tag = as === 'button' ? 'button' : 'a';
@@ -28,6 +32,8 @@ const Tag = as === 'button' ? 'button' : 'a';
   href={as === 'a' ? href : undefined}
   type={as === 'button' ? type : undefined}
   id={id}
+  data-cms-component="Main button"
+  data-cms-path-href={cmsHrefPath}
   class:list={[
     'btn-composite',
     {
@@ -39,7 +45,7 @@ const Tag = as === 'button' ? 'button' : 'a';
 >
   <!-- Main label block -->
   <span class="btn-composite__main">
-    <span class="btn-composite__label text-btn font-normal">
+    <span class="btn-composite__label text-btn font-normal" data-cms-path={cmsTextPath}>
       {text}
     </span>
   </span>

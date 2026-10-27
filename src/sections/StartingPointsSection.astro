@@ -1,7 +1,14 @@
 ---
 import CircleArrowButton from '../components/CircleArrowButton.astro';
 import ButtonComposite from '../components/ButtonComposite.astro';
-import content from '../data/content.json';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  content: CollectionEntry<'pages'>['data']['content'];
+}
+
+const { content } = Astro.props;
+
 
 interface StartingPoint {
   id: string;
@@ -17,19 +24,20 @@ const startingPoints: StartingPoint[] = rawPoints.map((p, idx) => ({
   ...p,
   active: idx === 1
 }));
+const cmsContent = (Astro.props as any).content;
 ---
 
-<section class="starting-points" id="process" aria-label="Starting Points">
+<section data-cms-section="startingPoints" class="starting-points" id="process" aria-label="Starting Points">
   <!-- Top Sub-Header Bar (Figma Frame 447) -->
   <div class="starting-points__bar">
     <div class="starting-points__bar-left">
       <span class="starting-points__bullet" aria-hidden="true"></span>
-      <span class="starting-points__bar-title text-s text-opacity-subtle">
-        You Can Start Before Everything Is Decided
+      <span class="starting-points__bar-title text-s text-opacity-subtle" data-cms-path="sections.startingPoints.barTitle">
+        {cmsContent.sections.startingPoints.barTitle}
       </span>
     </div>
-    <span class="starting-points__bar-index text-s text-opacity-subtle" aria-hidden="true">
-      01//
+    <span class="starting-points__bar-index text-s text-opacity-subtle" aria-hidden="true" data-cms-path="sections.startingPoints.barIndex">
+      {cmsContent.sections.startingPoints.barIndex}
     </span>
   </div>
 
@@ -37,11 +45,11 @@ const startingPoints: StartingPoint[] = rawPoints.map((p, idx) => ({
 
   <!-- Center Heading & Description (Figma Frame 454) -->
   <div class="starting-points__header">
-    <h2 class="starting-points__title h2 text-color-white">
-      Bring the Property, Plans, References, or Idea You Have
+    <h2 class="starting-points__title h2 text-color-white" data-cms-path="sections.startingPoints.title">
+      {cmsContent.sections.startingPoints.title}
     </h2>
-    <p class="starting-points__desc text-m text-opacity-subtle text-color-white">
-      You do not need a finished plan before the first call. Show ALM what you have, and the team will explain what needs to happen next.
+    <p class="starting-points__desc text-m text-opacity-subtle text-color-white" data-cms-path="sections.startingPoints.desc">
+      {cmsContent.sections.startingPoints.desc}
     </p>
   </div>
 
@@ -69,8 +77,8 @@ const startingPoints: StartingPoint[] = rawPoints.map((p, idx) => ({
       </div>
 
       <div class="starting-points__counter" aria-label="Step 2 of 4">
-        <span class="starting-points__counter-current text-m text-color-white" id="sp-counter-current">02</span>
-        <span class="starting-points__counter-total text-m text-opacity-dim text-color-white">/ 04</span>
+        <span class="starting-points__counter-current text-m text-color-white" id="sp-counter-current" data-cms-path="sections.startingPoints.counterCurrent">{cmsContent.sections.startingPoints.counterCurrent}</span>
+        <span class="starting-points__counter-total text-m text-opacity-dim text-color-white" data-cms-path="sections.startingPoints.counterTotal">{cmsContent.sections.startingPoints.counterTotal}</span>
       </div>
     </div>
 
@@ -105,7 +113,7 @@ const startingPoints: StartingPoint[] = rawPoints.map((p, idx) => ({
       </ul>
 
       <div class="starting-points__cta">
-        <ButtonComposite text="REQUEST A CONSULTATION" href="#consultation" fullWidth={true} />
+        <ButtonComposite text={cmsContent.sections.startingPoints.ctaText} href={cmsContent.sections.startingPoints.ctaHref} cmsTextPath="sections.startingPoints.ctaText" cmsHrefPath="sections.startingPoints.ctaHref" fullWidth={true} />
       </div>
     </div>
   </div>

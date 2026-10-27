@@ -1,0 +1,16 @@
+{
+  "id": "b0b6ffa5-6f16-404b-9818-3f5ce4f11dee",
+  "slug": "test",
+  "title": "Test",
+  "excerpt": "test descitioption",
+  "cover": {
+    "src": "/assets/uploads/35d09e51-b177-41c7-96fc-ec767f6c0fa8.png",
+    "alt": ""
+  },
+  "body": "test text fdfkdsflds mfsdklfks fsdf\n\n\nsdfdslfjdslkf\nasdfkldsf\n\nasdfkdsfdsf",
+  "publishedAt": "2026-10-21T18:43:00.000Z",
+  "seo": {
+    "title": "test",
+    "description": "test"
+  }
+}

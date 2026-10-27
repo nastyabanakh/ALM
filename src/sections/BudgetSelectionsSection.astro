@@ -17,30 +17,18 @@ interface ChoiceItem {
   desc: string;
 }
 
-const choices: ChoiceItem[] = [
-  {
-    title: 'Real-Project Pricing',
-    desc: 'Every quote is grounded in your actual site conditions and plans, locked into a signed agreement.'
-  },
-  {
-    title: 'Early Selections',
-    desc: 'Cabinetry, tile, fixtures, and appliances are chosen early to keep procurement on schedule and budget.'
-  },
-  {
-    title: 'Approved Changes Only',
-    desc: 'Any design or scope update is priced, timeline-checked, and approved in writing before work begins.'
-  }
-];
+const cmsContent = (Astro.props as any).content;
+const choices: ChoiceItem[] = cmsContent.sections.budgetSelections.choices;
 ---
 
-<section class="budget-selections" id="budget-selections" aria-label="Budget, Selections & Changes">
+<section data-cms-section="budgetSelections" class="budget-selections" id="budget-selections" aria-label="Budget, Selections & Changes">
   <!-- Top Sub-Header Bar & Divider (Frame 437) -->
   <div class="budget-selections__bar">
     <div class="budget-selections__bar-left">
       <span class="budget-selections__bullet" aria-hidden="true"></span>
-      <span class="budget-selections__bar-title">The finished standard</span>
+      <span class="budget-selections__bar-title" data-cms-path="sections.budgetSelections.barTitle">{cmsContent.sections.budgetSelections.barTitle}</span>
     </div>
-    <span class="budget-selections__bar-index" aria-hidden="true">06//</span>
+    <span class="budget-selections__bar-index" aria-hidden="true" data-cms-path="sections.budgetSelections.barIndex">{cmsContent.sections.budgetSelections.barIndex}</span>
   </div>
 
   <div class="budget-selections__divider" aria-hidden="true"></div>
@@ -50,16 +38,16 @@ const choices: ChoiceItem[] = [
     <!-- Left Column (Heading + Description + ButtonComposite) -->
     <div class="budget-selections__left">
       <div class="budget-selections__copy">
-        <h2 class="budget-selections__title">
-          Clear Upfront Choices Prevent Cost Surprises
+        <h2 class="budget-selections__title" data-cms-path="sections.budgetSelections.title">
+          {cmsContent.sections.budgetSelections.title}
         </h2>
-        <p class="budget-selections__desc">
-          Scope, site prep, and finishes are fully defined upfront so costs stay predictable.
+        <p class="budget-selections__desc" data-cms-path="sections.budgetSelections.desc">
+          {cmsContent.sections.budgetSelections.desc}
         </p>
       </div>
 
       <div class="budget-selections__btn-wrap">
-        <ButtonComposite text="Schedule a Consultation" href="#consultation" fullWidth={true} variant="dark" />
+        <ButtonComposite text={cmsContent.sections.budgetSelections.ctaText} href={cmsContent.sections.budgetSelections.ctaHref} cmsTextPath="sections.budgetSelections.ctaText" cmsHrefPath="sections.budgetSelections.ctaHref" fullWidth={true} variant="dark" />
       </div>
     </div>
 
@@ -72,8 +60,8 @@ const choices: ChoiceItem[] = [
           <div class="budget-selections__item">
             <div class="budget-selections__item-content">
               <div class="budget-selections__item-copy">
-                <h3 class="budget-selections__item-title">{item.title}</h3>
-                <p class="budget-selections__item-desc">{item.desc}</p>
+                <h3 class="budget-selections__item-title" data-cms-path={`sections.budgetSelections.choices.${idx}.title`}>{item.title}</h3>
+                <p class="budget-selections__item-desc" data-cms-path={`sections.budgetSelections.choices.${idx}.desc`}>{item.desc}</p>
               </div>
               <span class="budget-selections__item-bullet" aria-hidden="true"></span>
             </div>

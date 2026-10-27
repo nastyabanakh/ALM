@@ -1,18 +1,19 @@
 ---
 import ButtonComposite from '../components/ButtonComposite.astro';
+const cmsContent = (Astro.props as any).content;
 ---
 
-<section class="construction" id="custom-homes" aria-label="Custom Single-Family New Construction">
+<section data-cms-section="newConstruction" class="construction" id="custom-homes" aria-label="Custom Single-Family New Construction">
   <div class="construction__container">
     <div class="construction__grid">
       <!-- 1. LEFT COLUMN: Sticky Left Photo (stays pinned at top: 0 as right column scrolls) -->
       <div class="construction__col-left">
         <img
-          src="/assets/images/hero-house-left.webp"
-          alt="Custom luxury home architecture by ALM - Left View"
+          src={cmsContent.sections.newConstruction.photoSrc}
+          alt={cmsContent.sections.newConstruction.photoAlt}
           class="construction__photo construction__photo--left"
           loading="eager"
-        />
+         data-cms-path-src="sections.newConstruction.photoSrc" data-cms-path-alt="sections.newConstruction.photoAlt"/>
       </div>
 
       <!-- 2. RIGHT COLUMN: Right Photo at Top + Scrolling Editorial Story -->
@@ -20,11 +21,11 @@ import ButtonComposite from '../components/ButtonComposite.astro';
         <!-- Top Right Photo: seamlessly aligns with Left Photo at section start to create one solid panoramic house -->
         <div class="construction__top-photo-box">
           <img
-            src="/assets/images/hero-house-right.webp"
-            alt="Custom luxury home architecture by ALM - Right View"
+            src={cmsContent.sections.newConstruction.photoSrc2}
+            alt={cmsContent.sections.newConstruction.photoAlt2}
             class="construction__photo construction__photo--right"
             loading="eager"
-          />
+           data-cms-path-src="sections.newConstruction.photoSrc2" data-cms-path-alt="sections.newConstruction.photoAlt2"/>
         </div>
 
         <!-- Sticky Indicator / Navigation Lines (Figma Frame 542: 43x3rem, gap 8rem) -->
@@ -55,22 +56,22 @@ import ButtonComposite from '../components/ButtonComposite.astro';
             <div class="construction__bar">
               <div class="construction__bar-main">
                 <span class="construction__bullet" aria-hidden="true"></span>
-                <span class="construction__bar-title text-m text-opacity-subtle">
-                  Custom Single-Family New Construction
+                <span class="construction__bar-title text-m text-opacity-subtle" data-cms-path="sections.newConstruction.barTitle">
+                  {cmsContent.sections.newConstruction.barTitle}
                 </span>
               </div>
-              <span class="construction__bar-num text-m text-opacity-subtle" aria-hidden="true">
-                02//
+              <span class="construction__bar-num text-m text-opacity-subtle" aria-hidden="true" data-cms-path="sections.newConstruction.barNum">
+                {cmsContent.sections.newConstruction.barNum}
               </span>
             </div>
 
             <!-- Main Heading & Paragraph (Frame 518) -->
             <div class="construction__heading-group">
-              <h2 class="construction__title h2 text-color-white">
-                A NEW HOME, NOT&nbsp;A RENOVATION
+              <h2 class="construction__title h2 text-color-white" data-cms-path="sections.newConstruction.title">
+                {cmsContent.sections.newConstruction.title}
               </h2>
-              <p class="construction__desc text-m text-opacity-subtle">
-                If an older house sits on the property, the project can begin with teardown and site preparation. The result is a completely new home, completed inside and out through final permit closeout.
+              <p class="construction__desc text-m text-opacity-subtle" data-cms-path="sections.newConstruction.desc">
+                {cmsContent.sections.newConstruction.desc}
               </p>
             </div>
 
@@ -78,21 +79,21 @@ import ButtonComposite from '../components/ButtonComposite.astro';
             <div class="construction__gallery">
               <div class="construction__gallery-item construction__gallery-item--large">
                 <img
-                  src="/assets/images/construction-backyard.webp"
-                  alt="Finished landscaped backyard and custom exterior"
+                  src={cmsContent.sections.newConstruction.galleryImgSrc}
+                  alt={cmsContent.sections.newConstruction.galleryImgAlt}
                   class="construction__gallery-img"
                   loading="lazy"
                   decoding="async"
-                />
+                 data-cms-path-src="sections.newConstruction.galleryImgSrc" data-cms-path-alt="sections.newConstruction.galleryImgAlt"/>
               </div>
               <div class="construction__gallery-item construction__gallery-item--small">
                 <img
-                  src="/assets/images/construction-patio.webp"
-                  alt="Cozy illuminated outdoor living patio"
+                  src={cmsContent.sections.newConstruction.galleryImgSrc2}
+                  alt={cmsContent.sections.newConstruction.galleryImgAlt2}
                   class="construction__gallery-img"
                   loading="lazy"
                   decoding="async"
-                />
+                 data-cms-path-src="sections.newConstruction.galleryImgSrc2" data-cms-path-alt="sections.newConstruction.galleryImgAlt2"/>
               </div>
             </div>
           </div>
@@ -102,11 +103,11 @@ import ButtonComposite from '../components/ButtonComposite.astro';
             <!-- Section 02 Subheading & Features Group (Frame 525) -->
             <div class="construction__feature-group">
               <div class="construction__feature-header">
-                <span class="construction__feature-num text-m text-opacity-subtle" aria-hidden="true">
-                  02//
+                <span class="construction__feature-num text-m text-opacity-subtle" aria-hidden="true" data-cms-path="sections.newConstruction.featureNum">
+                  {cmsContent.sections.newConstruction.featureNum}
                 </span>
-                <h3 class="construction__feature-title text-color-white">
-                  ALM BUILDS PREMIUM SINGLE-FAMILY HOMES FROM THE GROUND UP
+                <h3 class="construction__feature-title text-color-white" data-cms-path="sections.newConstruction.featureTitle">
+                  {cmsContent.sections.newConstruction.featureTitle}
                 </h3>
               </div>
 
@@ -116,14 +117,14 @@ import ButtonComposite from '../components/ButtonComposite.astro';
               <div class="construction__features">
                 <div class="construction__feature-col">
                   <span class="construction__bullet" aria-hidden="true"></span>
-                  <p class="construction__feature-text text-m text-opacity-subtle">
-                    Built around the approved plans and your family’s priorities
+                  <p class="construction__feature-text text-m text-opacity-subtle" data-cms-path="sections.newConstruction.featureText">
+                    {cmsContent.sections.newConstruction.featureText}
                   </p>
                 </div>
                 <div class="construction__feature-col">
                   <span class="construction__bullet" aria-hidden="true"></span>
-                  <p class="construction__feature-text text-m text-opacity-subtle">
-                    Managed from exterior to finishes and final approval
+                  <p class="construction__feature-text text-m text-opacity-subtle" data-cms-path="sections.newConstruction.featureText2">
+                    {cmsContent.sections.newConstruction.featureText2}
                   </p>
                 </div>
               </div>
@@ -132,11 +133,11 @@ import ButtonComposite from '../components/ButtonComposite.astro';
             <!-- CTA Box (Frame 538) -->
             <div class="construction__cta">
               <p class="construction__cta-prompt">
-                OWN AN OLDER HOME?<br />
-                TELL US ABOUT THE PROPERTY AND THE NEW HOME YOU ARE CONSIDERING.
+                <span data-cms-path="sections.newConstruction.ctaPrompt">{cmsContent.sections.newConstruction.ctaPrompt}</span><br />
+                <span data-cms-path="sections.newConstruction.ctaPrompt2">{cmsContent.sections.newConstruction.ctaPrompt2}</span>
               </p>
               <div class="construction__cta-button">
-                <ButtonComposite text="SCHEDULE A CONSULTATION" href="#consultation" fullWidth={true} />
+                <ButtonComposite text={cmsContent.sections.newConstruction.ctaText} href={cmsContent.sections.newConstruction.ctaHref} cmsTextPath="sections.newConstruction.ctaText" cmsHrefPath="sections.newConstruction.ctaHref" fullWidth={true} />
               </div>
             </div>
           </div>

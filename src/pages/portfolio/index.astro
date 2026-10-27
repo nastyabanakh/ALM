@@ -1,0 +1,26 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const projects = await getCollection('projects');
+---
+<BaseLayout title="Портфоліо — ALM" description="Проєкти ALM">
+  <main class="cms-list">
+    <a href="/">← На головну</a>
+    <h1>Портфоліо</h1>
+    {projects.map(project => (
+      <article>
+        {project.data.cover && <img src={project.data.cover.src} alt={project.data.cover.alt} />}
+        <h2><a href={`/portfolio/${project.data.slug}/`}>{project.data.title}</a></h2>
+        <p>{project.data.summary}</p>
+      </article>
+    ))}
+  </main>
+</BaseLayout>
+<style>
+  .cms-list{max-width:960px;margin:auto;padding:80px 24px;min-height:70vh}
+  h1{font-size:clamp(42px,7vw,84px);margin:30px 0}
+  article{padding:24px 0;border-top:1px solid currentColor}
+  article img{width:100%;height:auto}
+  h2{font-size:clamp(26px,4vw,42px);margin:16px 0 12px}
+</style>

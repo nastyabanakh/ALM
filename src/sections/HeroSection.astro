@@ -1,12 +1,19 @@
 ---
-import HeaderNav from '../components/HeaderNav.astro';
-import GlassCard from '../components/GlassCard.astro';
-import content from '../data/content.json';
+import HeaderNav from "../components/HeaderNav.astro";
+import GlassCard from "../components/GlassCard.astro";
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+  content: CollectionEntry<"pages">["data"]["content"];
+}
+
+const { content } = Astro.props;
 
 const hero = content.hero;
+const cmsContent = (Astro.props as any).content;
 ---
 
-<section class="hero" id="hero-section" aria-label="Hero Section">
+<section data-cms-section="hero" class="hero" id="hero-section" aria-label="Hero Section">
   <!-- Background Video & Gradient Overlays -->
   <div class="hero__bg" aria-hidden="true">
     <video
@@ -16,16 +23,20 @@ const hero = content.hero;
       loop
       playsinline
       preload="none"
-      poster={hero.videoPoster || "/assets/images/hero-house.webp"}
+      poster={hero.videoPoster}
     >
-      <source src={hero.videoUrl || "/assets/video/a1b54a75-926d-4ee7-95db-ec5462efbb29.mp4"} type="video/mp4" media="(min-width: 768px)" />
+      <source
+        src={hero.videoUrl}
+        type="video/mp4"
+        media="(min-width: 768px)"
+      />
     </video>
     <div class="hero__overlay"></div>
   </div>
 
   <!-- Header Navigation -->
   <div class="hero__header-wrapper">
-    <HeaderNav />
+    <HeaderNav content={content} />
   </div>
 
   <!-- Architectural Crosshair / Target Marker Overlay (Figma Frame 356/357 Motion) -->
@@ -33,20 +44,52 @@ const hero = content.hero;
     <div class="hero__crosshair-line-v" id="crosshair-line-v"></div>
     <div class="hero__crosshair-line-h" id="crosshair-line-h"></div>
     <div class="hero__crosshair-target" id="crosshair-target">
-      <svg width="58" height="58" viewBox="0 0 58 58" fill="none" class="hero__crosshair-svg">
-        <circle cx="29" cy="29" r="28.5" stroke="white" stroke-width="0.5" stroke-opacity="0.85" />
-        <line x1="29" y1="22.5" x2="29" y2="35.5" stroke="white" stroke-width="1" stroke-linecap="square" />
-        <line x1="22.5" y1="29" x2="35.5" y2="29" stroke="white" stroke-width="1" stroke-linecap="square" />
+      <svg
+        width="58"
+        height="58"
+        viewBox="0 0 58 58"
+        fill="none"
+        class="hero__crosshair-svg"
+      >
+        <circle
+          cx="29"
+          cy="29"
+          r="28.5"
+          stroke="white"
+          stroke-width="0.5"
+          stroke-opacity="0.85"></circle>
+        <line
+          x1="29"
+          y1="22.5"
+          x2="29"
+          y2="35.5"
+          stroke="white"
+          stroke-width="1"
+          stroke-linecap="square"></line>
+        <line
+          x1="22.5"
+          y1="29"
+          x2="35.5"
+          y2="29"
+          stroke="white"
+          stroke-width="1"
+          stroke-linecap="square"></line>
       </svg>
     </div>
   </div>
 
   <!-- Service Area Markers: Static on the sides, centered vertically in hero (50%) -->
-  <span class="hero__service-marker hero__service-marker--left text-xs text-mono text-opacity-subtle" aria-hidden="true">
-    SERVICE AREA
+  <span
+    class="hero__service-marker hero__service-marker--left text-xs text-mono text-opacity-subtle"
+    aria-hidden="true"
+   data-cms-path="sections.hero.serviceMarker">
+    {cmsContent.sections.hero.serviceMarker}
   </span>
-  <span class="hero__service-marker hero__service-marker--right text-xs text-mono text-opacity-subtle" aria-hidden="true">
-    SERVICE AREA
+  <span
+    class="hero__service-marker hero__service-marker--right text-xs text-mono text-opacity-subtle"
+    aria-hidden="true"
+   data-cms-path="sections.hero.serviceMarker2">
+    {cmsContent.sections.hero.serviceMarker2}
   </span>
 
   <!-- Hero Main Content Grid: Title (Bottom Left) + Glass Card (Bottom Right) -->
@@ -69,6 +112,7 @@ const hero = content.hero;
       text={hero.aboutText}
       buttonText={hero.ctaText}
       buttonHref={hero.ctaHref}
+      cmsPaths={{ tag: 'hero.aboutTag', text: 'hero.aboutText', buttonText: 'hero.ctaText', buttonHref: 'hero.ctaHref' }}
       ariaLabel="About ALM summary"
     />
   </div>
@@ -76,10 +120,10 @@ const hero = content.hero;
 
 <script>
   // Figma Motion: Interactive Cursor Tracking for Architectural Crosshair (Frame 356/357)
-  const hero = document.getElementById('hero-section');
-  const target = document.getElementById('crosshair-target');
-  const lineV = document.getElementById('crosshair-line-v');
-  const lineH = document.getElementById('crosshair-line-h');
+  const hero = document.getElementById("hero-section");
+  const target = document.getElementById("crosshair-target");
+  const lineV = document.getElementById("crosshair-line-v");
+  const lineH = document.getElementById("crosshair-line-h");
 
   if (hero && target && lineV && lineH) {
     let currentX = 0;
@@ -90,8 +134,8 @@ const hero = content.hero;
 
     const resetToDefault = () => {
       const rect = hero.getBoundingClientRect();
-      targetX = rect.width * 0.50;
-      targetY = rect.height * 0.50;
+      targetX = rect.width * 0.5;
+      targetY = rect.height * 0.5;
     };
 
     const applyTransforms = (x: number, y: number) => {
@@ -105,24 +149,24 @@ const hero = content.hero;
     currentY = targetY;
     applyTransforms(currentX, currentY);
 
-    window.addEventListener('resize', () => {
+    window.addEventListener("resize", () => {
       if (!isHovered) resetToDefault();
     });
 
-    hero.addEventListener('mouseenter', (e) => {
+    hero.addEventListener("mouseenter", (e) => {
       isHovered = true;
       const rect = hero.getBoundingClientRect();
       targetX = e.clientX - rect.left;
       targetY = e.clientY - rect.top;
     });
 
-    hero.addEventListener('mousemove', (e) => {
+    hero.addEventListener("mousemove", (e) => {
       const rect = hero.getBoundingClientRect();
       targetX = e.clientX - rect.left;
       targetY = e.clientY - rect.top;
     });
 
-    hero.addEventListener('mouseleave', () => {
+    hero.addEventListener("mouseleave", () => {
       isHovered = false;
       resetToDefault();
     });

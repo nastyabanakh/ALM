@@ -17,9 +17,10 @@
  * — Fluid REM Scaling & Longhand CSS box model
  */
 import ButtonComposite from '../components/ButtonComposite.astro';
+const cmsContent = (Astro.props as any).content;
 ---
 
-<section class="start-conversation" id="contact" aria-label="Start the conversation">
+<section data-cms-section="finalCtaForm" class="start-conversation" id="contact" aria-label="Start the conversation">
   <!-- Top 120rem Spacer -->
   <div class="start-conversation__top-spacer" aria-hidden="true"></div>
 
@@ -29,19 +30,19 @@ import ButtonComposite from '../components/ButtonComposite.astro';
     <div class="start-conversation__bar">
       <div class="start-conversation__bar-main">
         <span class="start-conversation__bullet" aria-hidden="true"></span>
-        <span class="start-conversation__bar-label text-m">Start the conversation</span>
+        <span class="start-conversation__bar-label text-m" data-cms-path="sections.finalCtaForm.barLabel">{cmsContent.sections.finalCtaForm.barLabel}</span>
       </div>
-      <span class="start-conversation__bar-index text-m">15//</span>
+      <span class="start-conversation__bar-index text-m" data-cms-path="sections.finalCtaForm.barIndex">{cmsContent.sections.finalCtaForm.barIndex}</span>
     </div>
     <div class="start-conversation__divider" aria-hidden="true"></div>
 
     <!-- 2. SECTION HEADER (TITLE & DESCRIPTION) -->
     <div class="start-conversation__header">
-      <h2 class="start-conversation__title h2">
-        Tell Us What You Have. We’ll Tell You What Comes Next.
+      <h2 class="start-conversation__title h2" data-cms-path="sections.finalCtaForm.title">
+        {cmsContent.sections.finalCtaForm.title}
       </h2>
-      <p class="start-conversation__desc text-m">
-        Share the property, plans, or references you have now. ALM will review them before the consultation and identify what still needs to be checked.
+      <p class="start-conversation__desc text-m" data-cms-path="sections.finalCtaForm.desc">
+        {cmsContent.sections.finalCtaForm.desc}
       </p>
     </div>
 
@@ -57,11 +58,11 @@ import ButtonComposite from '../components/ButtonComposite.astro';
           <div class="start-conversation__step is-active" id="flow-step-1">
             <div class="start-conversation__form-header">
               <div class="start-conversation__form-titles">
-                <h3 class="start-conversation__step-title">
-                  Step 1 — Required fields
+                <h3 class="start-conversation__step-title" data-cms-path="sections.finalCtaForm.stepTitle">
+                  {cmsContent.sections.finalCtaForm.stepTitle}
                 </h3>
-                <p class="start-conversation__step-desc text-m">
-                  Your contact details and current starting point
+                <p class="start-conversation__step-desc text-m" data-cms-path="sections.finalCtaForm.stepDesc">
+                  {cmsContent.sections.finalCtaForm.stepDesc}
                 </p>
               </div>
               <span class="start-conversation__step-bullet" aria-hidden="true"></span>
@@ -70,68 +71,68 @@ import ButtonComposite from '../components/ButtonComposite.astro';
             <div class="start-conversation__fields">
               <!-- Field: Name -->
               <div class="start-conversation__field">
-                <label for="flow-name" class="start-conversation__label">Name</label>
+                <label for="flow-name" class="start-conversation__label" data-cms-path="sections.finalCtaForm.label">{cmsContent.sections.finalCtaForm.label}</label>
                 <input
                   type="text"
                   id="flow-name"
                   name="name"
                   class="start-conversation__input"
-                  placeholder="First and last name"
+                  placeholder={cmsContent.sections.finalCtaForm.inputPlaceholder}
                   required
-                />
+                 data-cms-path-placeholder="sections.finalCtaForm.inputPlaceholder"/>
               </div>
 
               <!-- Field: Email -->
               <div class="start-conversation__field">
-                <label for="flow-email" class="start-conversation__label">Email</label>
+                <label for="flow-email" class="start-conversation__label" data-cms-path="sections.finalCtaForm.label2">{cmsContent.sections.finalCtaForm.label2}</label>
                 <input
                   type="email"
                   id="flow-email"
                   name="email"
                   class="start-conversation__input"
-                  placeholder="you@example.com"
+                  placeholder={cmsContent.sections.finalCtaForm.inputPlaceholder2}
                   required
-                />
+                 data-cms-path-placeholder="sections.finalCtaForm.inputPlaceholder2"/>
               </div>
 
               <!-- Field: Phone -->
               <div class="start-conversation__field">
-                <label for="flow-phone" class="start-conversation__label">Phone</label>
+                <label for="flow-phone" class="start-conversation__label" data-cms-path="sections.finalCtaForm.label3">{cmsContent.sections.finalCtaForm.label3}</label>
                 <input
                   type="tel"
                   id="flow-phone"
                   name="phone"
                   class="start-conversation__input"
-                  placeholder="Phone number"
+                  placeholder={cmsContent.sections.finalCtaForm.inputPlaceholder3}
                   required
-                />
+                 data-cms-path-placeholder="sections.finalCtaForm.inputPlaceholder3"/>
               </div>
 
               <!-- Field: Preferred Project Location -->
               <div class="start-conversation__field">
-                <label for="flow-location" class="start-conversation__label">Preferred Project Location</label>
+                <label for="flow-location" class="start-conversation__label" data-cms-path="sections.finalCtaForm.label4">{cmsContent.sections.finalCtaForm.label4}</label>
                 <input
                   type="text"
                   id="flow-location"
                   name="location"
                   class="start-conversation__input"
-                  placeholder="City or area"
+                  placeholder={cmsContent.sections.finalCtaForm.inputPlaceholder4}
                   required
-                />
+                 data-cms-path-placeholder="sections.finalCtaForm.inputPlaceholder4"/>
               </div>
 
               <!-- Field: Where are you starting? -->
               <div class="start-conversation__field">
-                <label for="flow-starting-point" class="start-conversation__label">Where are you starting?</label>
+                <label for="flow-starting-point" class="start-conversation__label" data-cms-path="sections.finalCtaForm.label5">{cmsContent.sections.finalCtaForm.label5}</label>
                 <div class="start-conversation__select-wrapper">
                   <select id="flow-starting-point" name="startingPoint" class="start-conversation__select" required>
-                    <option value="" disabled selected>Select starting point...</option>
-                    <option value="looking-for-property">Looking for property</option>
-                    <option value="own-vacant-lot">Own a vacant lot</option>
-                    <option value="own-teardown-home">Own a teardown home</option>
-                    <option value="have-plans">Have plans</option>
-                    <option value="have-reference">Have a reference or early idea</option>
-                    <option value="other">Other</option>
+                    <option value="" disabled selected data-cms-path="sections.finalCtaForm.option">{cmsContent.sections.finalCtaForm.option}</option>
+                    <option value="looking-for-property" data-cms-path="sections.finalCtaForm.option2">{cmsContent.sections.finalCtaForm.option2}</option>
+                    <option value="own-vacant-lot" data-cms-path="sections.finalCtaForm.option3">{cmsContent.sections.finalCtaForm.option3}</option>
+                    <option value="own-teardown-home" data-cms-path="sections.finalCtaForm.option4">{cmsContent.sections.finalCtaForm.option4}</option>
+                    <option value="have-plans" data-cms-path="sections.finalCtaForm.option5">{cmsContent.sections.finalCtaForm.option5}</option>
+                    <option value="have-reference" data-cms-path="sections.finalCtaForm.option6">{cmsContent.sections.finalCtaForm.option6}</option>
+                    <option value="other" data-cms-path="sections.finalCtaForm.option7">{cmsContent.sections.finalCtaForm.option7}</option>
                   </select>
                   <span class="start-conversation__select-arrow" aria-hidden="true"></span>
                 </div>
@@ -139,21 +140,22 @@ import ButtonComposite from '../components/ButtonComposite.astro';
 
               <!-- Field: Project Message -->
               <div class="start-conversation__field">
-                <label for="flow-message" class="start-conversation__label">Project Message</label>
+                <label for="flow-message" class="start-conversation__label" data-cms-path="sections.finalCtaForm.label6">{cmsContent.sections.finalCtaForm.label6}</label>
                 <input
                   type="text"
                   id="flow-message"
                   name="message"
                   class="start-conversation__input"
-                  placeholder="What would you like to build, and what do you already have in place?"
-                />
+                  placeholder={cmsContent.sections.finalCtaForm.inputPlaceholder5}
+                 data-cms-path-placeholder="sections.finalCtaForm.inputPlaceholder5"/>
               </div>
             </div>
 
             <!-- Next Step Action -->
             <div class="start-conversation__btn-wrap">
               <ButtonComposite
-                text="NEXT STEP"
+                text={cmsContent.sections.finalCtaForm.nextStepButtonText}
+                cmsTextPath="sections.finalCtaForm.nextStepButtonText"
                 variant="white"
                 fullWidth={true}
                 as="button"
@@ -167,11 +169,11 @@ import ButtonComposite from '../components/ButtonComposite.astro';
           <div class="start-conversation__step" id="flow-step-2">
             <div class="start-conversation__form-header">
               <div class="start-conversation__form-titles">
-                <h3 class="start-conversation__step-title">
-                  Step 2 — Optional project details
+                <h3 class="start-conversation__step-title" data-cms-path="sections.finalCtaForm.stepTitle2">
+                  {cmsContent.sections.finalCtaForm.stepTitle2}
                 </h3>
-                <p class="start-conversation__step-desc text-m">
-                  Add what you know. “Not sure” is a valid answer.
+                <p class="start-conversation__step-desc text-m" data-cms-path="sections.finalCtaForm.stepDesc2">
+                  {cmsContent.sections.finalCtaForm.stepDesc2}
                 </p>
               </div>
               <span class="start-conversation__step-bullet" aria-hidden="true"></span>
@@ -180,14 +182,14 @@ import ButtonComposite from '../components/ButtonComposite.astro';
             <div class="start-conversation__fields">
               <!-- Field: Existing home on property? -->
               <div class="start-conversation__field">
-                <label for="flow-existing-home" class="start-conversation__label">Existing home on property? (optional)</label>
+                <label for="flow-existing-home" class="start-conversation__label" data-cms-path="sections.finalCtaForm.label7">{cmsContent.sections.finalCtaForm.label7}</label>
                 <div class="start-conversation__select-wrapper">
                   <select id="flow-existing-home" name="existingHome" class="start-conversation__select">
-                    <option value="" disabled selected>Select an option...</option>
-                    <option value="yes">Yes</option>
-                    <option value="no">No</option>
-                    <option value="not-sure">Not sure</option>
-                    <option value="no-property-yet">I do not own property yet</option>
+                    <option value="" disabled selected data-cms-path="sections.finalCtaForm.option8">{cmsContent.sections.finalCtaForm.option8}</option>
+                    <option value="yes" data-cms-path="sections.finalCtaForm.option9">{cmsContent.sections.finalCtaForm.option9}</option>
+                    <option value="no" data-cms-path="sections.finalCtaForm.option10">{cmsContent.sections.finalCtaForm.option10}</option>
+                    <option value="not-sure" data-cms-path="sections.finalCtaForm.option11">{cmsContent.sections.finalCtaForm.option11}</option>
+                    <option value="no-property-yet" data-cms-path="sections.finalCtaForm.option12">{cmsContent.sections.finalCtaForm.option12}</option>
                   </select>
                   <span class="start-conversation__select-arrow" aria-hidden="true"></span>
                 </div>
@@ -195,39 +197,39 @@ import ButtonComposite from '../components/ButtonComposite.astro';
 
               <!-- Field: Approximate Home Size -->
               <div class="start-conversation__field">
-                <label for="flow-home-size" class="start-conversation__label">Approximate Home Size (optional)</label>
+                <label for="flow-home-size" class="start-conversation__label" data-cms-path="sections.finalCtaForm.label8">{cmsContent.sections.finalCtaForm.label8}</label>
                 <input
                   type="text"
                   id="flow-home-size"
                   name="homeSize"
                   class="start-conversation__input"
-                  placeholder="Square footage, if known"
-                />
+                  placeholder={cmsContent.sections.finalCtaForm.inputPlaceholder6}
+                 data-cms-path-placeholder="sections.finalCtaForm.inputPlaceholder6"/>
               </div>
 
               <!-- Field: Architectural Style -->
               <div class="start-conversation__field">
-                <label for="flow-arch-style" class="start-conversation__label">Architectural Style (optional)</label>
+                <label for="flow-arch-style" class="start-conversation__label" data-cms-path="sections.finalCtaForm.label9">{cmsContent.sections.finalCtaForm.label9}</label>
                 <input
                   type="text"
                   id="flow-arch-style"
                   name="architecturalStyle"
                   class="start-conversation__input"
-                  placeholder="Modern, transitional, traditional, or another direction"
-                />
+                  placeholder={cmsContent.sections.finalCtaForm.inputPlaceholder7}
+                 data-cms-path-placeholder="sections.finalCtaForm.inputPlaceholder7"/>
               </div>
 
               <!-- Field: Estimated Budget -->
               <div class="start-conversation__field">
-                <label for="flow-budget" class="start-conversation__label">Estimated Budget (optional)</label>
+                <label for="flow-budget" class="start-conversation__label" data-cms-path="sections.finalCtaForm.label10">{cmsContent.sections.finalCtaForm.label10}</label>
                 <div class="start-conversation__select-wrapper">
                   <select id="flow-budget" name="budget" class="start-conversation__select">
-                    <option value="" disabled selected>Select an option...</option>
-                    <option value="under-1-5m">Under $1.5M</option>
-                    <option value="1-5m-2-5m">$1.5M - $2.5M</option>
-                    <option value="2-5m-plus">$2.5M+</option>
-                    <option value="prefer-to-discuss">Prefer to discuss</option>
-                    <option value="not-sure-yet">Not sure yet</option>
+                    <option value="" disabled selected data-cms-path="sections.finalCtaForm.option13">{cmsContent.sections.finalCtaForm.option13}</option>
+                    <option value="under-1-5m" data-cms-path="sections.finalCtaForm.option14">{cmsContent.sections.finalCtaForm.option14}</option>
+                    <option value="1-5m-2-5m" data-cms-path="sections.finalCtaForm.option15">{cmsContent.sections.finalCtaForm.option15}</option>
+                    <option value="2-5m-plus" data-cms-path="sections.finalCtaForm.option16">{cmsContent.sections.finalCtaForm.option16}</option>
+                    <option value="prefer-to-discuss" data-cms-path="sections.finalCtaForm.option17">{cmsContent.sections.finalCtaForm.option17}</option>
+                    <option value="not-sure-yet" data-cms-path="sections.finalCtaForm.option18">{cmsContent.sections.finalCtaForm.option18}</option>
                   </select>
                   <span class="start-conversation__select-arrow" aria-hidden="true"></span>
                 </div>
@@ -235,14 +237,14 @@ import ButtonComposite from '../components/ButtonComposite.astro';
 
               <!-- Field: Desired Timeline -->
               <div class="start-conversation__field">
-                <label for="flow-timeline" class="start-conversation__label">Desired Timeline (optional)</label>
+                <label for="flow-timeline" class="start-conversation__label" data-cms-path="sections.finalCtaForm.label11">{cmsContent.sections.finalCtaForm.label11}</label>
                 <div class="start-conversation__select-wrapper">
                   <select id="flow-timeline" name="timeline" class="start-conversation__select">
-                    <option value="" disabled selected>Select an option...</option>
-                    <option value="exploring">Exploring</option>
-                    <option value="planning-soon">Planning soon</option>
-                    <option value="target-start-date">Target start date</option>
-                    <option value="not-sure-yet">Not sure yet</option>
+                    <option value="" disabled selected data-cms-path="sections.finalCtaForm.option19">{cmsContent.sections.finalCtaForm.option19}</option>
+                    <option value="exploring" data-cms-path="sections.finalCtaForm.option20">{cmsContent.sections.finalCtaForm.option20}</option>
+                    <option value="planning-soon" data-cms-path="sections.finalCtaForm.option21">{cmsContent.sections.finalCtaForm.option21}</option>
+                    <option value="target-start-date" data-cms-path="sections.finalCtaForm.option22">{cmsContent.sections.finalCtaForm.option22}</option>
+                    <option value="not-sure-yet" data-cms-path="sections.finalCtaForm.option23">{cmsContent.sections.finalCtaForm.option23}</option>
                   </select>
                   <span class="start-conversation__select-arrow" aria-hidden="true"></span>
                 </div>
@@ -250,15 +252,15 @@ import ButtonComposite from '../components/ButtonComposite.astro';
 
               <!-- Field: Plans Status -->
               <div class="start-conversation__field">
-                <label for="flow-plans-status" class="start-conversation__label">Plans Status (optional)</label>
+                <label for="flow-plans-status" class="start-conversation__label" data-cms-path="sections.finalCtaForm.label12">{cmsContent.sections.finalCtaForm.label12}</label>
                 <div class="start-conversation__select-wrapper">
                   <select id="flow-plans-status" name="plansStatus" class="start-conversation__select">
-                    <option value="" disabled selected>Select an option...</option>
-                    <option value="completed">Completed</option>
-                    <option value="preliminary">Preliminary</option>
-                    <option value="in-development">In development</option>
-                    <option value="no-plans">No plans</option>
-                    <option value="reference-only">Reference only</option>
+                    <option value="" disabled selected data-cms-path="sections.finalCtaForm.option24">{cmsContent.sections.finalCtaForm.option24}</option>
+                    <option value="completed" data-cms-path="sections.finalCtaForm.option25">{cmsContent.sections.finalCtaForm.option25}</option>
+                    <option value="preliminary" data-cms-path="sections.finalCtaForm.option26">{cmsContent.sections.finalCtaForm.option26}</option>
+                    <option value="in-development" data-cms-path="sections.finalCtaForm.option27">{cmsContent.sections.finalCtaForm.option27}</option>
+                    <option value="no-plans" data-cms-path="sections.finalCtaForm.option28">{cmsContent.sections.finalCtaForm.option28}</option>
+                    <option value="reference-only" data-cms-path="sections.finalCtaForm.option29">{cmsContent.sections.finalCtaForm.option29}</option>
                   </select>
                   <span class="start-conversation__select-arrow" aria-hidden="true"></span>
                 </div>
@@ -267,11 +269,12 @@ import ButtonComposite from '../components/ButtonComposite.astro';
 
             <!-- Step 2 Actions (Back & Submit) -->
             <div class="start-conversation__step-actions">
-              <button type="button" class="start-conversation__back-btn" id="flow-back-btn">
-                ← Back to Step 1
+              <button type="button" class="start-conversation__back-btn" id="flow-back-btn" data-cms-path="sections.finalCtaForm.backBtn">
+                {cmsContent.sections.finalCtaForm.backBtn}
               </button>
               <ButtonComposite
-                text="SCHEDULE A CONSULTATION"
+                text={cmsContent.sections.finalCtaForm.submitButtonText}
+                cmsTextPath="sections.finalCtaForm.submitButtonText"
                 variant="white"
                 fullWidth={true}
                 as="button"
@@ -283,9 +286,9 @@ import ButtonComposite from '../components/ButtonComposite.astro';
 
           <!-- ─── SUCCESS ALERT CARD ─── -->
           <div class="start-conversation__success-box" id="flow-success-box" role="alert">
-            <p class="start-conversation__success-title">Thank you!</p>
-            <p class="start-conversation__success-text text-m">
-              ALM will review your project details and contact you to arrange the consultation.
+            <p class="start-conversation__success-title" data-cms-path="sections.finalCtaForm.successTitle">{cmsContent.sections.finalCtaForm.successTitle}</p>
+            <p class="start-conversation__success-text text-m" data-cms-path="sections.finalCtaForm.successText">
+              {cmsContent.sections.finalCtaForm.successText}
             </p>
           </div>
 
@@ -299,24 +302,24 @@ import ButtonComposite from '../components/ButtonComposite.astro';
         <div class="start-conversation__specs">
           <div class="start-conversation__spec-row">
             <div class="start-conversation__spec-inner">
-              <span class="start-conversation__spec-label">DOCUMENTATION:</span>
-              <span class="start-conversation__spec-value">No completed plans required</span>
+              <span class="start-conversation__spec-label" data-cms-path="sections.finalCtaForm.specLabel">{cmsContent.sections.finalCtaForm.specLabel}</span>
+              <span class="start-conversation__spec-value" data-cms-path="sections.finalCtaForm.specValue">{cmsContent.sections.finalCtaForm.specValue}</span>
             </div>
             <div class="start-conversation__spec-line" aria-hidden="true"></div>
           </div>
 
           <div class="start-conversation__spec-row">
             <div class="start-conversation__spec-inner">
-              <span class="start-conversation__spec-label">STARTING POINT:</span>
-              <span class="start-conversation__spec-value">Open to vacant lots, teardown homes, or early ideas</span>
+              <span class="start-conversation__spec-label" data-cms-path="sections.finalCtaForm.specLabel2">{cmsContent.sections.finalCtaForm.specLabel2}</span>
+              <span class="start-conversation__spec-value" data-cms-path="sections.finalCtaForm.specValue2">{cmsContent.sections.finalCtaForm.specValue2}</span>
             </div>
             <div class="start-conversation__spec-line" aria-hidden="true"></div>
           </div>
 
           <div class="start-conversation__spec-row">
             <div class="start-conversation__spec-inner">
-              <span class="start-conversation__spec-label">ESTIMATION:</span>
-              <span class="start-conversation__spec-value">Pricing and scope tailored individually</span>
+              <span class="start-conversation__spec-label" data-cms-path="sections.finalCtaForm.specLabel3">{cmsContent.sections.finalCtaForm.specLabel3}</span>
+              <span class="start-conversation__spec-value" data-cms-path="sections.finalCtaForm.specValue3">{cmsContent.sections.finalCtaForm.specValue3}</span>
             </div>
             <div class="start-conversation__spec-line" aria-hidden="true"></div>
           </div>
@@ -325,12 +328,12 @@ import ButtonComposite from '../components/ButtonComposite.astro';
         <!-- Large Photo Box -->
         <div class="start-conversation__photo-box">
           <img
-            src="/assets/section-15-patio.webp"
-            alt="Custom home living area and patio built by ALM"
+            src={cmsContent.sections.finalCtaForm.photoSrc}
+            alt={cmsContent.sections.finalCtaForm.photoAlt}
             class="start-conversation__photo"
             loading="lazy"
             decoding="async"
-          />
+           data-cms-path-src="sections.finalCtaForm.photoSrc" data-cms-path-alt="sections.finalCtaForm.photoAlt"/>
         </div>
 
       </div>

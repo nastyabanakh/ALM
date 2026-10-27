@@ -17,9 +17,11 @@
  *    - Overlay with 'LOT FIT' title and frosted glass consultation card fades in (Figma Node 125:556).
  */
 import GlassCard from '../components/GlassCard.astro';
+const cmsContent = (Astro.props as any).content;
+const reviewStepsJson = JSON.stringify(cmsContent.sections.propertyReview.reviewSteps).replace(/</g, '\\u003c');
 ---
 
-<section class="property-review" id="property-review" aria-label="Before construction — Property Review">
+<section data-cms-section="propertyReview" class="property-review" id="property-review" aria-label="Before construction — Property Review">
   <!-- Scroll Track -->
   <div class="property-review__track" id="pr-track">
     <div class="property-review__sticky" id="pr-sticky">
@@ -28,12 +30,12 @@ import GlassCard from '../components/GlassCard.astro';
         <div class="property-review__bar">
           <div class="property-review__bar-main">
             <span class="property-review__bullet" aria-hidden="true"></span>
-            <span class="property-review__bar-title text-s text-opacity-subtle">
-              Before construction
+            <span class="property-review__bar-title text-s text-opacity-subtle" data-cms-path="sections.propertyReview.barTitle">
+              {cmsContent.sections.propertyReview.barTitle}
             </span>
           </div>
-          <span class="property-review__bar-num text-s text-opacity-subtle" aria-hidden="true">
-            03//
+          <span class="property-review__bar-num text-s text-opacity-subtle" aria-hidden="true" data-cms-path="sections.propertyReview.barNum">
+            {cmsContent.sections.propertyReview.barNum}
           </span>
         </div>
         <hr class="property-review__divider" aria-hidden="true" />
@@ -43,11 +45,11 @@ import GlassCard from '../components/GlassCard.astro';
       <div class="property-review__content-flow">
         <!-- Center Editorial Block (Figma Frame 140:1613) -->
         <div class="property-review__header" id="pr-header">
-          <h2 class="property-review__title text-color-white">
-            REVIEW THE PROPERTY BEFORE THE PROJECT GETS EXPENSIVE
+          <h2 class="property-review__title text-color-white" data-cms-path="sections.propertyReview.title">
+            {cmsContent.sections.propertyReview.title}
           </h2>
-          <p class="property-review__desc text-opacity-subtle">
-            A vacant lot, an older home, and an existing plan require different checks. Reviewing them early can expose site, approval, and cost issues before construction starts.
+          <p class="property-review__desc text-opacity-subtle" data-cms-path="sections.propertyReview.desc">
+            {cmsContent.sections.propertyReview.desc}
           </p>
         </div>
 
@@ -59,12 +61,12 @@ import GlassCard from '../components/GlassCard.astro';
       <div class="property-review__media-box" id="pr-media-box">
         <canvas class="property-review__canvas" id="pr-canvas"></canvas>
         <img
-          src="/assets/video-frames/frame_001.jpg"
-          alt="Aerial view of residential neighborhood and property for custom home review"
+          src={cmsContent.sections.propertyReview.fallbackImgSrc}
+          alt={cmsContent.sections.propertyReview.fallbackImgAlt}
           class="property-review__fallback-img"
           id="pr-fallback"
           loading="eager"
-        />
+         data-cms-path-src="sections.propertyReview.fallbackImgSrc" data-cms-path-alt="sections.propertyReview.fallbackImgAlt"/>
         <!-- Bottom gradient shadow for contrast & readability (Figma Linear 50%) -->
         <div class="property-review__media-shadow" aria-hidden="true"></div>
 
@@ -108,13 +110,19 @@ import GlassCard from '../components/GlassCard.astro';
 
           <div class="property-review__overlay-inner">
             <div class="property-review__overlay-row">
-              <h3 class="property-review__overlay-title" id="pr-overlay-title">LOT<br />FIT</h3>
+              <h3 class="property-review__overlay-title" id="pr-overlay-title" set:html={cmsContent.sections.propertyReview.reviewSteps[0].title} data-cms-path="sections.propertyReview.reviewSteps.0.title" data-cms-html-lines />
 
               <GlassCard
-                tag="Lot fit //"
-                text="Compare the property with the size and type of home you want to build."
-                buttonText="SCHEDULE A CONSULTATION"
-                buttonHref="#consultation"
+                tag={cmsContent.sections.propertyReview.reviewSteps[0].tag}
+                text={cmsContent.sections.propertyReview.reviewSteps[0].text}
+                buttonText={cmsContent.sections.propertyReview.cardButtonText}
+                buttonHref={cmsContent.sections.propertyReview.cardButtonHref}
+                cmsPaths={{
+                  tag: 'sections.propertyReview.reviewSteps.0.tag',
+                  text: 'sections.propertyReview.reviewSteps.0.text',
+                  buttonText: 'sections.propertyReview.cardButtonText',
+                  buttonHref: 'sections.propertyReview.cardButtonHref'
+                }}
                 ariaLabel="Lot fit consultation info"
                 tagId="pr-card-tag"
                 textId="pr-card-text"
@@ -127,6 +135,7 @@ import GlassCard from '../components/GlassCard.astro';
   </div>
 </section>
 
+<script id="pr-review-steps" type="application/json" set:html={reviewStepsJson} />
 <script>
   // ============================================================
   // High-Performance Instant Scroll Frame Scrubbing Controller
@@ -154,28 +163,19 @@ import GlassCard from '../components/GlassCard.astro';
     text: string;
   }
 
-  const REVIEW_STEPS: ReviewStep[] = [
-    {
-      title: 'LOT<br />FIT',
-      tag: 'Lot fit //',
-      text: 'Compare the property with the size and type of home you want to build.',
-    },
-    {
-      title: 'TEARDOWN<br />SCOPE',
-      tag: 'Teardown scope //',
-      text: 'Clarify demolition, site preparation, and necessary property connections.',
-    },
-    {
-      title: 'PLAN<br />ADAPTATION',
-      tag: 'Plan adaptation //',
-      text: 'Identify where an existing plan may need to change for the site or local requirements.',
-    },
-    {
-      title: 'APPROVAL<br />PATH',
-      tag: 'Approval path //',
-      text: 'Outline the architects, engineers, city reviews, permits, and inspections the project may require.',
-    },
-  ];
+  let REVIEW_STEPS: ReviewStep[] = JSON.parse(document.getElementById('pr-review-steps')?.textContent || '[]');
+  window.addEventListener('message', event => {
+    if (event.origin !== location.origin || event.source !== parent || event.data?.type !== 'CMS_DRAFT_UPDATE') return;
+    const next = event.data.content?.sections?.propertyReview?.reviewSteps;
+    if (!Array.isArray(next)) return;
+    REVIEW_STEPS = next;
+    const active = REVIEW_STEPS[activeStepIndex];
+    if (active) {
+      if (overlayTitle) overlayTitle.innerHTML = active.title;
+      if (cardTag) cardTag.textContent = active.tag;
+      if (cardText) cardText.textContent = active.text;
+    }
+  });
 
   let activeStepIndex = 0;
   let stepTimeout: ReturnType<typeof setTimeout> | null = null;

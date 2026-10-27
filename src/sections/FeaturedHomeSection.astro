@@ -9,7 +9,14 @@
  * with 4 cards whose photos dynamically grow from small (307rem) to big (668rem) and shrink as the user scrolls.
  */
 import ButtonComposite from '../components/ButtonComposite.astro';
-import content from '../data/content.json';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  content: CollectionEntry<'pages'>['data']['content'];
+}
+
+const { content } = Astro.props;
+
 
 const featuredData = content.featuredHome;
 
@@ -32,9 +39,10 @@ interface BreakdownStage {
 }
 
 const stages: BreakdownStage[] = featuredData.stages || [];
+const cmsContent = (Astro.props as any).content;
 ---
 
-<section class="featured-home-section" id="featured-home" aria-label="Featured completed home">
+<section data-cms-section="featuredHome" class="featured-home-section" id="featured-home" aria-label="Featured completed home">
   
   <!-- ============================================================
        Part A: Wide Architectural Photo with strictly 15rem offset
@@ -42,12 +50,12 @@ const stages: BreakdownStage[] = featuredData.stages || [];
   <div class="featured-home-section__hero-media-wrap">
     <div class="featured-home-section__hero-media">
       <img
-        src={featuredData.heroKitchenImage || "/assets/section-09/hero-kitchen-2.webp"}
-        alt="Featured completed home — open modern kitchen and dining room with large glass doors to wooded patio"
+        src={featuredData.heroKitchenImage}
+        alt={cmsContent.sections.featuredHome.heroImgAlt}
         class="featured-home-section__hero-img"
         loading="lazy"
         decoding="async"
-      />
+       data-cms-path-alt="sections.featuredHome.heroImgAlt"/>
     </div>
   </div>
 
@@ -58,9 +66,9 @@ const stages: BreakdownStage[] = featuredData.stages || [];
       <div class="featured-home-section__bar">
         <div class="featured-home-section__bar-left">
           <span class="featured-home-section__bullet" aria-hidden="true"></span>
-          <span class="featured-home-section__bar-title">Featured completed home</span>
+          <span class="featured-home-section__bar-title" data-cms-path="sections.featuredHome.barTitle">{cmsContent.sections.featuredHome.barTitle}</span>
         </div>
-        <span class="featured-home-section__bar-index">09//</span>
+        <span class="featured-home-section__bar-index" data-cms-path="sections.featuredHome.barIndex">{cmsContent.sections.featuredHome.barIndex}</span>
       </div>
       <div class="featured-home-section__divider" aria-hidden="true"></div>
 
@@ -68,8 +76,8 @@ const stages: BreakdownStage[] = featuredData.stages || [];
       <div class="featured-home-section__overview">
         <!-- Section Title (shifted right to line up with specs) -->
         <div class="featured-home-section__title-wrap">
-          <h2 class="featured-home-section__title">
-            FROM CONCEPT TO COMPLETION
+          <h2 class="featured-home-section__title" data-cms-path="sections.featuredHome.title">
+            {cmsContent.sections.featuredHome.title}
           </h2>
         </div>
 
@@ -98,8 +106,8 @@ const stages: BreakdownStage[] = featuredData.stages || [];
   <div class="featured-home-section__breakdown-header-wrap">
     <div class="featured-home-section__breakdown-header">
       <h2 class="featured-home-section__breakdown-title">
-        <span>PROJECT</span>
-        <span>BREAKDOWN</span>
+        <span data-cms-path="sections.featuredHome.span">{cmsContent.sections.featuredHome.span}</span>
+        <span data-cms-path="sections.featuredHome.span2">{cmsContent.sections.featuredHome.span2}</span>
       </h2>
       <span class="featured-home-section__breakdown-bullet" aria-hidden="true"></span>
     </div>
@@ -147,8 +155,10 @@ const stages: BreakdownStage[] = featuredData.stages || [];
 
                 <div class="featured-home-section__card-btn">
                   <ButtonComposite
-                    text="Schedule a Consultation"
-                    href="#consultation"
+                    text={content.featuredHome.cardCtaText}
+                    href={content.featuredHome.cardCtaHref}
+                    cmsTextPath="featuredHome.cardCtaText"
+                    cmsHrefPath="featuredHome.cardCtaHref"
                     fullWidth={true}
                   />
                 </div>

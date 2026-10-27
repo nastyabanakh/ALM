@@ -14,25 +14,22 @@
  * — Fluid REM Scaling & Longhand CSS box model
  */
 import ButtonComposite from "../components/ButtonComposite.astro";
-import content from "../data/content.json";
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  content: CollectionEntry<'pages'>['data']['content'];
+}
+
+const { content } = Astro.props;
+
 
 const contacts = content.contacts;
-const navLinks = [
-  { label: "CUSTOM HOMES", href: "#construction" },
-  { label: "PROCESS", href: "#process" },
-  { label: "PROJECTS", href: "#projects" },
-  { label: "ABOUT ALM", href: "#about" },
-  { label: "FAQ", href: "#faq" },
-  { label: "CONTACT", href: "#contact" },
-];
-
-const legalLinks = [
-  { label: "PRIVACY POLICY", href: "#privacy" },
-  { label: "TERMS, IF REQUIRED", href: "#terms" },
-];
+const cmsContent = (Astro.props as any).content;
+const navLinks = cmsContent.sections.footer.navLinks;
+const legalLinks = cmsContent.sections.footer.legalLinks;
 ---
 
-<footer class="site-footer" id="footer" aria-label="Site Footer">
+<footer data-cms-section="footer" class="site-footer" id="footer" aria-label="Site Footer">
   <div class="site-footer__container">
     <!-- TOP SECTION: 3-COLUMN GRID -->
     <div class="site-footer__grid">
@@ -42,21 +39,24 @@ const legalLinks = [
         <div class="site-footer__contacts-block">
           <div class="site-footer__contacts-list">
             <a
-              href={`mailto:${contacts.email}`}
+              href={contacts.emailHref || `mailto:${contacts.email}`}
               class="site-footer__contact-link"
+              data-cms-path-href="contacts.emailHref"
             >
               {contacts.email}
             </a>
-            <a href={`tel:${contacts.phone.replace(/[^+\d]/g, '')}`} class="site-footer__contact-link">
+            <a href={contacts.phoneHref || `tel:${contacts.phone.replace(/[^+\d]/g, '')}`} class="site-footer__contact-link" data-cms-path-href="contacts.phoneHref">
               {contacts.phone}
             </a>
           </div>
 
           <div class="site-footer__cta-wrap">
             <ButtonComposite
-              text="SCHEDULE A CONSULTATION"
+              text={cmsContent.sections.footer.ctaText}
+              cmsTextPath="sections.footer.ctaText"
               variant="dark"
-              href="#contact"
+              href={cmsContent.sections.footer.ctaHref}
+              cmsHrefPath="sections.footer.ctaHref"
               class="site-footer__btn"
             />
           </div>
@@ -69,9 +69,9 @@ const legalLinks = [
         <nav class="site-footer__nav" aria-label="Footer navigation">
           <ul class="site-footer__nav-list">
             {
-              navLinks.map((item) => (
+              navLinks.map((item, index) => (
                 <li class="site-footer__nav-item">
-                  <a href={item.href} class="site-footer__nav-link">
+                  <a href={item.href} class="site-footer__nav-link" data-cms-path={`sections.footer.navLinks.${index}.label`} data-cms-path-href={`sections.footer.navLinks.${index}.href`}>
                     {item.label}
                   </a>
                 </li>
@@ -87,9 +87,9 @@ const legalLinks = [
         <div class="site-footer__legal-block">
           <ul class="site-footer__legal-list">
             {
-              legalLinks.map((item) => (
+              legalLinks.map((item, index) => (
                 <li class="site-footer__legal-item">
-                  <a href={item.href} class="site-footer__legal-link">
+                  <a href={item.href} class="site-footer__legal-link" data-cms-path={`sections.footer.legalLinks.${index}.label`} data-cms-path-href={`sections.footer.legalLinks.${index}.href`}>
                     {item.label}
                   </a>
                 </li>
@@ -105,13 +105,13 @@ const legalLinks = [
 
     <!-- BOTTOM SECTION: COPYRIGHT + MONUMENTAL BRAND TYPOGRAPHY -->
     <div class="site-footer__bottom-row">
-      <p class="site-footer__copyright">© ALM — YEAR TO ADD</p>
+      <p class="site-footer__copyright" data-cms-path="sections.footer.copyright">{cmsContent.sections.footer.copyright}</p>
 
       <div class="site-footer__brand-wrapper">
-        <span class="site-footer__brand-logo">ALM</span>
+        <span class="site-footer__brand-logo" data-cms-path="sections.footer.brandLogo">{cmsContent.sections.footer.brandLogo}</span>
         <span
           class="site-footer__brand-trademark"
-          aria-label="Registered trademark">®</span
+          aria-label="Registered trademark" data-cms-path="sections.footer.brandTrademark">{cmsContent.sections.footer.brandTrademark}</span
         >
       </div>
     </div>

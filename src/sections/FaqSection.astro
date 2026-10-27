@@ -13,7 +13,14 @@
  * — Fluid REM Scaling & Longhand CSS box model
  */
 import ButtonComposite from '../components/ButtonComposite.astro';
-import content from '../data/content.json';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  content: CollectionEntry<'pages'>['data']['content'];
+}
+
+const { content } = Astro.props;
+
 
 interface FaqItem {
   question: string;
@@ -27,9 +34,10 @@ const faqItems: FaqItem[] = rawFaq.map((item, idx) => ({
   answer: item.answer,
   isOpen: idx === 0
 }));
+const cmsContent = (Astro.props as any).content;
 ---
 
-<section class="faq" id="faq" aria-label="Common Questions and Answers">
+<section data-cms-section="faq" class="faq" id="faq" aria-label="Common Questions and Answers">
   <!-- Top 120rem Spacer -->
   <div class="faq__top-spacer" aria-hidden="true"></div>
 
@@ -42,22 +50,24 @@ const faqItems: FaqItem[] = rawFaq.map((item, idx) => ({
       <div class="faq__left">
         <div class="faq__media-box">
           <img
-            src="/assets/section-14/faq-kitchen.webp"
-            alt="Custom kitchen with dining area built by ALM"
+            src={cmsContent.sections.faq.photoSrc}
+            alt={cmsContent.sections.faq.photoAlt}
             class="faq__photo"
             loading="lazy"
             decoding="async"
-          />
+           data-cms-path-src="sections.faq.photoSrc" data-cms-path-alt="sections.faq.photoAlt"/>
         </div>
 
-        <h2 class="faq__title h2">
-          What to Know Before You Build
+        <h2 class="faq__title h2" data-cms-path="sections.faq.title">
+          {cmsContent.sections.faq.title}
         </h2>
 
         <div class="faq__cta-box">
           <ButtonComposite
-            text="SCHEDULE A CONSULTATION"
-            href="#contact"
+            text={cmsContent.sections.faq.ctaText}
+            href={cmsContent.sections.faq.ctaHref}
+            cmsTextPath="sections.faq.ctaText"
+            cmsHrefPath="sections.faq.ctaHref"
             variant="white"
             fullWidth={true}
           />
@@ -66,7 +76,7 @@ const faqItems: FaqItem[] = rawFaq.map((item, idx) => ({
 
       <!-- Right Column: Interactive Accordion List -->
       <div class="faq__right">
-        <div class="faq__accordion-list" id="faq-accordion">
+        <div class="faq__accordion-list" id="faq-accordion" data-cms-collection="faq" data-cms-collection-label="FAQ">
           {faqItems.map((item, index) => (
             <div
               class:list={[
@@ -74,6 +84,7 @@ const faqItems: FaqItem[] = rawFaq.map((item, idx) => ({
                 { 'is-open': item.isOpen }
               ]}
               data-index={index}
+              data-cms-item={index}
             >
               <div class="faq__item-divider-top" aria-hidden="true"></div>
 

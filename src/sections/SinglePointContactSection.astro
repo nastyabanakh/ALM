@@ -16,57 +16,21 @@ interface AccordionItem {
   active?: boolean;
 }
 
-const accordionItems: AccordionItem[] = [
-  {
-    id: 'accordion-01',
-    num: '01//',
-    title: 'PLANS &\nENGINEERING',
-    shortTitle: 'Plans & Engineering',
-    description: 'Use your existing plans or bring in the local architects and engineers needed to adapt them.',
-    image: '/assets/section-04/plans-engineering.webp',
-    active: true
-  },
-  {
-    id: 'accordion-02',
-    num: '02//',
-    title: 'PERMITS &\nCITY REVIEWS',
-    shortTitle: 'Permits & city reviews',
-    description: 'ALM coordinates directly with local building departments, managing plan submissions, zoning approvals, and permit issuance.',
-    image: '/assets/section-04/permits-city-reviews.webp',
-    active: false
-  },
-  {
-    id: 'accordion-03',
-    num: '03//',
-    title: 'CONTRACTORS &\nCONSTRUCTION',
-    shortTitle: 'Contractors & construction',
-    description: 'A single dedicated team oversees site work, trade contractors, material deliveries, and schedule adherence from groundbreak to finish.',
-    image: '/assets/section-04/contractors-construction.webp',
-    active: false
-  },
-  {
-    id: 'accordion-04',
-    num: '04//',
-    title: 'INSPECTIONS &\nCLOSEOUT',
-    shortTitle: 'Inspections & closeout',
-    description: 'We schedule and walk all required municipal inspections, resolve punch lists, and deliver a clean, move-in ready home.',
-    image: '/assets/section-04/inspections-closeout.webp',
-    active: false
-  }
-];
+const cmsContent = (Astro.props as any).content;
+const accordionItems: AccordionItem[] = cmsContent.sections.singlePointContact.accordionItems;
 ---
 
-<section class="spc-section" id="single-point-of-contact" aria-label="Single Point of Contact">
+<section data-cms-section="singlePointContact" class="spc-section" id="single-point-of-contact" aria-label="Single Point of Contact">
   <!-- Top Sub-Header Bar (Figma Frame 433) -->
   <div class="spc-section__bar">
     <div class="spc-section__bar-left">
       <span class="spc-section__bullet" aria-hidden="true"></span>
-      <span class="spc-section__bar-title text-s text-opacity-subtle">
-        Single point of contact
+      <span class="spc-section__bar-title text-s text-opacity-subtle" data-cms-path="sections.singlePointContact.barTitle">
+        {cmsContent.sections.singlePointContact.barTitle}
       </span>
     </div>
-    <span class="spc-section__bar-index text-s text-opacity-subtle" aria-hidden="true">
-      04//
+    <span class="spc-section__bar-index text-s text-opacity-subtle" aria-hidden="true" data-cms-path="sections.singlePointContact.barIndex">
+      {cmsContent.sections.singlePointContact.barIndex}
     </span>
   </div>
 
@@ -76,19 +40,19 @@ const accordionItems: AccordionItem[] = [
   <div class="spc-section__title-wrapper">
     <h2 class="spc-section__title">
       <span class="spc-section__title-row spc-section__title-row--1">
-        <span>ONE</span>
-        <span>BUILDER.ZERO</span>
+        <span data-cms-path="sections.singlePointContact.span">{cmsContent.sections.singlePointContact.span}</span>
+        <span data-cms-path="sections.singlePointContact.span2">{cmsContent.sections.singlePointContact.span2}</span>
       </span>
       <span class="spc-section__title-row spc-section__title-row--2">
-        <span>CONTRACTOR</span>
-        <span>CHAOS.</span>
+        <span data-cms-path="sections.singlePointContact.span3">{cmsContent.sections.singlePointContact.span3}</span>
+        <span data-cms-path="sections.singlePointContact.span4">{cmsContent.sections.singlePointContact.span4}</span>
       </span>
     </h2>
   </div>
 
   <!-- Centered Paragraph Description (node 125:697) -->
-  <p class="spc-section__desc">
-    ALM handles every permit, trade, and municipal inspection. You communicate strictly with one dedicated team.
+  <p class="spc-section__desc" data-cms-path="sections.singlePointContact.desc">
+    {cmsContent.sections.singlePointContact.desc}
   </p>
 
   <!-- Accordion List (node 125:702 - 125:747) -->
@@ -101,7 +65,7 @@ const accordionItems: AccordionItem[] = [
       >
         <!-- Background Image Container for Active State -->
         <div class="spc-accordion__bg" aria-hidden="true">
-          <img src={item.image} alt="" class="spc-accordion__bg-img" loading="lazy" />
+          <img src={item.image} alt="" class="spc-accordion__bg-img" loading="lazy" data-cms-path-src={`sections.singlePointContact.accordionItems.${index}.image`} />
           <div class="spc-accordion__bg-overlay"></div>
         </div>
 
@@ -114,8 +78,8 @@ const accordionItems: AccordionItem[] = [
           data-accordion-trigger
         >
           <div class="spc-accordion__header-left">
-            <span class="spc-accordion__index">{item.num}</span>
-            <span class="spc-accordion__short-title">{item.shortTitle}</span>
+            <span class="spc-accordion__index" data-cms-path={`sections.singlePointContact.accordionItems.${index}.num`}>{item.num}</span>
+            <span class="spc-accordion__short-title" data-cms-path={`sections.singlePointContact.accordionItems.${index}.shortTitle`}>{item.shortTitle}</span>
           </div>
           <div class="spc-accordion__icon-box" aria-hidden="true">
             <span class="spc-accordion__icon spc-accordion__icon--plus">
@@ -136,16 +100,16 @@ const accordionItems: AccordionItem[] = [
           <div class="spc-accordion__body-inner">
             <!-- Left Info Block -->
             <div class="spc-accordion__info">
-              <h3 class="spc-accordion__expanded-title" set:html={item.title.replace('\n', '<br />')} />
+              <h3 class="spc-accordion__expanded-title" set:html={item.title.replace('\n', '<br />')} data-cms-path={`sections.singlePointContact.accordionItems.${index}.title`} data-cms-html-lines />
               <div class="spc-accordion__desc-row">
-                <p class="spc-accordion__expanded-desc">{item.description}</p>
+                <p class="spc-accordion__expanded-desc" data-cms-path={`sections.singlePointContact.accordionItems.${index}.description`}>{item.description}</p>
                 <div class="spc-accordion__dot" aria-hidden="true"></div>
               </div>
             </div>
 
             <!-- Right Preview Thumbnail -->
             <div class="spc-accordion__thumb-box">
-              <img src={item.image} alt={item.shortTitle} class="spc-accordion__thumb-img" loading="lazy" />
+              <img src={item.image} alt={item.shortTitle} class="spc-accordion__thumb-img" loading="lazy" data-cms-path-src={`sections.singlePointContact.accordionItems.${index}.image`} />
             </div>
           </div>
         </div>

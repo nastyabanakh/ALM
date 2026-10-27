@@ -15,53 +15,21 @@ interface ShowcaseItem {
   active?: boolean;
 }
 
-const showcaseItems: ShowcaseItem[] = [
-  {
-    id: 'daily-layout',
-    title: 'Daily<br />Layout',
-    subtitle: 'Living, private, and outdoor spaces shaped for how your family actually lives.',
-    cardTitle: 'Daily Layout',
-    image: '/assets/section-05/daily-layout.webp',
-    active: true
-  },
-  {
-    id: 'turnkey-interiors',
-    title: 'Turnkey<br />Interiors',
-    subtitle: 'Cabinetry, fixtures, surfaces, and lighting delivered fully complete.',
-    cardTitle: 'Turnkey Interiors',
-    image: '/assets/section-05/turnkey-interiors.webp',
-    active: false
-  },
-  {
-    id: 'cohesive-finishes',
-    title: 'Cohesive<br />Finishes',
-    subtitle: 'Key finishes are chosen with the full interior and exterior in view.',
-    cardTitle: 'Cohesive Finishes',
-    image: '/assets/section-05/cohesive-finishes.webp',
-    active: false
-  },
-  {
-    id: 'outdoor-living',
-    title: 'Outdoor<br />Living',
-    subtitle: 'Facades, glazing, and terraces planned together—never as afterthoughts.',
-    cardTitle: 'Outdoor Living',
-    image: '/assets/section-05/outdoor-living.webp',
-    active: false
-  }
-];
+const cmsContent = (Astro.props as any).content;
+const showcaseItems: ShowcaseItem[] = cmsContent.sections.finishedStandard.showcaseItems;
 ---
 
-<section class="finished-standard" id="finished-standard" aria-label="The Finished Standard">
+<section data-cms-section="finishedStandard" class="finished-standard" id="finished-standard" aria-label="The Finished Standard">
   <!-- Top Sub-Header Bar & Divider (Frame 437 / Frame 433) -->
   <div class="finished-standard__bar">
     <div class="finished-standard__bar-left">
       <span class="finished-standard__bullet" aria-hidden="true"></span>
-      <span class="finished-standard__bar-title">
-        The finished standard
+      <span class="finished-standard__bar-title" data-cms-path="sections.finishedStandard.barTitle">
+        {cmsContent.sections.finishedStandard.barTitle}
       </span>
     </div>
-    <span class="finished-standard__bar-index" aria-hidden="true">
-      05//
+    <span class="finished-standard__bar-index" aria-hidden="true" data-cms-path="sections.finishedStandard.barIndex">
+      {cmsContent.sections.finishedStandard.barIndex}
     </span>
   </div>
 
@@ -69,11 +37,11 @@ const showcaseItems: ShowcaseItem[] = [
 
   <!-- Centered Section Heading & Description (Frame 432) -->
   <div class="finished-standard__header">
-    <h2 class="finished-standard__title">
-      Premium Means Finished Details, Not Left for Later
+    <h2 class="finished-standard__title" data-cms-path="sections.finishedStandard.title">
+      {cmsContent.sections.finishedStandard.title}
     </h2>
-    <p class="finished-standard__desc">
-      Premium is not a label. It is the layout, materials, kitchen, bathrooms, lighting, exterior work, and how those decisions fit together.
+    <p class="finished-standard__desc" data-cms-path="sections.finishedStandard.desc">
+      {cmsContent.sections.finishedStandard.desc}
     </p>
   </div>
 
@@ -94,6 +62,7 @@ const showcaseItems: ShowcaseItem[] = [
             alt=""
             class="finished-standard__bg-img"
             loading="lazy"
+            data-cms-path-src={`sections.finishedStandard.showcaseItems.${idx}.image`}
           />
         </div>
       ))}
@@ -103,8 +72,8 @@ const showcaseItems: ShowcaseItem[] = [
 
     <!-- Center Display Title & Description (Frame 456) -->
     <div class="finished-standard__center-info" id="fs-center-info">
-      <h3 class="finished-standard__center-title" id="fs-center-title" set:html={showcaseItems[0].title} />
-      <p class="finished-standard__center-desc" id="fs-center-desc">
+      <h3 class="finished-standard__center-title" id="fs-center-title" set:html={showcaseItems[0].title} data-cms-path="sections.finishedStandard.showcaseItems.0.title" data-cms-html-lines />
+      <p class="finished-standard__center-desc" id="fs-center-desc" data-cms-path="sections.finishedStandard.showcaseItems.0.subtitle">
         {showcaseItems[0].subtitle}
       </p>
     </div>
@@ -125,10 +94,12 @@ const showcaseItems: ShowcaseItem[] = [
             data-index={idx}
             data-title={item.title}
             data-desc={item.subtitle}
+            data-cms-path-data-title={`sections.finishedStandard.showcaseItems.${idx}.title`}
+            data-cms-path-data-desc={`sections.finishedStandard.showcaseItems.${idx}.subtitle`}
             aria-selected={item.active ? 'true' : 'false'}
             aria-label={`View ${item.cardTitle}`}
           >
-            <span class="finished-standard__card-title">
+            <span class="finished-standard__card-title" data-cms-path={`sections.finishedStandard.showcaseItems.${idx}.cardTitle`}>
               {item.cardTitle}
             </span>
 
@@ -138,6 +109,7 @@ const showcaseItems: ShowcaseItem[] = [
                 alt=""
                 class="finished-standard__thumb-img"
                 loading="lazy"
+                data-cms-path-src={`sections.finishedStandard.showcaseItems.${idx}.image`}
               />
               <div class="finished-standard__thumb-overlay"></div>
 

@@ -15,6 +15,7 @@ interface Props {
   ariaLabel?: string;
   tagId?: string;
   textId?: string;
+  cmsPaths?: { tag?: string; text?: string; buttonText?: string; buttonHref?: string };
 }
 
 const {
@@ -25,22 +26,23 @@ const {
   class: className = '',
   ariaLabel = 'Consultation info',
   tagId,
-  textId
+  textId,
+  cmsPaths
 } = Astro.props;
 ---
 
 <aside class:list={['glass-card', className]} aria-label={ariaLabel}>
   <div class="glass-card__body">
     <div class="glass-card__top">
-      <span class="glass-card__tag" id={tagId}>{tag}</span>
+      <span class="glass-card__tag" id={tagId} data-cms-path={cmsPaths?.tag}>{tag}</span>
       <span class="glass-card__bullet" aria-hidden="true"></span>
     </div>
-    <p class="glass-card__text" id={textId}>
+    <p class="glass-card__text" id={textId} data-cms-path={cmsPaths?.text}>
       {text}
     </p>
   </div>
   <div class="glass-card__cta">
-    <ButtonComposite text={buttonText} href={buttonHref} fullWidth={true} />
+    <ButtonComposite text={buttonText} href={buttonHref} fullWidth={true} cmsTextPath={cmsPaths?.buttonText} cmsHrefPath={cmsPaths?.buttonHref} />
   </div>
 </aside>
 

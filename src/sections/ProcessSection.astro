@@ -17,75 +17,33 @@ interface ProcessStep {
   active?: boolean;
 }
 
-const steps: ProcessStep[] = [
-  {
-    id: 'step-01',
-    num: '01//',
-    title: 'Consultation',
-    desc: 'We discuss the property, plans, preferred home, priorities, and known constraints.',
-    image: '/assets/section-06/step-01.webp'
-  },
-  {
-    id: 'step-02',
-    num: '02//',
-    title: 'Site & Plan Audit',
-    desc: 'ALM reviews property conditions and plans to identify needed engineering or design specialists.',
-    image: '/assets/section-06/step-02.webp'
-  },
-  {
-    id: 'step-03',
-    num: '03//',
-    title: 'Engineering & Permits',
-    desc: 'Existing plans are adapted with local architects and engineers to secure city approvals.',
-    image: '/assets/section-06/step-03.webp'
-  },
-  {
-    id: 'step-04',
-    num: '04//',
-    title: 'Budget & Selections',
-    desc: 'Scope, finishes, appliances, and materials are finalized and documented into a fixed agreement.',
-    image: '/assets/section-06/step-04.webp'
-  },
-  {
-    id: 'step-05',
-    num: '05//',
-    title: 'Construction',
-    desc: 'ALM manages on-site execution, subcontractors, and mandatory city inspections.',
-    image: '/assets/section-06/step-05.webp'
-  },
-  {
-    id: 'step-06',
-    num: '06//',
-    title: 'Final Handover',
-    desc: 'We walk the finished home together, resolve punch-list details, and close out all permits.',
-    image: '/assets/section-06/step-06.webp'
-  }
-];
+const cmsContent = (Astro.props as any).content;
+const steps: ProcessStep[] = cmsContent.sections.process.steps;
 ---
 
-<section class="process-section" id="process" aria-label="From First Call to Final Approval">
+<section data-cms-section="process" class="process-section" id="process" aria-label="From First Call to Final Approval">
   <div class="process-section__inner">
     <!-- Top Sub-Header Bar & Divider (Frame 437) -->
     <div class="process-section__bar">
       <div class="process-section__bar-left">
         <span class="process-section__bullet" aria-hidden="true"></span>
-        <span class="process-section__bar-title">Process</span>
+        <span class="process-section__bar-title" data-cms-path="sections.process.barTitle">{cmsContent.sections.process.barTitle}</span>
       </div>
-      <span class="process-section__bar-index">07//</span>
+      <span class="process-section__bar-index" data-cms-path="sections.process.barIndex">{cmsContent.sections.process.barIndex}</span>
     </div>
     <div class="process-section__divider" aria-hidden="true"></div>
 
     <!-- Monumental Headline (Syne Bold 103rem, Two justified lines) -->
     <div class="process-section__heading-box">
       <div class="process-section__heading-row">
-        <span>FROM</span>
-        <span>FIRST</span>
-        <span>CALL</span>
+        <span data-cms-path="sections.process.span">{cmsContent.sections.process.span}</span>
+        <span data-cms-path="sections.process.span2">{cmsContent.sections.process.span2}</span>
+        <span data-cms-path="sections.process.span3">{cmsContent.sections.process.span3}</span>
       </div>
       <div class="process-section__heading-row">
-        <span>TO</span>
-        <span>FINAL</span>
-        <span>APPROVAL</span>
+        <span data-cms-path="sections.process.span4">{cmsContent.sections.process.span4}</span>
+        <span data-cms-path="sections.process.span5">{cmsContent.sections.process.span5}</span>
+        <span data-cms-path="sections.process.span6">{cmsContent.sections.process.span6}</span>
       </div>
     </div>
 
@@ -98,19 +56,20 @@ const steps: ProcessStep[] = [
             id={step.id}
             data-index={idx}
             data-image={step.image}
+            data-cms-path-data-image={`sections.process.steps.${idx}.image`}
             role="tab"
             tabindex="0"
           >
             <div class="process-step__main">
               <!-- Left: Number + Title -->
               <div class="process-step__header">
-                <span class="process-step__num">{step.num}</span>
-                <h3 class="process-step__title">{step.title}</h3>
+                <span class="process-step__num" data-cms-path={`sections.process.steps.${idx}.num`}>{step.num}</span>
+                <h3 class="process-step__title" data-cms-path={`sections.process.steps.${idx}.title`}>{step.title}</h3>
               </div>
 
               <!-- Center: Description -->
               <div class="process-step__desc-box">
-                <p class="process-step__desc">{step.desc}</p>
+                <p class="process-step__desc" data-cms-path={`sections.process.steps.${idx}.desc`}>{step.desc}</p>
               </div>
             </div>
 

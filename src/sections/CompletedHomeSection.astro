@@ -14,7 +14,14 @@
  * — Smooth 60/120fps direct scroll synchronization (no lag jitter)
  */
 import ButtonComposite from '../components/ButtonComposite.astro';
-import content from '../data/content.json';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  content: CollectionEntry<'pages'>['data']['content'];
+}
+
+const { content } = Astro.props;
+
 
 const completedData = content.completedHome;
 
@@ -24,15 +31,11 @@ interface SpecItem {
 }
 
 const specs: SpecItem[] = completedData.specs || [];
-const collageImages = completedData.images || {
-  bathroom: '/assets/section-10/bathroom.webp',
-  office: '/assets/section-10/office.webp',
-  kitchen: '/assets/section-10/kitchen.webp',
-  livingRoom: '/assets/section-10/living-room.webp'
-};
+const collageImages = completedData.images;
+const cmsContent = (Astro.props as any).content;
 ---
 
-<section class="completed-home" id="completed-home" aria-label="The Completed Home">
+<section data-cms-section="completedHome" class="completed-home" id="completed-home" aria-label="The Completed Home">
   <!-- Top 120rem Spacer -->
   <div class="completed-home__top-spacer" aria-hidden="true"></div>
 
@@ -42,19 +45,19 @@ const collageImages = completedData.images || {
     <div class="completed-home__bar">
       <div class="completed-home__bar-main">
         <span class="completed-home__bullet" aria-hidden="true"></span>
-        <span class="completed-home__bar-label text-m">The completed home</span>
+        <span class="completed-home__bar-label text-m" data-cms-path="sections.completedHome.barLabel">{cmsContent.sections.completedHome.barLabel}</span>
       </div>
-      <span class="completed-home__bar-index text-m">11//</span>
+      <span class="completed-home__bar-index text-m" data-cms-path="sections.completedHome.barIndex">{cmsContent.sections.completedHome.barIndex}</span>
     </div>
     <div class="completed-home__divider" aria-hidden="true"></div>
 
     <!-- 2. SECTION HEADER (TITLE & DESCRIPTION) -->
     <div class="completed-home__header">
-      <h2 class="completed-home__title h2">
-        MOVE IN AFTER HANDOFF, NOT AFTER MORE CONSTRUCTION
+      <h2 class="completed-home__title h2" data-cms-path="sections.completedHome.title">
+        {cmsContent.sections.completedHome.title}
       </h2>
-      <p class="completed-home__desc text-m">
-        Every major finish is complete before you turn the key. We deliver homes ready for living, with all interior, exterior, and mechanical systems fully resolved.
+      <p class="completed-home__desc text-m" data-cms-path="sections.completedHome.desc">
+        {cmsContent.sections.completedHome.desc}
       </p>
     </div>
 
@@ -71,11 +74,11 @@ const collageImages = completedData.images || {
           <div class="completed-home__bathroom-box">
             <img
               src={collageImages.bathroom}
-              alt="Designer custom bathroom with vanity and ambient lighting"
+              alt={cmsContent.sections.completedHome.photoAlt}
               class="completed-home__photo"
               loading="lazy"
               decoding="async"
-            />
+             data-cms-path-alt="sections.completedHome.photoAlt"/>
           </div>
 
           <!-- Stack: Office (top) + Kitchen (bottom) — No Button -->
@@ -83,20 +86,20 @@ const collageImages = completedData.images || {
             <div class="completed-home__stack-top">
               <img
                 src={collageImages.office}
-                alt="Luxury custom home private office with large windows"
+                alt={cmsContent.sections.completedHome.photoAlt2}
                 class="completed-home__photo"
                 loading="lazy"
                 decoding="async"
-              />
+               data-cms-path-alt="sections.completedHome.photoAlt2"/>
             </div>
             <div class="completed-home__stack-bottom">
               <img
                 src={collageImages.kitchen}
-                alt="High-end modern kitchen with integrated appliances"
+                alt={cmsContent.sections.completedHome.photoAlt3}
                 class="completed-home__photo"
                 loading="lazy"
                 decoding="async"
-              />
+               data-cms-path-alt="sections.completedHome.photoAlt3"/>
             </div>
           </div>
         </div>
@@ -108,11 +111,11 @@ const collageImages = completedData.images || {
             <div class="completed-home__living-box">
               <img
                 src={collageImages.livingRoom}
-                alt="Spacious living room with high ceilings and custom finishes"
+                alt={cmsContent.sections.completedHome.photoAlt4}
                 class="completed-home__photo"
                 loading="lazy"
                 decoding="async"
-              />
+               data-cms-path-alt="sections.completedHome.photoAlt4"/>
             </div>
 
             <!-- Specifications List -->
@@ -129,8 +132,10 @@ const collageImages = completedData.images || {
               <!-- Right Bottom Full-Width CTA (40rem top gap, aligns exactly with bottom edge) -->
               <div class="completed-home__right-cta">
                 <ButtonComposite
-                  text="SCHEDULE A CONSULTATION"
-                  href="#contact"
+                  text={cmsContent.sections.completedHome.ctaText}
+                  href={cmsContent.sections.completedHome.ctaHref}
+                  cmsTextPath="sections.completedHome.ctaText"
+                  cmsHrefPath="sections.completedHome.ctaHref"
                   variant="dark"
                   fullWidth={true}
                 />

@@ -1,0 +1,27 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const posts = (await getCollection('posts')).sort((a, b) =>
+  (b.data.publishedAt || '').localeCompare(a.data.publishedAt || '')
+);
+---
+<BaseLayout title="Статті — ALM" description="Новини та статті ALM">
+  <main class="cms-list">
+    <a href="/">← На головну</a>
+    <h1>Статті</h1>
+    {posts.map(post => (
+      <article>
+        <h2><a href={`/blog/${post.data.slug}/`}>{post.data.title}</a></h2>
+        <p>{post.data.excerpt}</p>
+      </article>
+    ))}
+  </main>
+</BaseLayout>
+<style>
+  .cms-list{max-width:960px;margin:auto;padding:80px 24px;min-height:70vh}
+  h1{font-size:clamp(42px,7vw,84px);margin:30px 0}
+  article{padding:24px 0;border-top:1px solid currentColor}
+  h2{font-size:clamp(26px,4vw,42px);margin:0 0 12px}
+  p{max-width:700px}
+</style>
