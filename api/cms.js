@@ -1,4 +1,5 @@
 import { withProjectLock } from '../cms/project-workspace.mjs';
+import { assertTrustedWrite } from '../cms/security.mjs';
 import { checkAuth } from './admin.js';
 import { collectionFields } from '../cms/model.mjs';
 import { CmsError, discardDraft, getEntry, listEntries, listHistory, publishDraft, restoreHistoryToDraft, saveDraft, uploadImage } from '../cms/store.mjs';
@@ -17,6 +18,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ message: 'Method not allowed' });
   }
   try {
+    assertTrustedWrite(req);
     if (op === 'schema') return res.status(200).json({ collections: collectionFields });
     if (op === 'list') return res.status(200).json({ entries: await listEntries(collection) });
     if (op === 'entry') return res.status(200).json(await getEntry(collection, id));

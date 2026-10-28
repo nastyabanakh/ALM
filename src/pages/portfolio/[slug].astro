@@ -1,12 +1,16 @@
 ---
-import { getCollection } from 'astro:content';
+import { getCollection, getEntry } from 'astro:content';
+import { HOME_PAGE_ID } from '../../../cms/model.mjs';
+import { resolveEntryConstants } from '../../../cms/constants.mjs';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
 export async function getStaticPaths() {
   return (await getCollection('projects')).map(project => ({ params: { slug: project.data.slug }, props: { project } }));
 }
 
-const { project } = Astro.props;
+const { project: entry } = Astro.props;
+const home = await getEntry('pages', HOME_PAGE_ID);
+const project = { ...entry, data: resolveEntryConstants(entry.data, home?.data.content.consts || {}) };
 ---
 <BaseLayout title={project.data.seo.title} description={project.data.seo.description}>
   <main class="cms-entry">

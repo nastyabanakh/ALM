@@ -1,3 +1,4 @@
+import path from 'node:path';
 /** Run the existing Vercel handler inside Astro's local dev server. */
 export function cmsDevApi() {
   return {
@@ -8,17 +9,30 @@ export function cmsDevApi() {
         process.env.CMS_LOCAL_MODE = '1';
         updateConfig({
           vite: {
+            server: { watch: { ignored: ['**/.cms/**'] } },
             plugins: [{
               name: 'cms-local-api',
               configureServer(server) {
                 // Astro computes static paths at startup; refresh them when an entry is created.
-                let restartTimer;
-                server.watcher.on('all', (event, file) => {
-                  if (!['add', 'change', 'unlink'].includes(event) || !/[/\\]src[/\\]content[/\\](pages|posts|projects)[/\\].+\.json$/.test(file)) return;
+                let restartTimer, pendingRestart = false, activeRequests = 0;
+                const scheduleRestart = () => {
                   clearTimeout(restartTimer);
-                  restartTimer = setTimeout(() => server.restart(), 300);
+                  if (pendingRestart && !activeRequests) restartTimer = setTimeout(() => {
+                    if (activeRequests) return scheduleRestart();
+                    pendingRestart = false;
+                    server.restart();
+                  }, 1000);
+                };
+                server.watcher.on('all', (event, file) => {
+                  const relative = path.relative(process.cwd(), file).split(path.sep).join('/');
+                  if (!['add', 'change', 'unlink'].includes(event) || !/^src\/content\/(pages|posts|projects)\/.+\.json$/.test(relative)) return;
+                  pendingRestart = true; scheduleRestart();
                 });
                 server.middlewares.use('/api', async (req, res) => {
+                  activeRequests++; clearTimeout(restartTimer);
+                  let finished = false;
+                  const finish = () => { if (!finished) { finished = true; activeRequests--; scheduleRestart(); } };
+                  res.once('finish', finish); res.once('close', finish);
                   try {
                     const endpoint = new URL(req.url || '/', 'http://localhost').pathname;
                     if (endpoint !== '/admin' && endpoint !== '/cms') {

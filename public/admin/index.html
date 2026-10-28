@@ -379,7 +379,7 @@ body.record-dragging,body.record-dragging *{cursor:grabbing!important;user-selec
   <header class="top">
     <div class="top-title">Page editor</div>
     <div class="acts">
-      <div id="st" class="st"><i aria-hidden="true"></i><span>Loading…</span></div>
+      <div id="st" class="st" role="status" aria-live="polite" aria-atomic="true"><i aria-hidden="true"></i><span>Loading…</span></div>
       <div class="history-actions"><button id="undo" class="icon-btn" type="button" title="Undo (Ctrl/Cmd+Z)" aria-label="Undo"><span class="ui-icon" data-icon="undo-2"></span></button><button id="redo" class="icon-btn" type="button" title="Redo (Ctrl/Cmd+Shift+Z)" aria-label="Redo"><span class="ui-icon" data-icon="redo-2"></span></button></div>
       <button id="bPub" class="cta" disabled>
         <span class="cl">Publish</span>
@@ -423,7 +423,7 @@ body.record-dragging,body.record-dragging *{cursor:grabbing!important;user-selec
 </div>
 
 <!-- Toast -->
-<div id="toast" hidden></div>
+<div id="toast" role="status" aria-live="polite" aria-atomic="true" hidden></div>
 
 <script src="/admin/content-structure.js"></script>
 <script src="/admin/cms-workspace.js"></script>
@@ -474,7 +474,12 @@ import { inlineConstEditor } from "/admin/inline-const-editor.mjs";
       headers: { 'Content-Type': 'application/json' }
     };
     if (!isGet) opts.body = JSON.stringify(body);
-    const res = await fetch(url, opts);
+    let res;
+    for (let attempt = 0; ; attempt++) {
+      try { res = await fetch(url, opts); if (!isGet || ![502,503,504].includes(res.status) || attempt === 5) break; }
+      catch(error) { if (!isGet || attempt === 5) throw error; }
+      await new Promise(resolve => setTimeout(resolve, Math.min(150 * 2 ** attempt, 1200)));
+    }
     const data = await res.json().catch(() => ({}));
     if (!res.ok) {
       const fields = Array.isArray(data.details)
@@ -505,6 +510,7 @@ import { inlineConstEditor } from "/admin/inline-const-editor.mjs";
       preview(); status();
       $('pvF').src = S.page + '?cms-preview=1&v=' + Date.now();
     }
+    if (op === 'project-status') { S.entryConstUsage = data.constUsage || {}; S.entryRevisions = data.entries.filter(entry=>entry.collection!=='pages').map(entry => [entry.collection,entry.id,entry.revision]).sort(); persistHistorySoon(); }
     return data;
   }
 
@@ -548,7 +554,7 @@ import { inlineConstEditor } from "/admin/inline-const-editor.mjs";
   const resolveConst = value => ConstTokens.resolve(value, S.c?.consts || {});
 
   function constUsage(key) {
-    let count = 0;
+    let count = S.entryConstUsage?.[key] || 0;
     const walk = value => {
       if (typeof value === 'string') count += ConstTokens.references(value).filter(ref => ref.key === key).length;
       else if (Array.isArray(value)) value.forEach(walk);
@@ -557,10 +563,35 @@ import { inlineConstEditor } from "/admin/inline-const-editor.mjs";
     for (const [name, value] of Object.entries(S.c || {})) if (name !== 'consts') walk(value);
     return count;
   }
-  const history = { undo: [], redo: [], key: '', at: 0, busy: false };
+  const history = { undo: [], redo: [], key: '', at: 0, busy: false, ready: false };
+  let historyQueued = false, historyWarning = false;
+  const historyKey = () => LS + '.history.' + String(S.me || 'admin');
+  function persistHistorySoon() {
+    if (!history.ready || historyQueued || !S.sha || !S.c) return;
+    historyQueued = true;
+    queueMicrotask(() => {
+      historyQueued = false;
+      const snapshot = { version: 1, sha: S.sha, content: S.c, mediaRevision: S.media?.mediaRevision ?? null, entries: S.entryRevisions || [], undo: history.undo, redo: history.redo };
+      try { localStorage.setItem(historyKey(), JSON.stringify(snapshot)); }
+      catch { if (!historyWarning && history.undo.length) { historyWarning = true; toast('Browser storage is full. Undo history cannot survive a reload.', true); } }
+    });
+  }
+  function restoreHistory() {
+    try {
+      const saved = JSON.parse(localStorage.getItem(historyKey()) || 'null');
+      if (saved?.version === 1 && saved.sha === S.sha && same(saved.content,S.c) && saved.mediaRevision === (S.media?.mediaRevision ?? null) && same(saved.entries,S.entryRevisions || []) && Array.isArray(saved.undo) && Array.isArray(saved.redo)) {
+        history.undo = saved.undo; history.redo = saved.redo;
+      } else {
+        localStorage.removeItem(historyKey());
+        for (let index=0;index<(S.media?.historyPosition||0);index++) history.undo.push({kind:'media-draft',position:index+1});
+      }
+    } catch { /* Storage may be unavailable; the active session still has Undo. */ }
+    history.ready = true;
+  }
   function updateHistoryButtons() {
     $('undo').disabled = history.busy || !history.undo.length;
     $('redo').disabled = history.busy || !history.redo.length;
+    persistHistorySoon();
   }
   function recordSnapshot(key, snapshot) {
     const now = Date.now();
@@ -683,7 +714,7 @@ import { inlineConstEditor } from "/admin/inline-const-editor.mjs";
   $('undo').addEventListener('click', () => applyHistory('undo'));
   $('redo').addEventListener('click', () => applyHistory('redo'));
   document.addEventListener('keydown', event => {
-    if (!(event.ctrlKey || event.metaKey) || event.altKey) return;
+    if (!$('mod').hidden || !(event.ctrlKey || event.metaKey) || event.altKey) return;
     const key = event.key.toLowerCase();
     if (key !== 'z' && key !== 'y') return;
     event.preventDefault();
@@ -707,12 +738,14 @@ import { inlineConstEditor } from "/admin/inline-const-editor.mjs";
     saveChain = saveChain.catch(() => {}).then(async () => {
       const r = await api('save-draft', { content, expectedDraftRevision: S.draftRevision });
       S.draftRevision = r.draftRevision;
+      persistHistorySoon();
       try { localStorage.removeItem(LS); } catch (e) {}
     });
     return saveChain;
   }
   function changed() {
     clearTimeout(saveT);
+    persistHistorySoon();
     saveT = setTimeout(() => {
       try { localStorage.setItem(LS, JSON.stringify({ c: S.c, sha: S.sha, at: Date.now() })); } catch (e) {}
       saveDraftNow().catch(err => toast('Draft was not saved: ' + err.message, true));
@@ -971,6 +1004,7 @@ import { inlineConstEditor } from "/admin/inline-const-editor.mjs";
 
   function fieldValue(item) {
     if (!S.c) return item.value || '';
+    if (item.source === 'cmsEntry') return pageCMS.get(item.key) ?? '';
     if (item.source === 'componentProp') return item.main ? Components.defaultValue(S.c, item.descriptor, item.property) : Components.propertyValue(S.c, item.descriptor, item.property);
     if (item.source === 'content') return get(item.path) ?? item.value ?? '';
     if (item.source === 'pageSetting') return S.c.pageSettings?.[S.page]?.[item.key] || '';
@@ -1006,6 +1040,7 @@ import { inlineConstEditor } from "/admin/inline-const-editor.mjs";
     else pageContent[property][item.key] = { base: item.base, value };
   }
   function writeField(item, value) {
+    if (item.source === 'cmsEntry') { pageCMS.write(item.key, value); persistHistorySoon(); return; }
     if (same(fieldValue(item), value)) return;
     const config = item.linkType && !['pageSetting', 'componentProp'].includes(item.source) ? { ...linkConfig(item), type: item.linkType } : null;
     recordChange(`${item.source}:${S.page}:${item.path?.join('.') || item.key}`);
@@ -1218,9 +1253,15 @@ import { inlineConstEditor } from "/admin/inline-const-editor.mjs";
 
   const isImageAsset = url => /\.(png|jpe?g|webp|gif|avif|svg)(\?|$)/i.test(url);
   const isVideoAsset = url => /\.(mp4|webm)(?:[?#]|$)/i.test(url);
-  const assetThumb = asset => h('div', { class: 'asset-thumb' },
-    isImageAsset(asset.url) ? h('img', { src: (asset.previewUrl || asset.url) + (asset.previewUrl ? '&cmsv=' : '?cmsv=') + encodeURIComponent(asset.updatedAt || ''), alt: '' })
-      : isVideoAsset(asset.url) ? '▶' : '▣');
+  const assetThumb = asset => {
+    const thumb = h('div', { class: 'asset-thumb' });
+    if (isImageAsset(asset.url)) thumb.append(h('img', {
+      src: (asset.previewUrl || asset.url) + (asset.previewUrl ? '&cmsv=' : '?cmsv=') + encodeURIComponent(asset.updatedAt || ''), alt: '',
+      onerror: () => { thumb.dataset.mediaError = 'true'; thumb.replaceChildren(h('span', { role: 'img', 'aria-label': 'Image could not be loaded', title: 'Image could not be loaded. Replace this file.' }, '⚠ Cannot preview')); }
+    }));
+    else thumb.textContent = isVideoAsset(asset.url) ? '▶' : '▣';
+    return thumb;
+  };
   const assetUsed = asset => asset.used || JSON.stringify(S.c || {}).includes(asset.url);
 
   async function loadMedia() {
@@ -1309,9 +1350,10 @@ import { inlineConstEditor } from "/admin/inline-const-editor.mjs";
       const affected = S.media.assets.filter(asset => asset.folder === folder || asset.folder.startsWith(folder + '/'));
       modal(h('div', null, h('h2', null, 'Delete folder?'),
         h('p', { class: 'hint' }, `Delete “${folderName(folder)}” and all ${info.files} files inside (${info.images} images)?`),
+        info.blockedReason ? h('p',{class:'hint'},info.blockedReason) : null,
         affected.some(assetUsed) ? h('p', { class: 'hint' }, 'Used files must be replaced or removed from the site before deletion.') : null,
         h('div', { class: 'mod-f' }, h('button', { class: 'btn ghost', onclick: closeModal }, 'Cancel'),
-          h('button', { class: 'btn accent', ...(affected.some(assetUsed) ? { disabled: '' } : {}), onclick: async event => {
+          h('button', { class: 'btn accent', ...(affected.some(assetUsed) || info.blockedReason ? { disabled: '' } : {}), onclick: async event => {
             const button = event.currentTarget; button.disabled = true;
             try {
               const result = await api('media-folder-trash', { folder, expectedFiles: info.files });
@@ -1503,7 +1545,7 @@ import { inlineConstEditor } from "/admin/inline-const-editor.mjs";
         } catch (error) { toast(error.message, true); }
       });
       detail.replaceChildren(h('h2', null, selected.name),
-        isImageAsset(selected.url) ? h('img', { src: (selected.previewUrl || selected.url) + (selected.previewUrl ? '&cmsv=' : '?cmsv=') + encodeURIComponent(selected.updatedAt), alt: '' }) :
+        isImageAsset(selected.url) ? h('img', { src: (selected.previewUrl || selected.url) + (selected.previewUrl ? '&cmsv=' : '?cmsv=') + encodeURIComponent(selected.updatedAt), alt: '', onerror: event => { event.target.hidden = true; detail.prepend(h('p',{class:'media-load-error',role:'status'},'Image could not be loaded. Replace this file.')); } }) :
           isVideoAsset(selected.url) ? h('video', { src: (selected.previewUrl || selected.url) + (selected.previewUrl ? '&cmsv=' : '?cmsv=') + encodeURIComponent(selected.updatedAt), controls: '' }) : null,
         h('p', { class: 'hint media-file-path' }, selected.targetUrl !== selected.url ? `Draft: ${selected.targetUrl} · Published: ${selected.url}` : selected.url),
         h('p', { class: 'hint' }, assetUsed(selected) ? 'Used on site or in draft' : 'Not used on site or in draft'),
@@ -1539,7 +1581,7 @@ import { inlineConstEditor } from "/admin/inline-const-editor.mjs";
   function openConstPicker(item, insert) {
     const entries = Object.entries(S.c?.consts || {});
     const current = constRef(String(fieldValue(item)));
-    const candidates = entries.filter(([, entry]) => item.linkType ? entry.type === item.linkType : item.mode !== 'href' || ['phone', 'email', 'url'].includes(entry.type));
+    const candidates = entries.filter(([, entry]) => ['src','poster','data-image'].includes(item.mode) ? entry.type === 'url' && entry.value.startsWith('/assets/') : item.linkType ? entry.type === item.linkType : item.mode !== 'href' || ['phone', 'email', 'url'].includes(entry.type));
     modal(h('div', null,
       h('h2', null, 'Insert Const'),
       h('p', { class: 'hint' }, 'Insert a shared value at the cursor or replace the selected text.'),
@@ -1948,8 +1990,10 @@ import { inlineConstEditor } from "/admin/inline-const-editor.mjs";
   }
   var pageCMS = CMSWorkspace({ S, h, $, toast, cmsTabs, renameHeading, editorLabel, recordChange, changed,
     updateHistoryButtons, baseStatus: status, recordEntryChange, api, fitPreview,
-    refreshPages: async () => {
-      S.pages = (await api('pages-list')).pages;
+    valueControl, openMediaPicker, saveRootDraft: saveDraftNow,
+    resolveConst,
+    refreshPages: async pages => {
+      S.pages = pages || (await api('pages-list')).pages;
       $('pageSelect').replaceChildren(...S.pages.map(page => h('option', { value: page.path }, `${S.c.pageSettings?.[page.path]?.name || page.title} · ${page.path}`)));
       $('pageSelect').value = S.page;
     }, backButton });
@@ -2126,6 +2170,8 @@ import { inlineConstEditor } from "/admin/inline-const-editor.mjs";
       h('div', { class: 'mod-f' })
     ));
     mark(0, 'on');
+    modalBusy = true;
+    let committed = false;
 
     try {
       for (const setting of Object.values(S.c.linkSettings || {})) {
@@ -2138,36 +2184,73 @@ import { inlineConstEditor } from "/admin/inline-const-editor.mjs";
         }
       }
       const res = await api('publish', { expectedDraftRevision: S.draftRevision, expectedEntries: summary.entries, message });
+      committed = true;
       mark(0, 'ok');
       mark(1, 'on');
       if (res.content) S.c = res.content;
-      S.pub = clone(S.c);
-      if (res.media) { history.undo.length = 0; history.redo.length = 0; S.mediaSelection.clear(); await loadMedia(); updateHistoryButtons(); }
-      S.sha = res.sha;
+      S.pub = clone(S.c); S.sha = res.sha;
       S.draftRevision = null; S.projectPending = false;
-      await pageCMS.afterProjectPublish();
-      status();
+      history.undo.length = 0; history.redo.length = 0; history.key = '';
+      S.mediaSelection.clear();
+      if (res.mediaState) S.media = res.mediaState;
+      clearTimeout(saveT);
+      if (res.pages) S.pages = res.pages;
+      S.entryRevisions = [];
+      updateHistoryButtons(); status();
+      // The commit is complete. A refresh failure must never be reported as a
+      // failed publication, or encourage the user to submit the same changes twice.
+      try {
+        if (!res.mediaState) await loadMedia();
+        await pageCMS.afterProjectPublish(res);
+      } catch(error) { toast('Published. Refresh the editor to load the latest preview.', true); }
+      if (S.mode === 'media') renderMedia();
+      else if (S.mode === 'settings') renderPageSettings();
+      else if (S.mode === 'const') renderConst();
+      else if (S.mode === 'cms') renderCollections();
+      else render();
+      status(); preview();
       mark(1, 'ok');
       if (res.media?.error) $('modC').append(h('p', { class: 'hint' }, 'Content published. Media folders are still pending: ' + res.media.error));
+      modalBusy = false;
       $('modC').querySelector('.mod-f').replaceChildren(
         h('button', { class: 'btn accent', onclick: () => { closeModal(); $('pvF').src = S.page + '?cms-preview=1&v=' + Date.now(); } }, 'Done')
       );
     } catch (err) {
-      closeModal();
-      toast('Publish failed: ' + err.message, true);
+      modalBusy = false; closeModal();
+      toast(committed ? 'Published. Refresh the editor to load the latest state.' : 'Publish failed: ' + err.message, true);
     }
   }
 
+  let modalOpener = null, modalBusy = false;
   function modal(node) {
+    if ($('mod').hidden) modalOpener = document.activeElement;
     $('modC').style.width = '';
     $('modC').replaceChildren(node);
-    $('mod').hidden = false;
+    $('modC').setAttribute('role','dialog'); $('modC').setAttribute('aria-modal','true'); $('modC').tabIndex = -1;
+    const title = $('modC').querySelector('h2,h1');
+    if (title) { title.id = 'modal-title'; $('modC').setAttribute('aria-labelledby',title.id); }
+    else $('modC').setAttribute('aria-label','Editor dialog');
+    $('mod').hidden = false; $('app').inert = true; $('login').inert = true;
+    ($('modC').querySelector('input:not([type=file]),textarea,select,button:not([disabled])') || $('modC')).focus();
   }
   function closeModal() {
-    $('mod').hidden = true;
+    if (modalBusy) return;
+    $('mod').hidden = true; $('app').inert = false; $('login').inert = false;
     $('modC').replaceChildren();
+    if (modalOpener?.isConnected) modalOpener.focus();
+    modalOpener = null;
   }
   $('mod').addEventListener('mousedown', e => { if (e.target === $('mod')) closeModal(); });
+  document.addEventListener('keydown', event => {
+    if ($('mod').hidden) return;
+    if (event.key === 'Escape') { event.preventDefault(); closeModal(); return; }
+    if (event.key !== 'Tab') return;
+    const items = [...$('modC').querySelectorAll('button:not([disabled]),input:not([disabled]):not([type=file]),textarea:not([disabled]),select:not([disabled]),[tabindex="0"],[contenteditable="true"]')].filter(node=>node.getClientRects().length);
+    const first = items[0], last = items.at(-1);
+    if (!first) { event.preventDefault(); $('modC').focus(); }
+    else if (event.shiftKey && (document.activeElement === first || !$('modC').contains(document.activeElement))) { event.preventDefault(); last.focus(); }
+    else if (!event.shiftKey && (document.activeElement === last || !$('modC').contains(document.activeElement))) { event.preventDefault(); first.focus(); }
+  });
 
   /* Auth & Load */
   $('pwForm').addEventListener('submit', async e => {
@@ -2192,7 +2275,7 @@ import { inlineConstEditor } from "/admin/inline-const-editor.mjs";
 
   async function initApp() {
     $('login').hidden = true;
-    $('app').hidden = false;
+    $('app').hidden = false; $('app').inert = true; $('app').setAttribute('aria-busy','true');
 
     const me = await api('me').catch(() => ({ ready: true }));
     if (!me.ready) {
@@ -2211,6 +2294,7 @@ import { inlineConstEditor } from "/admin/inline-const-editor.mjs";
       $('st').lastChild.textContent = 'Could not load content';
       $('st').classList.add('dirty');
       $('ed').replaceChildren(h('div', { class: 'plate' }, h('h2', null, 'Could not load fields'), h('p', null, err.message)));
+      $('app').inert = false; $('app').removeAttribute('aria-busy');
       return;
     }
     S.pub = r.published.content;
@@ -2292,8 +2376,9 @@ import { inlineConstEditor } from "/admin/inline-const-editor.mjs";
     fitPreview();
     preview();
     try { await loadMedia(); S.projectPending = (await api('project-status')).entryChanges > 0;
-      for (let index=0;index<(S.media.historyPosition||0);index++) history.undo.push({kind:'media-draft',position:index+1});
-      updateHistoryButtons(); status(); } catch(error) { toast(error.message,true); }
+      restoreHistory();
+      updateHistoryButtons(); status(); } catch(error) { history.ready = true; updateHistoryButtons(); toast(error.message,true); }
+    $('app').inert = false; $('app').removeAttribute('aria-busy');
     if (location.hash === '#cms') setMode('cms');
     if (location.hash === '#media') setMode('media');
     if (location.hash === '#const') setMode('const');

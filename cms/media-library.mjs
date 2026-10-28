@@ -1,8 +1,10 @@
+import { isLocalAssetOccurrence, hasLocalAssetReference } from './asset-references.mjs';
 import { randomUUID } from 'node:crypto';
 import { copyFile, mkdir, readFile, readdir, realpath, rename, rm, rmdir, stat, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { publishMediaLayout } from './media-publish.mjs';
 import { CmsError } from './store.mjs';
+import { validateMediaBytes } from './media-validation.mjs';
 
 const root = process.cwd();
 const assetRoot = path.join(root, 'public/assets');
@@ -31,20 +33,26 @@ export async function mediaReferences() {
   await Promise.all([
     walk(path.join(root, 'src')),
     walk(path.join(root, '.cms/drafts')),
-    walk(path.join(root, 'public'))
+    walk(path.join(root, 'public')),
+    walk(path.join(root, 'cms')),
+    walk(path.join(root, 'api'))
   ]);
   const source = sources.map(item => item.text).join('\n');
   const dynamic = [];
-  for (const match of source.matchAll(/\/assets\/[^\s"'`<>\)]+/g)) {
+  // CMS/API infrastructure computes arbitrary paths; those generators do not
+  // represent a rendered use of every asset. Literal references still count.
+  const dynamicSource = sources.filter(({file})=>!file.startsWith(path.join(root,'cms')+path.sep)&&!file.startsWith(path.join(root,'api')+path.sep)).map(item=>item.text).join('\n');
+  for (const match of dynamicSource.matchAll(/\/assets\/[^\s"'`<>\)]+/g)) {
     const reference = match[0];
+    if (!isLocalAssetOccurrence(dynamicSource,match.index,reference)) continue;
     if (!reference.includes('${')) continue;
     const expression = reference.split(/\$\{[^}]+\}/g)
       .map(part => part.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('[^/]+');
     dynamic.push(new RegExp(`^${expression}$`));
   }
-  return url => source.includes(url) || source.includes(encodeURI(url)) || dynamic.some(pattern => pattern.test(url)) || sources.some(({file,text}) => {
+  return url => hasLocalAssetReference(source,url) || hasLocalAssetReference(source,encodeURI(url)) || hasLocalAssetReference(source,'public'+url) || dynamic.some(pattern => pattern.test(url)) || sources.some(({file,text}) => {
     const relative = path.relative(path.dirname(file), path.join(root, 'public', url.slice(1))).split(path.sep).join('/');
-    return text.includes(relative.startsWith('.') ? relative : './' + relative) || new RegExp('[\\x22\\x27`(]' + relative.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(?=[?#\\x22\\x27`)])').test(text);
+    return hasLocalAssetReference(text,relative.startsWith('.') ? relative : './' + relative) || new RegExp('[\\x22\\x27`(]' + relative.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(?=[?#\\x22\\x27`)])').test(text);
   });
 }
 
@@ -97,19 +105,11 @@ async function saveCatalog(data) {
   } finally { await rm(temporary, { force: true }); }
 }
 
-function detectedExtension(bytes) {
-  if (bytes.subarray(0, 8).equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]))) return 'png';
-  if (bytes.subarray(0, 3).equals(Buffer.from([255, 216, 255]))) return 'jpg';
-  if (bytes.toString('ascii', 0, 4) === 'RIFF' && bytes.toString('ascii', 8, 12) === 'WEBP') return 'webp';
-  if (bytes.toString('ascii', 4, 8) === 'ftyp') return 'mp4';
-  throw new CmsError(415, 'Upload PNG, JPEG, WebP, or MP4');
-}
-
-function decode(base64) {
+async function decode(base64) {
   if (typeof base64 !== 'string' || base64.length > maxBytes * 1.4) throw new CmsError(413, 'File is too large');
   const bytes = Buffer.from(base64, 'base64');
   if (!bytes.length || bytes.length > maxBytes) throw new CmsError(413, 'File is too large');
-  return { bytes, extension: detectedExtension(bytes) };
+  return { bytes, extension: await validateMediaBytes(bytes) };
 }
 
 export async function listMedia() {
@@ -125,7 +125,7 @@ export async function listMedia() {
       if (entry.isDirectory()) {
         folders.push(nextUrl);
         await walk(nextFile, nextUrl);
-      } else if (entry.isFile() && visibleMedia.test(entry.name)) {
+      } else if (entry.isFile()) {
         const info = await stat(nextFile);
         const metadata = data.assets[nextUrl] || {};
         assets.push({ url: nextUrl, folder: data.assetFolders?.[nextUrl] || url, filename: entry.name,
@@ -167,7 +167,7 @@ export async function removeEmptyMediaFolder({ folder }) {
 
 export async function uploadMedia({ folder = '/assets/uploads', filename = 'Media', base64 }) {
   const targetFolder = folderLocation(folder);
-  const { bytes, extension } = decode(base64);
+  const { bytes, extension } = await decode(base64);
   await assertInsideAssets(targetFolder);
   const stem = String(filename).replace(/\.[^.]+$/, '').normalize('NFKC').trim().replace(/[^\p{L}\p{N} _-]+/gu, '-').replace(/^-+|-+$/g, '').slice(0,100) || 'media';
   let url = `${folder.replace(/\/$/, '')}/${stem}.${extension}`;
@@ -207,7 +207,7 @@ export async function replaceMedia({ url, base64 }) {
   await assertInsideAssets(file);
   const currentExtension = path.extname(file).slice(1).toLowerCase().replace('jpeg', 'jpg');
   if (!replaceable.has(currentExtension)) throw new CmsError(415, 'This format cannot be replaced yet');
-  const { bytes, extension } = decode(base64);
+  const { bytes, extension } = await decode(base64);
   if (extension !== currentExtension) throw new CmsError(415, `Replacement requires a file in ${currentExtension.toUpperCase()}`);
   const backupFolder = path.join(root, '.cms/media-backups');
   await mkdir(backupFolder, { recursive: true });

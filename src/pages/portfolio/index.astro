@@ -1,8 +1,12 @@
 ---
-import { getCollection } from 'astro:content';
+import { getCollection, getEntry } from 'astro:content';
+import { HOME_PAGE_ID } from '../../../cms/model.mjs';
+import { resolveEntryConstants } from '../../../cms/constants.mjs';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
 const projects = await getCollection('projects');
+const home = await getEntry('pages', HOME_PAGE_ID);
+for (const entry of projects) entry.data = resolveEntryConstants(entry.data, home?.data.content.consts || {});
 ---
 <BaseLayout title="Портфоліо — ALM" description="Проєкти ALM">
   <main class="cms-list">

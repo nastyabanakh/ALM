@@ -1,3 +1,5 @@
+import { invalidConstReferences, resolveEntryConstants } from './constants.mjs';
+import { references } from '../public/admin/const-tokens.mjs';
 import { randomUUID } from 'node:crypto';
 import { cp, mkdir, readFile, rm, stat, writeFile } from 'node:fs/promises';
 import path from 'node:path';
@@ -20,8 +22,11 @@ async function drafts() {
 }
 export async function projectDraftStatus() {
   const entries=await drafts(),media=await listDraftMedia();
+  const constUsage = {};
+  const count = value => { if(typeof value==='string') { for(const ref of references(value)) constUsage[ref.key]=(constUsage[ref.key]||0)+1; } else if(Array.isArray(value)) value.forEach(count); else if(value && typeof value==='object') Object.values(value).forEach(count); };
+  for(const collection of ['posts','projects']) for(const summary of await listEntries(collection)) {const entry=await getEntry(collection,summary.id);count(entry.draft?.data||entry.published);}
   const changed = entries.filter(entry=>JSON.stringify(entry.draft.data)!==JSON.stringify(entry.published));
-  return { entryChanges:changed.filter(entry=>entry.collection!=='pages').length, entries:entries.map(entry=>({collection:entry.collection,id:entry.id,revision:entry.draft.revision,title:entry.draft.data.title||'Untitled'})), mediaRevision:media.mediaRevision, mediaPending:media.pendingChanges, pending:changed.length>0||media.pendingChanges };
+  return { constUsage, entryChanges:changed.filter(entry=>entry.collection!=='pages').length, entries:entries.map(entry=>({collection:entry.collection,id:entry.id,revision:entry.draft.revision,title:entry.draft.data.title||'Untitled'})), mediaRevision:media.mediaRevision, mediaPending:media.pendingChanges, pending:changed.length>0||media.pendingChanges };
 }
 export async function publishProject({expectedDraftRevision,expectedMediaRevision,expectedEntries}={}) {
   return withProjectLock(()=>withMediaMutation(async()=>{
@@ -30,6 +35,15 @@ export async function publishProject({expectedDraftRevision,expectedMediaRevisio
     if(expectedEntries) {
       const expected=new Map(expectedEntries.map(entry=>[entry.collection+':'+entry.id,entry.revision]));
       if(expected.size!==entries.length||entries.some(entry=>expected.get(entry.collection+':'+entry.id)!==entry.draft.revision))throw new CmsError(409,'CMS drafts changed. Review the latest project changes.');
+    }
+    const consts=(home.draft?.data || home.published).content.consts || {};
+    // Also check published entries: removing a shared Const must not break pages
+    // which have no draft of their own in this publication.
+    for(const collection of ['posts','projects']) for(const summary of await listEntries(collection)) {
+      const entry=await getEntry(collection,summary.id),data=entry.draft?.data||entry.published;
+      const issues=invalidConstReferences({...data,consts});
+      const checked=validateEntry(collection,resolveEntryConstants(data,consts));
+      if(issues.length||!checked.success) throw new CmsError(422,`Fix ${data.title||entry.id} before publishing`,issues.length?issues:checked.issues);
     }
     const routes=await listSitePages();
     for(const entry of entries) {
@@ -53,7 +67,7 @@ export async function publishProject({expectedDraftRevision,expectedMediaRevisio
       for(const entry of entries) {const current=await getEntry(entry.collection,entry.id);await publishDraft(entry.collection,{id:entry.id,expectedDraftRevision:current.draft.revision});}
       await writeFile(path.join(backup,'complete.json'),JSON.stringify({at:new Date().toISOString()}));
       const current=await getEntry('pages',HOME_PAGE_ID);
-      return {ok:true,sha:current.publishedRevision,content:current.published.content,media:mediaResult,publishedEntries:entries.length,state:'saved-locally'};
+      return {ok:true,sha:current.publishedRevision,content:current.published.content,media:mediaResult,mediaState:await listDraftMedia(),pages:await listSitePages(),entries:await Promise.all(entries.map(async entry=>({collection:entry.collection,id:entry.id,data:(await getEntry(entry.collection,entry.id)).published}))),publishedEntries:entries.length,state:'saved-locally'};
     } catch(error) {
       for(const {relative,index,exists} of existing) {const target=path.join(root,relative);await rm(target,{recursive:true,force:true});if(exists){await mkdir(path.dirname(target),{recursive:true});await cp(path.join(backup,String(index)),target,{recursive:true,verbatimSymlinks:true});}}
       throw error;

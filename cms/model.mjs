@@ -5,7 +5,7 @@ const slug = z.string().trim().min(1, 'Enter a page URL').max(120)
   .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'Use lowercase Latin letters, numbers, and hyphens without spaces');
 const text = z.string().trim();
 const media = z.object({
-  src: z.string().trim().startsWith('/assets/'),
+  src: z.string().trim().refine(value=>value.startsWith('/assets/') || /^\{\{const\.[a-z][a-zA-Z0-9]*\}\}$/.test(value), 'Choose an asset or media Const'),
   alt: z.string().trim().max(250)
 });
 const seo = z.object({

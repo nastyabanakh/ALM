@@ -1,3 +1,4 @@
+import { isLocalAssetOccurrence } from './asset-references.mjs';
 import { createHash, randomUUID } from 'node:crypto';
 import { mkdir, readFile, readdir, realpath, lstat, readlink, rename, rm, rmdir, symlink, writeFile } from 'node:fs/promises';
 import path from 'node:path';
@@ -107,8 +108,7 @@ async function publish() {
         }
         const localPattern = new RegExp([...localMappings.keys()].sort((a,b) => b.length-a.length).map(escape).join('|'), 'g');
         const after = before.replace(localPattern, (match, offset, text) => {
-          const next = text[offset + match.length];
-          return !match.endsWith('/') && next && /[\p{L}\p{N}_.-]/u.test(next) ? match : localMappings.get(match);
+          return isLocalAssetOccurrence(text, offset, match) ? localMappings.get(match) : match;
         });
         if (after !== before || file.startsWith(path.join(root, '.cms/drafts') + path.sep)) edits.push({ file, target: remapFile(file), before, after });
       }

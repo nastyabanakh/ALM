@@ -1,3 +1,6 @@
+import { listDraftMedia } from './media-draft.mjs';
+import { HOME_PAGE_ID } from './model.mjs';
+import { resolveEntryConstants } from './constants.mjs';
 import { getEntry } from './store.mjs';
 
 const escape = value => String(value ?? '').replace(/[&<>"']/g, character => ({
@@ -6,14 +9,17 @@ const escape = value => String(value ?? '').replace(/[&<>"']/g, character => ({
 
 export async function renderDraftPreview(collection, id) {
   const entry = await getEntry(collection, id);
-  const data = entry.draft?.data;
-  if (!data) return null;
+  if (!entry.draft?.data) return null;
+  const home = await getEntry('pages', HOME_PAGE_ID).catch(error=>{if(error.status===404)return null;throw error;});
+  const data = resolveEntryConstants(entry.draft.data,(home?.draft?.data||home?.published)?.content?.consts||{});
+  const library = await listDraftMedia().catch(error=>{if(error.code==='ENOENT')return {assets:[]};throw error;});
+  const previewSource = src => library.assets.find(asset=>asset.url===src)?.previewUrl || src;
   const paragraphs = String(data.body || '').split(/\n\s*\n/).filter(Boolean).map(value => `<p>${escape(value)}</p>`).join('');
   const cover = data.cover?.src
-    ? `<img class="cover" src="${escape(data.cover.src)}" alt="${escape(data.cover.alt)}">`
+    ? `<img class="cover" src="${escape(previewSource(data.cover.src))}" alt="${escape(data.cover.alt)}">`
     : '';
   const gallery = collection === 'projects' && Array.isArray(data.gallery)
-    ? `<div class="gallery">${data.gallery.map(image => `<img src="${escape(image.src)}" alt="${escape(image.alt)}">`).join('')}</div>`
+    ? `<div class="gallery">${data.gallery.map(image => `<img src="${escape(previewSource(image.src))}" alt="${escape(image.alt)}">`).join('')}</div>`
     : '';
   return `<!doctype html>
 <html lang="uk"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">

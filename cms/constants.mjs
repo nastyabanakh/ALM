@@ -48,3 +48,11 @@ export function invalidConstReferences(content) {
   walk(content, []);
   return issues;
 }
+
+// Entry identifiers/URLs remain stable while content fields may contain Const chips.
+export function resolveEntryConstants(entry, consts = {}) {
+  const walk = value => typeof value === 'string' ? resolveConstReference(value, consts)
+    : Array.isArray(value) ? value.map(walk)
+    : value && typeof value === 'object' ? Object.fromEntries(Object.entries(value).map(([key,item])=>[key,walk(item)])) : value;
+  return { ...walk(entry), ...Object.fromEntries(['id','slug','publishedAt'].filter(key=>key in entry).map(key=>[key,entry[key]])) };
+}

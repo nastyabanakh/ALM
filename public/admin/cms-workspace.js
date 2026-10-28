@@ -1,5 +1,5 @@
 /* Page-backed collections share the site editor, authentication and preview pane. */
-window.CMSWorkspace = function ({ S, h, $, toast, cmsTabs, renameHeading, editorLabel, recordChange, changed, updateHistoryButtons, baseStatus, recordEntryChange, api, refreshPages, backButton }) {
+window.CMSWorkspace = function ({ S, h, $, toast, cmsTabs, renameHeading, editorLabel, recordChange, changed, updateHistoryButtons, baseStatus, recordEntryChange, api, refreshPages, backButton, valueControl, openMediaPicker, saveRootDraft, resolveConst }) {
   const titles = { posts: 'Blog articles', projects: 'Portfolio' };
   const state = { collection: null, entries: null, fields: null, entry: null, saved: null, revision: null, published: null, busy: false, loading: false, error: null, undo: [], redo: [] };
   const clone = value => structuredClone(value);
@@ -36,8 +36,8 @@ window.CMSWorkspace = function ({ S, h, $, toast, cmsTabs, renameHeading, editor
     const same = state.collection === snapshot.collection && (state.entry?.id === snapshot.id || !state.entry && selected());
     let entry;
     try { entry = await request('entry', { collection: snapshot.collection, id: snapshot.id }); }
-    catch(error) { if (!same && !/not found/i.test(error.message)) throw error; entry = { draft: null, published: null }; }
-    const current = same ? clone(state.entry) : clone(entry.draft?.data || entry.published || null);
+    catch(error) { if (!/not found/i.test(error.message)) throw error; entry = { draft: null, published: null }; }
+    const current = state.collection === snapshot.collection && state.entry?.id === snapshot.id ? clone(state.entry) : clone(entry.draft?.data || entry.published || null);
     const inverse = { ...snapshot, content: current };
     if (snapshot.content === null) {
       if (entry.draft) await request('discard-draft', { collection: snapshot.collection }, { id: snapshot.id, expectedDraftRevision: entry.draft.revision });
@@ -49,13 +49,14 @@ window.CMSWorkspace = function ({ S, h, $, toast, cmsTabs, renameHeading, editor
     S.projectPending = (await api('project-status')).entryChanges > 0;
     state.entries = null; return inverse;
   }
-  async function afterProjectPublish() {
+  async function afterProjectPublish(result = {}) {
     if (state.entry?.id) {
-      const entry = await request('entry', { collection: state.collection, id: state.entry.id });
+      const published = result.entries?.find(entry=>entry.collection===state.collection && entry.id===state.entry.id)?.data;
+      const entry = published ? {published} : await request('entry', { collection: state.collection, id: state.entry.id });
       state.entry = clone(entry.published); state.saved = clone(entry.published); state.published = clone(entry.published); state.revision = null;
     }
     state.entries = null;
-    await refreshPages();
+    await refreshPages(result.pages);
     if (selected()) render();
   }
   async function save() {
@@ -108,9 +109,9 @@ window.CMSWorkspace = function ({ S, h, $, toast, cmsTabs, renameHeading, editor
       const entry = await request('entry', { collection: state.collection, id });
       state.entry = clone(entry.draft?.data || entry.published);
       state.saved = clone(state.entry); state.revision = entry.draft?.revision || null; state.published = entry.published;
-      state.undo = []; state.redo = []; render();
+      state.undo = []; state.redo = [];
     } catch (error) { toast(error.message, true); }
-    finally { state.busy = false; if (active()) { status(); updateHistory(); } }
+    finally { state.busy = false; if (active()) render(); }
   }
   function create() {
     state.entry = state.collection === 'posts'
@@ -124,7 +125,7 @@ window.CMSWorkspace = function ({ S, h, $, toast, cmsTabs, renameHeading, editor
   async function previewDraft() {
     if (state.busy) return;
     try {
-      state.busy = true; status(); await save();
+      state.busy = true; status(); await saveRootDraft(); await save();
       $('pvF').src = '/api/cms?' + new URLSearchParams({ op: 'preview', collection: state.collection, id: state.entry.id });
     } catch (error) { toast(error.message, true); }
     finally { state.busy = false; render(); }
@@ -134,27 +135,34 @@ window.CMSWorkspace = function ({ S, h, $, toast, cmsTabs, renameHeading, editor
     if (field.type === 'gallery') {
       const gallery = get('gallery') || [];
       gallery.forEach((image, index) => {
-        const src = h('input', { type: 'text', value: image.src || '', 'aria-label': `Image ${index + 1} URL` });
-        const alt = h('input', { type: 'text', value: image.alt || '', placeholder: 'Alt text', 'aria-label': `Image ${index + 1} alt text` });
-        src.oninput = () => write(`gallery.${index}.src`, src.value); alt.oninput = () => write(`gallery.${index}.alt`, alt.value);
-        wrap.append(src, alt, h('button', { type: 'button', class: 'btn sm ghost', onclick: () => { write('gallery', gallery.filter((_, i) => i !== index)); render(); } }, 'Remove image'));
+        const group=h('div',{class:'media-entry'},h('label',{class:'cap'},`Image ${index+1}`));
+        if (image.src) group.append(h('img',{class:'media-preview',src:resolveConst(image.src),alt:''}));
+        group.append(valueControl({source:'cmsEntry',key:`gallery.${index}.src`,mode:'src',label:`Image ${index+1} URL`}),
+          h('label',{class:'cap'},'Image description'),valueControl({source:'cmsEntry',key:`gallery.${index}.alt`,mode:'alt',label:`Image ${index+1} alt text`}),
+          h('button',{class:'btn sm ghost',type:'button',onclick:()=>openMediaPicker({source:'cmsEntry',key:`gallery.${index}.src`,mode:'src',mediaType:'image',label:`Image ${index+1}`})},'Replace image…'),
+          h('button',{type:'button',class:'btn sm ghost',onclick:()=>{write('gallery',gallery.filter((_,i)=>i!==index));render();}},'Remove image'));
+        wrap.append(group);
       });
       wrap.append(h('button', { type: 'button', class: 'btn sm ghost', onclick: () => { write('gallery', [...gallery, { src: '', alt: '' }]); render(); } }, '+ Image'));
       return wrap;
     }
-    const input = h(field.type === 'textarea' ? 'textarea' : 'input', {
-      'aria-label': field.label, ...(field.type === 'textarea' ? { rows: field.key === 'body' ? '10' : '3' } : { type: field.type === 'datetime' ? 'datetime-local' : 'text' })
-    });
-    input.value = field.type === 'datetime' ? (get(field.key) || '').slice(0, 16) : get(field.key) || '';
-    input.required = Boolean(field.required);
-    input.oninput = () => write(field.key, field.type === 'datetime' && input.value ? new Date(input.value).toISOString() : input.value);
-    if (field.type === 'slug') input.onblur = async () => {
-      const { slugify } = await import('/cms/slug.mjs');
-      input.value = slugify(input.value); write(field.key, input.value);
-    };
-    wrap.append(input);
+    let input;
+    const item = { source: 'cmsEntry', key: field.key, mode: field.type === 'media' ? 'src' : 'text', mediaType: field.type === 'media' ? 'image' : undefined, label: field.label };
+    if (['slug','datetime'].includes(field.type)) {
+      input = h('input', { 'aria-label': field.label, type: field.type === 'datetime' ? 'datetime-local' : 'text' });
+      input.value = field.type === 'datetime' ? (get(field.key) || '').slice(0,16) : get(field.key) || '';
+      input.required = Boolean(field.required);
+      input.oninput = () => write(field.key, field.type === 'datetime' && input.value ? new Date(input.value).toISOString() : input.value);
+      if (field.type === 'slug') input.onblur = async () => {
+        const { slugify } = await import('/cms/slug.mjs'); input.value = slugify(input.value); write(field.key,input.value);
+      };
+      wrap.append(input);
+    } else wrap.append(valueControl(item, { multi: field.type === 'textarea', rows: field.key === 'body' ? 10 : 3 }));
     if (field.type === 'media') {
-      if (get(field.key)) wrap.prepend(h('img', { class: 'media-preview', src: S.media?.assets.find(asset => asset.url === get(field.key))?.previewUrl || get(field.key), alt: '' }));
+      const altKey = field.key.replace(/\.src$/, '.alt');
+      wrap.append(h('label',{class:'cap'},'Image description'),valueControl({source:'cmsEntry',key:altKey,mode:'alt',label:'Cover alt text'}));
+      wrap.append(h('button',{class:'btn sm ghost',type:'button',onclick:()=>openMediaPicker(item)},'Replace image…'));
+      if (get(field.key)) wrap.prepend(h('img', { class: 'media-preview', src: S.media?.assets.find(asset => asset.url === resolveConst(get(field.key)))?.previewUrl || resolveConst(get(field.key)), alt: '' }));
       const file = h('input', { type: 'file', accept: 'image/png,image/jpeg,image/webp', hidden: '' });
       file.onchange = async () => {
         try {
@@ -182,7 +190,7 @@ window.CMSWorkspace = function ({ S, h, $, toast, cmsTabs, renameHeading, editor
       const draw = () => {
         list.replaceChildren(...state.entries.filter(entry => (entry.title || '').toLowerCase().includes(search.value.toLowerCase())).map(entry =>
           h('div', { class: 'record-card' }, h('button', { class: 'record-open', type: 'button', onclick: () => load(entry.id) },
-            h('strong', null, entry.title || 'Untitled'), h('small', null, entry.draft ? 'Draft' : 'Published'), h('span', null, '›')))));
+            h('strong', null, resolveConst(entry.title) || 'Untitled'), h('small', null, entry.draft ? 'Draft' : 'Published'), h('span', null, '›')))));
         if (!list.childElementCount) list.append(h('p', { class: 'hint' }, 'No records found.'));
       };
       search.oninput = draw; draw();
@@ -196,20 +204,20 @@ window.CMSWorkspace = function ({ S, h, $, toast, cmsTabs, renameHeading, editor
       catch (error) { toast(error.message, true); }
       finally { state.busy = false; render(); updateHistoryButtons(); }
     });
-    const title = h('h1', { class: 'rename-title', tabindex: '0', title: 'Double-click to edit title' }, state.entry.title || 'New entry');
-    const editTitle = () => { const input = $('ed').querySelector('[aria-label="Title"], [aria-label="Project name"]'); input?.focus(); input?.select(); };
+    const title = h('h1', { class: 'rename-title', tabindex: '0', title: 'Double-click to edit title' }, resolveConst(state.entry.title) || 'New entry');
+    const editTitle = () => { const input = $('ed').querySelector('[aria-label="Title"], [aria-label="Project name"]'); input?.focus(); if (input?.select) input.select(); else if (input) { const range=document.createRange();range.selectNodeContents(input);const selection=getSelection();selection.removeAllRanges();selection.addRange(range); } };
     title.ondblclick = editTitle; title.onkeydown = event => { if (event.key === 'Enter') editTitle(); };
     const actions = h('div', { class: 'cms-actions' },
       h('button', { class: 'btn ghost', type: 'button', ...(state.busy ? { disabled: '' } : {}), onclick: async () => {
         if (state.busy) return;
-        try { state.busy = true; status(); await save(); toast('Draft saved'); } catch (error) { toast(error.message, true); } finally { state.busy = false; render(); }
+        try { state.busy = true; status(); await saveRootDraft(); await save(); toast('Draft saved'); } catch (error) { toast(error.message, true); } finally { state.busy = false; render(); }
       } }, 'Save draft'),
       h('button', { class: 'btn ghost', type: 'button', onclick: previewDraft }, 'Preview draft'));
     $('ed').replaceChildren(back, h('div', { class: 'sec-h' }, title),
       h('p', { class: 'inspector-eyebrow' }, 'CMS PAGE · ' + name()),
-      ...(state.fields?.[state.collection] || []).map(fieldControl), actions);
+      ...(state.fields?.[state.collection] || []).filter(field=>!field.key.endsWith('.alt') || !(state.fields[state.collection].some(other=>other.type==='media' && other.key===field.key.replace(/\.alt$/,'.src')))).map(fieldControl), actions);
     updateHistory(); status();
   }
   addEventListener('beforeunload', event => { if (dirty() || state.busy) { event.preventDefault(); event.returnValue = ''; } });
-  return { active, selected, cards, render, leave, flush, pending, applyProjectHistory, afterProjectPublish, status };
+  return { get, write, active, selected, cards, render, leave, flush, pending, applyProjectHistory, afterProjectPublish, status };
 };

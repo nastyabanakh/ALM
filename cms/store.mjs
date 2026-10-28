@@ -154,11 +154,9 @@ export async function uploadImage({ base64 }) {
   }
   const data = Buffer.from(base64, 'base64');
   if (!data.length || data.length > 5 * 1024 * 1024) throw new CmsError(413, 'Image is too large');
-  let ext;
-  if (data.subarray(0, 8).equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]))) ext = 'png';
-  else if (data.subarray(0, 3).equals(Buffer.from([255, 216, 255]))) ext = 'jpg';
-  else if (data.toString('ascii', 0, 4) === 'RIFF' && data.toString('ascii', 8, 12) === 'WEBP') ext = 'webp';
-  else throw new CmsError(415, 'Use PNG, JPEG, or WebP');
+  const { validateMediaBytes } = await import('./media-validation.mjs');
+  const ext = await validateMediaBytes(data);
+  if (ext === 'mp4') throw new CmsError(415, 'Use PNG, JPEG, or WebP');
   const filename = `${randomUUID()}.${ext}`;
   const folder = path.join(root, 'public/assets/uploads');
   await mkdir(folder, { recursive: true });

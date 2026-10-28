@@ -4,6 +4,13 @@
   "template": "alm-home",
   "title": "Головна сторінка ALM",
   "content": {
+    "components": {
+      "main-button": {
+        "defaults": {
+          "text": "REQUEST A CONSULTATION"
+        }
+      }
+    },
     "componentInstances": {
       "/|hero.aboutText": {
         "overrides": {},

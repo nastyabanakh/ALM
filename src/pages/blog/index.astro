@@ -1,10 +1,14 @@
 ---
-import { getCollection } from 'astro:content';
+import { getCollection, getEntry } from 'astro:content';
+import { HOME_PAGE_ID } from '../../../cms/model.mjs';
+import { resolveEntryConstants } from '../../../cms/constants.mjs';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
 const posts = (await getCollection('posts')).sort((a, b) =>
   (b.data.publishedAt || '').localeCompare(a.data.publishedAt || '')
 );
+const home = await getEntry('pages', HOME_PAGE_ID);
+for (const entry of posts) entry.data = resolveEntryConstants(entry.data, home?.data.content.consts || {});
 ---
 <BaseLayout title="Статті — ALM" description="Новини та статті ALM">
   <main class="cms-list">
