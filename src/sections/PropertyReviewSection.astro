@@ -71,7 +71,7 @@ const reviewStepsJson = JSON.stringify(cmsContent.sections.propertyReview.review
         <div class="property-review__media-shadow" aria-hidden="true"></div>
 
         <!-- Full-Screen Interactive Overlay (Figma Node 125:556) -->
-        <div class="property-review__overlay" id="pr-overlay" aria-hidden="true" inert>
+        <div class="property-review__overlay" id="pr-overlay" data-cms-collection="sections.propertyReview.reviewSteps" data-cms-collection-label="Review steps" aria-hidden="true" inert>
           <!-- 4 Navigation Indicator Lines on the Left Middle -->
           <nav class="property-review__indicator" id="pr-indicator" aria-label="Review steps navigation">
             <button
@@ -109,7 +109,7 @@ const reviewStepsJson = JSON.stringify(cmsContent.sections.propertyReview.review
           </nav>
 
           <div class="property-review__overlay-inner">
-            <div class="property-review__overlay-row">
+            <div class="property-review__overlay-row" data-cms-item="0" id="pr-record">
               <h3 class="property-review__overlay-title" id="pr-overlay-title" set:html={cmsContent.sections.propertyReview.reviewSteps[0].title} data-cms-path="sections.propertyReview.reviewSteps.0.title" data-cms-html-lines />
 
               <GlassCard
@@ -164,17 +164,48 @@ const reviewStepsJson = JSON.stringify(cmsContent.sections.propertyReview.review
   }
 
   let REVIEW_STEPS: ReviewStep[] = JSON.parse(document.getElementById('pr-review-steps')?.textContent || '[]');
+  const reviewCollection = 'sections.propertyReview.reviewSteps';
+  const previewMode = parent !== window && new URLSearchParams(location.search).get('cms-preview') === '1';
+  let lockedEditorStep: number | null = null;
+  let reviewConsts: Record<string, any> = {};
+  function syncReviewBindings(index: number) {
+    const step = REVIEW_STEPS[index];
+    if (!step || !overlayTitle || !cardTag || !cardText) return;
+    const prefix = `${reviewCollection}.${index}`;
+    const changed = overlayTitle.dataset.cmsPath !== `${prefix}.title`;
+    const record = document.getElementById('pr-record');
+    if (record) record.dataset.cmsItem = String(index);
+    for (const [element, property] of [[overlayTitle, 'title'], [cardTag, 'tag'], [cardText, 'text']] as const) {
+      element.dataset.cmsPath = `${prefix}.${property}`;
+      const renderer = (window as any).CMSConstPreview;
+      if (renderer) renderer.render(element, step[property], reviewConsts, property === 'title');
+      else element.replaceChildren(...step[property].split(/<br\s*\/?\s*>|\n/gi).flatMap((part, line) => line ? [document.createElement('br'), document.createTextNode(part)] : [document.createTextNode(part)]));
+    }
+    const card = cardText.closest<HTMLElement>('[data-cms-instance]');
+    if (card?.dataset.cmsInstance) {
+      try {
+        const descriptor = JSON.parse(card.dataset.cmsInstance);
+        descriptor.id = `${prefix}.text`;
+        descriptor.paths = { ...descriptor.paths, tag: `${prefix}.tag`, text: `${prefix}.text` };
+        descriptor.props = { ...descriptor.props, tag: step.tag, text: step.text };
+        card.dataset.cmsInstance = JSON.stringify(descriptor);
+      } catch { /* A component without a descriptor remains an ordinary element. */ }
+    }
+    if (changed && previewMode) dispatchEvent(new CustomEvent('cms-bindings-refresh'));
+  }
   window.addEventListener('message', event => {
-    if (event.origin !== location.origin || event.source !== parent || event.data?.type !== 'CMS_DRAFT_UPDATE') return;
+    if (event.origin !== location.origin || event.source !== parent) return;
+    if (event.data?.type === 'CMS_SELECT_COLLECTION' && event.data.key !== reviewCollection) lockedEditorStep = null;
+    if (event.data?.type === 'CMS_SELECT_RECORD' && event.data.key === reviewCollection) {
+      const index = Number(event.data.index);
+      if (!Number.isInteger(index) || !REVIEW_STEPS[index]) return;
+      lockedEditorStep = index; updateStep(index, true);
+    }
+    if (event.data?.type !== 'CMS_DRAFT_UPDATE') return;
     const next = event.data.content?.sections?.propertyReview?.reviewSteps;
     if (!Array.isArray(next)) return;
-    REVIEW_STEPS = next;
-    const active = REVIEW_STEPS[activeStepIndex];
-    if (active) {
-      if (overlayTitle) overlayTitle.innerHTML = active.title;
-      if (cardTag) cardTag.textContent = active.tag;
-      if (cardText) cardText.textContent = active.text;
-    }
+    REVIEW_STEPS = next; reviewConsts = event.data.content?.consts || {};
+    syncReviewBindings(activeStepIndex);
   });
 
   let activeStepIndex = 0;
@@ -183,14 +214,21 @@ const reviewStepsJson = JSON.stringify(cmsContent.sections.propertyReview.review
   const prIndicator = document.getElementById('pr-indicator');
   const indicatorButtons = prIndicator ? prIndicator.querySelectorAll<HTMLButtonElement>('.property-review__indicator-btn') : [];
 
-  function updateStep(newIndex: number) {
+  function updateStep(newIndex: number, immediate = false) {
+    if (previewMode && lockedEditorStep !== null && !immediate) newIndex = lockedEditorStep;
+    if (!REVIEW_STEPS[newIndex]) return;
     indicatorButtons.forEach((btn, idx) => {
       btn.classList.toggle('is-active', idx === newIndex);
     });
 
-    if (newIndex === activeStepIndex) return;
+    if (newIndex === activeStepIndex && !immediate) return;
     activeStepIndex = newIndex;
-    const step = REVIEW_STEPS[newIndex];
+    if (immediate) {
+      if (stepTimeout) clearTimeout(stepTimeout);
+      syncReviewBindings(newIndex);
+      for (const element of [overlayTitle, cardTag, cardText]) if (element) { element.style.opacity = '1'; element.style.transform = ''; }
+      return;
+    }
 
     if (overlayTitle && cardTag && cardText) {
       if (stepTimeout) {
@@ -204,9 +242,8 @@ const reviewStepsJson = JSON.stringify(cmsContent.sections.propertyReview.review
       cardText.style.transform = 'translateY(6px)';
 
       stepTimeout = setTimeout(() => {
-        overlayTitle.innerHTML = step.title;
-        cardTag.innerText = step.tag;
-        cardText.innerText = step.text;
+        if (newIndex !== activeStepIndex) return;
+        syncReviewBindings(newIndex);
 
         overlayTitle.style.opacity = '1';
         overlayTitle.style.transform = 'translateY(0)';

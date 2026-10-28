@@ -1,4 +1,6 @@
 ---
+import { componentProps } from '../../cms/component-props.mjs';
+
 interface Props {
   text: string;
   href?: string;
@@ -26,13 +28,17 @@ const {
 } = Astro.props;
 
 const Tag = as === 'button' ? 'button' : 'a';
+const component = await componentProps('main-button', cmsTextPath || cmsHrefPath || id || 'main-button', { text, href, target: '_self' }, Astro.url.pathname, { text: cmsTextPath, href: cmsHrefPath });
 ---
 
 <Tag
-  href={as === 'a' ? href : undefined}
+  href={as === 'a' ? component.values.href : undefined}
+  target={as === 'a' ? component.values.target : undefined}
+  rel={component.values.target === '_blank' ? 'noopener noreferrer' : undefined}
   type={as === 'button' ? type : undefined}
   id={id}
   data-cms-component="Main button"
+  data-cms-instance={component.descriptor}
   data-cms-path-href={cmsHrefPath}
   class:list={[
     'btn-composite',
@@ -45,8 +51,8 @@ const Tag = as === 'button' ? 'button' : 'a';
 >
   <!-- Main label block -->
   <span class="btn-composite__main">
-    <span class="btn-composite__label text-btn font-normal" data-cms-path={cmsTextPath}>
-      {text}
+    <span class="btn-composite__label text-btn font-normal" data-cms-property="text" data-cms-path={cmsTextPath}>
+      {component.values.text}
     </span>
   </span>
 

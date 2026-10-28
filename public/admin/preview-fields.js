@@ -13,15 +13,10 @@
     const match = typeof value === 'string' && /^\{\{const\.([a-z][a-zA-Z0-9]*)(?:\|(tel|mailto))?\}\}$/.exec(value.trim());
     return match ? { key: match[1], format: match[2] || null } : null;
   };
-  const resolvedValue = value => {
-    const ref = constReference(value);
-    if (!ref) return value;
-    const text = currentContent?.consts?.[ref.key]?.value;
-    if (typeof text !== 'string') return value;
-    if (ref.format === 'tel') return `tel:${text.replace(/[^+\d]/g, '')}`;
-    if (ref.format === 'mailto') return `mailto:${text.trim()}`;
-    return text;
-  };
+  const resolvedValue = value => typeof value !== 'string' ? value : value.replace(/\{\{const\.([a-z][a-zA-Z0-9]*)(?:\|(tel|mailto))?\}\}/g, (token, key, format) => {
+    const text = currentContent?.consts?.[key]?.value; if (typeof text !== 'string') return token;
+    return format === 'tel' ? `tel:${text.replace(/[^+\d]/g, '')}` : format === 'mailto' ? `mailto:${text.trim()}` : text;
+  });
   const displayText = (element, value) => {
     if (element.hasAttribute('data-cms-html-lines')) {
       const escaped = String(value).split(/<br\s*\/?\s*>|\n/gi)
@@ -32,8 +27,8 @@
   };
   const bindElement = (element, resolved, mode = 'text', category = 'static') => {
       bindings.push({ element, path: resolved, mode });
-      const fieldId = `content:${resolved.join('.')}:${mode}`;
-      element.dataset.cmsFieldId = fieldId;
+      const fieldId = () => `content:${resolved.join('.')}:${mode}`;
+      element.dataset.cmsFieldId = fieldId();
       if (mode !== 'text') element.addEventListener('dblclick', event => {
         const ref = constReference(lookup(resolved));
         if (!ref) return;
@@ -54,10 +49,13 @@
             parent.postMessage({ type: 'CMS_CONST_FOCUS', key: ref.key }, parentOrigin);
             return;
           }
-          if (resolved.some(part => typeof part === 'number')) {
-            parent.postMessage({ type: 'CMS_FIELD_FOCUS', id: fieldId }, parentOrigin); return;
+          if (/\{\{const\./.test(String(lookup(resolved) ?? ''))) {
+            parent.postMessage({ type: 'CMS_FIELD_FOCUS', id: fieldId() }, parentOrigin); return;
           }
-          parent.postMessage({ type: 'CMS_FIELD_FOCUS', id: fieldId }, parentOrigin);
+          if (resolved.some(part => typeof part === 'number')) {
+            parent.postMessage({ type: 'CMS_FIELD_FOCUS', id: fieldId() }, parentOrigin); return;
+          }
+          parent.postMessage({ type: 'CMS_FIELD_FOCUS', id: fieldId() }, parentOrigin);
           if (element.hasAttribute('data-cms-html-lines')) {
             element.textContent = String(lookup(resolved) ?? '').replace(/<br\s*\/?\s*>/gi, '\n');
             element.style.whiteSpace = 'pre-line';
@@ -101,10 +99,32 @@
       }
   };
   const bind = (selector, path, mode = 'text', category = 'static') => {
-    document.querySelectorAll(selector).forEach((element, index) =>
-      bindElement(element, typeof path === 'function' ? path(index) : path, mode, category));
+    document.querySelectorAll(selector).forEach((element, index) => {
+      if (bindings.some(binding => binding.element === element && binding.mode === mode)) return;
+      bindElement(element, typeof path === 'function' ? path(index) : path, mode, category);
+    });
   };
 
+  function bindMarkedElements() {
+    for (const element of document.querySelectorAll('*')) {
+      for (const [attribute, value] of Object.entries(element.dataset)) {
+        if (!attribute.startsWith('cmsPath') || typeof value !== 'string' || !value) continue;
+        const mode = attribute === 'cmsPath' ? 'text' : attribute.slice('cmsPath'.length)
+          .replace(/^./, letter => letter.toLowerCase()).replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`);
+        const resolved = value.split('.').map(part => /^\d+$/.test(part) ? Number(part) : part);
+        const existing = bindings.find(binding => binding.element === element && binding.mode === mode);
+        if (existing) {
+          existing.path.splice(0, existing.path.length, ...resolved);
+          element.dataset.cmsFieldId = `content:${resolved.join('.')}:${mode}`;
+        } else bindElement(element, resolved, mode, element.closest('a,button') ? 'component' : 'static');
+      }
+    }
+  }
+  bindMarkedElements();
+  addEventListener('cms-bindings-refresh', () => {
+    bindMarkedElements();
+    dispatchEvent(new CustomEvent('cms-bindings-changed'));
+  });
   bind('.hero__badge-text', ['hero', 'badgeText']);
   bind('.hero__title', ['hero', 'title']);
   bind('.hero .glass-card__tag', ['hero', 'aboutTag']);
@@ -150,22 +170,12 @@
   bind('.builder-accountability__cta-wrap .btn-composite__label', ['builderAccountability', 'ctaText'], 'text', 'component');
   bind('.site-footer__contacts-list .site-footer__contact-link:first-child', ['contacts', 'email']);
   bind('.site-footer__contacts-list .site-footer__contact-link:last-child', ['contacts', 'phone']);
-  for (const element of document.querySelectorAll('[data-cms-path],[data-cms-path-src],[data-cms-path-poster],[data-cms-path-href],[data-cms-path-alt],[data-cms-path-placeholder]')) {
-    for (const [attribute, value] of Object.entries(element.dataset)) {
-      if (!attribute.startsWith('cmsPath') || typeof value !== 'string' || !value) continue;
-      const mode = attribute === 'cmsPath' ? 'text' : attribute.slice('cmsPath'.length)
-        .replace(/^./, letter => letter.toLowerCase()).replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`);
-      const resolved = value.split('.').map(part => /^\d+$/.test(part) ? Number(part) : part);
-      if (bindings.some(binding => binding.element === element && binding.mode === mode)) continue;
-      bindElement(element, resolved, mode, element.closest('a,button') ? 'component' : 'static');
-    }
-  }
   // The preview discovers the editor layout from the rendered page and these
   // existing collection bindings, rather than from a second list in /admin.
   window.__cmsPreviewBindings = bindings;
 
   const style = document.createElement('style');
-  style.textContent = '.cms-editable:hover{outline:2px dashed #3b82f6!important;outline-offset:3px;cursor:text!important}.cms-editable:empty::before{content:"Edit text";opacity:.35}.cms-editing{outline:3px solid #3b82f6!important;outline-offset:3px;cursor:text!important;user-select:text!important}.cms-component:hover,.cms-component.cms-editing{outline-color:#a855f7!important}.cms-record:hover,.cms-record.cms-editing{outline-color:#22c55e!important}.cms-field-selected{outline:3px solid #fff!important;outline-offset:4px!important}.cms-variable:hover{outline:none!important}.cms-variable::after{content:none!important}.cms-const-selected{outline:none!important}';
+  style.textContent = '.cms-editable:hover{outline:2px dashed #3b82f6!important;outline-offset:3px;cursor:text!important}.cms-editable:empty::before{content:"Edit text";opacity:.35}.cms-editing{outline:3px solid #3b82f6!important;outline-offset:3px;cursor:text!important;user-select:text!important}.cms-component:hover,.cms-component.cms-editing{outline-color:#a855f7!important}.cms-record:hover,.cms-record.cms-editing{outline-color:#22c55e!important}.cms-field-selected{outline:3px solid #fff!important;outline-offset:4px!important}.cms-variable:hover{outline:none!important}.cms-variable::after{content:none!important}.cms-const-selected{outline:2px solid #b780ff!important;outline-offset:4px!important;background-color:#a15ce91c!important}';
   document.head.append(style);
 
   window.addEventListener('message', event => {
@@ -178,14 +188,26 @@
     if (event.data?.type !== 'CMS_DRAFT_UPDATE') return;
     currentContent = event.data.content;
     if (!currentContent) return;
+    const changedVideos = new Set();
     for (const { element, path, mode } of bindings) {
       if (element.classList.contains('cms-editing')) continue;
       const rawValue = lookup(path);
       const value = resolvedValue(rawValue);
       if (value == null) continue;
-      if (mode === 'text') displayText(element, value);
-      else element.setAttribute(mode, String(value));
+      if (mode === 'text' && window.CMSConstPreview) window.CMSConstPreview.render(element, rawValue, currentContent.consts, element.hasAttribute('data-cms-html-lines'));
+      else if (mode === 'text') displayText(element, value);
+      else if (mode === 'src' && element.dataset.cmsMediaSource === String(value)) continue;
+      else if (element.getAttribute(mode) !== String(value)) {
+        element.setAttribute(mode, String(value));
+        if (mode === 'src') {
+          element.dataset.cmsMediaSource = String(value);
+          if (element.tagName === 'SOURCE') element.setAttribute('type', /\.webm(?:[?#]|$)/i.test(String(value)) ? 'video/webm' : 'video/mp4');
+          const video = element.tagName === 'VIDEO' ? element : element.closest('video');
+          if (video) changedVideos.add(video);
+        }
+      }
     }
+    for (const video of changedVideos) { video.load(); if (video.autoplay) video.play().catch(() => {}); }
     for (const element of new Set(bindings.map(binding => binding.element))) {
       const connected = bindings.filter(binding => binding.element === element && constReference(lookup(binding.path)));
       const binding = connected.find(binding => binding.mode === 'text') || connected[0];

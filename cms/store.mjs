@@ -184,3 +184,13 @@ async function publishDraftUnlocked(collection, { id, expectedDraftRevision }) {
   await rm(files.draft, { force: true });
   return { id, publishedRevision: revision(checked.data), state: 'saved-locally' };
 }
+
+
+export async function discardDraft(collection, { id, expectedDraftRevision }) {
+  return serializeEntry(`${collection}/${id}`, async () => {
+    const file = paths(collection,id).draft;
+    const draft = await readJson(file);
+    if (!draft || draft.revision !== expectedDraftRevision) throw new CmsError(409,'Draft changed elsewhere');
+    await rm(file,{force:true}); return {id};
+  });
+}

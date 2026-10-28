@@ -5,6 +5,7 @@
  * title tag, square bullet indicator, description, and ButtonComposite.
  */
 import ButtonComposite from './ButtonComposite.astro';
+import { componentProps } from '../../cms/component-props.mjs';
 
 interface Props {
   tag?: string;
@@ -29,16 +30,17 @@ const {
   textId,
   cmsPaths
 } = Astro.props;
+const component = await componentProps('glass-card', cmsPaths?.text || textId || 'glass-card', { tag, text }, Astro.url.pathname, { tag: cmsPaths?.tag, text: cmsPaths?.text });
 ---
 
-<aside class:list={['glass-card', className]} aria-label={ariaLabel}>
+<aside data-cms-component="Glass card" data-cms-instance={component.descriptor} class:list={['glass-card', className]} aria-label={ariaLabel}>
   <div class="glass-card__body">
     <div class="glass-card__top">
-      <span class="glass-card__tag" id={tagId} data-cms-path={cmsPaths?.tag}>{tag}</span>
+      <span class="glass-card__tag" data-cms-property="tag" id={tagId} data-cms-path={cmsPaths?.tag}>{component.values.tag}</span>
       <span class="glass-card__bullet" aria-hidden="true"></span>
     </div>
-    <p class="glass-card__text" id={textId} data-cms-path={cmsPaths?.text}>
-      {text}
+    <p class="glass-card__text" data-cms-property="text" id={textId} data-cms-path={cmsPaths?.text}>
+      {component.values.text}
     </p>
   </div>
   <div class="glass-card__cta">

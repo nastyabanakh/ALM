@@ -5,7 +5,10 @@ import path from 'node:path';
 import { HOME_PAGE_ID } from '../cms/model.mjs';
 import { CmsError, getEntry, listHistory, publishDraft, saveDraft, uploadImage } from '../cms/store.mjs';
 import { discoverPage } from '../cms/source-manifest.mjs';
-import { createMediaFolder, listMedia, removeEmptyMediaFolder, replaceMedia, stashMedia, swapMediaBackup, unstashMedia, updateMedia, uploadMedia } from '../cms/media-library.mjs';
+import { withMediaMutation, moveMediaSelection, trashMediaSelection, restoreMediaSelection, renameMediaFolder, mediaFolderInfo, stashMediaFolder, restoreMediaFolder, createMediaFolder, listMedia, removeEmptyMediaFolder, replaceMedia, stashMedia, swapMediaBackup, unstashMedia, updateMedia, uploadMedia } from '../cms/media-library.mjs';
+import { listDraftMedia, stageMediaOperation, mediaDraftHistory, discardMediaDraft, publishMediaDraft, serveMediaDraft, draftFolderInfo } from '../cms/media-draft.mjs';
+import { projectDraftStatus, publishProject, withProjectLock } from '../cms/project-workspace.mjs';
+import { publishMediaLayout } from '../cms/media-publish.mjs';
 import { listSitePages } from '../cms/page-list.mjs';
 
 /**
@@ -181,46 +184,61 @@ export default async function handler(req, res) {
       return res.status(200).json({ pages: await listSitePages() });
     }
 
+    if (op === 'project-status' && req.method === 'GET') return res.status(200).json(await projectDraftStatus());
+
     if (op?.startsWith('media-')) {
       if (!LOCAL_MODE) return res.status(501).json({ message: 'Media library is available locally only' });
-      if (op === 'media-list' && req.method === 'GET') return res.status(200).json(await listMedia());
+      return withMediaMutation(async () => {
+      const respondFileChange = async operation => {
+        const result = await operation;
+        if (result.filesystem?.files || result.filesystem?.folders) {
+          const page = await getEntry('pages', HOME_PAGE_ID);
+          result.siteState = { published: { content: page.published.content, sha: page.publishedRevision }, draft: page.draft?.data.content || null, draftRevision: page.draft?.revision || null };
+        }
+        return res.status(200).json(result);
+      };
+      if (op === 'media-preview' && req.method === 'GET') return serveMediaDraft(req,res);
+      if (op === 'media-list' && req.method === 'GET') return res.status(200).json(await listDraftMedia());
       if (req.method !== 'POST') return res.status(405).json({ message: 'Method not allowed' });
+      if (op === 'media-draft-undo' || op === 'media-draft-redo') return res.status(200).json(await mediaDraftHistory({ ...body, direction: op.endsWith('undo') ? 'undo' : 'redo' }));
+      if (op === 'media-draft-discard') return res.status(200).json(await discardMediaDraft());
+      if (op === 'media-publish-folders' || op === 'media-draft-publish') throw new CmsError(409, 'Use the shared project Publish action.');
+      if (op === 'media-folder-info') return res.status(200).json(await draftFolderInfo(body));
+      if (['media-update','media-folder','media-folder-rename','media-move-selection','media-stash','media-trash-selection','media-folder-trash','media-folder-remove','media-upload','media-replace'].includes(op)) return res.status(200).json(await stageMediaOperation(op,body));
+      if (['media-unstash','media-restore-selection','media-folder-restore','media-swap-backup'].includes(op)) return res.status(409).json({ message: 'Use media draft Undo or Redo.' });
+      if (op === 'media-move-selection') return respondFileChange(moveMediaSelection(body));
+      if (op === 'media-trash-selection') return res.status(200).json(await trashMediaSelection(body));
+      if (op === 'media-restore-selection') return res.status(200).json(await restoreMediaSelection(body));
       if (op === 'media-upload') return res.status(200).json(await uploadMedia(body));
-      if (op === 'media-update') return res.status(200).json(await updateMedia(body));
+      if (op === 'media-update') return respondFileChange(updateMedia(body));
       if (op === 'media-replace') return res.status(200).json(await replaceMedia(body));
       if (op === 'media-swap-backup') return res.status(200).json(await swapMediaBackup(body));
       if (op === 'media-stash') return res.status(200).json(await stashMedia(body));
       if (op === 'media-unstash') return res.status(200).json(await unstashMedia(body));
       if (op === 'media-folder') return res.status(200).json(await createMediaFolder(body));
+      if (op === 'media-folder-rename') return respondFileChange(renameMediaFolder(body));
+      if (op === 'media-folder-info') return res.status(200).json(await mediaFolderInfo(body));
+      if (op === 'media-folder-trash') return res.status(200).json(await stashMediaFolder(body));
+      if (op === 'media-folder-restore') return res.status(200).json(await restoreMediaFolder(body));
       if (op === 'media-folder-remove') return res.status(200).json(await removeEmptyMediaFolder(body));
       return res.status(404).json({ message: 'Unknown media operation' });
+      });
     }
 
     if (LOCAL_MODE && op === 'save-draft') {
       if (req.method !== 'POST') return res.status(405).json({ message: 'Method not allowed' });
       const page = await getEntry('pages', HOME_PAGE_ID);
-      const saved = await saveDraft('pages', {
+      const saved = await withProjectLock(() => saveDraft('pages', {
         id: HOME_PAGE_ID,
         data: { ...page.published, content: { ...page.published.content, ...body.content } },
         expectedDraftRevision: body.expectedDraftRevision || null
-      });
+      }));
       return res.status(200).json({ draftRevision: saved.draft.revision });
     }
 
     if (LOCAL_MODE && op === 'publish') {
       if (req.method !== 'POST') return res.status(405).json({ message: 'Method not allowed' });
-      const pageDraft = await getEntry('pages', HOME_PAGE_ID);
-      const sitePages = await listSitePages();
-      for (const setting of Object.values(pageDraft.draft?.data.content?.linkSettings || {})) {
-        if (!['page', 'section'].includes(setting.type)) continue;
-        if (!sitePages.some(page => page.id === setting.pageId)) throw new CmsError(422, 'Choose an existing page for every automatic link');
-        if (setting.type === 'section' && !setting.sectionId) throw new CmsError(422, 'Choose a section for every page section link');
-      }
-      const result = await publishDraft('pages', {
-        id: HOME_PAGE_ID,
-        expectedDraftRevision: body.expectedDraftRevision
-      });
-      return res.status(200).json({ ok: true, sha: result.publishedRevision, state: result.state });
+      return res.status(200).json(await publishProject(body));
     }
 
     if (LOCAL_MODE && op === 'history') {

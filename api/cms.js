@@ -1,6 +1,7 @@
+import { withProjectLock } from '../cms/project-workspace.mjs';
 import { checkAuth } from './admin.js';
 import { collectionFields } from '../cms/model.mjs';
-import { CmsError, getEntry, listEntries, listHistory, publishDraft, restoreHistoryToDraft, saveDraft, uploadImage } from '../cms/store.mjs';
+import { CmsError, discardDraft, getEntry, listEntries, listHistory, publishDraft, restoreHistoryToDraft, saveDraft, uploadImage } from '../cms/store.mjs';
 import { renderDraftPreview } from '../cms/preview.mjs';
 
 export default async function handler(req, res) {
@@ -27,10 +28,11 @@ export default async function handler(req, res) {
       res.setHeader('Content-Security-Policy', "default-src 'none'; img-src 'self'; style-src 'unsafe-inline'");
       return res.status(200).end(html);
     }
-    if (op === 'save-draft') return res.status(200).json(await saveDraft(collection, req.body || {}));
-    if (op === 'publish') return res.status(200).json(await publishDraft(collection, req.body || {}));
-    if (op === 'restore-draft') return res.status(200).json(await restoreHistoryToDraft(collection, req.body || {}));
-    if (op === 'upload') return res.status(200).json(await uploadImage(req.body || {}));
+    if (op === 'discard-draft') return res.status(200).json(await withProjectLock(() => discardDraft(collection, req.body || {})));
+    if (op === 'save-draft') return res.status(200).json(await withProjectLock(() => saveDraft(collection, req.body || {})));
+    if (op === 'publish') return res.status(409).json({ message: 'Use the shared project Publish action.' });
+    if (op === 'restore-draft') return res.status(200).json(await withProjectLock(() => restoreHistoryToDraft(collection, req.body || {})));
+    if (op === 'upload') return res.status(409).json({ message: 'Use the shared Media draft upload.' });
     return res.status(404).json({ message: 'Unknown operation' });
   } catch (error) {
     if (error instanceof CmsError) return res.status(error.status).json({ message: error.message, details: error.details });

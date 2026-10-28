@@ -1,5 +1,7 @@
 ---
+import { componentProps } from '../../cms/component-props.mjs';
 interface Props {
+  cmsInstanceId?: string;
   ariaLabel?: string;
   href?: string;
   active?: boolean;
@@ -8,14 +10,20 @@ interface Props {
 const {
   ariaLabel = 'Select option',
   href = '#',
-  active = false
+  active = false,
+  cmsInstanceId
 } = Astro.props;
+const component = await componentProps('circle-arrow', cmsInstanceId || href, { ariaLabel, href, target: '_self' }, Astro.url.pathname);
 ---
 
 <a
-  href={href}
+  data-cms-component="Circle arrow"
+  data-cms-instance={component.descriptor}
+  href={component.values.href}
+  target={component.values.target}
+  rel={component.values.target === '_blank' ? 'noopener noreferrer' : undefined}
   class:list={['circle-arrow-btn', { 'circle-arrow-btn--active': active }]}
-  aria-label={ariaLabel}
+  aria-label={component.values.ariaLabel}
 >
   <svg
     width="20"

@@ -1,6 +1,8 @@
 import { readdir } from 'node:fs/promises';
 import path from 'node:path';
 import { getEntry, listEntries } from './store.mjs';
+import { HOME_PAGE_ID } from './model.mjs';
+import { collectionPages } from './collection-pages.mjs';
 
 const root = path.join(process.cwd(), 'src/pages');
 
@@ -26,5 +28,7 @@ export async function listSitePages() {
       if (published?.slug) pages.push({ id: `${collection}:${entry.id}`, path: `/${prefix}/${published.slug}/`, title: published.title, kind: collection });
     }
   }
+  const home = await getEntry('pages', HOME_PAGE_ID);
+  pages.push(...collectionPages(home.published?.content).map(({ item, key, record, ...page }) => page));
   return pages.sort((a, b) => a.path === '/' ? -1 : b.path === '/' ? 1 : a.path.localeCompare(b.path));
 }

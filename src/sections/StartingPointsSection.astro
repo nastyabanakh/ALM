@@ -91,6 +91,7 @@ const cmsContent = (Astro.props as any).content;
               'starting-points__card',
               { 'starting-points__card--active': item.active }
             ]}
+            data-cms-item={idx}
             data-step-index={idx}
             data-step-num={item.num.replace('.', '')}
             data-step-note={item.note}
@@ -104,6 +105,7 @@ const cmsContent = (Astro.props as any).content;
               </h3>
             </div>
             <CircleArrowButton
+              cmsInstanceId={`starting-point:${item.id}`}
               active={item.active}
               ariaLabel={`Select: ${item.title}`}
               href={`#${item.id}`}

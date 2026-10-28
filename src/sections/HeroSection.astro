@@ -22,13 +22,14 @@ const cmsContent = (Astro.props as any).content;
       muted
       loop
       playsinline
-      preload="none"
+      preload="metadata"
       poster={hero.videoPoster}
+      data-cms-path-poster="hero.videoPoster"
     >
       <source
         src={hero.videoUrl}
-        type="video/mp4"
-        media="(min-width: 768px)"
+        data-cms-path-src="hero.videoUrl"
+        type={/\.webm(?:[?#]|$)/i.test(hero.videoUrl) ? "video/webm" : "video/mp4"}
       />
     </video>
     <div class="hero__overlay"></div>

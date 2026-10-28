@@ -13,15 +13,10 @@
     const match = typeof value === 'string' && /^\{\{const\.([a-z][a-zA-Z0-9]*)(?:\|(tel|mailto))?\}\}$/.exec(value.trim());
     return match ? { key: match[1], format: match[2] || null } : null;
   };
-  const resolveConst = (value, consts) => {
-    const ref = constReference(value);
-    if (!ref) return value;
-    const text = consts?.[ref.key]?.value;
-    if (typeof text !== 'string') return value;
-    if (ref.format === 'tel') return `tel:${text.replace(/[^+\d]/g, '')}`;
-    if (ref.format === 'mailto') return `mailto:${text.trim()}`;
-    return text;
-  };
+  const resolveConst = (value, consts) => typeof value !== 'string' ? value : value.replace(/\{\{const\.([a-z][a-zA-Z0-9]*)(?:\|(tel|mailto))?\}\}/g, (token, key, format) => {
+    const text = consts?.[key]?.value; if (typeof text !== 'string') return token;
+    return format === 'tel' ? `tel:${text.replace(/[^+\d]/g, '')}` : format === 'mailto' ? `mailto:${text.trim()}` : text;
+  });
   const markConst = (element, value, consts) => {
     if (!previewMode) return;
     const ref = constReference(value);
@@ -37,7 +32,7 @@
     }
     element.classList.toggle('cms-const-selected', Boolean(selectedConstKey) && ref?.key === selectedConstKey);
   };
-  const excluded = 'script,style,svg,noscript,code,pre,textarea,select,option,[data-cms-ignore]';
+  const excluded = 'script,style,svg,noscript,code,pre,textarea,select,option,[data-cms-ignore],[data-cms-const-fragment]';
   const semanticRoots = [...document.querySelectorAll('main section, main header, main footer')]
     .filter(element => !element.parentElement?.closest('section,header,footer'));
   const roots = semanticRoots.length ? semanticRoots : [...document.querySelectorAll('main')];
@@ -45,12 +40,17 @@
   const attributes = [];
   const mapped = previewMode ? window.__cmsPreviewBindings || [] : [];
   const structuredPage = location.pathname === '/';
-  const sectionKey = (root, index) => root.id || `${root.tagName.toLowerCase()}-${index}`;
+  const sectionKey = (root, index) => {
+    // Anchor IDs can repeat in imported pages; editor identities must not.
+    const key = root.dataset.cmsSection || root.id || `${root.tagName.toLowerCase()}-${index}`;
+    const first = roots.findIndex(element => (element.dataset.cmsSection || element.id) === key);
+    return first >= 0 && first !== index ? `${key}-${index}` : key;
+  };
   const ownSection = element => roots.find(root => root.contains(element));
   const labelFor = (element, mode, value) => {
     if (mode === 'href') return 'Link · ' + (element.textContent || '').trim().slice(0, 42);
     if (mode === 'src' || mode === 'poster' || mode === 'data-image') return (element.tagName === 'SOURCE' ? 'Video · ' : 'Image · ') + (element.getAttribute('alt') || element.getAttribute('aria-label') || '').slice(0, 42);
-    if (mode === 'alt') return 'Image description';
+    if (mode === 'alt') return element.closest('[aria-hidden="true"]') ? 'Decorative image description' : 'Image description';
     if (mode === 'placeholder') return 'Placeholder';
     if (mode === 'aria-label') return 'Accessible label';
     if (/^H[1-6]$/.test(element.tagName)) return 'Heading · ' + value.slice(0, 42);
@@ -95,6 +95,7 @@
         return;
       }
       parent.postMessage({ type: 'CMS_FIELD_FOCUS', id: `text:${key}` }, parentOrigin);
+      if (/\{\{const\./.test(field.value)) return;
       element.contentEditable = 'plaintext-only';
       element.classList.add('cms-editing');
       element.focus();
@@ -163,7 +164,6 @@
       }
     }
     for (const candidate of candidates) {
-      if (structuredPage) continue;
       if (!previewMode && published.staticText?.[candidate.key]?.base !== candidate.text.trim()) continue;
       if (candidate.node) {
         const wrapper = document.createElement('span');
@@ -187,7 +187,8 @@
       // A source-code change takes precedence over an override made for older text.
       const value = saved?.base === field.base && typeof saved.value === 'string' ? saved.value : field.base;
       field.value = value;
-      field.element.textContent = field.prefix + resolveConst(value, consts) + field.suffix;
+      if (window.CMSConstPreview) window.CMSConstPreview.render(field.element, field.prefix + value + field.suffix, consts);
+      else field.element.textContent = field.prefix + resolveConst(value, consts) + field.suffix;
       markConst(field.element, value, consts);
     }
     for (const field of attributes) {
@@ -207,7 +208,8 @@
 
   if (!previewMode) return;
   const previewStyle = document.createElement('style');
-  previewStyle.textContent = '.cms-editable:hover{outline:2px dashed #3b82f6!important;outline-offset:3px;cursor:text!important}.cms-editing{outline:3px solid #3b82f6!important;outline-offset:3px;user-select:text!important}.cms-field-selected{outline:3px solid #fff!important;outline-offset:4px!important}.cms-variable:hover{outline:none!important}.cms-variable::after{content:none!important}.cms-const-selected{outline:none!important}';
+  previewStyle.textContent = '.cms-editable:hover{outline:2px dashed #3b82f6!important;outline-offset:3px;cursor:text!important}.cms-editing{outline:3px solid #3b82f6!important;outline-offset:3px;user-select:text!important}.cms-field-selected{outline:3px solid #fff!important;outline-offset:4px!important}.cms-variable:hover{outline:none!important}.cms-variable::after{content:none!important}.cms-const-selected{outline:2px solid #b780ff!important;outline-offset:4px!important;background-color:#a15ce91c!important}';
+  previewStyle.textContent += 'html{color-scheme:dark;scrollbar-width:thin!important;scrollbar-color:#454545 transparent!important}*{scrollbar-width:thin!important;scrollbar-color:#454545 transparent!important}*::-webkit-scrollbar{width:5px!important;height:5px!important;background:transparent!important}*::-webkit-scrollbar-track{background:transparent!important}*::-webkit-scrollbar-thumb{background:#454545!important;border-radius:8px!important}*::-webkit-scrollbar-thumb:hover{background:#737373!important}*::-webkit-scrollbar-corner{background:transparent!important}';
   document.head.append(previewStyle);
   const buildStructure = () => roots.map((root, index) => {
     const key = sectionKey(root, index);
@@ -218,13 +220,12 @@
     for (const binding of mapped) {
       if (!root.contains(binding.element)) continue;
       const id = `content:${binding.path.join('.')}:${binding.mode}`;
-      if (sectionFields.some(field => field.source === 'content' && field.path.join('.') === binding.path.join('.'))) continue;
       const value = binding.mode === 'text' ? binding.element.textContent.trim() : binding.element.getAttribute(binding.mode) || '';
-      sectionFields.push({ id, source: 'content', path: binding.path, mode: binding.mode,
+      sectionFields.push({ id, source: 'content', path: [...binding.path], mode: binding.mode, bindingIndex: mapped.indexOf(binding),
         label: labelFor(binding.element, binding.mode, value), value,
         target: binding.mode === 'href' ? binding.element.getAttribute('target') || '_self' : undefined,
         htmlLines: binding.element.hasAttribute('data-cms-html-lines') || /<br\s*\/?\s*>/i.test(value),
-        mediaType: binding.element.tagName === 'SOURCE' ? 'video' : 'image',
+        mediaType: binding.element.closest('video') && binding.mode === 'src' ? 'video' : 'image',
         order: orderedElements.indexOf(binding.element) });
     }
     for (const field of fields.filter(item => item.section === root)) {
@@ -235,22 +236,96 @@
       sectionFields.push({ id: `attribute:${field.key}`, source: 'staticAttribute', key: field.key,
         base: field.base, mode: field.name, label: field.label, value: field.base,
         target: field.name === 'href' ? field.element.getAttribute('target') || '_self' : undefined,
-        mediaType: field.element.tagName === 'SOURCE' ? 'video' : 'image',
+        mediaType: field.element.closest('video') && field.name === 'src' ? 'video' : 'image',
         order: orderedElements.indexOf(field.element) });
     }
+    // Infer the rendered boundary of each record from its indexed bindings.
+    const recordBindings = new Map();
+    for (const binding of mapped.filter(binding => root.contains(binding.element))) {
+      const offset = binding.path.findIndex(part => typeof part === 'number');
+      if (offset < 1) continue;
+      const path = binding.path.slice(0, offset), index = binding.path[offset], key = path.join('.');
+      const identity = `${key}:${index}`;
+      if (!recordBindings.has(identity)) recordBindings.set(identity, { key, path, index, elements: [] });
+      recordBindings.get(identity).elements.push(binding.element);
+    }
+    // Infer only the smallest shared boundary, never grow a record into the section.
+    const recordRoots = [...recordBindings.values()].flatMap(record => {
+      let node = record.elements[0];
+      while (node && !record.elements.every(element => node.contains(element))) node = node.parentElement;
+      if (!node || node === root || node.matches('section,header,footer,main')) return [];
+      const mixed = mapped.some(binding => {
+        if (!node.contains(binding.element)) return false;
+        const offset = binding.path.findIndex(part => typeof part === 'number');
+        return offset < 1 || binding.path.slice(0, offset).join('.') !== record.key || binding.path[offset] !== record.index;
+      });
+      return mixed ? [] : [{ ...record, root: node }];
+    });
+    const fromBinding = binding => {
+      const offset = binding.path.findIndex(part => typeof part === 'number');
+      if (offset < 1) return null;
+      const path = binding.path.slice(0, offset); return { key: path.join('.'), path, index: binding.path[offset] };
+    };
+    const recordFor = (element, field) => {
+      // A field's own indexed path is stronger evidence than DOM proximity.
+      if (field?.source === 'content') { const own = fromBinding(field); if (own) return own; }
+      const direct = mapped.find(binding => binding.element === element && fromBinding(binding));
+      if (direct) return fromBinding(direct);
+      const item = element.closest('[data-cms-item]');
+      if (item && root.contains(item)) {
+        const declared = item.dataset.cmsCollection || item.closest('[data-cms-collection]')?.dataset.cmsCollection;
+        const ownBindings = mapped.filter(binding => item.contains(binding.element)).map(fromBinding).filter(Boolean);
+        const keys = [...new Set(ownBindings.map(record => record.key))];
+        const key = declared || (keys.length === 1 ? keys[0] : null);
+        const index = Number(item.dataset.cmsItem);
+        if (key && Number.isInteger(index) && index >= 0) return { key, path: key.split('.'), index };
+      }
+      // Explicit static fields outside a record remain section fields.
+      if (field?.source === 'content' || mapped.some(binding => binding.element === element && !fromBinding(binding))) return null;
+      const candidates = recordRoots.filter(record => record.root.contains(element));
+      const identities = new Set(candidates.map(record => `${record.key}:${record.index}`));
+      if (identities.size !== 1) return null;
+      const record = candidates.sort((a,b) => a.root.contains(b.root) ? 1 : -1)[0];
+      return record ? { key: record.key, path: record.path, index: record.index } : null;
+    };
+    for (const element of root.querySelectorAll('[data-cms-group-id]')) { delete element.dataset.cmsGroupId; delete element.dataset.cmsGroupType; }
     const owners = new Map();
     for (const field of sectionFields) {
-      const binding = field.source === 'content' ? mapped.find(item => `content:${item.path.join('.')}:${item.mode}` === field.id)
+      const binding = field.source === 'content' ? mapped[field.bindingIndex]
         : (field.source === 'staticText' ? fields : attributes).find(item => item.key === field.key);
       const element = binding?.element;
       if (!element) continue;
-      const owner = element.closest('[data-cms-item]') || element.closest('[data-cms-component]') || (element.matches('img,video,source') ? (element.closest('video') || element) : element.closest('a,button')) || element;
-      if (!owners.has(owner)) owners.set(owner, `${key}:element:${owners.size}`);
+      const mediaOwner = element.matches('img,video,source') ? (element.closest('video') || (element.closest('picture')?.querySelector('img')) || element) : null;
+      const owner = mediaOwner || element.closest('[data-cms-instance]') || element.closest('a,button') || element;
+      const imageBinding = mediaOwner && mapped.find(binding => binding.element === owner && binding.mode === 'src');
+      if (!owners.has(owner)) {
+        let componentId; try { componentId = JSON.parse(owner.dataset.cmsInstance).id; } catch {}
+        owners.set(owner, imageBinding ? `${key}:media:${imageBinding.path.join('.')}` : componentId ? `${key}:component:${componentId}` : `${key}:dom:${elementPath(root, owner)}`);
+      }
       field.groupId = owners.get(owner);
-      field.groupType = owner.matches('img,video,source') ? 'image' : owner.matches('a,button,[data-cms-component]') ? 'component' : 'text';
-      field.groupLabel = owner.dataset.cmsComponent || (field.groupType === 'component' ? 'Button' : field.groupType === 'image' ? 'Image' : /^H[1-6]$/.test(owner.tagName) ? 'Heading' : 'Text');
+      field.record = recordFor(element, field);
+      field.groupType = owner.hasAttribute('data-cms-instance') ? 'component' : owner.matches('img,picture,video,source') ? 'image' : owner.matches('a,button') ? 'link' : 'text';
+      if (owner.dataset.cmsInstance) {
+        try { field.component = JSON.parse(owner.dataset.cmsInstance); } catch {}
+        field.componentProperty = element.dataset.cmsProperty || ({ href: 'href', target: 'target', 'aria-label': 'ariaLabel' })[field.mode];
+      }
+      field.groupLabel = owner.dataset.cmsComponent || (field.groupType === 'link' ? (owner.tagName === 'BUTTON' ? 'Button' : 'Link') : field.groupType === 'image' ? 'Image' : /^H[1-6]$/.test(owner.tagName) ? 'Heading' : 'Text');
       owner.dataset.cmsGroupId = field.groupId;
       owner.dataset.cmsGroupType = field.groupType;
+    }
+    for (const owner of root.querySelectorAll('[data-cms-instance]')) {
+      if ([...owners.keys()].includes(owner)) continue;
+      let descriptor; try { descriptor = JSON.parse(owner.dataset.cmsInstance); } catch { continue; }
+      const groupId = `${key}:component:${descriptor.id}`;
+      owner.dataset.cmsGroupId = groupId; owner.dataset.cmsGroupType = 'component';
+      if (sectionFields.some(field => field.groupId === groupId)) continue;
+      sectionFields.push({ id: groupId, groupId, groupType: 'component', groupLabel: owner.dataset.cmsComponent || 'Component', component: descriptor, record: recordFor(owner), mode: 'text', value: owner.textContent.trim(), order: orderedElements.indexOf(owner) });
+    }
+    for (const field of sectionFields) {
+      const owner = [...root.querySelectorAll('[data-cms-group-id]')].find(element => element.dataset.cmsGroupId === field.groupId);
+      let parent = owner?.parentElement;
+      while (parent && parent !== root && !parent.dataset.cmsGroupId) parent = parent.parentElement;
+      field.parentGroupId = parent && parent !== root ? parent.dataset.cmsGroupId || null : null;
     }
     sectionFields.sort((a, b) => a.order - b.order);
     return { id: key, anchorId: root.id || null, label, contentKey: root.dataset.cmsSection || null, fields: sectionFields };
@@ -279,12 +354,87 @@
     if (event.type === 'click') {
       const owner = event.target.closest?.('[data-cms-group-id]');
       if (owner) parent.postMessage({ type: 'CMS_GROUP_FOCUS', id: owner.dataset.cmsGroupId }, parentOrigin);
+      else {
+        const collection = collectionRoots.find(collection => collection.root.contains(event.target));
+        if (collection) openCollection(collection);
+      }
     }
     event.preventDefault();
     event.stopImmediatePropagation();
   };
   for (const type of ['click', 'auxclick', 'submit']) document.addEventListener(type, stopInteraction, true);
   document.addEventListener('keydown', stopInteraction, true);
+  // Repeated fields share their array path. Explicit collection roots take
+  // precedence; otherwise use the smallest common rendered container.
+  const collectionEntries = new Map();
+  for (const binding of mapped) {
+    const index = binding.path.findIndex(part => typeof part === 'number');
+    if (index < 1) continue;
+    const key = binding.path.slice(0, index).join('.');
+    if (!collectionEntries.has(key)) collectionEntries.set(key, []);
+    collectionEntries.get(key).push(binding.element);
+  }
+  const collectionRoots = [];
+  for (const [key, elements] of collectionEntries) {
+    let root = [...document.querySelectorAll('[data-cms-collection]')].find(element => element.dataset.cmsCollection === key);
+    if (!root) {
+      root = elements[0];
+      while (root?.parentElement && !elements.every(element => root.contains(element))) root = root.parentElement;
+      if (!root || root === document.body || root === document.documentElement) continue;
+    }
+    const label = root.dataset.cmsCollectionLabel || key.split('.').at(-1).replace(/([a-z])([A-Z])/g, '$1 $2').replace(/^./, character => character.toUpperCase());
+    collectionRoots.push({ key, label, root });
+  }
+  // Include explicitly marked empty lists too.
+  for (const root of document.querySelectorAll('[data-cms-collection]')) {
+    const key = root.dataset.cmsCollection;
+    if (!collectionRoots.some(collection => collection.key === key)) collectionRoots.push({ key, label: root.dataset.cmsCollectionLabel || key, root });
+  }
+  const collectionStyle = document.createElement('style');
+  collectionStyle.textContent = '.cms-collection-frame{position:fixed;z-index:2147483000;pointer-events:none;border:2px solid #a970ff;box-sizing:border-box}.cms-collection-frame[hidden]{display:none!important}.cms-collection-tag{position:absolute;top:0;left:-2px;transform:translateY(-100%);pointer-events:auto;background:#8740df;color:#fff;border:0;border-radius:4px 4px 0 0;padding:5px 9px;font:500 13px/1.3 system-ui,sans-serif;letter-spacing:0;cursor:pointer;white-space:nowrap;text-transform:none}.cms-collection-tag:focus-visible{outline:2px solid #fff;outline-offset:2px}.cms-collection-frame.is-selected{border-color:#b48aff}';
+  document.head.append(collectionStyle);
+  let hoveredCollection = null, activeCollection = null;
+  const frame = document.createElement('div');
+  frame.className = 'cms-collection-frame'; frame.hidden = true;
+  frame.dataset.cmsEditorUi = 'collection';
+  const tag = document.createElement('button');
+  tag.type = 'button'; tag.className = 'cms-collection-tag';
+  frame.append(tag); document.body.append(frame);
+  const drawCollectionFrame = () => {
+    const collection = hoveredCollection || activeCollection;
+    if (!collection) { frame.hidden = true; return; }
+    const rect = collection.root.getBoundingClientRect();
+    if (!rect.width || !rect.height || rect.bottom < 0 || rect.top > innerHeight) { frame.hidden = true; return; }
+    frame.hidden = false;
+    Object.assign(frame.style, { left: rect.left + 'px', top: rect.top + 'px', width: rect.width + 'px', height: rect.height + 'px' });
+    tag.textContent = '▤ ' + collection.label + ' · CMS';
+    tag.setAttribute('aria-label', 'Open ' + collection.label + ' collection');
+    // Keep the collection handle accessible when the list begins above the viewport.
+    tag.style.top = Math.max(0, 30 - rect.top) + 'px';
+    frame.classList.toggle('is-selected', activeCollection?.key === collection.key);
+  };
+  const openCollection = collection => {
+    if (!collection) return;
+    activeCollection = collection; hoveredCollection = null; drawCollectionFrame();
+    parent.postMessage({ type: 'CMS_COLLECTION_FOCUS', key: collection.key }, parentOrigin);
+  };
+  tag.addEventListener('click', event => { event.preventDefault(); event.stopPropagation(); openCollection(hoveredCollection || activeCollection); });
+  document.addEventListener('pointerover', event => {
+    if (event.target.closest?.('[data-cms-editor-ui]')) return;
+    if (!blockClicks) { hoveredCollection = null; drawCollectionFrame(); return; }
+    const candidates = collectionRoots.filter(collection => collection.root.contains(event.target));
+    hoveredCollection = candidates.sort((a, b) => a.root.contains(b.root) ? 1 : -1)[0] || null;
+    drawCollectionFrame();
+  });
+  document.addEventListener('pointerleave', () => { hoveredCollection = null; drawCollectionFrame(); });
+  addEventListener('scroll', drawCollectionFrame, { passive: true });
+  addEventListener('resize', drawCollectionFrame);
+  addEventListener('message', event => {
+    if (event.origin !== parentOrigin || event.source !== parent || event.data?.type !== 'CMS_SELECT_COLLECTION') return;
+    activeCollection = collectionRoots.find(collection => collection.key === event.data.key) || null;
+    hoveredCollection = null; drawCollectionFrame();
+  });
+
   let lastActiveSection = null;
   let scrollFrame = 0;
   let requestedSection = null;
@@ -294,8 +444,15 @@
     if (requestedSection && performance.now() < requestedUntil) return;
     requestedSection = null;
     const line = Math.min(innerHeight * .25, 220);
-    let index = roots.findIndex(root => { const rect = root.getBoundingClientRect(); return rect.top <= line && rect.bottom > line; });
-    if (index < 0 && roots.length) index = roots.reduce((best, root, candidate) => Math.abs(root.getBoundingClientRect().top - line) < Math.abs(roots[best].getBoundingClientRect().top - line) ? candidate : best, 0);
+    const scroller = document.scrollingElement || document.documentElement;
+    const atBottom = scroller.scrollTop + scroller.clientHeight >= scroller.scrollHeight - 4;
+    // A short footer cannot always reach the usual activation line. Give the
+    // final section its own end-of-page trigger, excluding it from earlier ones.
+    const candidates = roots.length > 1 ? roots.slice(0, -1) : roots;
+    let index = atBottom && roots.length ? roots.length - 1 : candidates.findIndex(root => {
+      const rect = root.getBoundingClientRect(); return rect.top <= line && rect.bottom > line;
+    });
+    if (index < 0 && candidates.length) index = candidates.reduce((best, root, candidate) => Math.abs(root.getBoundingClientRect().top - line) < Math.abs(candidates[best].getBoundingClientRect().top - line) ? candidate : best, 0);
     const id = sections[index]?.id;
     if (id && id !== lastActiveSection) {
       lastActiveSection = id;
@@ -314,7 +471,10 @@
       if (index >= 0) {
         requestedSection = sections[index].id; requestedUntil = performance.now() + 950;
         lastActiveSection = requestedSection;
-        roots[index].scrollIntoView({ behavior: 'smooth', block: 'start' });
+        if (index === roots.length - 1) {
+          const scroller = document.scrollingElement || document.documentElement;
+          window.scrollTo({ top: Math.max(0, scroller.scrollHeight - scroller.clientHeight), behavior: 'smooth' });
+        } else roots[index].scrollIntoView({ behavior: 'smooth', block: 'start' });
         setTimeout(queueSection, 1000);
       }
       return;

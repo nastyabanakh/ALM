@@ -46,7 +46,7 @@ const showcaseItems: ShowcaseItem[] = cmsContent.sections.finishedStandard.showc
   </div>
 
   <!-- Full-Width Interactive Showcase Box (Frame 455) -->
-  <div class="finished-standard__showcase" id="fs-showcase">
+  <div class="finished-standard__showcase" id="fs-showcase" data-cms-collection="sections.finishedStandard.showcaseItems" data-cms-collection-label="Showcase slides">
     <!-- Background Ambient Layers (Active item cross-fade) -->
     <div class="finished-standard__bg-layers" aria-hidden="true">
       {showcaseItems.map((item, idx) => (
@@ -56,6 +56,7 @@ const showcaseItems: ShowcaseItem[] = cmsContent.sections.finishedStandard.showc
             { 'finished-standard__bg-item--active': item.active }
           ]}
           data-bg-index={idx}
+          data-cms-item={idx}
         >
           <img
             src={item.image}
@@ -71,7 +72,7 @@ const showcaseItems: ShowcaseItem[] = cmsContent.sections.finishedStandard.showc
 
 
     <!-- Center Display Title & Description (Frame 456) -->
-    <div class="finished-standard__center-info" id="fs-center-info">
+    <div class="finished-standard__center-info" id="fs-center-info" data-cms-item="0">
       <h3 class="finished-standard__center-title" id="fs-center-title" set:html={showcaseItems[0].title} data-cms-path="sections.finishedStandard.showcaseItems.0.title" data-cms-html-lines />
       <p class="finished-standard__center-desc" id="fs-center-desc" data-cms-path="sections.finishedStandard.showcaseItems.0.subtitle">
         {showcaseItems[0].subtitle}
@@ -92,6 +93,7 @@ const showcaseItems: ShowcaseItem[] = cmsContent.sections.finishedStandard.showc
               { 'finished-standard__card--active': item.active }
             ]}
             data-index={idx}
+            data-cms-item={idx}
             data-title={item.title}
             data-desc={item.subtitle}
             data-cms-path-data-title={`sections.finishedStandard.showcaseItems.${idx}.title`}
@@ -149,11 +151,42 @@ const showcaseItems: ShowcaseItem[] = cmsContent.sections.finishedStandard.showc
     const centerTitle = document.getElementById('fs-center-title');
     const centerDesc = document.getElementById('fs-center-desc');
 
-    let currentIndex = 0;
+    let currentIndex = Math.max(0, cards.findIndex(card => card.getAttribute('aria-selected') === 'true'));
     let isTransitioning = false;
     let autoplayTimer: ReturnType<typeof setInterval> | null = null;
     let cleanupPrevTimer: ReturnType<typeof setTimeout> | null = null;
     const AUTOPLAY_INTERVAL = 4800; // 4.8 seconds
+
+    const collectionKey = 'sections.finishedStandard.showcaseItems';
+    const previewMode = parent !== window && new URLSearchParams(location.search).get('cms-preview') === '1';
+    const syncActiveContent = () => {
+      const card = cards[currentIndex];
+      if (!card || !centerTitle || !centerDesc || !centerInfo) return;
+      const path = `${collectionKey}.${currentIndex}`;
+      const changed = centerTitle.dataset.cmsPath !== `${path}.title`;
+      // Preserve the supported line breaks while keeping CMS text out of innerHTML.
+      centerTitle.replaceChildren(...(card.dataset.title || '').split(/<br\s*\/?\s*>|\n/gi).flatMap((line, index) => index ? [document.createElement('br'), document.createTextNode(line)] : [document.createTextNode(line)]));
+      centerDesc.textContent = card.dataset.desc || '';
+      centerInfo.dataset.cmsItem = String(currentIndex);
+      centerTitle.dataset.cmsPath = `${path}.title`;
+      centerDesc.dataset.cmsPath = `${path}.subtitle`;
+      if (changed && previewMode) dispatchEvent(new CustomEvent('cms-bindings-refresh'));
+    };
+    if (previewMode) {
+      addEventListener('message', event => {
+        if (event.origin !== location.origin || event.source !== parent) return;
+        if (event.data?.type === 'CMS_SELECT_RECORD' && event.data.key === collectionKey) {
+          const index = Number(event.data.index);
+          if (!Number.isInteger(index) || !cards[index]) return;
+          currentIndex = index; isTransitioning = false; stopAutoplay();
+          cards.forEach((card, i) => { card.classList.toggle('finished-standard__card--active', i === index); card.setAttribute('aria-selected', String(i === index)); });
+          bgItems.forEach((bg, i) => { bg.classList.remove('finished-standard__bg-item--prev'); bg.classList.toggle('finished-standard__bg-item--active', i === index); });
+          syncActiveContent();
+          if (centerTitle && centerDesc) { centerTitle.style.opacity = '1'; centerDesc.style.opacity = '1'; }
+        }
+        if (event.data?.type === 'CMS_DRAFT_UPDATE') syncActiveContent();
+      });
+    }
 
     // 1. Silky Smooth Switching Controller (Seamless Layer Stacking + Continuous Ken Burns Zoom)
     function switchToIndex(nextIndex: number) {
@@ -208,8 +241,8 @@ const showcaseItems: ShowcaseItem[] = cmsContent.sections.finishedStandard.showc
         centerDesc.style.opacity = '0';
 
         setTimeout(() => {
-          centerTitle.innerHTML = newTitle;
-          centerDesc.textContent = newDesc;
+          if (currentIndex !== nextIndex) return;
+          syncActiveContent();
           centerTitle.style.opacity = '1';
           centerDesc.style.opacity = '1';
 
@@ -242,12 +275,14 @@ const showcaseItems: ShowcaseItem[] = cmsContent.sections.finishedStandard.showc
     cards.forEach((card, idx) => {
       card.addEventListener('click', () => {
         switchToIndex(idx);
-        startAutoplay();
+        if (!previewMode) startAutoplay();
       });
     });
 
+    syncActiveContent();
+
     // Start auto-play on initial load
-    startAutoplay();
+    if (!previewMode) startAutoplay();
 
     // 3. Subtle Parallax Effect on Scroll
     let ticking = false;

@@ -1,0 +1,45 @@
+---
+import { getEntry } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { HOME_PAGE_ID } from '../../../../cms/model.mjs';
+import { collectionPages } from '../../../../cms/collection-pages.mjs';
+import { resolveContentConstants } from '../../../../cms/constants.mjs';
+
+export async function getStaticPaths() {
+  const home = await getEntry('pages', HOME_PAGE_ID);
+  return collectionPages(home?.data.content).map(page => ({
+    params: { collection: page.key, record: page.record }, props: { page, content: home.data.content }
+  }));
+}
+const { page, content } = Astro.props;
+const resolved = resolveContentConstants(content);
+const items = page.key.split('.').reduce((value, key) => value?.[key], resolved);
+const item = items.find(item => String(item.id) === page.record) || page.item;
+const textFields = [];
+const images = [];
+function collect(value, key = '') {
+  if (value && typeof value === 'object') {
+    for (const [name, child] of Object.entries(value)) if (!['id', '_id', 'active'].includes(name)) collect(child, name);
+  } else if (typeof value === 'string' && value) {
+    if (/^\/assets\/.+\.(png|jpe?g|webp|avif|gif|svg)$/i.test(value)) images.push({ src: value, alt: item.alt || '' });
+    else if (!/href|url|link|alt|^num$|^index$/i.test(key) && value.replace(/<[^>]+>/g, '') !== page.title) textFields.push(value.replace(/<br\s*\/?\s*>/gi, '\n').replace(/<[^>]+>/g, ''));
+  }
+}
+collect(item);
+---
+<BaseLayout title={page.title} description={textFields[0]?.slice(0, 180) || ''}>
+  <main class="collection-page">
+    <a href="/">← Home</a>
+    <article>
+      <h1>{page.title}</h1>
+      {images.map(image => <img src={image.src} alt={image.alt} />)}
+      {textFields.map(text => <p>{text}</p>)}
+    </article>
+  </main>
+</BaseLayout>
+<style>
+  .collection-page{max-width:880px;margin:auto;padding:80px 24px;min-height:70vh}
+  article{margin-top:40px}h1{font-size:clamp(42px,7vw,84px);line-height:1.1}
+  img{display:block;width:100%;height:auto;margin:32px 0}
+  p{font-size:clamp(17px,2vw,22px);line-height:1.6;white-space:pre-line}
+</style>

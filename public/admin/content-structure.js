@@ -17,20 +17,22 @@
         return;
       }
       if (value && typeof value === 'object') for (const [key, child] of Object.entries(value)) {
-        if (['consts', 'linkSettings', 'staticText', 'staticAttributes', 'pageOverrides', 'pageSettings', 'pub', 'meta'].includes(key)) continue;
+        if (['components', 'componentInstances', 'editorSettings', 'consts', 'linkSettings', 'staticText', 'staticAttributes', 'pageOverrides', 'pageSettings', 'pub', 'meta'].includes(key)) continue;
         walk(child, [...path, key]);
       }
     };
     walk(content, []);
     return result;
   }
-  function groups(fields) {
+  function groups(fields, options = {}) {
     const map = new Map();
     for (const field of fields) {
-      if (arrayPath(field)) continue;
+      if (options.record) {
+        if (field.record?.key !== options.record.key || field.record?.index !== options.record.index) continue;
+      } else if (!options.includeRecords && (field.record || arrayPath(field))) continue;
       const key = field.groupId || field.id;
-      if (!map.has(key)) map.set(key, { id: key, type: field.groupType || 'text', label: field.groupLabel || title(field.path?.at(-1) || 'Content'), fields: [] });
-      map.get(key).fields.push(field);
+      if (!map.has(key)) map.set(key, { id: key, type: field.groupType || 'text', label: field.groupLabel || title(field.path?.at(-1) || 'Content'), component: field.component, record: field.record, parentId: field.parentGroupId || null, fields: [] });
+      if (!map.get(key).fields.some(existing => existing.id === field.id)) map.get(key).fields.push(field);
     }
     return [...map.values()];
   }
@@ -40,12 +42,12 @@
       if (value && typeof value === 'object') { for (const [key, child] of Object.entries(value)) if (!['id', '_id', 'active'].includes(key)) walk(child, [...current, key]); return; }
       if (!['string', 'number', 'boolean'].includes(typeof value)) return;
       const key = current.at(-1);
-      const mode = /alt$/i.test(key) ? 'alt' : /^(\/assets\/)/.test(String(value)) || /image|photo.*src|poster/i.test(key) ? 'src' : /href|url|link/i.test(key) ? 'href' : 'text';
+      const mode = /alt$/i.test(key) ? 'alt' : /^(\/assets\/)/.test(String(value)) || /^(image|photoSrc|poster|src)$/i.test(key) ? 'src' : /href|url|link/i.test(key) ? 'href' : 'text';
       result.push({ id: `content:${current.join('.')}:${mode}`, source: 'content', path: current, mode, value, valueType: typeof value, label: title(key), htmlLines: /<br\s*\/?\s*>/i.test(String(value)) });
     };
     walk(item, path);
     return result;
   }
-  const itemTitle = (item, index) => String(item.question || item.title || item.name || item.stageTitle || item.label || item.titleLine1 || `Item ${index + 1}`).replace(/<[^>]+>/g, '');
+  const itemTitle = (item, index) => String(item.question || item.title || item.name || item.stageTitle || item.label || item.titleLine1 || `Item ${index + 1}`).replace(/<br\s*\/?\s*>/gi, ' ').replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
   globalThis.CMSStructure = { title, arrayPath, collections, groups, itemFields, itemTitle };
 })();

@@ -4,11 +4,95 @@
   "template": "alm-home",
   "title": "Головна сторінка ALM",
   "content": {
+    "componentInstances": {
+      "/|hero.aboutText": {
+        "overrides": {},
+        "inherited": [
+          "tag"
+        ]
+      },
+      "/|sections.newConstruction.ctaText": {
+        "overrides": {
+          "href": "#consultation"
+        },
+        "inherited": [
+          "target",
+          "text"
+        ]
+      }
+    },
+    "editorSettings": {
+      "labels": {
+        "group:/:hero:element:16": "First Screen Visual",
+        "group:/:hero:dom:0.0": "Image & Video"
+      },
+      "collectionModes": {
+        "sections.process.steps": "list"
+      }
+    },
+    "linkSettings": {
+      "/|content:sections.headerNav.navItems.0.href:href": {
+        "page": "/",
+        "source": "content",
+        "path": [
+          "sections",
+          "headerNav",
+          "navItems",
+          0,
+          "href"
+        ],
+        "type": "url",
+        "target": "_self",
+        "pageId": "route:index.astro",
+        "sectionId": ""
+      },
+      "/|content:featuredHome.cardCtaHref:href": {
+        "page": "/",
+        "source": "content",
+        "path": [
+          "featuredHome",
+          "cardCtaHref"
+        ],
+        "type": "section",
+        "target": "_self",
+        "pageId": "route:index.astro",
+        "sectionId": "single-point-of-contact"
+      },
+      "/|content:sections.budgetSelections.ctaHref:href": {
+        "page": "/",
+        "source": "content",
+        "path": [
+          "sections",
+          "budgetSelections",
+          "ctaHref"
+        ],
+        "type": "section",
+        "target": "_self",
+        "pageId": "route:index.astro",
+        "sectionId": "footer"
+      }
+    },
     "consts": {
-      "companyPhone": { "label": "Company phone", "type": "phone", "value": "+1 (206) 555-0192" },
-      "email": { "label": "Email", "type": "email", "value": "ALMStudio@gmail.com" },
-      "serviceArea": { "label": "Service area", "type": "text", "value": "Greater Seattle & Eastside (Bellevue, Kirkland, Redmond)" },
-      "address": { "label": "Street address", "type": "text", "value": "" }
+      "companyPhone": {
+        "label": "Company phone",
+        "type": "phone",
+        "value": "+1 (206) 555-0192"
+      },
+      "email": {
+        "label": "Email",
+        "type": "email",
+        "value": "ALMStudio@gmail.com"
+      },
+      "serviceArea": {
+        "label": "Service area",
+        "type": "text",
+        "value": "Greater Seattle & Eastside (Bellevue, Kirkland, Redmond)"
+      },
+      "address": {
+        "label": "Street address",
+        "type": "text",
+        "value": ""
+      }
     },
     "sections": {
       "budgetSelections": {
@@ -31,7 +115,7 @@
           }
         ],
         "ctaText": "Schedule a Consultation",
-        "ctaHref": "#consultation"
+        "ctaHref": "#footer"
       },
       "builderAccountability": {
         "barIndex": "13//",
@@ -219,7 +303,7 @@
         "ctaHref": "#contact"
       },
       "hero": {
-        "serviceMarker": "SERVICE AREA",
+        "serviceMarker": "SERVICE AREA ",
         "serviceMarker2": "SERVICE AREA"
       },
       "localManagement": {
@@ -259,18 +343,18 @@
         "span6": "APPROVAL",
         "steps": [
           {
-            "id": "step-01",
-            "num": "01//",
-            "title": "Consultation",
-            "desc": "We discuss the property, plans, preferred home, priorities, and known constraints.",
-            "image": "/assets/section-06/step-01.webp"
-          },
-          {
             "id": "step-02",
             "num": "02//",
             "title": "Site & Plan Audit",
             "desc": "ALM reviews property conditions and plans to identify needed engineering or design specialists.",
             "image": "/assets/section-06/step-02.webp"
+          },
+          {
+            "id": "step-01",
+            "num": "01//",
+            "title": "Consultation",
+            "desc": "We discuss the property, plans, preferred home, priorities, and known constraints.",
+            "image": "/assets/section-06/step-01.webp"
           },
           {
             "id": "step-03",
@@ -431,16 +515,21 @@
         "phoneHref": "{{const.companyPhone|tel}}"
       }
     },
+    "pageSettings": {
+      "/": {
+        "noIndex": false
+      }
+    },
     "meta": {
       "title": "ALM — Local, Family-Owned Custom Home Builder",
       "description": "Build the home you want—without managing the build yourself. Custom single-family new construction shaped around your property, plans, and priorities."
     },
     "contacts": {
       "email": "{{const.email}}",
-      "emailHref": "{{const.email|mailto}}",
       "phone": "{{const.companyPhone}}",
-      "phoneHref": "{{const.companyPhone|tel}}",
-      "serviceArea": "{{const.serviceArea}}"
+      "serviceArea": "{{const.serviceArea}}",
+      "emailHref": "{{const.email|mailto}}",
+      "phoneHref": "{{const.companyPhone|tel}}"
     },
     "hero": {
       "badgeText": "Local, Family-Owned Custom Home Builder",
@@ -450,7 +539,7 @@
       "ctaText": "REQUEST A CONSULTATION",
       "ctaHref": "#contact",
       "videoPoster": "/assets/test/e9ba6f9d-09ca-4765-b2c1-e0f990a78e3d.png",
-      "videoUrl": "/assets/video/a1b54a75-926d-4ee7-95db-ec5462efbb29.mp4"
+      "videoUrl": "/assets/hero-video/hero-video-2.mp4"
     },
     "startingPoints": {
       "barTitle": "You Can Start Before Everything Is Decided",
@@ -491,7 +580,7 @@
       "subtitle": "4,850 sq ft custom build crafted around a challenging hillside topography.",
       "heroKitchenImage": "/assets/section-09/hero-kitchen-2.webp",
       "cardCtaText": "Schedule a Consultation",
-      "cardCtaHref": "#consultation",
+      "cardCtaHref": "#single-point-of-contact",
       "specs": [
         {
           "index": "01//",

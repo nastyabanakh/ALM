@@ -38,6 +38,18 @@ const constDefinition = z.object({
   }
 });
 const homeContent = z.object({
+  components: z.record(z.object({
+    name: z.string().trim().min(1).max(120).optional(),
+    defaults: z.record(z.union([z.string().max(5000), z.boolean(), z.number()]))
+  })).optional(),
+  componentInstances: z.record(z.object({
+    overrides: z.record(z.union([z.string().max(5000), z.boolean(), z.number()])).default({}),
+    inherited: z.array(z.string()).default([])
+  })).optional(),
+  editorSettings: z.object({
+    labels: z.record(z.string().trim().min(1).max(120)).optional(),
+    collectionModes: z.record(z.enum(['list', 'page'])).optional()
+  }).optional(),
   linkSettings: z.record(z.object({
     page: z.string(), source: z.enum(['content', 'staticAttribute']),
     path: z.array(z.union([z.string(), z.number()])).optional(), key: z.string().optional(),
@@ -86,12 +98,12 @@ const homeContent = z.object({
   faq: z.array(z.object({ question: staticText, answer: staticText }).passthrough()),
   localManagement: z.object({
     barLabel: staticText, headline: staticText, ownerImage: staticImage,
-    principles: z.array(z.object({ title: staticText, description: staticText })),
+    principles: z.array(z.object({ title: staticText, description: staticText }).passthrough()),
     backgroundLabel: staticText, backgroundText: staticText
   }),
   builderAccountability: z.object({
     barLabel: staticText, title: staticText, description: staticText,
-    commitments: z.array(z.object({ titleLine1: staticText, titleLine2: staticText, description: staticText })),
+    commitments: z.array(z.object({ titleLine1: staticText, titleLine2: staticText, description: staticText }).passthrough()),
     ctaText: staticText
   }),
   pub: z.object({ at: z.string(), by: z.string(), id: z.string() }).optional()

@@ -1,5 +1,6 @@
 import { resolveContentLinks } from './links.mjs';
-// A reference is the whole field value. This keeps ownership clear in the editor.
+import { resolve, references } from '../public/admin/const-tokens.mjs';
+// Exact-reference parsing remains available for legacy callers; resolution supports inline tokens.
 const referencePattern = /^\{\{const\.([a-z][a-zA-Z0-9]*)(?:\|(tel|mailto))?\}\}$/;
 
 export function parseConstReference(value) {
@@ -13,14 +14,7 @@ export function constToken(key, format = null) {
 }
 
 export function resolveConstReference(value, consts = {}) {
-  const reference = parseConstReference(value);
-  if (!reference) return value;
-  const entry = consts?.[reference.key];
-  if (!entry || typeof entry.value !== 'string') return value;
-  const text = entry.value;
-  if (reference.format === 'tel') return `tel:${text.replace(/[^+\d]/g, '')}`;
-  if (reference.format === 'mailto') return `mailto:${text.trim()}`;
-  return text;
+  return resolve(value, consts);
 }
 
 export function resolveContentConstants(content, pages = [], sourcePage = '/') {
@@ -39,10 +33,11 @@ export function invalidConstReferences(content) {
   const consts = content?.consts || {};
   const walk = (value, path) => {
     if (typeof value === 'string') {
-      const ref = parseConstReference(value);
+      for (const ref of references(value)) {
       if (ref && !consts[ref.key]) issues.push({ path, message: `Unknown Const variable: ${ref.key}` });
       else if (ref?.format === 'tel' && consts[ref.key].type !== 'phone') issues.push({ path, message: `Const ${ref.key} must be a phone variable` });
       else if (ref?.format === 'mailto' && consts[ref.key].type !== 'email') issues.push({ path, message: `Const ${ref.key} must be an email variable` });
+      }
       return;
     }
     if (Array.isArray(value)) value.forEach((item, index) => walk(item, [...path, index]));

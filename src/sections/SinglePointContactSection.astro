@@ -56,11 +56,12 @@ const accordionItems: AccordionItem[] = cmsContent.sections.singlePointContact.a
   </p>
 
   <!-- Accordion List (node 125:702 - 125:747) -->
-  <div class="spc-section__accordion" id="spc-accordion">
+  <div class="spc-section__accordion" data-cms-collection="sections.singlePointContact.accordionItems" data-cms-collection-label="Contact accordion" id="spc-accordion">
     {accordionItems.map((item, index) => (
       <article
         class={`spc-accordion__item ${item.active ? 'spc-accordion__item--active' : ''}`}
         data-index={index}
+        data-cms-item={index}
         id={item.id}
       >
         <!-- Background Image Container for Active State -->
@@ -109,7 +110,7 @@ const accordionItems: AccordionItem[] = cmsContent.sections.singlePointContact.a
 
             <!-- Right Preview Thumbnail -->
             <div class="spc-accordion__thumb-box">
-              <img src={item.image} alt={item.shortTitle} class="spc-accordion__thumb-img" loading="lazy" data-cms-path-src={`sections.singlePointContact.accordionItems.${index}.image`} />
+              <img src={item.image} alt={item.imageAlt ?? item.shortTitle} data-cms-path-alt={`sections.singlePointContact.accordionItems.${index}.imageAlt`} class="spc-accordion__thumb-img" loading="lazy" data-cms-path-src={`sections.singlePointContact.accordionItems.${index}.image`} />
             </div>
           </div>
         </div>

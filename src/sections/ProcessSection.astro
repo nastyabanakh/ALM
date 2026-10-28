@@ -49,12 +49,13 @@ const steps: ProcessStep[] = cmsContent.sections.process.steps;
 
     <!-- Interactive 6-Step Timeline (Frame 478) -->
     <div class="process-section__timeline-wrapper" id="process-timeline">
-      <div class="process-section__list" role="tablist" aria-label="Process Steps">
+      <div class="process-section__list" data-cms-collection="sections.process.steps" data-cms-collection-label="Process steps" role="tablist" aria-label="Process Steps">
         {steps.map((step, idx) => (
           <div
             class="process-step"
             id={step.id}
             data-index={idx}
+            data-cms-item={idx}
             data-image={step.image}
             data-cms-path-data-image={`sections.process.steps.${idx}.image`}
             role="tab"

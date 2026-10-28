@@ -34,6 +34,7 @@ const staticDataJson = JSON.stringify({
   staticText: pageContent?.staticText || {}, staticAttributes: pageContent?.staticAttributes || {},
   consts: homeContent?.consts || {}
 }).replace(/</g, '\\u003c');
+const componentsJson = JSON.stringify({ components: homeContent?.components || {}, componentInstances: homeContent?.componentInstances || {}, consts: homeContent?.consts || {} }).replace(/</g, '\\u003c');
 const mediaJson = JSON.stringify(await mediaMetadata()).replace(/</g, '\\u003c');
 const linksJson = JSON.stringify({ settings: homeContent?.linkSettings || {}, pages: sitePages }).replace(/</g, '\\u003c');
 ---
@@ -55,6 +56,7 @@ const linksJson = JSON.stringify({ settings: homeContent?.linkSettings || {}, pa
     {pageSettings.headCode && <Fragment set:html={pageSettings.headCode} />}
   </head>
   <body>
+    <script is:inline src="/admin/const-preview.js"></script>
     <div class="page-wrapper">
       <slot />
     </div>
@@ -67,6 +69,8 @@ const linksJson = JSON.stringify({ settings: homeContent?.linkSettings || {}, pa
     <script id="cms-media-data" type="application/json" set:html={mediaJson} />
     <script is:inline src="/admin/media-runtime.js"></script>
     <script is:inline src="/admin/page-settings-runtime.js"></script>
+    <script id="cms-components-data" type="application/json" set:html={componentsJson} />
+    <script is:inline type="module" src="/admin/component-runtime.mjs"></script>
     {pageSettings.bodyCode && <Fragment set:html={pageSettings.bodyCode} />}
 
     <!-- Fallback for freshly uploaded CMS assets during Vercel build window -->

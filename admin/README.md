@@ -30,3 +30,24 @@ GitHub-запис і статус хостингового деплою потр
 ## Безпека
 
 У новому коді немає робочого пароля чи ключа сесії за замовчуванням. Якщо `ADMIN_PASSWORD` або `JWT_SECRET` відсутні, API повертає помилку налаштування. Для продакшену задайте їх та доступ до Git у серверних змінних середовища з мінімальними правами. Не додавайте `.env.local` у репозиторій.
+
+
+## Вибір компонентів і CMS списків
+
+У `/admin/` секції відкривають картки елементів замість довгого списку полів. Виберіть картку кнопки або натисніть її на canvas: зліва відкриються тільки її властивості. Зображення вибираються аналогічно; кнопка Replace image відкриває Media. Зелена рамка відповідає компоненту, синя — зображенню, фіолетова — колекції. Фіолетова мітка CMS над списком відкриває його записи. Панель параметрів і сайт у canvas прокручуються незалежно; оболонка редактора займає висоту вікна.
+
+Кнопка CMS у лівій панелі відкриває масиви поточного запису сторінки. Відкрийте FAQ чи інший список, натисніть картку й редагуйте її поля. Перетягніть картку за хендл зліва, щоб змінити порядок: місце вставки відображається під час руху. Хендл також підтримує клавіші вгору/вниз. Зміни проходять через наявну чернетку й публікацію; доступні Undo/Redo. Створення та видалення записів у цій вкладці ще не додані. Для окремих записів статей і портфоліо доступне посилання Articles & portfolio.
+
+
+## Media drafts
+
+Media is a visual file manager with a draft/publish boundary. Rename, move, folder edits, deletion, upload, replacement and alt changes are saved as a persistent draft. A single chronological Undo/Redo timeline includes both Media and content changes, regardless of the selected view. Media shows the planned path separately from the published path. One shared pending indicator and the top-level Publish action apply to the entire project.
+
+The shared Publish applies real file changes, rewrites known references, and publishes every pending page/article/portfolio record together. Per-module publishing is disabled. Used files cannot be deleted until references are removed or replaced. File conflicts, stale revisions and ambiguous computed references block the operation. Successful publication resets the draft history to a new baseline and retains recovery backups.
+
+New uploads and replacements have authenticated draft previews; public file bytes stay unchanged before publication. Video fields have real playback controls, path/error information and type-specific pickers. Changing a source reloads the video; unrelated edits do not restart it.
+
+
+## Shared publication
+
+The top-level Publish flushes open forms and shows a project summary. All pending CMS records are validated before publication. The server checks the reviewed draft revisions and serializes publication, with a recovery snapshot of project sources, assets and draft state. If a later step fails, the snapshot restores the pre-publication project. Media and CMS no longer expose independent publication/discard controls.

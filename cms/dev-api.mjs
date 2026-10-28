@@ -14,7 +14,7 @@ export function cmsDevApi() {
                 // Astro computes static paths at startup; refresh them when an entry is created.
                 let restartTimer;
                 server.watcher.on('all', (event, file) => {
-                  if (!['add', 'unlink'].includes(event) || !/[/\\]src[/\\]content[/\\](posts|projects)[/\\].+\.json$/.test(file)) return;
+                  if (!['add', 'change', 'unlink'].includes(event) || !/[/\\]src[/\\]content[/\\](pages|posts|projects)[/\\].+\.json$/.test(file)) return;
                   clearTimeout(restartTimer);
                   restartTimer = setTimeout(() => server.restart(), 300);
                 });
