@@ -1,4 +1,5 @@
 import { z } from 'astro/zod';
+import {richTextIssues,blockText} from '../public/admin/rich-text-model.mjs';
 import { invalidConstReferences } from './constants.mjs';
 
 const slug = z.string().trim().min(1, 'Enter a page URL').max(120)
@@ -10,14 +11,16 @@ const media = z.object({
 });
 const seo = z.object({
   title: z.string().trim().min(1).max(80),
-  description: z.string().trim().max(180)
+  description: z.string().trim().min(1,'Enter an SEO description').max(180)
 });
 
 const staticText = z.string().max(5000);
 const staticImage = z.string().startsWith('/assets/');
 const editableValue = z.lazy(() => z.union([
-  z.string().max(5000), z.number(), z.boolean(), z.array(editableValue), z.record(editableValue)
+  z.string().max(100000), z.number(), z.boolean(), z.null(), z.array(editableValue), z.record(editableValue)
 ]));
+const richDocument=z.object({version:z.literal(1),blocks:z.array(z.any()).max(2000)}).superRefine((value,context)=>{for(const message of richTextIssues(value))context.addIssue({code:z.ZodIssueCode.custom,message});});
+const fieldDefinition=z.object({id:z.string().min(1).max(160),key:z.string().min(1).max(180).regex(/^[a-zA-Z][a-zA-Z0-9_]*(?:\.[a-zA-Z0-9_]+)*$/),label:z.string().trim().min(1).max(120),type:z.enum(['text','textarea','richtext','number','checkbox','date','datetime','slug','url','email','phone','select','multiselect','status','image','file','gallery','reference','multireference']),group:z.string(),builtin:z.boolean().optional(),required:z.boolean().optional(),hidden:z.boolean().optional(),help:z.string().max(500).optional(),options:z.array(z.string().max(120)).max(200).optional(),collection:z.string().optional(),default:editableValue.optional(),min:z.number().optional(),max:z.number().optional()});
 const constDefinition = z.object({
   label: z.string().trim().min(1).max(80),
   type: z.enum(['text', 'phone', 'email', 'url']),
@@ -48,7 +51,14 @@ const homeContent = z.object({
   })).optional(),
   editorSettings: z.object({
     labels: z.record(z.string().trim().min(1).max(120)).optional(),
-    collectionModes: z.record(z.enum(['list', 'page'])).optional()
+    collectionStructureRevisions: z.record(z.number().int().nonnegative()).optional(),
+    collectionSchemas:z.record(z.object({name:z.string().max(120),groups:z.array(z.object({id:z.string(),label:z.string().trim().min(1).max(80)})).min(1).max(50),fields:z.array(fieldDefinition).max(300)})).optional(),
+    entryStates: z.record(z.object({state:z.enum(['active','archived','deleted']),publishedRevision:z.string().nullable()})).optional(),
+    archivedCollectionItems: z.record(z.array(z.object({id:z.string(),index:z.number().int().nonnegative(),item:editableValue,linkSettings:z.array(editableValue).optional()}))).optional(),
+    collectionItemTemplates: z.record(editableValue).optional(),
+    collectionModes: z.record(z.enum(['list', 'page'])).optional(),
+    cmsGroups: z.record(z.enum(['collections','pages']),z.array(z.object({id:z.string().max(80),name:z.string().trim().min(1).max(80),keys:z.array(z.string().max(400))}))).optional(),
+    constGroups: z.array(z.object({id:z.string().max(80), name:z.string().trim().min(1).max(80), keys:z.array(z.string().regex(/^[a-z][a-zA-Z0-9]*$/))})).optional()
   }).optional(),
   linkSettings: z.record(z.object({
     page: z.string(), source: z.enum(['content', 'staticAttribute']),
@@ -68,7 +78,7 @@ const homeContent = z.object({
   pageSettings: z.record(z.object({
     name: staticText.optional(), seoTitle: staticText.optional(), seoDescription: staticText.optional(),
     canonical: staticText.optional(), noIndex: z.boolean().optional(),
-    ogTitle: staticText.optional(), ogDescription: staticText.optional(), ogImage: staticText.optional(),
+    ogTitle: staticText.optional(), ogDescription: staticText.optional(), ogImage: staticText.optional(), ogImageAlt: staticText.optional(),
     headCode: z.string().max(50000).optional(), bodyCode: z.string().max(50000).optional()
   }).passthrough()).optional(),
   meta: z.object({ title: staticText, description: staticText }).passthrough(),
@@ -124,16 +134,30 @@ export const collectionSchemas = {
     }
   }),
   posts: z.object({
+    custom:z.record(editableValue).optional(),
+    richText:z.record(richDocument).optional(),
+    cmsState:z.enum(['active','archived']).optional(),
+    isPublished:z.boolean().optional(),
+    slugMode:z.enum(['auto','manual']).optional(),
+    ogImage:z.string().refine(value=>!value||value.startsWith('/assets/'),'Choose an Open Graph asset').optional(),
+    ogImageAlt:z.string().max(250).optional(),
     id: z.string().uuid(),
     slug,
     title: z.string().trim().min(1).max(180),
     excerpt: z.string().trim().max(500).default(''),
     cover: media.optional(),
-    body: z.string().min(1),
-    publishedAt: z.string().datetime().optional(),
+    body: z.string().default(''),
+    publishedAt: z.union([z.string().datetime(), z.string().regex(/^\d{4}-\d{2}-\d{2}$/).refine(value=>{const date=new Date(value+'T12:00:00Z');return Number.isFinite(date.getTime())&&date.toISOString().slice(0,10)===value;},'Use a valid date')]).optional(),
     seo
-  }),
+  }).superRefine((entry,context)=>{if(!entry.body.trim()&&!entry.richText?.body?.blocks.some(block=>blockText(block).trim()||block.url||block.rows?.length))context.addIssue({code:z.ZodIssueCode.custom,path:['body'],message:'Add article content'});}),
   projects: z.object({
+    custom:z.record(editableValue).optional(),
+    richText:z.record(richDocument).optional(),
+    cmsState:z.enum(['active','archived']).optional(),
+    isPublished:z.boolean().optional(),
+    slugMode:z.enum(['auto','manual']).optional(),
+    ogImage:z.string().refine(value=>!value||value.startsWith('/assets/'),'Choose an Open Graph asset').optional(),
+    ogImageAlt:z.string().max(250).optional(),
     id: z.string().uuid(),
     slug,
     title: z.string().trim().min(1).max(180),
@@ -155,7 +179,8 @@ export const collectionFields = {
     { key: 'cover.src', label: 'Cover image', type: 'media' },
     { key: 'cover.alt', label: 'Cover alt text', type: 'text' },
     { key: 'seo.title', label: 'SEO title', type: 'text', required: true },
-    { key: 'seo.description', label: 'SEO description', type: 'textarea' }
+    { key: 'seo.description', label: 'SEO description', type: 'textarea', required: true },
+    { key: 'ogImage', label: 'Open Graph image', type: 'media' }
   ],
   projects: [
     { key: 'title', label: 'Project name', type: 'text', required: true },
@@ -166,7 +191,8 @@ export const collectionFields = {
     { key: 'gallery', label: 'Gallery', type: 'gallery' },
     { key: 'body', label: 'Project description', type: 'textarea' },
     { key: 'seo.title', label: 'SEO title', type: 'text', required: true },
-    { key: 'seo.description', label: 'SEO description', type: 'textarea' }
+    { key: 'seo.description', label: 'SEO description', type: 'textarea', required: true },
+    { key: 'ogImage', label: 'Open Graph image', type: 'media' }
   ]
 };
 

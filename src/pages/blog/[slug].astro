@@ -1,7 +1,9 @@
 ---
 import { getCollection, getEntry } from 'astro:content';
 import { HOME_PAGE_ID } from '../../../cms/model.mjs';
-import { resolveEntryConstants } from '../../../cms/constants.mjs';
+import { resolveEntryConstants, resolveContentConstants } from '../../../cms/constants.mjs';
+import {configuredFieldsHTML} from '../../../cms/published-fields.mjs';
+import {renderRichText} from '../../../public/admin/rich-text-model.mjs';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
 export async function getStaticPaths() {
@@ -10,16 +12,21 @@ export async function getStaticPaths() {
 
 const { post: entry } = Astro.props;
 const home = await getEntry('pages', HOME_PAGE_ID);
-const post = { ...entry, data: resolveEntryConstants(entry.data, home?.data.content.consts || {}) };
+const content=home?.data.content||{};
+const resolvedContent=resolveContentConstants(content);
+const post = { ...entry, data: resolveEntryConstants(entry.data, content.consts || {}) };
+const bodyHTML=post.data.richText?.body?renderRichText(post.data.richText.body):renderRichText(post.data.body);
+const extraHTML=configuredFieldsHTML(resolvedContent,'page:posts',post.data,{posts:(await getCollection('posts')).map(item=>resolveEntryConstants(item.data,content.consts||{})),projects:(await getCollection('projects')).map(item=>resolveEntryConstants(item.data,content.consts||{}))});
 ---
-<BaseLayout title={post.data.seo.title} description={post.data.seo.description}>
+<BaseLayout title={post.data.seo.title} description={post.data.seo.description} ogImage={post.data.ogImage} ogImageAlt={post.data.ogImageAlt}>
   <main class="cms-entry">
     <a href="/blog/">← Всі статті</a>
     <article>
       <h1>{post.data.title}</h1>
       {post.data.publishedAt && <time datetime={post.data.publishedAt}>{new Date(post.data.publishedAt).toLocaleDateString('uk-UA')}</time>}
       {post.data.cover && <img src={post.data.cover.src} alt={post.data.cover.alt} />}
-      {post.data.body.split(/\n\s*\n/).map(paragraph => <p>{paragraph}</p>)}
+      <div class="cms-rich-content" set:html={bodyHTML} />
+      {extraHTML && <div class="cms-extra-content" set:html={extraHTML} />}
     </article>
   </main>
 </BaseLayout>

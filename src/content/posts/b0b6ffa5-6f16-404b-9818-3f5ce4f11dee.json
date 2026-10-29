@@ -1,14 +1,102 @@
 {
+  "richText": {
+    "body": {
+      "version": 1,
+      "blocks": [
+        {
+          "id": "legacy-1",
+          "type": "paragraph",
+          "runs": [
+            {
+              "text": "sdfdslfjdslkf"
+            }
+          ]
+        },
+        {
+          "id": "3fbd8ba8-d031-4de0-b4dc-03728a84726b",
+          "type": "paragraph",
+          "runs": [
+            {
+              "text": "asdfkldsf"
+            }
+          ],
+          "indent": 0
+        },
+        {
+          "id": "7f590b52-0b85-4863-ba9a-004a668a979b",
+          "type": "image",
+          "runs": [
+            {
+              "text": ""
+            }
+          ],
+          "url": "/assets/images/construction-patio.png"
+        },
+        {
+          "id": "legacy-0",
+          "type": "paragraph",
+          "runs": [
+            {
+              "text": "test text fdfkdsflds mfsdklfks fsdf"
+            }
+          ]
+        },
+        {
+          "id": "legacy-2",
+          "type": "paragraph",
+          "runs": [
+            {
+              "text": "asdfkdsfdsf"
+            }
+          ],
+          "indent": 0
+        },
+        {
+          "id": "9da56dda-e8bf-4db8-8df3-8c5fb9b14b3b",
+          "type": "bullet",
+          "runs": [
+            {
+              "text": "клцу"
+            }
+          ],
+          "indent": 0
+        },
+        {
+          "id": "03160928-759c-4228-bb59-b07e2db094f4",
+          "type": "bullet",
+          "runs": [
+            {
+              "text": "іваіва"
+            }
+          ],
+          "indent": 0
+        },
+        {
+          "id": "b2073238-1045-4f79-801b-86e65f53b841",
+          "type": "bullet",
+          "runs": [
+            {
+              "text": "іва"
+            }
+          ],
+          "indent": 0
+        }
+      ]
+    }
+  },
+  "cmsState": "active",
+  "isPublished": true,
+  "slugMode": "manual",
   "id": "b0b6ffa5-6f16-404b-9818-3f5ce4f11dee",
-  "slug": "test",
-  "title": "Test",
+  "slug": "fsdfdsf-sdfsaf",
+  "title": "fdfsdf+",
   "excerpt": "test descitioption",
   "cover": {
     "src": "/assets/uploads/35d09e51-b177-41c7-96fc-ec767f6c0fa8.png",
     "alt": ""
   },
-  "body": "test text fdfkdsflds mfsdklfks fsdf\n\n\nsdfdslfjdslkf\nasdfkldsf\n\nasdfkdsfdsf",
-  "publishedAt": "2026-10-21T18:43:00.000Z",
+  "body": "sdfdslfjdslkf\n\nasdfkldsf\n\n\n\ntest text fdfkdsflds mfsdklfks fsdf\n\nasdfkdsfdsf\n\nклцу\n\nіваіва\n\nіва",
+  "publishedAt": "2026-10-15T10:00:00.000Z",
   "seo": {
     "title": "test",
     "description": "test"

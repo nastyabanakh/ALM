@@ -6,8 +6,18 @@ const transliteration = {
 };
 
 export function slugify(value) {
-  const mapped = [...String(value).toLowerCase().normalize('NFKD')]
+  const mapped = [...String(value).toLowerCase()]
     .map(character => transliteration[character] ?? character).join('');
-  return mapped.replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-')
+  return mapped.normalize('NFKD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-')
     .replace(/^-|-$/g, '').slice(0, 120).replace(/-$/g, '');
+}
+
+export function uniqueSlug(value, used = new Set()) {
+  const base = slugify(value) || 'untitled';
+  if (!used.has(base)) return base;
+  for (let index = 2; ; index++) {
+    const suffix = '-' + index;
+    const candidate = base.slice(0, 120 - suffix.length).replace(/-+$/, '') + suffix;
+    if (!used.has(candidate)) return candidate;
+  }
 }

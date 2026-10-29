@@ -210,12 +210,13 @@ export default async function handler(req, res) {
 
     if (LOCAL_MODE && op === 'save-draft') {
       if (req.method !== 'POST') return res.status(405).json({ message: 'Method not allowed' });
-      const page = await getEntry('pages', HOME_PAGE_ID);
-      const saved = await withProjectLock(() => saveDraft('pages', {
-        id: HOME_PAGE_ID,
-        data: { ...page.published, content: { ...page.published.content, ...body.content } },
-        expectedDraftRevision: body.expectedDraftRevision || null
-      }));
+      const saved = await withProjectLock(async()=>{
+        const page=await getEntry('pages',HOME_PAGE_ID);
+        return saveDraft('pages',{
+          id:HOME_PAGE_ID,data:{...page.published,content:{...page.published.content,...body.content}},
+          expectedDraftRevision:body.expectedDraftRevision || null
+        });
+      });
       return res.status(200).json({ draftRevision: saved.draft.revision });
     }
 

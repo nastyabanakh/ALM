@@ -2,17 +2,23 @@
 interface Props {
   title?: string;
   description?: string;
+  ogImage?: string;
+  ogImageAlt?: string;
 }
 
 const {
+  ogImage: entryOGImage = '',
+  ogImageAlt: entryOGAlt = '',
   title = 'ALM — Premium Custom Home Builder',
   description = 'Local, family-owned custom single-family home builder.'
 } = Astro.props;
 
+import {ogImageMetadata} from '../../cms/open-graph.mjs';
 import '../styles/variables.css';
 import '../styles/reset.css';
 import '../styles/base.css';
 import '../styles/typography.css';
+import '../styles/cms-rich.css';
 import AnimationsInit from '../components/AnimationsInit.astro';
 import { mediaMetadata } from '../../cms/media-library.mjs';
 import { getEntry } from 'astro:content';
@@ -30,6 +36,10 @@ const pageTitle = pageSettings.seoTitle || title;
 const pageDescription = pageSettings.seoDescription || description;
 const ogTitle = pageSettings.ogTitle || pageTitle;
 const ogDescription = pageSettings.ogDescription || pageDescription;
+const socialImage=pageSettings.ogImage||entryOGImage;
+const socialAlt=pageSettings.ogImageAlt||entryOGAlt||ogTitle;
+const socialURL=socialImage?new URL(socialImage,Astro.site||pageSettings.canonical||Astro.url.origin).href:null;
+const socialMetadata=await ogImageMetadata(socialImage);
 const staticDataJson = JSON.stringify({
   staticText: pageContent?.staticText || {}, staticAttributes: pageContent?.staticAttributes || {},
   consts: homeContent?.consts || {}
@@ -50,13 +60,14 @@ const linksJson = JSON.stringify({ settings: homeContent?.linkSettings || {}, pa
     {pageSettings.canonical && <link rel="canonical" href={pageSettings.canonical} />}
     <meta property="og:title" content={ogTitle} />
     <meta property="og:description" content={ogDescription} />
-    {pageSettings.ogImage && <meta property="og:image" content={pageSettings.ogImage} />}
+    {socialURL && <><meta property="og:image" content={socialURL} /><meta property="og:image:alt" content={socialAlt} />{socialMetadata && <><meta property="og:image:width" content={socialMetadata.width} /><meta property="og:image:height" content={socialMetadata.height} /><meta property="og:image:type" content={socialMetadata.type} /></>}</>}
     <meta name="generator" content={Astro.generator} />
     {pagePath === '/' && renderedHomeContent?.hero?.videoPoster && <link rel="preload" as="image" href={renderedHomeContent.hero.videoPoster} fetchpriority="high" />}
     {pageSettings.headCode && <Fragment set:html={pageSettings.headCode} />}
   </head>
   <body>
     <script is:inline src="/admin/const-preview.js"></script>
+    <script is:inline src="/admin/canvas-text-edit.js"></script>
     <div class="page-wrapper">
       <slot />
     </div>

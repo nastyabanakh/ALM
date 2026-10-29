@@ -42,6 +42,7 @@
   --font-size-h2:        37rem;
   --font-size-h3:        21rem;
   --font-size-logo:      30rem;
+  --font-size-prose:     18rem;
   --font-size-text-l:    16rem;
   --font-size-text-m:    14rem;
   --font-size-text-s:    12rem;
@@ -150,6 +151,7 @@
     --font-size-h2:        24rem;
     --font-size-h3:        18rem;
     --font-size-logo:      24rem;
+    --font-size-prose:     16rem;
     --font-size-text-l:    15rem;
     --font-size-text-m:    13rem;
     --font-size-text-s:    12rem;
@@ -173,7 +175,6 @@
   }
 }
 
-html,
-body {
+html {
   font-size: var(--size-font);
 }

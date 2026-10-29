@@ -1,0 +1,46 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import {renderRichText} from '../../public/admin/rich-text-model.mjs';
+const text=(id,type,value,extra={})=>({id,type,runs:[{text:value}],...extra});
+const example={version:1,blocks:[
+  text('intro','paragraph','Shared text styles for articles, portfolio pages and CMS content.'),
+  text('heading-2','h2','Section heading'),
+  text('body','paragraph','Body text inherits a readable size and line height. Every block uses the same typographic foundation.'),
+  text('heading-3','h3','Smaller heading'),
+  text('heading-4','h4','Supporting heading'),
+  text('bullet-1','bullet','A bulleted list item'),text('bullet-2','bullet','Another list item'),
+  text('number-1','numbered','First ordered item'),text('number-2','numbered','Second ordered item'),
+  text('todo','todo','A task aligned with its first line',{checked:true}),
+  text('toggle','toggle','Expandable text',{detail:'Expanded content uses the same text size.'}),
+  text('quote','quote','A quotation with a clear visual boundary.'),
+  text('callout','callout','A note that stands out from the main article.'),
+  {id:'inline',type:'paragraph',runs:[{text:'Bold',bold:true},{text:', '},{text:'italic',italic:true},{text:', '},{text:'inline code',code:true},{text:' and a '},{text:'link',href:'/#contact'},{text:'.'}]},
+  text('code','code','const message = "Readable code";\nconsole.log(message);'),
+  text('table','table','',{rows:[['Field','Value'],['Text size','Inherited from the article'],['Empty cells','Keep a usable height']]}),
+  text('divider','divider',''),
+  text('end','paragraph','The same defaults apply wherever rich content is rendered.')
+]};
+---
+<BaseLayout title="Site typography — ALM">
+  <main class="site-type-guide">
+    <a href="/">← Home</a>
+    <h1>Site typography</h1>
+    <div class="cms-rich-content" set:html={renderRichText(example)} />
+  </main>
+</BaseLayout>
+<style>
+  .site-type-guide {
+    width: 100%;
+    max-width: 880rem;
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: var(--space-s);
+    padding-right: var(--gap-s);
+    padding-bottom: var(--space-s);
+    padding-left: var(--gap-s);
+  }
+  .site-type-guide > h1 {
+    margin-top: var(--gap-r);
+    margin-bottom: var(--gap-r);
+  }
+</style>

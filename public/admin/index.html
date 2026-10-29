@@ -6,338 +6,7 @@
 <meta name="robots" content="noindex,nofollow">
 <title>ALM · Site editor</title>
 <link rel="icon" href="/favicon.ico">
-<style>
-  :root{
-    --bg:#0A0A0A;
-    --ink:#F4F4F0;
-    --accent:#F7F7F7;
-    --accent-glow:rgba(255,255,255,0.12);
-    --plate:#161616;
-    --plate-hover:#1F1F1F;
-    --dark:#0F0F0F;
-    --l06:rgba(244,244,240,.06);
-    --l10:rgba(244,244,240,.1);
-    --l20:rgba(244,244,240,.2);
-    --l45:rgba(244,244,240,.45);
-    --l60:rgba(244,244,240,.6);
-    --warn:#C8C8C8;
-    --bad:#FFFFFF;
-    --good:#FFFFFF;
-    --r:20px;
-    --rs:12px;
-  }
-  *{box-sizing:border-box}
-  html,body{margin:0;background:var(--bg);color:var(--ink);font:400 14px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;letter-spacing:-.01em;-webkit-font-smoothing:antialiased}
-  body{min-height:100vh;background:#0c0c0c}
-  button,input,textarea,select{font:inherit;color:inherit;letter-spacing:inherit}
-  button{cursor:pointer;border:0;background:none;padding:0}
-  a{color:inherit}
-  [hidden]{display:none!important}
-  ::selection{background:var(--accent);color:#000}
-
-  /* Shared pieces */
-  .cap{font-size:11px;line-height:1.1;letter-spacing:.06em;text-transform:uppercase;font-weight:600;color:var(--l45)}
-  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:38px;padding:0 15px;border-radius:10px;background:var(--l06);font-weight:500;font-size:13px;white-space:nowrap;transition:all .15s}
-  .btn:hover{background:var(--l10)}
-  .btn:disabled{opacity:.4;cursor:default}
-  .btn.sm{height:30px;padding:0 11px;font-size:12px;border-radius:8px}
-  .btn.ghost{background:none;box-shadow:inset 0 0 0 1px var(--l10)}
-  .btn.ghost:hover{background:var(--l06)}
-  .btn.bad{color:var(--bad)}
-  .btn.bad:hover{background:rgba(232,93,78,.15)}
-  .btn.accent{background:var(--accent);color:#000;font-weight:600}
-  .btn.accent:hover{filter:brightness(1.1)}
-  
-  .cta{display:inline-flex;gap:3px;height:42px;color:#000;font-weight:600;font-size:14px;letter-spacing:-.01em;transition:opacity .15s}
-  .cta .cl{display:flex;align-items:center;padding:0 18px;border-radius:12px;background:var(--accent);white-space:nowrap}
-  .cta .ca{width:42px;border-radius:12px;background:var(--accent);display:grid;place-items:center}
-  .cta:hover{opacity:.92}
-  .cta:disabled{opacity:.35;cursor:default}
-
-  /* Login */
-  .login{min-height:100vh;display:grid;place-items:center;padding:24px}
-  .lg-box{width:min(420px,100%);background:var(--plate);border-radius:24px;padding:36px 30px;box-shadow:0 24px 60px rgba(0,0,0,.6);border:1px solid var(--l06)}
-  .lg-logo{font-size:38px;font-weight:800;letter-spacing:-.03em;margin-bottom:4px;color:var(--ink)}
-  .lg-logo span{color:var(--accent)}
-  .lg-sub{color:var(--l60);font-size:14px;margin-bottom:28px}
-  .lg-f{display:grid;gap:12px}
-  .lg-err{color:var(--bad);font-size:13px;min-height:1.2em;margin-top:12px}
-
-  /* Top bar */
-  #app{display:grid;grid-template-columns:68px minmax(0,1fr);min-height:100vh}
-  .app-main{min-width:0}
-  .mode-rail{position:sticky;top:0;height:100vh;z-index:30;display:flex;flex-direction:column;align-items:center;gap:8px;padding:16px 8px;background:#121212;border-right:1px solid var(--l10)}
-  .rail-logo{font-size:18px;font-weight:800;letter-spacing:-.06em;margin-bottom:24px}
-  .mode-rail a{display:grid;place-items:center;width:50px;height:50px;border-radius:12px;color:var(--l60);text-decoration:none;font-size:10px;font-weight:700;letter-spacing:.01em}
-  .mode-rail button{display:grid;place-items:center;width:50px;height:50px;border-radius:12px;color:var(--l60);font-size:10px;font-weight:700;letter-spacing:.01em}
-  .mode-rail a:hover{background:var(--l06);color:var(--ink)}
-  .mode-rail button:hover{background:var(--l06);color:var(--ink)}
-  .mode-rail a.on{background:var(--accent);color:#111}
-  .mode-rail button.on{background:var(--accent);color:#111}
-  .mode-rail a span:first-child{font-size:17px;line-height:1}
-  .mode-rail button span:first-child{font-size:17px;line-height:1}
-  .top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:16px;padding:12px 24px;min-height:64px;background:rgba(12,12,12,.94);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--l06)}
-  .top-title{font-size:15px;font-weight:650;white-space:nowrap}
-  .section-bar{position:sticky;top:64px;z-index:19;background:rgba(12,12,12,.96);border-bottom:1px solid var(--l06);padding:13px 24px 15px}
-  .section-label{display:block;margin-bottom:9px;color:var(--l45);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.12em}
-  .tabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:thin;scrollbar-color:#3b3b3b transparent}
-  .tabs::-webkit-scrollbar{display:none}
-  .tabs button{height:34px;padding:0 12px;border-radius:8px;background:#191919;font-size:12px;font-weight:600;color:var(--l60);white-space:nowrap;transition:all .15s}
-  .tabs button:hover{color:var(--ink)}
-  .tabs button.on{background:var(--ink);color:#000}
-  .acts{margin-left:auto;display:flex;align-items:center;gap:12px}
-  .st{font-size:13px;color:var(--l60);white-space:nowrap;display:flex;align-items:center;gap:8px}
-  .st i{width:8px;height:8px;border-radius:50%;background:var(--l20)}
-  .st.dirty i{background:var(--warn);box-shadow:0 0 8px var(--warn)}
-  .st.ok i{background:var(--good);box-shadow:0 0 8px var(--good)}
-  .who{font-size:12px;color:var(--l45);background:var(--l06);padding:4px 10px;border-radius:20px}
-
-  /* Layout */
-  .wrap{display:grid;grid-template-columns:clamp(200px,var(--editor-width,35%),50%) 8px minmax(0,1fr);gap:10px;padding:20px 24px 80px;align-items:start}
-  .ed{min-width:0;background:#151515;border:1px solid var(--l06);border-radius:16px;padding:20px}
-  .pane-resizer{position:sticky;top:170px;align-self:start;height:calc(100vh - 190px);min-height:300px;border-radius:8px;cursor:col-resize;touch-action:none;background:transparent}
-  .pane-resizer::before{content:"";position:absolute;top:0;bottom:0;left:3px;width:2px;border-radius:2px;background:var(--l10)}
-  .pane-resizer:hover::before,.pane-resizer:focus-visible::before{background:var(--accent)}
-  .pv{position:sticky;top:155px;height:calc(100vh - 170px);min-height:500px;display:flex;flex-direction:column;gap:10px}
-  .pv-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:space-between}
-  .pv-address{display:flex;align-items:center;gap:9px;min-width:0;padding:8px 10px;border:1px solid var(--l10);border-radius:9px;background:#151515;color:var(--l60);font-size:12px}
-  .pv-address select{max-width:210px;min-width:120px;border:0;background:#242424;padding:6px 8px;border-radius:6px;outline:0}
-  .pv-address code{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .pv-box{position:relative;flex:1;border-radius:14px;overflow:hidden;background:var(--dark);border:1px solid var(--l10)}
-  .pv-box iframe{position:absolute;left:0;top:0;border:0;transform-origin:0 0;background:#000}
-  .seg{display:inline-flex;padding:3px;border-radius:10px;background:var(--dark);gap:2px}
-  .seg button{height:28px;padding:0 10px;border-radius:8px;font-size:12px;font-weight:500;color:var(--l60);white-space:nowrap}
-  .seg button.on{background:var(--accent);color:#000;font-weight:600}
-
-  /* Form & plates */
-  .sec-h{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin:16px 0 20px}
-  .sec-h h1{margin:0;font-weight:700;font-size:25px;letter-spacing:-.03em}
-  .sec-h p{margin:6px 0 0;color:var(--l60);font-size:14px}
-  .plate{background:var(--plate);border-radius:var(--r);padding:22px;border:1px solid var(--l06)}
-  .plate+.plate,.stack>*+*{margin-top:14px}
-  .plate h2{margin:0 0 16px;font-weight:600;font-size:20px;letter-spacing:-.02em}
-  .plate h3{margin:20px 0 10px;font-weight:600;font-size:15px;color:var(--ink)}
-  .grid{display:grid;gap:14px;grid-template-columns:repeat(12,minmax(0,1fr))}
-  .c3{grid-column:span 3}.c4{grid-column:span 4}.c6{grid-column:span 6}.c8{grid-column:span 8}.c12{grid-column:1/-1}
-  .f{display:flex;flex-direction:column;gap:6px;min-width:0}
-  .f .lb{display:flex;justify-content:space-between;gap:10px}
-  .f .cnt{font-size:11px;color:var(--l45);font-variant-numeric:tabular-nums}
-  .f input[type=text],.f input[type=password],.f input[type=email],.f textarea{width:100%;background:var(--dark);border:0;border-radius:10px;padding:10px 12px;outline:none;box-shadow:inset 0 0 0 1px rgba(244,244,240,.08);transition:box-shadow .15s;font-size:14px}
-  .f input:focus,.f textarea:focus{box-shadow:inset 0 0 0 1px var(--accent)}
-  .f textarea{resize:vertical;min-height:56px;line-height:1.4}
-  .hint{font-size:12px;color:var(--l45);line-height:1.35}
-  .auto-fields{display:grid;gap:0}
-  .auto-field{padding:15px 0;border-top:1px solid var(--l06)}
-  .auto-field.selected{margin:0 -10px;padding:15px 10px;border-radius:9px;background:#232323;box-shadow:inset 3px 0 0 var(--accent)}
-  .auto-field:first-child{border-top:0}
-  .auto-field .cap{display:block;margin-bottom:8px;letter-spacing:0;text-transform:none;font-size:12px;color:var(--l60)}
-  .auto-field input,.auto-field textarea{display:block;width:100%;padding:10px 11px;border:1px solid var(--l10);border-radius:9px;background:#0e0e0e;color:var(--ink);outline:0;resize:vertical;line-height:1.45}
-  .auto-field input:focus,.auto-field textarea:focus{border-color:var(--accent)}
-  .auto-field textarea{min-height:72px}
-  .auto-field .hint{margin-top:6px}
-  .auto-field .media-preview{width:100%;height:120px;object-fit:cover;background:#222;border-radius:8px;margin-bottom:8px}
-  .auto-field .field-actions{display:flex;gap:8px;margin-top:8px}
-  .field-count{margin:5px 0 16px;color:var(--l45);font-size:12px}
-  .workspace-view{padding:24px;min-height:calc(100vh - 64px)}
-  .media-layout{display:grid;grid-template-columns:210px minmax(0,1fr) 290px;gap:18px;min-height:calc(100vh - 150px)}
-  .media-folders,.media-detail{background:#151515;border:1px solid var(--l06);border-radius:14px;padding:16px;min-width:0}
-  .media-main{min-width:0}
-  .media-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
-  .media-head h1{margin:0;font-size:25px}
-  .media-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:10px}
-  .asset-tile{display:flex;flex-direction:column;gap:8px;min-width:0;text-align:left;padding:8px;border:1px solid var(--l10);border-radius:11px;background:#171717;color:var(--ink)}
-  .asset-tile:hover,.asset-tile.on{border-color:var(--accent)}
-  .asset-tile.unused .asset-thumb{opacity:.5}
-  .asset-thumb{display:grid;place-items:center;width:100%;aspect-ratio:1.25;border-radius:7px;background:#252525;overflow:hidden;color:var(--l45);font-size:25px}
-  .asset-thumb img{width:100%;height:100%;object-fit:cover}
-  .asset-tile span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px}
-  .folder-link{display:block;width:100%;text-align:left;padding:7px 9px;border-radius:7px;color:var(--l60);font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .folder-link:hover,.folder-link.on{background:var(--l10);color:var(--ink)}
-  .media-detail img,.media-detail video{display:block;width:100%;max-height:180px;object-fit:contain;background:#242424;border-radius:9px;margin:12px 0}
-  .media-detail h2{margin:0;font-size:17px;word-break:break-word}
-  .media-detail .auto-field{padding:12px 0}
-  .media-detail .hint{word-break:break-all}
-  .picker-grid{max-height:50vh;overflow:auto}
-  .settings-view{max-width:760px;margin:auto}
-  .settings-view h1{font-size:27px;margin:0 0 16px}
-  .settings-group{background:#151515;border:1px solid var(--l06);border-radius:14px;padding:20px;margin:14px 0}
-  .settings-group h2{font-size:16px;margin:0 0 10px}
-  @media(max-width:1100px){.wrap{grid-template-columns:1fr}.pane-resizer{display:none}.pv{position:relative;top:auto;height:620px}.ed{order:2}.pv{order:1}.media-layout{grid-template-columns:170px minmax(0,1fr)}.media-detail{grid-column:1/-1}}
-  @media(max-width:700px){#app{grid-template-columns:54px minmax(0,1fr)}.mode-rail{padding:12px 2px}.mode-rail a,.mode-rail button{width:46px}.top{padding:10px 14px;flex-wrap:wrap}.section-bar{position:relative;top:auto;padding:12px 14px}.wrap{padding:14px;gap:14px}.acts{gap:6px}.who{display:none}.st span{display:none}.pv{height:460px;min-height:0}.media-layout{display:block}.media-folders,.media-detail{margin:12px 0}.workspace-view{padding:14px}}
-
-  /* Items lists */
-  .items{display:flex;flex-direction:column;gap:8px}
-  .it{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:14px;background:var(--dark);cursor:pointer;transition:all .15s;border:1px solid transparent}
-  .it:hover{background:var(--plate-hover);border-color:var(--l10)}
-  .it.on{border-color:var(--accent)}
-  .it .no{font-size:12px;color:var(--l45);font-variant-numeric:tabular-nums;width:24px}
-  .it .th{width:50px;height:40px;border-radius:8px;background:#222 center/cover;flex:none}
-  .it .tt{flex:1;min-width:0}
-  .it .tt b{display:block;font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .it .tt span{font-size:12px;color:var(--l60);display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .it .ops{display:flex;gap:4px}
-
-  /* Media field */
-  .media{display:flex;gap:16px;align-items:flex-start}
-  .ph-box{width:140px;height:95px;border-radius:10px;background:#222 center/cover no-repeat;flex:none;overflow:hidden;border:1px solid var(--l10);position:relative}
-  .ph-box .em{position:absolute;inset:0;display:grid;place-items:center;color:var(--l45);font-size:11px;text-align:center;padding:8px}
-  .drop{border-radius:12px;box-shadow:inset 0 0 0 1px var(--l20);padding:12px;color:var(--l60);font-size:12px;display:flex;flex-direction:column;gap:8px;align-items:flex-start;flex:1}
-  .bar{height:4px;border-radius:2px;background:var(--l10);overflow:hidden;width:100%}
-  .bar i{display:block;height:100%;background:var(--accent);width:0;transition:width .2s}
-
-  /* Modal */
-  .mod{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.75);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:grid;place-items:center;padding:20px}
-  .mod-c{width:min(580px,100%);max-height:calc(100vh - 40px);overflow:auto;background:var(--plate);border-radius:24px;padding:30px;border:1px solid var(--l10)}
-  .mod-c h2{margin:0 0 12px;font-size:28px;font-weight:700;letter-spacing:-.03em}
-  .mod-f{display:flex;justify-content:flex-end;gap:10px;margin-top:24px}
-  .steps{display:grid;gap:12px;margin:20px 0}
-  .steps div{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--l60)}
-  .steps div i{width:10px;height:10px;border-radius:50%;background:var(--l20)}
-  .steps div.on{color:var(--ink)} .steps div.on i{background:var(--accent);box-shadow:0 0 8px var(--accent)}
-  .steps div.ok{color:var(--good)} .steps div.ok i{background:var(--good)}
-
-  /* Toast */
-  #toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:90;background:var(--ink);color:#000;padding:10px 18px;border-radius:12px;font-size:13px;font-weight:600;box-shadow:0 10px 30px rgba(0,0,0,.5);transition:opacity .2s,transform .2s}
-  #toast.bad{background:var(--bad);color:#fff}
-  #toast.bad{color:#111}
-  /* Monochrome workspace */
-  .ui-icon{display:inline-block;width:19px;height:19px;flex:none;background:currentColor;mask:var(--icon) center/contain no-repeat;-webkit-mask:var(--icon) center/contain no-repeat}
-  #app{grid-template-columns:76px minmax(0,1fr)}
-  .mode-rail{background:#fff;color:#141414;border:0;border-radius:26px;margin:10px 0 10px 10px;height:calc(100vh - 20px);padding:18px 10px;gap:7px;box-shadow:0 12px 50px #0005}
-  .rail-logo{display:grid;place-items:center;width:42px;height:42px;margin:0 0 25px;font-size:23px;font-weight:800;color:#111}
-  .mode-rail button,.mode-rail a{width:46px;height:46px;border-radius:13px;color:#555;background:transparent}
-  .mode-rail button:hover,.mode-rail a:hover{background:#eee;color:#111}
-  .mode-rail button.on,.mode-rail a.on{background:#161616;color:#fff}
-  .mode-rail .rail-logout{margin-top:auto;border-top:1px solid #e5e5e5;border-radius:0;padding-top:13px;height:58px}
-  .top{background:#0b0b0b;padding:15px 28px;min-height:70px;border-bottom:1px solid #252525}
-  .top-title{font-size:18px;letter-spacing:-.03em}
-  .acts{gap:10px}
-  .st{font-size:12px;color:#999}.st i,.st.dirty i,.st.ok i{background:#aaa;box-shadow:none}
-  .history-actions{display:flex;gap:4px;margin:0 4px}
-  .icon-btn{display:grid;place-items:center;flex:none;width:34px;height:34px;border:1px solid #303030;border-radius:9px;color:#ccc;text-decoration:none;background:#161616}
-  .icon-btn:hover,.icon-btn.active{background:#f3f3f3;color:#111;border-color:#f3f3f3}
-  .icon-btn:disabled{opacity:.35;cursor:default;background:#161616;color:#aaa;border-color:#303030}
-  .cta{height:38px;gap:0}.cta .cl{background:#f4f4f4;color:#101010;border-radius:9px;padding:0 17px;font-size:13px}.cta .ca{display:none}
-  .wrap{padding:20px 26px 60px;gap:12px}
-  .ed{background:#101010;border:1px solid #252525;border-radius:15px;padding:20px}
-  .pv{top:90px;height:calc(100vh - 112px);min-height:460px;gap:9px}
-  .pane-resizer{top:90px;height:calc(100vh - 112px)}
-  .pv-address{display:flex;gap:8px;width:100%;padding:6px 7px 6px 11px;background:#151515;border-color:#303030;color:#ddd}
-  .pv-address select{min-width:130px;max-width:220px;background:#222;border:0;color:#fff;font-size:12px;font-weight:600;padding:7px 9px}
-  .pv-address code{flex:1;min-width:0;font-family:inherit;font-size:12px;color:#999}
-  .pv-address .icon-btn{width:30px;height:30px;background:transparent;border:0}.pv-address .icon-btn:hover{background:#333;color:#fff}
-  .section-bar{position:static;background:none;border:0;padding:0;display:flex;align-items:center;gap:10px;min-height:34px}
-  .section-label{margin:0;color:#999;letter-spacing:.07em;white-space:nowrap}
-  .section-bar select{min-width:0;max-width:100%;width:min(360px,100%);height:33px;border:1px solid #303030;border-radius:8px;background:#191919;color:#f4f4f4;padding:0 9px;font-size:12px;outline:0}
-  .pv-bar{justify-content:flex-end;gap:8px}.pv-bar .hint{margin-right:auto;font-size:11px}
-  .seg{border:1px solid #303030;background:#151515;padding:2px;border-radius:9px}.seg button{display:grid;place-items:center;width:30px;height:29px;padding:0}.seg button.on{background:#f4f4f4;color:#111}
-  .pv-box{border-radius:11px;border-color:#303030}
-  .sec-h{margin:0 0 12px}.sec-h h1{font-size:20px}.field-count{font-size:11px;margin:0 0 12px}
-  .auto-field{padding:12px 0}.auto-field.selected{background:#232323;box-shadow:inset 3px 0 0 #fff}
-  .auto-field input,.auto-field textarea{background:#171717;border-color:#333}.auto-field input:focus,.auto-field textarea:focus{border-color:#fff}
-  .plate,.settings-group,.media-folders,.media-detail{background:#141414;border-color:#292929;border-radius:12px}
-  .asset-tile{background:#171717}.asset-tile:hover,.asset-tile.on{border-color:#fff}
-  .btn.bad{color:#fff}.btn.bad:hover{background:#333}
-  .lg-box{border-radius:16px}.lg-logo span{color:#fff}
-  .st.dirty{color:#fff}.st.ok{color:#999}
-  .steps div.ok{color:#fff}.steps div.ok i{background:#fff}
-  .settings-view{max-width:none}
-  .const-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:7px}
-  .const-badge{display:inline-flex;align-items:center;gap:5px;border:1px solid #777;border-radius:5px;padding:3px 6px;color:#fff;background:#303030;font-size:10px;letter-spacing:.08em;font-weight:700;text-transform:uppercase}
-  .const-badge .ui-icon{width:12px;height:12px}
-  .const-value{font-size:14px;word-break:break-word;color:#fff}
-  .const-note{font-size:11px;color:#aaa;margin-top:6px}
-  .const-list{display:grid;gap:6px;margin:18px 0}
-  .const-list button{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 12px;border:1px solid #292929;border-radius:9px;background:#171717;text-align:left}
-  .const-list button.on,.const-list button:hover{border-color:#eee;background:#242424}
-  .const-list button span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#aaa;font-size:11px}
-  .const-detail{border-top:1px solid #333;padding-top:18px}
-  .const-detail .auto-field{border:0}
-  .input-shell{position:relative;min-width:0;width:100%}
-  .input-shell input,.input-shell textarea{padding-right:43px!important}
-  .input-shell[data-bound] input,.input-shell[data-bound] textarea{border-style:dashed;cursor:pointer}
-  .input-const{position:absolute;right:5px;top:5px;width:30px;height:30px;display:grid;place-items:center;border-radius:6px;color:#888;opacity:.45;transition:opacity .15s,background .15s,color .15s}
-  .input-shell:hover .input-const,.input-shell:focus-within .input-const{opacity:1}
-  .input-const:hover,.input-shell[data-bound] .input-const{color:#fff;background:#333;opacity:1}
-  .input-const .ui-icon{width:17px;height:17px}
-  .input-auto{position:absolute;right:10px;top:12px;font-size:10px;color:#aaa;font-weight:700;letter-spacing:.06em;pointer-events:none}
-  .link-editor{display:grid;gap:10px;padding:12px;border:1px solid #303030;border-radius:10px;background:#141414}
-  .link-row{display:grid;grid-template-columns:64px minmax(0,1fr);gap:9px;align-items:center}
-  .link-row>span{font-size:11px;color:#999}
-  .link-row select{width:100%;min-width:0;padding:9px 10px;border:1px solid #333;border-radius:8px;background:#1b1b1b;color:#eee;outline:0}
-  .link-row .seg{display:flex}.link-row .seg button{width:auto;flex:1;font-size:11px}
-  .section-bar{min-width:0;overflow:hidden}
-  .tabs{display:flex;flex:1;min-width:0;gap:5px;overflow-x:auto;scrollbar-width:none;overscroll-behavior-x:contain}
-  .tabs::-webkit-scrollbar{display:none}
-  .tabs button{flex:none;height:31px;padding:0 11px;border:1px solid transparent;background:#191919;font-size:11px;max-width:230px;overflow:hidden;text-overflow:ellipsis}
-  .tabs button.on{background:#f4f4f4;color:#111}
-  @media(max-width:1100px){.pv{top:auto;height:600px}.pane-resizer{display:none}}
-  @media(max-width:700px){#app{grid-template-columns:58px minmax(0,1fr)}.mode-rail{margin:5px 0 5px 5px;height:calc(100vh - 10px);padding:10px 4px;border-radius:17px}.mode-rail button,.mode-rail a{width:42px;height:42px}.top{padding:11px 13px;gap:8px}.top-title{font-size:14px}.st span{display:none}.history-actions{margin:0}.wrap{padding:12px}.pv{height:470px}.pv-address code{display:none}.pv-bar .hint{display:none}}
-
-.inspector-back{display:inline-flex;align-items:center;padding:8px 0;margin-bottom:18px;color:#aaa;background:none;border:0;font:inherit;font-size:12px;cursor:pointer;text-decoration:none}.inspector-back:hover{color:#fff}.inspector-eyebrow{font-size:10px;letter-spacing:1.4px;color:#65d48a;margin:0 0 24px}.element-list{display:grid;gap:8px;margin:20px 0}.element-card,.collection-card{display:flex;align-items:center;gap:12px;width:100%;padding:14px;border:1px solid #303030;border-radius:10px;background:#171717;color:#eee;text-align:left;cursor:pointer;font:inherit;transition:border-color .15s,background .15s}.element-card:hover{border-color:#4caf70;background:#1b211d}.element-card img{width:48px;height:44px;object-fit:cover;border-radius:5px;background:#252525}.element-symbol{width:32px;color:#75d995;font-size:22px;text-align:center}.element-copy{flex:1;min-width:0}.element-copy small{display:block;color:#929292;font-size:10px;margin-bottom:5px}.element-copy strong{display:block;font-size:12px;font-weight:500;white-space:nowrap;text-overflow:ellipsis;overflow:hidden}.collection-card{margin-bottom:8px;flex-direction:column;align-items:flex-start;background:#191c21;border-color:#313a48}.collection-card:hover{border-color:#718ec2}.collection-card small{color:#99a8c1;font-size:11px}.record-list{display:grid;gap:8px;margin-top:16px}.record-card{display:flex;align-items:center;border:1px solid #333;border-radius:9px;background:#171717;padding:8px;gap:6px}.record-card:hover{border-color:#596b8c}.record-card.dragging{opacity:.35}.drag-grip{cursor:grab;color:#666;font-size:22px}.record-open{display:flex;align-items:center;gap:10px;flex:1;min-width:0;background:none;border:0;color:#eee;font:inherit;text-align:left;cursor:pointer;padding:7px}.record-open small{color:#777;font-size:10px}.record-open strong{flex:1;font-size:12px;font-weight:500;line-height:1.5}.record-order{display:flex;flex-direction:column;gap:3px}.record-order button{background:#222;border:1px solid #383838;border-radius:4px;color:#ccc;cursor:pointer;padding:2px 6px}.record-order button:disabled{opacity:.25;cursor:default}
-
-/* The shell owns the viewport; only the inspector, media workspace and iframe scroll. */
-html,body{width:100%;height:100%;min-height:0;overflow:hidden;overscroll-behavior:none}
-#app{height:100dvh;min-height:0;overflow:hidden}
-.app-main{display:flex;flex-direction:column;height:100%;min-height:0;overflow:hidden}
-.top{position:relative;flex:none;min-width:0}
-#tokenWarn{flex:none}
-.wrap{flex:1;min-height:0;min-width:0;overflow:hidden;align-items:stretch;padding:20px 26px 24px;grid-template-columns:minmax(0,clamp(200px,var(--editor-width,35%),50%)) 8px minmax(0,1fr)}
-.ed{height:100%;min-height:0;min-width:0;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable}
-.pv{position:relative;top:auto;height:100%;min-height:0;min-width:0;overflow:hidden;order:initial}
-.pv-address,.section-bar,.pv-bar{flex:none;min-width:0;max-width:100%}
-.tabs{flex:1;min-width:0;overscroll-behavior:contain}
-.pv-box{min-height:0;min-width:0}
-.pane-resizer{position:relative;top:auto;align-self:stretch;height:100%;min-height:0}
-.workspace-view{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain}
-.element-list,.auto-fields,.record-list{min-width:0;grid-template-columns:minmax(0,1fr)}
-.element-card,.collection-card,.record-card{min-width:0;max-width:100%;overflow:hidden}
-.element-copy{flex:1 1 0;min-width:0;overflow:hidden}
-.element-symbol,.element-card>img,.element-card>span:last-child{flex-shrink:0}
-.collection-card strong,.collection-card small,.sec-h h1{max-width:100%;overflow-wrap:anywhere}
-.record-open strong{min-width:0;overflow-wrap:anywhere}
-.ed input[type=search]{width:100%;min-width:0;padding:10px 12px;border:1px solid #333;border-radius:8px;background:#171717;color:var(--ink);outline:none}
-.ed input[type=search]:focus{border-color:#a78bfa}
-.drag-grip{flex:none;display:grid;place-items:center;width:24px;min-height:36px;touch-action:none;color:#888;border-radius:5px;cursor:grab}
-.drag-grip:hover,.drag-grip:focus-visible{background:#30263f;color:#c4a5ff;outline:none}
-.record-placeholder{border:1px dashed #a78bfa;background:#a78bfa12;border-radius:9px;min-width:0}
-.record-card.record-floating{position:fixed;z-index:100;pointer-events:none;margin:0;border-color:#b794f6;background:#24202c;box-shadow:0 12px 35px #0008;opacity:.97;transform:rotate(.5deg)}
-body.record-dragging,body.record-dragging *{cursor:grabbing!important;user-select:none!important}
-.login{height:100dvh;min-height:0;overflow:auto}
-.mod-c{overscroll-behavior:contain}
-@media(max-width:1100px){.wrap{grid-template-columns:minmax(0,38%) 8px minmax(0,1fr);padding:12px;gap:8px}.pane-resizer{display:block}.ed{order:initial;padding:14px}.pv{order:initial}.section-label{display:none}.pv-address select{min-width:0;width:130px}.pv-address code{display:none}}
-@media(max-width:650px){#app{grid-template-columns:56px minmax(0,1fr)}.mode-rail{margin-left:5px;padding-inline:3px;min-width:0}.wrap{grid-template-columns:minmax(0,44%) 4px minmax(0,1fr);padding:8px;gap:4px}.ed{padding:10px}.top{padding:10px;gap:6px}.st{display:none}.element-card{gap:6px;padding:9px}.element-card img{width:30px}.pv-address .ui-icon,.pv-address a{display:none}}
-
-/* Compact canvas toolbar and discreet workspace scrollbars. */
-:root{color-scheme:dark}
-*{scrollbar-width:thin;scrollbar-color:#454545 transparent}
-*::-webkit-scrollbar{width:5px;height:5px;background:transparent}
-*::-webkit-scrollbar-track{background:transparent}
-*::-webkit-scrollbar-thumb{background:#454545;border-radius:8px}
-*::-webkit-scrollbar-thumb:hover{background:#737373}
-*::-webkit-scrollbar-corner{background:transparent}
-.ed{scrollbar-gutter:auto}
-.tabs{scrollbar-width:none}
-.tabs::-webkit-scrollbar{display:none}
-.wrap{column-gap:3px;grid-template-columns:minmax(0,clamp(200px,var(--editor-width,35%),50%)) 6px minmax(0,1fr)}
-.pane-resizer::before{left:2px;opacity:0;transition:opacity .15s}
-.pane-resizer:hover::before,.pane-resizer:focus-visible::before,.pane-resizer.is-resizing::before{opacity:1}
-.canvas-toolbar{display:flex;align-items:center;gap:10px;min-width:0;flex:none;padding:6px 8px;border:1px solid #303030;border-radius:9px;background:#151515}
-.canvas-toolbar .pv-address{flex:1;min-width:0;width:auto;border:0;background:none;padding:0;border-radius:0}
-.canvas-toolbar .pv-bar{flex:none;flex-wrap:nowrap;gap:8px}
-.canvas-toolbar .pv-address select{min-width:70px;width:clamp(70px,13vw,180px)}
-.canvas-toolbar .pv-address code{flex:1;min-width:0}
-.canvas-toolbar .pv-address .icon-btn{flex:none}
-@media(max-width:1100px){.wrap{grid-template-columns:minmax(0,38%) 6px minmax(0,1fr);column-gap:3px}.canvas-toolbar{gap:6px;padding:5px}.canvas-toolbar .pv-address{gap:4px}.canvas-toolbar .pv-address code{display:none}.canvas-toolbar .pv-address select{min-width:0;width:100%;max-width:130px}.canvas-toolbar .pv-bar{gap:4px}.canvas-toolbar .pv-address>.ui-icon{display:none}}
-@media(max-width:650px){.wrap{grid-template-columns:minmax(0,44%) 4px minmax(0,1fr);column-gap:2px}.canvas-toolbar .pv-address .icon-btn{display:none}.canvas-toolbar .seg button{width:24px}.canvas-toolbar .pv-bar>.icon-btn{width:26px}.canvas-toolbar{gap:3px}}
-.cms-tabs{display:flex;gap:4px;padding:4px;background:#181818;border:1px solid #303030;border-radius:10px;margin-bottom:24px}.cms-tabs button{flex:1;padding:9px 14px;border-radius:7px;color:#999}.cms-tabs button.on{background:#f4f4f0;color:#111}.rename-title{cursor:text}.rename-title:focus-visible{outline:1px solid #666;outline-offset:5px}.rename-input{width:100%;min-width:0;background:#171717;border:1px solid #666;border-radius:6px;color:inherit;font:inherit;padding:2px 6px}.cms-mode{margin:16px 0 20px;padding:14px;border:1px solid #333;border-radius:10px}.cms-mode label{display:flex;gap:12px;align-items:center;font-size:12px}.cms-mode input{appearance:none;width:34px;height:20px;flex:none;border:1px solid #555;border-radius:20px;background:#333;cursor:pointer;position:relative}.cms-mode input:before{content:"";position:absolute;width:14px;height:14px;border-radius:50%;top:2px;left:2px;background:#aaa;transition:transform .15s}.cms-mode input:checked{background:#65d48a;border-color:#65d48a}.cms-mode input:checked:before{transform:translateX(14px);background:#111}.cms-mode input:disabled{cursor:default;opacity:.6}.cms-actions{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0}.cms-entry-search{width:100%;padding:10px;background:#171717;color:#eee;border:1px solid #333;border-radius:8px}
-.component-icon{display:grid;grid-template-columns:8px 8px;grid-template-rows:8px 8px;gap:3px;transform:rotate(45deg);color:#75d995;flex-shrink:0;margin:7px 12px}.component-icon i{background:currentColor;border-radius:1px}.component-context{display:flex;align-items:center;gap:8px;padding:12px 0;color:#75d995}.component-context small{margin-left:auto;color:#999}.prop-heading{display:flex;align-items:baseline;justify-content:space-between;gap:8px}.prop-overridden .prop-heading .cap{color:#579dff;background:#2e6dca22;padding:2px 4px;border-radius:3px}.prop-reset{color:#579dff;font-size:11px;white-space:nowrap}.auto-field select{width:100%;margin-top:8px;padding:9px;background:#171717;border:1px solid #333;border-radius:8px}
-.nested-elements{margin:22px 0 0;padding-top:16px;border-top:1px solid #333}.nested-elements .element-card{margin-top:8px}.collection-label,.const-name{display:flex;align-items:center;gap:8px}.collection-label .ui-icon{width:17px;height:17px}.const-name .ui-icon{width:16px;height:16px;color:#bd96ff}.input-shell[data-bound] input,.input-shell[data-bound] textarea{border-color:#a270e8;background:#a270e80d;color:#e1ceff}.input-shell[data-bound] .input-const{color:#e1ceff;background:#7040ac;box-shadow:0 0 0 1px #bd96ff55}.input-const:hover{color:#c5a4ff;background:#7440b33d}.const-badge{color:#d8beff;border-color:#8f5ed0;background:#7f49bb33}.const-list button.on{border-color:#ad7df4;background:#8751c92b;color:#dfc8ff}#modeConst.on{background:#ad7df4;color:#1c102e}.asset-tile-wrap{position:relative;min-width:0}.asset-tile-wrap>.asset-tile{width:100%;height:100%}.asset-tile.unused .asset-thumb{opacity:.28}.asset-unused{position:absolute;top:15px;left:15px;color:#d0bc8e;background:#151515de;border-radius:50%;padding:3px;display:grid;place-items:center;pointer-events:auto}.asset-unused .ui-icon{width:16px;height:16px}.asset-delete{position:absolute;right:14px;top:14px;width:29px;height:29px;background:#161616ed;color:#eee;border:1px solid #555;border-radius:7px;display:grid;place-items:center;opacity:0;transition:opacity .15s}.asset-delete .ui-icon{width:16px;height:16px}.asset-tile-wrap:hover .asset-delete,.asset-tile-wrap:focus-within .asset-delete{opacity:1}.asset-delete:hover{background:#732f3d}.folder-menu{position:fixed;z-index:10000;min-width:170px;padding:5px;background:#222;border:1px solid #444;border-radius:9px;box-shadow:0 10px 40px #0008}.folder-menu button{display:flex;align-items:center;gap:8px;width:100%;padding:9px;text-align:left;border-radius:5px;font-size:12px}.folder-menu button:hover{background:#393939}.folder-menu .ui-icon{width:15px;height:15px}.folder-rename{width:100%;padding:8px;background:#171717;border:1px solid #ad7df4;border-radius:6px;color:#eee}@media(hover:none){.asset-delete{opacity:1}}
-.inline-const-editor{display:block;width:100%;min-height:42px;padding:10px 43px 10px 11px;background:#171717;border:1px solid #333;border-radius:9px;color:#eee;line-height:1.65;white-space:pre-wrap;overflow-wrap:anywhere;outline:none;cursor:text}.inline-const-editor[aria-multiline="true"]{min-height:90px}.inline-const-editor:focus{border-color:#ad7df4}.inline-const-shell[data-bound] .inline-const-editor{border-color:#8056b0}.inline-const-chip{display:inline-flex;align-items:center;gap:5px;max-width:100%;padding:0 5px;margin:0 1px;border-radius:4px;background:#a779ec2b;color:#c7a1ff;border:1px solid #b37df02e;vertical-align:baseline;font-size:inherit;line-height:1.45;white-space:pre-wrap;user-select:all;cursor:default}.inline-const-chip::before{content:"";flex:none;width:13px;height:13px;background:currentColor;mask:url('/admin/icons/variable.svg') center/contain no-repeat;-webkit-mask:url('/admin/icons/variable.svg') center/contain no-repeat}.inline-const-chip:hover{background:#a779ec48;border-color:#b37df0}.inline-const-editor:empty::before{content:attr(data-placeholder);color:#777;pointer-events:none}
-.media-selection-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:16px 0 8px;padding:10px;background:#191919;border:1px solid #333;border-radius:10px;position:sticky;top:0;z-index:3}.bulk-actions{display:flex;gap:6px;margin-left:auto}.asset-select{position:absolute;left:12px;top:12px;display:grid;place-items:center;width:26px;height:26px;border-radius:6px;background:#161616d9;border:1px solid #666;cursor:pointer;opacity:0;transition:opacity .15s}.asset-select input{appearance:auto;accent-color:#a97dec;width:16px;height:16px;margin:0;cursor:pointer}.asset-tile-wrap:hover .asset-select,.asset-tile-wrap:focus-within .asset-select,.asset-tile-wrap.bulk-selected .asset-select{opacity:1}.asset-tile-wrap.bulk-selected>.asset-tile{border-color:#b78aee;box-shadow:0 0 0 2px #a776e866}.asset-tile-wrap .asset-unused{top:47px;left:15px}.media-destination{width:100%;padding:11px;background:#171717;color:#eee;border:1px solid #444;border-radius:8px;margin-top:12px}@media(hover:none){.asset-select{opacity:1}}
-.media-video-preview{height:auto!important;max-height:260px;min-height:140px;object-fit:contain!important;background:#080808}.media-file-path{overflow-wrap:anywhere;font-size:11px}.media-load-error{color:#eeb4a5}
-.media-draft-notice{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:14px;padding:10px;border:1px solid #8758ba;border-radius:8px;color:#cfaff8;font-size:12px}
-</style>
+<link rel="stylesheet" href="/admin/admin-ui.css">
 </head>
 <body>
 
@@ -345,20 +14,20 @@ body.record-dragging,body.record-dragging *{cursor:grabbing!important;user-selec
 <div id="login" class="login">
   <div class="lg-box">
     <div class="lg-logo">ALM<span>.</span></div>
-    <div class="lg-sub">ALM site content editor</div>
+    <div class="lg-sub">Your content, all in one place.</div>
     <form id="pwForm" class="lg-f">
       <div class="f">
-        <span class="cap">Username</span>
-        <input type="text" name="user" required autocomplete="username" placeholder="admin" autofocus>
+        <label class="cap" for="loginUser">Username</label>
+        <input type="text" id="loginUser" name="user" required autocomplete="username" placeholder="admin" autofocus>
       </div>
       <div class="f">
-        <span class="cap">Password</span>
-        <input type="password" name="password" required autocomplete="current-password" placeholder="••••••••">
+        <label class="cap" for="loginPassword">Password</label>
+        <input type="password" id="loginPassword" name="password" required autocomplete="current-password" placeholder="••••••••">
       </div>
-      <button type="submit" class="btn accent" style="height:44px;margin-top:8px;">Sign in</button>
-      <div id="lgErr" class="lg-err"></div>
+      <button type="submit" class="btn accent" style="height:var(--ui-control-lg);margin-top:var(--ui-space-4)">Sign in</button>
+      <div id="lgErr" class="lg-err" role="alert"></div>
     </form>
-    <div id="lgSetup" class="hint" style="margin-top:16px;">
+    <div id="lgSetup" class="hint" style="margin-top:var(--ui-space-7);">
       Set your local username and password in <code>.env.local</code>.
     </div>
   </div>
@@ -371,25 +40,28 @@ body.record-dragging,body.record-dragging *{cursor:grabbing!important;user-selec
     <button id="modeAdmin" class="on" type="button" title="Page editor" aria-label="Page editor"><span class="ui-icon" data-icon="panels-top-left"></span></button>
     <button id="modeCms" type="button" title="CMS collections" aria-label="CMS collections"><span class="ui-icon" data-icon="database"></span></button>
     <button id="modeMedia" type="button" title="Media library" aria-label="Media library"><span class="ui-icon" data-icon="images"></span></button>
-    <button id="modeConst" type="button" title="Const variables" aria-label="Const variables"><span class="ui-icon" data-icon="variable"></span></button>
+    <button id="modeConst" type="button" title="Const" aria-label="Const"><span class="ui-icon" data-icon="variable"></span></button>
     <button id="modeSettings" type="button" title="Page settings" aria-label="Page settings"><span class="ui-icon" data-icon="settings-2"></span></button>
     <button id="bOut" class="rail-logout" type="button" title="Log out" aria-label="Log out"><span class="ui-icon" data-icon="log-out"></span></button>
   </aside>
   <div class="app-main">
   <header class="top">
-    <div class="top-title">Page editor</div>
-    <div class="acts">
-      <div id="st" class="st" role="status" aria-live="polite" aria-atomic="true"><i aria-hidden="true"></i><span>Loading…</span></div>
+    <div class="project-identity"><span class="project-mark">A</span><span class="project-name">ALM</span><span class="project-divider">/</span></div><div class="top-title">Page editor</div>
+    <div class="acts"><button id="compactPreview" class="icon-btn" type="button" aria-label="Show preview" title="Show preview" aria-pressed="false"><span class="ui-icon" data-icon="monitor"></span></button>
+      <div id="st" class="st" role="status" aria-live="polite" aria-atomic="true"><i aria-hidden="true"></i><span aria-label="Loading"><span class="ui-loading-squares" aria-hidden="true"><i class="ui-loading-square"></i><i class="ui-loading-square"></i><i class="ui-loading-square"></i><i class="ui-loading-square"></i><i class="ui-loading-square"></i></span></span></div>
       <div class="history-actions"><button id="undo" class="icon-btn" type="button" title="Undo (Ctrl/Cmd+Z)" aria-label="Undo"><span class="ui-icon" data-icon="undo-2"></span></button><button id="redo" class="icon-btn" type="button" title="Redo (Ctrl/Cmd+Shift+Z)" aria-label="Redo"><span class="ui-icon" data-icon="redo-2"></span></button></div>
       <button id="bPub" class="cta" disabled>
         <span class="cl">Publish</span>
       </button>
     </div>
   </header>
-  <div id="tokenWarn" style="display:none;background:#1b1b1b;color:#f4f4f4;padding:10px 24px;font-size:13px;border-bottom:1px solid #444;align-items:center;gap:10px;">
+  <div id="tokenWarn" style="display:none;background:var(--ui-color-raised);color:var(--ui-color-text);padding:var(--ui-space-5) var(--ui-space-9);font-size:var(--ui-font-md);border-bottom:1rem solid var(--ui-color-border-strong);align-items:center;gap:var(--ui-space-5);">
     <span>Remote publishing is not configured. Edit static content locally with <code>npm run dev:cms</code>.</span>
   </div>
   <main id="adminWorkspace" class="wrap">
+    <aside id="cmsCatalog" class="cms-catalog" hidden></aside>
+    <section id="cmsRecords" class="cms-records" hidden></section>
+    <div id="cmsListResizer" class="pane-resizer cms-list-resizer" role="separator" aria-orientation="vertical" aria-label="CMS list width" tabindex="0" hidden></div>
     <!-- Editor Column -->
     <div id="ed" class="ed"></div>
     <div id="paneResizer" class="pane-resizer" role="separator" aria-orientation="vertical" aria-label="Editor width" tabindex="0"></div>
@@ -397,8 +69,7 @@ body.record-dragging,body.record-dragging *{cursor:grabbing!important;user-selec
     <!-- Live Preview Column -->
     <div class="pv">
       <div class="canvas-toolbar">
-      <div class="pv-address"><span class="ui-icon" data-icon="globe-2"></span><select id="pageSelect" aria-label="Choose page"></select><code id="pageUrl">http://127.0.0.1:3001/</code><button id="pvRe" class="icon-btn" type="button" title="Reload preview" aria-label="Reload preview"><span class="ui-icon" data-icon="rotate-cw"></span></button><a id="pvOpen" href="/" target="_blank" class="icon-btn" title="Open page" aria-label="Open page"><span class="ui-icon" data-icon="external-link"></span></a></div>
-      <div class="pv-bar">
+      <div class="pv-address"><div class="page-select"><span class="ui-icon" data-icon="file"></span><select id="pageSelect" aria-label="Choose page"></select><span class="ui-icon page-select-chevron" data-icon="chevron-down"></span></div></div><code id="pageUrl" class="page-url">http://127.0.0.1:3001/</code><div class="pv-bar"><button id="pvRe" class="icon-btn" type="button" title="Reload preview" aria-label="Reload preview"><span class="ui-icon" data-icon="rotate-cw"></span></button><a id="pvOpen" href="/" target="_blank" class="icon-btn" title="Open page" aria-label="Open page"><span class="ui-icon" data-icon="external-link"></span></a>
         <div id="dev" class="seg">
           <button type="button" class="on" data-d="desk" title="Desktop" aria-label="Desktop"><span class="ui-icon" data-icon="monitor"></span></button>
           <button type="button" data-d="tab" title="Tablet" aria-label="Tablet"><span class="ui-icon" data-icon="tablet"></span></button>
@@ -411,6 +82,7 @@ body.record-dragging,body.record-dragging *{cursor:grabbing!important;user-selec
       <div id="pvBox" class="pv-box">
         <iframe id="pvF" src="/?cms-preview=1" title="Draft preview"></iframe>
       </div>
+      <div id="editorBreadcrumbs"></div>
     </div>
   </main>
   <div id="workspaceView" class="workspace-view" hidden></div>
@@ -428,45 +100,37 @@ body.record-dragging,body.record-dragging *{cursor:grabbing!important;user-selec
 <script src="/admin/content-structure.js"></script>
 <script src="/admin/cms-workspace.js"></script>
 <script type="module">
+import { h, pageURLLink, itemHeader, publishedToggle, activeStatusField, icon as uiIcon, sidebar, disclosure, emptyState, badge, button as uiButton, createToast, createModalController, quickFind, componentIcon as sharedComponentIcon, elementCard as sharedElementCard, breadcrumbs, backAction, groupFooter, compactSearch, loading, targetToggle, folderTree, openGroupDialog } from "/admin/ui-components.mjs";
 import * as Components from "/admin/component-model.mjs";
+import {collectionDesigner} from '/admin/cms-schema-editor.mjs';
+import {collectionSchema,inferFields,getPath,putPath,valueIssue,pageFields} from '/admin/cms-schema-model.mjs';
+import {groupedProperties,propertyControl} from '/admin/cms-properties.mjs';
+import {duplicateAction,duplicateDialog} from '/admin/ui-components.mjs';
+import {constPickerList} from '/admin/ui-components.mjs';
+import {installCMSLayout} from '/admin/cms-layout.mjs';
+import {openGraphEditor} from '/admin/open-graph-editor.mjs';
+import {dateControl} from '/admin/date-control.mjs';
+import {slugify,uniqueSlug} from '/cms/slug.mjs';
+import {documentText} from '/admin/rich-text-model.mjs';
+import {cmsCatalogView,cmsRecordsView} from '/admin/cms-manager.mjs';
+import {collectionListView,collectionItemView} from '/admin/collection-views.mjs';
+import {startSortable} from '/admin/sortable.mjs';
+import {constGroups, moveConst, constBrowser} from '/admin/const-browser.mjs';
 import * as ConstTokens from "/admin/const-tokens.mjs";
 import { inlineConstEditor } from "/admin/inline-const-editor.mjs";
 (() => {
   const $ = id => document.getElementById(id);
   document.querySelectorAll('[data-icon]').forEach(el => el.style.setProperty('--icon', `url('/admin/icons/${el.dataset.icon}.svg')`));
-  const h = (tag, attrs, ...children) => {
-    const el = document.createElement(tag);
-    if (attrs) {
-      for (const [k, v] of Object.entries(attrs)) {
-        if (k === 'class') el.className = v;
-        else if (k === 'html') el.innerHTML = v;
-        else if (k.startsWith('on')) el.addEventListener(k.slice(2).toLowerCase(), v);
-        else if (v !== null && v !== undefined) el.setAttribute(k, v);
-      }
-    }
-    for (const c of children.flat(Infinity)) {
-      if (c == null) continue;
-      el.append(typeof c === 'string' || typeof c === 'number' ? document.createTextNode(c) : c);
-    }
-    return el;
-  };
-  const uiIcon = name => h('span', { class: 'ui-icon', 'aria-hidden': 'true', style: `--icon:url('/admin/icons/${name}.svg')` });
+  document.querySelector('.mode-rail').replaceWith(sidebar());
   const clone = o => JSON.parse(JSON.stringify(o));
   const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 
-  function toast(msg, bad) {
-    const t = $('toast');
-    t.textContent = msg;
-    t.className = bad ? 'bad' : '';
-    t.hidden = false;
-    clearTimeout(toast.T);
-    toast.T = setTimeout(() => t.hidden = true, 3000);
-  }
+  const toast = createToast($('toast'));
 
   /* API Client */
   async function api(op, body = {}) {
     if (['media-update', 'media-move-selection', 'media-folder-rename', 'media-stash', 'media-trash-selection', 'media-folder-trash', 'media-draft-discard'].includes(op) && S.c) await saveDraftNow();
-    if (op.startsWith('media-') || op === 'publish') body = { ...body, expectedMediaRevision: S.media?.mediaRevision ?? null };
+    if (op.startsWith('media-') || op === 'publish') body = { ...body, expectedMediaRevision: Object.hasOwn(body,'expectedMediaRevision')?body.expectedMediaRevision:S.media?.mediaRevision ?? null };
     const isGet = ['content', 'history', 'manifest', 'me', 'media-list', 'pages-list', 'project-status'].includes(op);
     const url = '/api/admin?op=' + encodeURIComponent(op);
     const opts = {
@@ -526,6 +190,7 @@ import { inlineConstEditor } from "/admin/inline-const-editor.mjs";
     sections: [],
     activeField: null,
     activeGroup: null,
+    editorCMS: null,
     editingMain: false,
     collectionKey: null,
     collectionItem: null,
@@ -544,6 +209,45 @@ import { inlineConstEditor } from "/admin/inline-const-editor.mjs";
     blockPreviewClicks: true
   };
   const LS = 'alm.admin.draft';
+  const workspaceKey='alm.admin.workspace:'+location.pathname;
+  let workspaceNavigationReady=false,workspaceSaveTimer=0;
+  function saveWorkspaceView(){
+    if(!workspaceNavigationReady||!S.c||!pageCMS)return;
+    const snapshot=pageCMS.snapshot(),collection=cmsInlineCollection(),item=collection?.items[S.collectionItem];
+    const view={version:1,mode:S.mode,page:S.page,section:S.tab,constKey:S.constKey,mediaFolder:S.mediaFolder,selectedAsset:S.selectedAsset,
+      cms:S.mode==='cms'?{collection:snapshot.collection?{kind:'page',key:snapshot.collection}:{kind:'inline',key:S.collectionKey},entryId:snapshot.entry?.id||null,itemId:item?.id||null,itemIndex:S.collectionItem,itemTitle:item?CMSStructure.itemTitle(item,S.collectionItem):null,archivedId:S.cmsArchivedItem||null,filter:cmsFilterMode,search:cmsManagerSearch}:null,
+      scroll:{editor:$('ed').scrollTop,records:$('cmsRecords').scrollTop,catalog:$('cmsCatalog').scrollTop}};
+    try{localStorage.setItem(workspaceKey,JSON.stringify(view));}catch{}
+  }
+  function queueWorkspaceSave(){clearTimeout(workspaceSaveTimer);workspaceSaveTimer=setTimeout(saveWorkspaceView,120);}
+  async function restoreWorkspaceView(){
+    let view;try{view=JSON.parse(localStorage.getItem(workspaceKey)||'null');}catch{return;}
+    if(view?.version!==1||!['admin','cms','media','const','settings'].includes(view.mode))return;
+    const explicit={ '#cms':'cms','#media':'media','#const':'const','#settings':'settings'}[location.hash];if(explicit&&explicit!==view.mode)return;
+    if(typeof view.page==='string'&&S.pages.some(page=>page.path===view.page)&&view.page!==S.page)await switchPage(view.page);
+    if(typeof view.section==='string')S.tab=view.section;
+    if(view.mode==='const'&&view.constKey&&S.c.consts?.[view.constKey]){S.constKey=view.constKey;S.openConstDetail=true;}
+    if(view.mode==='media'){if(S.media?.folders.includes(view.mediaFolder))S.mediaFolder=view.mediaFolder;if(S.media?.assets.some(asset=>asset.url===view.selectedAsset))S.selectedAsset=view.selectedAsset;}
+    await setMode(view.mode);
+    if(view.mode==='cms'&&view.cms){
+      const saved=view.cms;
+      if(saved.collection?.kind==='page'&&['posts','projects'].includes(saved.collection.key))await pageCMS.restore(saved.collection.key,saved.entryId);
+      else if(saved.collection?.kind==='inline'){
+        const collection=CMSStructure.collections(S.c,S.sections).find(item=>item.key===saved.collection.key);
+        if(collection){S.collectionKey=collection.key;cmsSelectionScope='content:'+collection.key;S.activeGroup=null;S.collectionItem=null;
+          if(saved.archivedId&&(S.c.editorSettings?.archivedCollectionItems?.[collection.key]||[]).some(entry=>entry.id===saved.archivedId))S.cmsArchivedItem=saved.archivedId;
+          else{S.cmsArchivedItem=null;let index=saved.itemId!=null?collection.items.findIndex(item=>String(item.id)===String(saved.itemId)):-1;
+            if(index<0&&saved.itemId==null&&saved.itemTitle){const matches=collection.items.map((item,index)=>CMSStructure.itemTitle(item,index)===saved.itemTitle?index:-1).filter(index=>index>=0);if(matches.length===1)index=matches[0];}
+            if(index>=0)S.collectionItem=index;
+          }renderCollections();
+        }
+      }
+      cmsFilterMode=['all','active','archive'].includes(saved.filter)?saved.filter:'all';cmsArchiveFilter=cmsFilterMode==='archive';cmsManagerSearch=typeof saved.search==='string'?saved.search:'';renderCMSChrome();
+    }
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{for(const [key,id]of [['editor','ed'],['records','cmsRecords'],['catalog','cmsCatalog']])if(Number.isFinite(view.scroll?.[key]))$(id).scrollTop=view.scroll[key];}));
+  }
+  document.addEventListener('scroll',event=>{if(['ed','cmsRecords','cmsCatalog'].includes(event.target.id))queueWorkspaceSave();},true);
+  addEventListener('pagehide',saveWorkspaceView);addEventListener('beforeunload',saveWorkspaceView);
   const strip = c => { const o = clone(c); delete o.pub; return o; };
   const dirty = () => S.pub && S.c && !same(strip(S.c), strip(S.pub));
   const constRef = value => {
@@ -576,21 +280,21 @@ import { inlineConstEditor } from "/admin/inline-const-editor.mjs";
       catch { if (!historyWarning && history.undo.length) { historyWarning = true; toast('Browser storage is full. Undo history cannot survive a reload.', true); } }
     });
   }
-  function restoreHistory() {
+  function restoreHistory(initialContent = S.c) {
     try {
       const saved = JSON.parse(localStorage.getItem(historyKey()) || 'null');
-      if (saved?.version === 1 && saved.sha === S.sha && same(saved.content,S.c) && saved.mediaRevision === (S.media?.mediaRevision ?? null) && same(saved.entries,S.entryRevisions || []) && Array.isArray(saved.undo) && Array.isArray(saved.redo)) {
-        history.undo = saved.undo; history.redo = saved.redo;
+      if (saved?.version === 1 && saved.sha === S.sha && same(saved.content,initialContent) && saved.mediaRevision === (S.media?.mediaRevision ?? null) && same(saved.entries,S.entryRevisions || []) && Array.isArray(saved.undo) && Array.isArray(saved.redo)) {
+        const fresh=history.undo; history.undo = [...saved.undo,...fresh].slice(-100); if(!fresh.length)history.redo = saved.redo;
       } else {
         localStorage.removeItem(historyKey());
-        for (let index=0;index<(S.media?.historyPosition||0);index++) history.undo.push({kind:'media-draft',position:index+1});
+        const earlier=Array.from({length:S.media?.historyPosition||0},(_,index)=>({kind:'media-draft',position:index+1}));history.undo.unshift(...earlier);
       }
     } catch { /* Storage may be unavailable; the active session still has Undo. */ }
     history.ready = true;
   }
   function updateHistoryButtons() {
-    $('undo').disabled = history.busy || !history.undo.length;
-    $('redo').disabled = history.busy || !history.redo.length;
+    $('undo').disabled = !history.ready || history.busy || !history.undo.length;
+    $('redo').disabled = !history.ready || history.busy || !history.redo.length;
     persistHistorySoon();
   }
   function recordSnapshot(key, snapshot) {
@@ -615,7 +319,7 @@ import { inlineConstEditor } from "/admin/inline-const-editor.mjs";
   }
   async function applyHistory(direction) {
     const source = history[direction];
-    if (!source.length || !S.c || history.busy) return;
+    if (!history.ready || !source.length || !S.c || history.busy) return;
     history.busy = true;
     updateHistoryButtons();
     const target = direction === 'undo' ? history.redo : history.undo;
@@ -760,12 +464,53 @@ import { inlineConstEditor } from "/admin/inline-const-editor.mjs";
       if (S.mode === 'const') $('pvF').contentWindow?.postMessage({ type: 'CMS_HIGHLIGHT_CONST', key: S.constKey }, location.origin);
     }
   }
+  let canvasFlushRequest=0;
+  const canvasFlushWaiters=new Map();
+  function flushCanvasEditing(){
+    const frame=$('pvF');
+    try{if(!frame.contentDocument || new URL(frame.contentWindow.location.href).searchParams.get('cms-preview')!=='1')return Promise.resolve();}catch{return Promise.resolve();}
+    return new Promise((resolve,reject)=>{
+      const requestId=++canvasFlushRequest;
+      const timer=setTimeout(()=>{canvasFlushWaiters.delete(requestId);reject(new Error('The preview is not ready. Reload it before publishing.'));},2500);
+      canvasFlushWaiters.set(requestId,()=>{clearTimeout(timer);resolve();});
+      frame.contentWindow.postMessage({type:'CMS_FLUSH_EDITING',requestId},location.origin);
+    });
+  }
+  let structureTimer = 0, structurePending = false;
+  function requestEditorStructure() {
+    clearTimeout(structureTimer);structurePending=true;S.structureFailed=false;
+    let attempts=0;
+    const request=()=>{
+      if(S.mode!=='admin'){structurePending=false;return;}
+      preview();
+      $('pvF').contentWindow?.postMessage({type:'CMS_REQUEST_STRUCTURE'},location.origin);
+      structureTimer=setTimeout(()=>{
+        if(attempts++<3){request();return;}
+        structurePending=false;
+        if(!S.sections.length){S.structureFailed=true;render();}
+      }, attempts?1500:300);
+    };request();
+  }
+  function ensureEditorPreview() {
+    const frame=$('pvF');let url=new URL(frame.src,location.origin);
+    try { if(frame.contentDocument?.readyState==='complete')url=new URL(frame.contentWindow.location.href); } catch { url=new URL('/api/cms',location.origin); }
+    if(url.pathname!==S.page || url.searchParams.get('cms-preview')!=='1'){
+      S.sections=[];S.structureReady=false;S.structureFailed=false;
+      frame.src=S.page+'?cms-preview=1&v='+Date.now();
+    }
+    requestEditorStructure();
+  }
   $('pvF').addEventListener('load', () => {
     try {
       const path = $('pvF').contentWindow.location.pathname;
+      if(path===S.page && S.c && S.pub){
+        for(const key of changedCollectionStructure){
+          if((S.c.editorSettings?.collectionStructureRevisions?.[key] || 0)===(S.pub.editorSettings?.collectionStructureRevisions?.[key] || 0))changedCollectionStructure.delete(key);
+        }
+      }
       if (path !== S.page && S.pages.some(page => page.path === path)) {
         S.page = path;
-        S.sections = [];
+        S.sections = [];S.structureReady=false;S.structureFailed=false;
         S.tab = null;
         S.activeField = null;
         $('pageSelect').value = path;
@@ -775,55 +520,49 @@ import { inlineConstEditor } from "/admin/inline-const-editor.mjs";
       }
     } catch { /* The preview can navigate to an external site. */ }
     preview();
+    if(S.mode==='admin')requestEditorStructure();
   });
   addEventListener('message', event => {
     if (event.origin !== location.origin || event.source !== $('pvF').contentWindow) return;
-    if (event.data?.type === 'CMS_PREVIEW_READY') preview();
+    if(event.data?.type==='CMS_EDITING_FLUSHED'){const done=canvasFlushWaiters.get(event.data.requestId);canvasFlushWaiters.delete(event.data.requestId);done?.();return;}
+    if (event.data?.type === 'CMS_PREVIEW_READY') { preview(); if(S.mode==='admin')requestEditorStructure(); }
     if (event.data?.type === 'CMS_STRUCTURE' && event.data.page === S.page && Array.isArray(event.data.sections)) {
+      const needsRender=!S.structureReady || !same(S.sections,event.data.sections);
+      clearTimeout(structureTimer);structurePending=false;S.structureReady=true;S.structureFailed=false;
       S.sections = event.data.sections;
       if (!S.sections.some(section => section.id === S.tab)) S.tab = S.sections[0]?.id || null;
-      if (S.mode === 'admin') render();
-      if (S.mode === 'cms') renderCollections();
+      if (needsRender && S.mode === 'admin') render();
+      if (needsRender && S.mode === 'cms') renderCollections();
       return;
     }
     if (event.data?.type === 'CMS_ACTIVE_SECTION' && event.data.page === S.page && S.sections.some(section => section.id === event.data.id)) {
       if (S.tab !== event.data.id) {
         S.tab = event.data.id;
-        S.activeGroup = null;
+        S.activeGroup = null; S.editorCMS = null;
         if (S.mode === 'admin') render();
       }
       return;
     }
     if (event.data?.type === 'CMS_COLLECTION_FOCUS' && typeof event.data.key === 'string') {
       if (!CMSStructure.collections(S.c, S.sections).some(collection => collection.key === event.data.key)) return;
-      S.collectionKey = event.data.key; S.collectionItem = null; setMode('cms');
+      const section = S.sections.find(section => CMSStructure.collections(S.c, S.sections).find(collection => collection.key === event.data.key)?.sections.some(item => item.id === section.id));
+      if (section) { S.tab = section.id; S.activeGroup = null; setMode('admin'); }
       return;
     }
     if (event.data?.type === 'CMS_GROUP_FOCUS' && typeof event.data.id === 'string') {
       const section = S.sections.find(section => section.fields.some(field => field.groupId === event.data.id));
       if (!section) return;
-      const fields = section.fields.filter(field => field.groupId === event.data.id);
-      const record = fields.find(field => field.record)?.record;
-      const path = record?.path || fields.map(CMSStructure.arrayPath).find(Boolean);
-      if (path) {
-        S.collectionKey = path.join('.');
-        S.collectionItem = record?.index ?? fields.find(field => CMSStructure.arrayPath(field))?.path[path.length] ?? null;
-        S.activeGroup = event.data.id; S.editingMain = false;
-        setMode('cms');
-      } else {
-        S.tab = section.id;
-        S.activeGroup = event.data.id; S.editingMain = false;
-        setMode('admin');
-      }
+      S.tab = section.id; S.activeGroup = event.data.id; S.editingMain = false;
+      setMode('admin');
       $('pvF').contentWindow?.postMessage({ type: 'CMS_SELECT_GROUP', id: event.data.id }, location.origin);
       return;
     }
     if (event.data?.type === 'CMS_FIELD_FOCUS' && typeof event.data.id === 'string') {
-      selectField(event.data.id, false);
+      selectField(event.data.id,false,{scroll:false});
       return;
     }
     if (event.data?.type === 'CMS_CONST_FOCUS' && typeof event.data.key === 'string') {
-      S.constKey = event.data.key;
+      S.constKey = event.data.key; S.openConstDetail = true;
       setMode('const');
       return;
     }
@@ -846,9 +585,9 @@ import { inlineConstEditor } from "/admin/inline-const-editor.mjs";
       const section = S.sections.find(item => item.fields.some(field => field.source === 'staticText' && field.key === key));
       if (section) S.tab = section.id;
       const field = section?.fields.find(field => field.source === 'staticText' && field.key === key);
-      if (field?.record) {
+      if (field?.record && S.mode === 'cms') {
         S.collectionKey = field.record.key; S.collectionItem = field.record.index; S.activeGroup = field.groupId;
-        if (S.mode !== 'cms') setMode('cms'); else renderCollections();
+        renderCollections();
       } else {
         if (S.mode !== 'admin') setMode('admin');
         render();
@@ -866,9 +605,9 @@ import { inlineConstEditor } from "/admin/inline-const-editor.mjs";
       S.activeGroup = field.groupId; S.editingMain = false;
     } else set(path, event.data.value);
     S.tab = section.id;
-    if (field?.record) {
+    if (field?.record && S.mode === 'cms') {
       S.collectionKey = field.record.key; S.collectionItem = field.record.index; S.activeGroup = field.groupId;
-      if (S.mode !== 'cms') setMode('cms'); else renderCollections();
+      renderCollections();
     } else {
       if (S.mode !== 'admin') setMode('admin');
       render();
@@ -879,7 +618,7 @@ import { inlineConstEditor } from "/admin/inline-const-editor.mjs";
     const e = $('st'), d = dirty() || Boolean(pageCMS?.pending());
     e.classList.toggle('dirty', d);
     e.classList.toggle('ok', !d);
-    e.lastChild.textContent = d || S.media?.pendingChanges || S.projectPending ? 'Unpublished changes' : 'Published locally';
+    e.lastChild.textContent = d || S.media?.pendingChanges || S.projectPending ? 'Unpublished changes' : 'Published';
     $('bPub').disabled = !d && !S.media?.pendingChanges && !S.projectPending;
   }
 
@@ -916,10 +655,10 @@ import { inlineConstEditor } from "/admin/inline-const-editor.mjs";
   });
   function switchPage(path) {
     S.page = path;
-    S.sections = [];
+    S.sections = [];S.structureReady=false;S.structureFailed=false;
     S.tab = null;
     S.activeField = null;
-    S.activeGroup = null;
+    S.activeGroup = null; S.editorCMS = null;
     S.collectionKey = null;
     S.collectionItem = null;
     $('pageUrl').textContent = location.origin + path;
@@ -938,11 +677,13 @@ import { inlineConstEditor } from "/admin/inline-const-editor.mjs";
     $('pvClicks').setAttribute('aria-pressed', String(S.blockPreviewClicks));
     preview();
   });
+  const cmsLayout=installCMSLayout({workspace:$('adminWorkspace'),handle:$('cmsListResizer'),storageKey:workspaceKey+':list-width'});
   const resizePane = clientX => {
     const wrap = document.querySelector('.wrap');
     const rect = wrap.getBoundingClientRect();
-    const available = rect.width - 48;
-    const width = Math.max(200, Math.min(available * .5, clientX - rect.left - 24));
+    const css=getComputedStyle(wrap),padding=parseFloat(css.paddingLeft),minimum=parseFloat(css.getPropertyValue('--ui-inspector-min'));
+    const available=rect.width-padding-parseFloat(css.paddingRight);
+    const width=Math.max(minimum,Math.min(available*.5,clientX-rect.left-padding));
     wrap.style.setProperty('--editor-width', `${width}px`);
     $('paneResizer').setAttribute('aria-valuenow', String(Math.round(width)));
     fitPreview();
@@ -960,7 +701,7 @@ import { inlineConstEditor } from "/admin/inline-const-editor.mjs";
     if (!['ArrowLeft', 'ArrowRight'].includes(event.key)) return;
     event.preventDefault();
     const current = $('ed').getBoundingClientRect().width;
-    resizePane(document.querySelector('.wrap').getBoundingClientRect().left + 24 + current + (event.key === 'ArrowRight' ? 20 : -20));
+    resizePane(document.querySelector('.wrap').getBoundingClientRect().left + parseFloat(getComputedStyle(document.querySelector('.wrap')).paddingLeft) + current + (event.key === 'ArrowRight' ? 20 : -20));
   });
 
   /* Client-side image optimization: Canvas -> WebP compression */
@@ -1024,8 +765,18 @@ import { inlineConstEditor } from "/admin/inline-const-editor.mjs";
     }
     if (item.source === 'content') {
       let owner = S.c;
-      for (const key of item.path.slice(0, -1)) owner = owner[key];
+      for (const key of item.path.slice(0, -1)) owner = owner[key] ||= {};
       owner[item.path.at(-1)] = value;
+      const index=item.path.findLastIndex(part=>typeof part==='number'),key=item.path.slice(0,index).join('.');
+      if(index>=0&&item.path.length===index+2&&S.c.editorSettings?.collectionModes?.[key]==='page'){
+        const items=item.path.slice(0,index).reduce((value,key)=>value?.[key],S.c),record=items?.[item.path[index]],field=item.path.at(-1);
+        if(record&&field==='slug')record.slugMode='manual';
+        if(record&&field===pageFields(inferFields(record))[0].key&&record.slugMode!=='manual'){
+          record.slug=uniqueSlug(resolveConst(value),new Set(items.filter(item=>item!==record).map(item=>item.slug)));record.slugMode='auto';
+          const input=$('ed').querySelector('[data-inline-slug]');if(input)input.value=record.slug;
+          const link=$('ed').querySelector('.slug-page-url');if(link)link.replaceChildren(pageURLLink(`/collections/${encodeURIComponent(key)}/${encodeURIComponent(record.slug)}/`));
+        }
+      }
       return;
     }
     if (item.source === 'pageSetting') {
@@ -1048,6 +799,7 @@ import { inlineConstEditor } from "/admin/inline-const-editor.mjs";
     if (config) (S.c.linkSettings ||= {})[linkKey(item)] = config;
     changed();
     if (item.source === 'componentProp') refreshComponentLabels();
+    if(S.mode==='cms')renderCMSChrome();
   }
 
   function validAttribute(item, value) {
@@ -1061,7 +813,8 @@ import { inlineConstEditor } from "/admin/inline-const-editor.mjs";
   }
 
   function valueControl(item, options = {}) {
-    const raw = String(options.value ?? fieldValue(item));
+    const stored = String(options.value ?? fieldValue(item));
+    const raw = options.display ? options.display(stored) : stored;
     if (options.connect === false) {
       const input = h(options.multi ? 'textarea' : 'input', { ...(options.multi ? { rows: options.rows || 3 } : { type: 'text' }), 'aria-label': item.label || item.key || 'Value' });
       input.value = raw;
@@ -1081,7 +834,7 @@ import { inlineConstEditor } from "/admin/inline-const-editor.mjs";
         if (validAttribute(item, encoded)) writeField(item, encoded);
       },
       onFocus: () => { if (item.id) selectField(item.id, true); },
-      onEditConst: key => { S.constKey = key; setMode('const'); }
+      onEditConst: key => { S.constKey = key; S.openConstDetail = true; setMode('const'); }
     });
     const shell = h('div', { class: 'input-shell inline-const-shell' }, control.element);
     const updateBound = () => { const bound = ConstTokens.references(control.value()).map(ref => ref.key); if (bound.length) shell.dataset.bound = bound.join(','); else delete shell.dataset.bound; };
@@ -1173,12 +926,12 @@ import { inlineConstEditor } from "/admin/inline-const-editor.mjs";
     } else {
       const linkedItem = { ...item, linkType: config.type };
       box.append(row(config.type === 'url' ? 'URL' : config.type === 'email' ? 'Email' : 'Phone', valueControl(linkedItem, {
-        display: value => value.replace(/^(mailto:|tel:)/i, ''),
+        display: value => ['phone','email'].includes(config.type) ? value.replace(/^(mailto:|tel:)/i, '').replace(/\|(tel|mailto)(?=\}\})/g,'') : value,
         encode: value => !value ? '' : config.type === 'phone' ? 'tel:' + value.replace(/[^+\d]/g, '') : config.type === 'email' ? 'mailto:' + value.replace(/^mailto:/i, '') : value
       })));
     }
     const target = h('div', { class: 'seg' }, ...[['_self', 'This tab'], ['_blank', 'New tab']].map(([value, label]) => h('button', { type: 'button', class: config.target === value ? 'on' : '', 'aria-pressed': String(config.target === value), onclick: () => { updateLink(item, { target: value }); render(); } }, label)));
-    box.append(row('Open in', target));
+    box.append(target);
     return box;
   }
 
@@ -1193,12 +946,12 @@ import { inlineConstEditor } from "/admin/inline-const-editor.mjs";
       const input = h('input', { type: 'number', 'aria-label': item.label }); input.value = fieldValue(item);
       input.onchange = () => { if (input.value !== '' && Number.isFinite(input.valueAsNumber)) writeField(item, input.valueAsNumber); }; body.push(input);
     } else if (item.source === 'componentProp' && item.mode === 'target') {
-      const select = h('select', { 'aria-label': item.label }, h('option', { value: '_self' }, 'This tab'), h('option', { value: '_blank' }, 'New tab'));
-      select.value = raw; select.onchange = () => writeField(item, select.value); body.push(select);
+      body.push(targetToggle(raw,value=>{writeField(item,value);render();}));
     } else if (item.mode === 'href' && item.source === 'componentProp') {
       body.push(valueControl(item));
       const pages = h('select', { 'aria-label': 'Choose a site page' }, h('option', { value: '' }, 'Choose a page…'), ...S.pages.map(page => h('option', { value: page.path }, page.title)));
       pages.onchange = () => { if (pages.value) { writeField(item, pages.value); render(); } }; body.push(pages);
+      const target=componentFields({component:item.descriptor},item.main).find(field=>field.mode==='target');if(target)body.push(editorField(target));
     } else if (item.mode === 'href') body.push(linkEditor(item));
     else if (['src', 'poster', 'data-image'].includes(item.mode)) {
       const isVideo = item.mode !== 'poster' && (item.mediaType === 'video' || /\.(mp4|webm)(?:[?#]|$)/i.test(String(resolveConst(initial))));
@@ -1218,23 +971,24 @@ import { inlineConstEditor } from "/admin/inline-const-editor.mjs";
       body.push(h('div', { class: 'field-actions' }, h('button', { class: 'btn sm ghost', type: 'button', onclick: () => { selectField(item.id, true); openMediaPicker(item); } }, isVideo ? 'Replace video…' : item.mode === 'poster' ? 'Replace poster…' : 'Replace image…')));
 
     } else body.push(valueControl(item, { multi: item.htmlLines || item.mode === 'text' && (initial.length > 95 || initial.includes('\n')) }));
-    const overridden = item.source === 'componentProp' && !item.main && Components.isOverridden(S.c, item.descriptor, item.property);
-    return h('div', { class: 'auto-field' + (overridden ? ' prop-overridden' : '') + (S.activeField === item.id ? ' selected' : ''), 'data-field-id': item.id },
-      h('div', { class: 'prop-heading' }, h('label', { class: 'cap' }, item.label), item.source === 'componentProp' && !item.main ? h('button', { type: 'button', class: 'prop-reset', 'data-property': item.property, title: 'Reset to main component value', ...(overridden ? {} : { hidden: '' }), onclick: () => {
-        recordChange('component:reset:' + item.descriptor.id + ':' + item.property); Components.resetProperty(S.c, item.descriptor, item.property); changed(); render();
-      } }, '↶ Reset') : null), ...body);
+    const canReset = item.source === 'componentProp' && !item.main;
+    const overridden = canReset && Components.isOverridden(S.c,item.descriptor,item.property);
+    const reset = () => {
+      if (!canReset || !Components.isOverridden(S.c,item.descriptor,item.property)) return;
+      recordChange('component:reset:'+item.descriptor.id+':'+item.property);
+      Components.resetProperty(S.c,item.descriptor,item.property);changed();render();
+    };
+    const label = canReset ? h('button',{type:'button',class:'cap prop-label',title:'Alt + click to reset',onclick:event=>{if(event.altKey){event.preventDefault();reset();}}},item.label) : h('label',{class:'cap'},item.label);
+    return h('div',{class:'auto-field'+(item.mode==='target'?' link-target-field':'')+(overridden?' prop-overridden':'')+(S.activeField===item.id?' selected':''),'data-field-id':item.id},
+      item.mode==='target'?null:h('div',{class:'prop-heading'},label,canReset?h('button',{type:'button',class:'prop-reset','data-property':item.property,title:'Reset to main component value','aria-label':'Reset '+item.label,...(overridden?{}:{hidden:''}),onclick:reset},uiIcon('rotate-ccw'),'Reset'):null),...body);
   }
 
-  function selectField(id, fromPanel) {
+  function selectField(id,fromPanel,{scroll=Boolean(fromPanel)}={}) {
     if (S.mode === 'cms' && fromPanel) {
-      $('pvF').contentWindow?.postMessage({ type: 'CMS_HIGHLIGHT_FIELD', id }, location.origin);
+      $('pvF').contentWindow?.postMessage({ type: 'CMS_HIGHLIGHT_FIELD', id, scroll }, location.origin);
       return;
     }
     const owner = S.sections.flatMap(section => section.fields).find(field => field.id === id);
-    const collectionPath = owner?.record?.path || owner && CMSStructure.arrayPath(owner);
-    if (collectionPath && !fromPanel) {
-      S.collectionKey = collectionPath.join('.'); S.collectionItem = owner.record?.index ?? owner.path[collectionPath.length]; S.activeGroup = owner.groupId; S.editingMain = false; setMode('cms'); return;
-    }
     if (!fromPanel && owner) { S.activeGroup = owner.groupId; S.editingMain = false; }
     if (S.mode !== 'admin') setMode('admin');
     else if (!fromPanel) render();
@@ -1247,8 +1001,8 @@ import { inlineConstEditor } from "/admin/inline-const-editor.mjs";
       $('ed').querySelectorAll('.auto-field').forEach(row => row.classList.toggle('selected', row.dataset.fieldId === id));
     }
     const row = [...$('ed').querySelectorAll('.auto-field')].find(item => item.dataset.fieldId === id);
-    if (!fromPanel) row?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    $('pvF').contentWindow?.postMessage({ type: 'CMS_HIGHLIGHT_FIELD', id }, location.origin);
+    if(!fromPanel && scroll)row?.scrollIntoView({behavior:'smooth',block:'center'});
+    $('pvF').contentWindow?.postMessage({ type: 'CMS_HIGHLIGHT_FIELD', id, scroll }, location.origin);
   }
 
   const isImageAsset = url => /\.(png|jpe?g|webp|gif|avif|svg)(\?|$)/i.test(url);
@@ -1375,19 +1129,9 @@ import { inlineConstEditor } from "/admin/inline-const-editor.mjs";
       h('button', { role: 'menuitem', onclick: () => { close(); deleteFolder(path); } }, uiIcon('trash'), 'Delete folder…'));
     document.body.append(menu); document.addEventListener('pointerdown', outside, true); document.addEventListener('keydown', escape);
   }
-  function folderButtons(folder, choose) {
-    const children = parent => S.media.folders.filter(path => path !== '/assets' && path.slice(0, path.lastIndexOf('/')) === parent)
-      .sort((a, b) => folderName(a).localeCompare(folderName(b), undefined, { numeric: true })).flatMap(path => [path, ...children(path)]);
-    return ['/assets', ...children('/assets')].map(path => {
-      const button = h('button', { type: 'button', class: 'folder-link' + (folder === path ? ' on' : ''),
-        style: `padding-left:${9 + Math.max(0, path.split('/').length - 2) * 11}px`,
-        onclick: () => { clearTimeout(folderButtons.timer); folderButtons.timer = setTimeout(() => choose(path), 230); },
-        ondblclick: event => { event.preventDefault(); clearTimeout(folderButtons.timer); if (path !== '/assets') renameFolder(path, button); },
-        oncontextmenu: event => { if (path !== '/assets') folderMenu(event, path, button); },
-        onkeydown: event => { if (event.key === 'F2' && path !== '/assets') { event.preventDefault(); renameFolder(path, button); } }
-      }, '▸ ' + (path === '/assets' ? 'All media' : folderName(path)));
-      return button;
-    });
+  const collapsedMediaFolders=new Set();
+  function folderButtons(folder,choose) {
+    return [folderTree({paths:S.media.folders,selected:folder,collapsed:collapsedMediaFolders,onSelect:choose,onRename:(path,button)=>{if(path!=='/assets')renameFolder(path,button);},onContextMenu:(event,path,button)=>{if(path!=='/assets')folderMenu(event,path,button);}})];
   }
   function deleteAsset(asset) {
     modal(h('div', null, h('h2', null, 'Delete file?'), h('p', { class: 'hint' }, `Delete “${asset.name}”?`),
@@ -1406,7 +1150,7 @@ import { inlineConstEditor } from "/admin/inline-const-editor.mjs";
 
   function visibleMediaAssets(folder = S.mediaFolder, filter = S.mediaSearch) {
     const query = filter.toLocaleLowerCase();
-    return S.media.assets.filter(asset => (folder === '/assets' || asset.folder === folder) && (!query || `${asset.name} ${asset.url}`.toLocaleLowerCase().includes(query)));
+    return S.media.assets.filter(asset => (folder === '/assets' || asset.folder === folder) && (!query || `${asset.name} ${asset.url}`.toLocaleLowerCase().includes(query)) && (!S.mediaType || S.mediaType==='all' || (S.mediaType==='image'?isImageAsset(asset.url):S.mediaType==='video'?isVideoAsset(asset.url):!isImageAsset(asset.url)&&!isVideoAsset(asset.url))));
   }
   function toggleMediaSelection(asset, event, checked) {
     const visible = visibleMediaAssets();
@@ -1454,16 +1198,16 @@ import { inlineConstEditor } from "/admin/inline-const-editor.mjs";
   function mediaSelectionToolbar() {
     const visible = visibleMediaAssets(), count = S.mediaSelection.size;
     const all = visible.length > 0 && visible.every(asset => S.mediaSelection.has(asset.url));
-    return h('div', { class: 'media-selection-bar' },
+    return h('div', { class: 'media-selection-bar' + (count?' has-selection':'') },
       h('button', { class: 'btn sm ghost', type: 'button', ...(visible.length ? {} : { disabled: '' }), onclick: () => {
         for (const asset of visible) { if (all) S.mediaSelection.delete(asset.url); else S.mediaSelection.add(asset.url); }
         renderMedia();
       } }, all ? 'Deselect visible' : 'Select visible'),
       h('span', { class: 'hint', 'aria-live': 'polite' }, `${count} selected`),
       count ? h('button', { class: 'btn sm ghost', onclick: () => { S.mediaSelection.clear(); renderMedia(); } }, 'Clear') : null,
-      h('span', { class: 'bulk-actions' },
+      count ? h('span', { class: 'bulk-actions' },
         h('button', { class: 'btn sm ghost', ...(count ? {} : { disabled: '' }), onclick: moveSelectedMedia }, 'Move to…'),
-        h('button', { class: 'btn sm ghost', ...(count ? {} : { disabled: '' }), onclick: deleteSelectedMedia }, uiIcon('trash'), 'Delete')));
+        h('button', { class: 'btn sm ghost', ...(count ? {} : { disabled: '' }), onclick: deleteSelectedMedia }, uiIcon('trash'), 'Delete')) : null);
   }
 
   function assetTiles(folder, select, filter = '') {
@@ -1498,24 +1242,27 @@ import { inlineConstEditor } from "/admin/inline-const-editor.mjs";
     if (!S.media) return;
     const folder = S.mediaFolder;
     const selected = S.media.assets.find(asset => asset.url === S.selectedAsset);
-    const search = h('input', { type: 'search', value: S.mediaSearch, placeholder: 'Search media…', style: 'max-width:230px;background:#171717;border:1px solid #333;border-radius:8px;padding:8px;' });
+    const search = h('input', { type: 'search', value: S.mediaSearch, placeholder: 'Search media…' });
     const grid = h('div', { class: 'media-grid' });
     const toolbar = h('div');
-    const drawGrid = () => { S.mediaSearch = search.value; grid.replaceChildren(...assetTiles(folder, asset => { S.selectedAsset = asset.url; renderMedia(); }, search.value)); toolbar.replaceChildren(mediaSelectionToolbar()); };
+    const countLabel = h('p',{class:'media-count'});
+    const drawGrid = () => { S.mediaSearch = search.value; grid.replaceChildren(...assetTiles(folder, asset => { S.selectedAsset = asset.url; renderMedia(); }, search.value)); toolbar.replaceChildren(mediaSelectionToolbar()); countLabel.textContent=`${visibleMediaAssets().length} files · ${folderName(folder)}`; if(!grid.childElementCount)grid.append(emptyState('No files here',search.value?'Try another search.':'Upload a file to this folder.',null,'images')); };
     search.addEventListener('input', drawGrid);
     drawGrid();
+    const typeFilter=h('select',{'aria-label':'File type'},...['all','image','video','other'].map(type=>h('option',{value:type},({all:'All files',image:'Images',video:'Videos',other:'Other files'})[type])));
+    typeFilter.value=S.mediaType||'all';typeFilter.onchange=()=>{S.mediaType=typeFilter.value;drawGrid();};
     const folders = h('aside', { class: 'media-folders' },
-      h('h2', { style: 'font-size:14px;margin:0 0 12px;' }, 'Folders'),
+      h('h2', { style: 'font-size:var(--ui-font-lg);margin:0 0 var(--ui-space-6);' }, 'Folders'),
       ...folderButtons(folder, value => { S.mediaFolder = value; renderMedia(); }),
-      h('button', { class: 'btn sm ghost', type: 'button', style: 'margin-top:14px;', onclick: async () => {
-        const name = prompt('New folder name');
-        if (!name) return;
-        try { const result = await api('media-folder', { parent: folder, name }); recordAction({ kind: 'folder', folder: result.folder, parent: folder, name }); await loadMedia(); renderMedia(); }
-        catch (error) { toast(error.message, true); }
+      h('button', { class: 'btn sm ghost', type: 'button', style: 'margin-top:var(--ui-space-7);', onclick: async () => {
+        const input=h('input',{type:'text','aria-label':'Folder name',placeholder:'Folder name',maxlength:'80'});
+        const create=async()=>{if(!input.value.trim())return input.focus();try{const result=await api('media-folder',{parent:folder,name:input.value.trim()});recordAction({kind:'folder',folder:result.folder,parent:folder,name:input.value.trim()});closeModal();await loadMedia();renderMedia();}catch(error){toast(error.message,true);}};
+        input.onkeydown=event=>{if(event.key==='Enter'){event.preventDefault();create();}};
+        modal(h('div',null,h('h2',null,'New folder'),input,h('div',{class:'mod-f'},uiButton('Cancel',{onclick:closeModal}),uiButton('Create folder',{variant:'primary',onclick:create}))));
       } }, '+ Folder'));
     const main = h('div', { class: 'media-main' },
       h('div', { class: 'media-head' }, h('h1', null, 'Media'), uploadButton(folder, url => { S.selectedAsset = url; renderMedia(); })),
-      search, S.media.pendingChanges ? h('p', { class: 'media-draft-notice' }, 'Unpublished changes · use the project Publish button') : document.createDocumentFragment(), toolbar, h('p', { class: 'hint' }, `${grid.children.length} files · ${folderName(folder)}`), grid);
+      h('div',{class:'media-tools'},compactSearch(search),typeFilter),toolbar,countLabel,grid);
     const detail = h('aside', { class: 'media-detail' });
     if (selected) {
       const name = h('input', { type: 'text' }); name.value = selected.name;
@@ -1548,11 +1295,11 @@ import { inlineConstEditor } from "/admin/inline-const-editor.mjs";
         isImageAsset(selected.url) ? h('img', { src: (selected.previewUrl || selected.url) + (selected.previewUrl ? '&cmsv=' : '?cmsv=') + encodeURIComponent(selected.updatedAt), alt: '', onerror: event => { event.target.hidden = true; detail.prepend(h('p',{class:'media-load-error',role:'status'},'Image could not be loaded. Replace this file.')); } }) :
           isVideoAsset(selected.url) ? h('video', { src: (selected.previewUrl || selected.url) + (selected.previewUrl ? '&cmsv=' : '?cmsv=') + encodeURIComponent(selected.updatedAt), controls: '' }) : null,
         h('p', { class: 'hint media-file-path' }, selected.targetUrl !== selected.url ? `Draft: ${selected.targetUrl} · Published: ${selected.url}` : selected.url),
-        h('p', { class: 'hint' }, assetUsed(selected) ? 'Used on site or in draft' : 'Not used on site or in draft'),
+        badge(assetUsed(selected)?'In use':'Unused',assetUsed(selected)?'neutral':'warning'),
         h('div', { class: 'auto-field' }, h('label', { class: 'cap' }, 'Filename'), name),
         h('div', { class: 'auto-field' }, h('label', { class: 'cap' }, 'Shared alt text'), alt),
         selected.replaceable ? h('div', null, h('button', { class: 'btn sm ghost', type: 'button', onclick: () => file.click() }, 'Replace everywhere'), file) : null);
-    } else detail.replaceChildren(h('p', { class: 'hint' }, 'Select media to edit its name, alt text, or file.'));
+    } else detail.replaceChildren(emptyState('File details','Select a file to view or edit its details.',null,'images'));
     $('workspaceView').replaceChildren(h('div', { class: 'media-layout' }, folders, main, detail));
   }
 
@@ -1567,13 +1314,13 @@ import { inlineConstEditor } from "/admin/inline-const-editor.mjs";
       modal(h('div', null,
         h('h2', null, wantedVideo ? 'Replace video…' : 'Replace image…'),
         h('p', { class: 'hint' }, 'Choose a file from a folder or upload a new one.'),
-        h('div', { style: 'display:flex;gap:5px;overflow:auto;margin:14px 0;' },
+        h('div', { style: 'display:flex;gap:var(--ui-space-3);overflow:auto;margin:var(--ui-space-7) 0;' },
           ...S.media.folders.map(path => h('button', { class: 'btn sm ghost', type: 'button', onclick: () => { folder = path; draw(); } }, folderName(path) || 'All'))),
         h('div', { class: 'media-grid picker-grid' }, ...list.map(asset => h('button', { class: 'asset-tile' + (assetUsed(asset) ? '' : ' unused'), type: 'button',
           onclick: () => { writeField(item, asset.url); closeModal(); if (S.mode === 'settings') renderPageSettings(); else if (S.mode === 'cms') renderCollections(); else render(); } }, assetThumb(asset), h('span', null, asset.name)))),
         h('div', { class: 'mod-f' }, uploadButton(folder, url => { writeField(item, url); closeModal(); if (S.mode === 'settings') renderPageSettings(); else if (S.mode === 'cms') renderCollections(); else render(); }),
           h('button', { class: 'btn', type: 'button', onclick: closeModal }, 'Cancel'))));
-      $('modC').style.width = 'min(900px,100%)';
+      $('modC').style.width = 'min(var(--ui-dialog-wide),100%)';
     };
     draw();
   }
@@ -1584,19 +1331,14 @@ import { inlineConstEditor } from "/admin/inline-const-editor.mjs";
     const candidates = entries.filter(([, entry]) => ['src','poster','data-image'].includes(item.mode) ? entry.type === 'url' && entry.value.startsWith('/assets/') : item.linkType ? entry.type === item.linkType : item.mode !== 'href' || ['phone', 'email', 'url'].includes(entry.type));
     modal(h('div', null,
       h('h2', null, 'Insert Const'),
-      h('p', { class: 'hint' }, 'Insert a shared value at the cursor or replace the selected text.'),
-      h('div', { class: 'const-list' }, ...candidates.map(([key, entry]) => h('button', {
-        type: 'button', class: current?.key === key ? 'on' : '', onclick: () => {
-          const format = item.mode === 'href' && (!insert || !String(fieldValue(item)).trim()) ? entry.type === 'phone' ? 'tel' : entry.type === 'email' ? 'mailto' : null : null;
-          const token = constToken(key, format);
-          closeModal();
-          if (insert) insert(token);
-          else { writeField(item, String(fieldValue(item)) + token); if (S.mode === 'settings') renderPageSettings(); else render(); }
-        }
-      }, h('strong', { class: 'const-name' }, uiIcon('variable'), entry.label), h('span', null, `${entry.value || 'Empty'} · ${constUsage(key)} uses`)))),
+      constPickerList(candidates.map(([key,entry])=>({...entry,key,uses:constUsage(key)})),{current:current?.key,onChoose:key=>{
+        const entry=S.c.consts[key],format=item.mode==='href'&&(!insert||!String(fieldValue(item)).trim())?(entry.type==='phone'?'tel':entry.type==='email'?'mailto':null):null;
+        const token=constToken(key,format);closeModal();
+        if(insert)insert(token);else{writeField(item,String(fieldValue(item))+token);if(S.mode==='settings')renderPageSettings();else render();}
+      }}),
       !candidates.length ? h('p', { class: 'hint' }, 'No compatible Const yet. Add one from the Const tab.') : null,
       h('div', { class: 'mod-f' },
-        current ? h('button', { class: 'btn ghost', type: 'button', onclick: () => { S.constKey = current.key; closeModal(); setMode('const'); } }, 'Edit Const') : null,
+        current ? h('button', { class: 'btn ghost', type: 'button', onclick: () => { S.constKey = current.key; S.openConstDetail = true; closeModal(); setMode('const'); } }, 'Edit Const') : null,
         current ? h('button', { class: 'btn ghost', type: 'button', onclick: () => { writeField(item, resolveConst(fieldValue(item))); closeModal(); if (S.mode === 'settings') renderPageSettings(); else if (S.mode === 'cms') renderCollections(); else render(); } }, 'Unlink') : null,
         h('button', { class: 'btn ghost', type: 'button', onclick: closeModal }, 'Cancel'))));
   }
@@ -1605,7 +1347,7 @@ import { inlineConstEditor } from "/admin/inline-const-editor.mjs";
     const key = h('input', { type: 'text', placeholder: 'companyPhone' });
     const label = h('input', { type: 'text', placeholder: 'Company phone' });
     const value = h('input', { type: 'text', placeholder: 'Value' });
-    const type = h('select', { style: 'width:100%;padding:10px;background:#171717;border:1px solid #333;border-radius:9px;' },
+    const type = h('select', { style: 'width:100%' },
       ...['text', 'phone', 'email', 'url'].map(kind => h('option', { value: kind }, kind)));
     modal(h('div', null, h('h2', null, 'New Const'),
       h('p', { class: 'hint' }, 'The key is stable in code. Choose a clear name before connecting it to fields.'),
@@ -1627,58 +1369,315 @@ import { inlineConstEditor } from "/admin/inline-const-editor.mjs";
         } }, 'Create Const'))));
   }
 
+  const collapsedConstGroups = new Set();
+  function saveConstGroups(groups) {
+    const current = constGroups(S.c.consts || {}, S.c.editorSettings?.constGroups);
+    if (same(current, groups)) return;
+    recordChange('const:organize:' + Date.now());
+    ((S.c.editorSettings ||= {}).constGroups = groups);
+    changed(); renderConst();
+  }
+  function organizationGroupDialog(group,items,saved,saveGroups) {
+    openGroupDialog({group,open:modal,close:closeModal,
+      onSave:name=>{
+        const groups=constGroups(items,saved);
+        if(group)groups.find(item=>item.id===group.id).name=name;
+        else groups.splice(groups.length-1,0,{id:crypto.randomUUID(),name,keys:[]});
+        saveGroups(groups);
+      },onDelete:()=>{
+        const groups=constGroups(items,saved);
+        groups.find(item=>item.id==='').keys.push(...group.keys);
+        saveGroups(groups.filter(item=>item.id!==group.id));
+      }});
+  }
+  function constGroupDialog(group=null) { organizationGroupDialog(group,S.c.consts || {},S.c.editorSettings?.constGroups,saveConstGroups); }
+  const collapsedCMSGroups = {collections:new Set(),pages:new Set()};
+  function cmsBrowser(collections) {
+    const entries=Object.fromEntries([
+      ...(S.cmsTab==='pages'?pageCMS.catalog().map(item=>[item.key,item]):[]),
+      ...collections.map(item=>['content:'+item.key,{label:item.label,count:`${item.items.length} records`,onOpen:()=>{S.collectionKey=item.key;renderCollections();}}])
+    ]);
+    const tab=S.cmsTab, saved=S.c.editorSettings?.cmsGroups?.[tab];
+    const groups=constGroups(entries,saved);
+    const save=next=>{
+      if(same(constGroups(entries,S.c.editorSettings?.cmsGroups?.[tab]),next))return;
+      recordChange('cms:organize:'+tab+':'+Date.now());
+      (((S.c.editorSettings ||= {}).cmsGroups ||= {})[tab]=next);changed();renderCollections();
+    };
+    const edit=group=>organizationGroupDialog(group,entries,S.c.editorSettings?.cmsGroups?.[tab],save);
+    return h('div',null,constBrowser({consts:entries,groups,collapsed:collapsedCMSGroups[tab],onOpen:key=>entries[key].onOpen(),onChange:save,onEditGroup:edit,iconName:tab==='pages'?'file':'database',emptyLabel:'Drop here',usage:key=>entries[key].count || 'CMS Page'}),groupFooter(()=>edit(null)));
+  }
   function renderConst() {
     if (!S.c) return;
-    const entries = Object.entries(S.c.consts || {});
-    if (!entries.some(([key]) => key === S.constKey)) S.constKey = entries[0]?.[0] || null;
-    const selected = S.constKey && S.c.consts[S.constKey];
-    const list = h('div', { class: 'const-list' }, ...entries.map(([key, entry]) => h('button', {
-      type: 'button', class: key === S.constKey ? 'on' : '', onclick: () => { S.constKey = key; renderConst(); }
-    }, h('strong', { class: 'const-name' }, uiIcon('variable'), entry.label), h('span', null, `${constUsage(key)} uses`))));
-    const detail = selected ? h('div', { class: 'const-detail' },
-      h('div', { class: 'const-top' }, h('span', { class: 'const-badge' }, uiIcon('variable'), 'Const'), h('strong', null, selected.label)),
-      h('p', { class: 'const-note' }, `${constUsage(S.constKey)} connected fields · changes update every use in the draft preview`),
-      h('div', { class: 'auto-field' }, h('label', { class: 'cap' }, 'Key · used in code'),
-        h('input', { type: 'text', value: S.constKey, readonly: '' })),
-      h('div', { class: 'auto-field' }, h('label', { class: 'cap' }, 'Label'),
-        (() => { const input = h('input', { type: 'text' }); input.value = selected.label;
-          input.addEventListener('input', () => set(['consts', S.constKey, 'label'], input.value)); return input; })()),
-      h('div', { class: 'auto-field' }, h('label', { class: 'cap' }, 'Type'),
-        (() => { const input = h('select', { style: 'width:100%;padding:10px;background:#171717;border:1px solid #333;border-radius:9px;' },
-          ...['text', 'phone', 'email', 'url'].map(kind => h('option', { value: kind }, kind)));
-          input.value = selected.type; input.addEventListener('change', () => { set(['consts', S.constKey, 'type'], input.value); renderConst(); }); return input; })()),
-      h('div', { class: 'auto-field' }, h('label', { class: 'cap' }, 'Value'),
-        (() => { const input = h('textarea', { rows: 3 }); input.value = selected.value;
-          input.addEventListener('input', () => set(['consts', S.constKey, 'value'], input.value)); return input; })()),
-      constUsage(S.constKey) === 0 ? h('button', { class: 'btn sm ghost', type: 'button', onclick: () => {
-        if (!confirm(`Delete ${selected.label}?`)) return;
-        recordChange('const:delete:' + S.constKey);
-        delete S.c.consts[S.constKey];
-        S.constKey = null;
-        changed(); renderConst();
-      } }, 'Delete unused Const') : null) : h('p', { class: 'hint' }, 'Create a Const to share a value across the site.');
-    $('ed').replaceChildren(h('div', { class: 'sec-h' }, h('div', null, h('h1', null, 'Const'),
-      h('p', null, 'Shared values for this site. Edit once, update everywhere.'))),
-      h('button', { class: 'btn sm accent', type: 'button', onclick: addConstDialog }, uiIcon('variable'), 'New Const'), list, detail);
-    $('pvF').contentWindow?.postMessage({ type: 'CMS_HIGHLIGHT_CONST', key: S.constKey }, location.origin);
+    workspaceView('const');
+    const consts = S.c.consts || {};
+    if (!Object.hasOwn(consts,S.constKey)) S.constKey = null;
+    const selected = S.constKey && consts[S.constKey];
+    const groups = constGroups(consts,S.c.editorSettings?.constGroups);
+    if (selected) {
+      const key=S.constKey, group=groups.find(group=>group.keys.includes(key));
+      const groupSelect=h('select',{'aria-label':'Const group'},...groups.map(group=>h('option',{value:group.id},group.name)));
+      groupSelect.value=group.id;
+      groupSelect.onchange=()=>saveConstGroups(moveConst(groups,key,groupSelect.value));
+      const position=group.keys.indexOf(key);
+      $('ed').replaceChildren(backButton('All Const',()=>{S.constKey=null;renderConst();}),
+        h('div',{class:'sec-h'},h('h1',null,selected.label)),
+        h('div',{class:'const-top'},h('span',{class:'const-badge'},uiIcon('variable'),'Const'),badge(`${constUsage(key)} uses`)),
+        h('div',{class:'auto-field'},h('label',{class:'cap'},'Value'),(()=>{const input=h('textarea',{rows:3,'aria-label':'Const value'});input.value=selected.value;input.oninput=()=>set(['consts',key,'value'],input.value);return input;})()),
+        h('div',{class:'auto-field'},h('label',{class:'cap'},'Name'),(()=>{const input=h('input',{type:'text','aria-label':'Const name'});input.value=selected.label;input.oninput=()=>set(['consts',key,'label'],input.value);return input;})()),
+        h('div',{class:'auto-field'},h('label',{class:'cap'},'Group'),groupSelect,
+          h('div',{class:'cms-actions'},uiButton('Move up',{size:'small',disabled:position===0,onclick:()=>saveConstGroups(moveConst(groups,key,group.id,group.keys[position-1]))}),uiButton('Move down',{size:'small',disabled:position===group.keys.length-1,onclick:()=>saveConstGroups(moveConst(groups,key,group.id,group.keys[position+2] || null))}))),
+        disclosure('Const settings',h('div',null,
+          h('div',{class:'auto-field'},h('label',{class:'cap'},'Key'),h('input',{type:'text',value:key,readonly:'','aria-label':'Const key'})),
+          h('div',{class:'auto-field'},h('label',{class:'cap'},'Type'),(()=>{const input=h('select',{'aria-label':'Const type'},...['text','phone','email','url'].map(type=>h('option',{value:type},type)));input.value=selected.type;input.onchange=()=>{set(['consts',key,'type'],input.value);renderConst();};return input;})()))),
+        constUsage(key)===0?uiButton('Delete Const',{variant:'danger',size:'small',onclick:()=>{
+          modal(h('div',null,h('h2',null,'Delete Const?'),h('p',{class:'hint'},`Delete “${selected.label}”?`),h('div',{class:'mod-f'},uiButton('Cancel',{onclick:closeModal}),uiButton('Delete Const',{variant:'danger',onclick:()=>{recordChange('const:delete:'+key);delete S.c.consts[key];if(S.c.editorSettings?.constGroups) S.c.editorSettings.constGroups=constGroups(S.c.consts,S.c.editorSettings.constGroups);S.constKey=null;changed();closeModal();renderConst();}}))));
+        }}):null);
+    } else {
+      $('ed').replaceChildren(h('div',{class:'sec-h'},h('h1',null,'Const'),uiButton('New Const',{size:'small',icon:'plus',onclick:addConstDialog})),
+        Object.keys(consts).length || groups.length>1 ? constBrowser({consts,groups,collapsed:collapsedConstGroups,onOpen:key=>{S.constKey=key;renderConst();},onChange:saveConstGroups,onEditGroup:constGroupDialog,usage:constUsage}) : emptyState('No Const yet','',null,'variable'),groupFooter(()=>constGroupDialog()));
+    }
+    $('pvF').contentWindow?.postMessage({ type:'CMS_HIGHLIGHT_CONST',key:S.constKey || null },location.origin);
   }
 
+  const propertyCollapse=new Map();
+  const sourceForScope=scope=>CMSStructure.collections(S.c,S.sections).find(item=>'content:'+item.key===scope);
+  function renameCMSCollection(scope,name){
+    recordChange('collection:rename:'+scope);
+    const key=scope.startsWith('page:')?'pageCollection:'+scope.slice(5):'collection:'+scope.slice(8);
+    (((S.c.editorSettings ||= {}).labels ||= {})[key]=name);
+    if(S.c.editorSettings.collectionSchemas?.[scope])S.c.editorSettings.collectionSchemas[scope].name=name;
+    changed();if(S.mode==='cms'){renderCMSChrome();if(pageCMS.selected())pageCMS.render();}
+  }
+  function ensureReferenceIDs(scope){
+    if(!scope.startsWith('content:'))return;const collection=sourceForScope(scope);if(!collection)return;
+    for(const [index,item]of collection.items.entries())if(!item.id)item.id=collectionMode(collection)==='page'?'record-'+(index+1):crypto.randomUUID();
+    for(const entry of S.c.editorSettings?.archivedCollectionItems?.[collection.key] || [])if(!entry.item.id)entry.item.id=crypto.randomUUID();
+  }
+  function schemaBuiltins(scope){
+    if(scope.startsWith('page:'))return pageCMS.snapshot().fields?.[scope.slice(5)] || [];
+    const collection=sourceForScope(scope);return inferFields(collection?.items[0] || S.c.editorSettings?.archivedCollectionItems?.[collection?.key]?.[0]?.item || S.c.editorSettings?.collectionItemTemplates?.[collection?.key]);
+  }
+  async function referenceOptions(scope){
+    if(scope?.startsWith('content:')){
+      const collection=sourceForScope(scope);return (collection?.items || []).filter(item=>item.id).map((item,index)=>({id:String(item.id),title:CMSStructure.itemTitle(item,index)}));
+    }
+    if(!scope?.startsWith('page:'))return [];
+    const collection=scope.slice(5),response=await fetch('/api/cms?'+new URLSearchParams({op:'list',collection}));const data=await response.json();if(!response.ok)throw new Error(data.message || 'Could not load related items');
+    return data.entries.filter(item=>cmsEntryState(collection,item)==='active').map(item=>({id:item.id,title:resolveConst(item.title)||'Untitled'}));
+  }
+  function editCMSCollection(scope){
+    const builtin=schemaBuiltins(scope),collection=sourceForScope(scope),label=scope.startsWith('page:')?editorLabel('pageCollection:'+scope.slice(5),scope.slice(5)):editorLabel('collection:'+collection.key,collection.label);
+    const schema=collectionSchema(S.c.editorSettings,scope,builtin),catalog=[...CMSStructure.collections(S.c,S.sections).map(item=>({key:'content:'+item.key,label:editorLabel('collection:'+item.key,item.label)})),...pageCMS.catalog()];
+    const original=new Map(schema.fields.map(field=>[field.key,field]));
+    const designer=collectionDesigner({label,schema,collections:catalog,onClose:closeModal,onSave:async next=>{
+      const changedTypes=next.fields.filter(field=>original.has(field.key)&&field.type!==original.get(field.key).type);
+      let entries=collection?.items || [];
+      if(changedTypes.length && scope.startsWith('page:')){
+        const list=await referenceOptions(scope);entries=await Promise.all(list.map(async item=>{const response=await fetch('/api/cms?'+new URLSearchParams({op:'entry',collection:scope.slice(5),id:item.id}));const data=await response.json();if(!response.ok)throw new Error(data.message);return data.draft?.data || data.published;}));
+      }
+      for(const field of changedTypes)for(const item of entries){const value=getPath(item,field.key);if(value!=null && value!==''){const targets=['reference','multireference'].includes(field.type)?new Set((await referenceOptions(field.collection)).map(item=>item.id)):new Set();const issue=field.type==='richtext'&&typeof value!=='string'?'Rich text needs a text source':valueIssue(field,value,targets);if(issue)throw new Error(field.label+': '+issue+' Existing values were preserved.');}}
+      recordChange('collection:schema:'+scope+':'+Date.now());
+      for(const field of next.fields)if(['reference','multireference'].includes(field.type))ensureReferenceIDs(field.collection);
+      (((S.c.editorSettings ||= {}).collectionSchemas ||= {})[scope]=next);
+      const nameKey=scope.startsWith('page:')?'pageCollection:'+scope.slice(5):'collection:'+collection.key;((S.c.editorSettings.labels ||= {})[nameKey]=next.name);
+      changed();if(pageCMS.selected())pageCMS.render();else if(S.mode==='cms')renderCollections();else render();
+    }});
+    modal(designer);$('modC').style.width='min(var(--ui-dialog-wide),100%)';
+  }
+  async function pickCMSAsset(kind,onPick){
+    try{if(!S.media)await loadMedia();}catch(error){toast(error.message,true);return;}
+    const grid=h('div',{class:'media-grid picker-grid'}),search=h('input',{type:'search',placeholder:'Search files…','aria-label':'Search files'});
+    const draw=()=>{const assets=S.media.assets.filter(asset=>(kind==='image'?isImageAsset(asset.url):kind==='video'?isVideoAsset(asset.url):true)&&asset.name.toLowerCase().includes(search.value.toLowerCase()));grid.replaceChildren(...assets.map(asset=>h('button',{type:'button',class:'asset-tile',onclick:()=>{closeModal();onPick(asset.url);}},assetThumb(asset),h('span',null,asset.name))));};search.oninput=draw;draw();
+    modal(h('div',null,h('h2',null,'Choose '+kind),compactSearch(search),grid,h('div',{class:'mod-f'},uploadButton('/assets',url=>{closeModal();onPick(url);} ))));$('modC').style.width='min(var(--ui-dialog-wide),100%)';
+  }
+  function configuredProperties(scope,item,builtin,write,writeRich,renderText){
+    const schema=collectionSchema(S.c.editorSettings,scope,builtin);if(!propertyCollapse.has(scope))propertyCollapse.set(scope,new Set(['media','seo']));
+    return groupedProperties({schema,collapsed:propertyCollapse.get(scope),renderField:field=>{
+      if(field.type==='slug' && renderText)return renderText(field,true);
+      return propertyControl(field,{value:getPath(item,field.key)??field.default,richValue:item.richText?.[field.key],altValue:field.key==='ogImage'?item.ogImageAlt||'':field.key.endsWith('.src')?getPath(item,field.key.replace(/\.src$/,'.alt')) || '':'',onChange:value=>write(field.key,value),onRichChange:doc=>writeRich(field.key,doc),pickAsset:pickCMSAsset,uploadAsset:file=>uploadAsset(file,'/assets'),resolveMedia:url=>S.media?.assets.find(asset=>asset.url===url)?.previewUrl||resolveConst(url),referenceOptions,resolveValue:resolveConst,
+        onMediaChange:field.key==='ogImage'?media=>{write('ogImage',media.url);write('ogImageAlt',media.alt);}:field.key.endsWith('.src')?media=>write(field.key.slice(0,-4),media):undefined,
+        renderText:renderText?definition=>renderText(definition,false):null});
+    }});
+  }
+  function renderPageProperties({collection,item,fields,write,writeRich,renderText}){return configuredProperties('page:'+collection,item,fields,write,writeRich,renderText);}
+  function renderInlineProperties(collection,index){
+    const item=collection.items[index],scope='content:'+collection.key;
+    const write=(key,value)=>{if(same(getPath(item,key),value))return;recordChange('schema-field:'+collection.key+':'+index+':'+key);putPath(item,key,value);changed();if(S.mode==='cms')renderCMSChrome();};
+    const writeRich=(key,doc)=>{recordChange('rich-field:'+collection.key+':'+index+':'+key);putPath(item,key,documentText(doc));(item.richText ||= {})[key]=doc;changed();};
+    return configuredProperties(scope,item,inferFields(item),write,writeRich,(field,full)=>{
+      if(field.type==='slug'){
+        const input=h('input',{type:'text',value:item.slug||'',maxlength:120,'aria-label':field.label,'data-inline-slug':''}),link=h('div',{class:'slug-page-url'});
+        const show=()=>link.replaceChildren(...(item.slug?[pageURLLink(`/collections/${encodeURIComponent(collection.key)}/${encodeURIComponent(item.slug)}/`)]:[]));
+        input.oninput=()=>{write('slugMode','manual');write('slug',input.value);show();};input.onblur=()=>{input.value=slugify(input.value);write('slug',input.value);show();};show();return h('div',{class:'auto-field'},h('label',{class:'cap'},field.label+' *'),input,link);
+      }
+      const path=[...collection.path,index,...field.key.split('.')],control=valueControl({source:'content',path,mode:field.type==='url'?'href':'text',label:field.label},{multi:field.type==='textarea'});
+      return full?h('div',{class:'auto-field'},h('label',{class:'cap'},field.label),control):control;
+    });
+  }
+
+  const cmsCatalogCollapsed=new Set();
+  const cmsSelection=new Set();let cmsSelectionScope='',cmsArchiveFilter=false,cmsFilterMode='all',cmsManagerSearch='';
+  function cmsInlineCollection(){return CMSStructure.collections(S.c,S.sections).find(item=>item.key===S.collectionKey);}
+  function cmsEntryState(collection,item){return S.c.editorSettings?.entryStates?.[collection+':'+item.id]?.state || (item.cmsState==='archived'||item.isPublished===false?'archived':'active');}
+  async function openCMSCatalog(item){
+    cmsSelection.clear();cmsManagerSearch='';cmsArchiveFilter=false;
+    if(item.key.startsWith('page:')){S.collectionKey=null;S.collectionItem=null;return item.onOpen();}
+    if(!await pageCMS.leave())return;
+    S.collectionKey=item.key.slice('content:'.length);S.collectionItem=null;S.activeGroup=null;renderCollections();
+  }
+  function renderCMSChrome(){
+    if(!S.c || S.mode!=='cms')return;
+    const snapshot=pageCMS.snapshot(),page=Boolean(snapshot.collection),collection=page?null:cmsInlineCollection();
+    const scope=page?'page:'+snapshot.collection:collection?'content:'+collection.key:'';
+    if(scope!==cmsSelectionScope){cmsSelectionScope=scope;cmsSelection.clear();cmsManagerSearch='';cmsArchiveFilter=false;cmsFilterMode='all';S.cmsArchivedItem=null;}
+    const all=CMSStructure.collections(S.c,S.sections);
+    const sources={collections:all.filter(item=>collectionMode(item)!=='page').map(item=>({key:'content:'+item.key,label:editorLabel('collection:'+item.key,item.label),count:item.items.length,kind:'list'})),pages:[...pageCMS.catalog().map(item=>({...item,kind:'page'})),...all.filter(item=>collectionMode(item)==='page').map(item=>({key:'content:'+item.key,label:editorLabel('collection:'+item.key,item.label),count:item.items.length,kind:'page'}))]};
+    const groups=['collections','pages'].flatMap(tab=>{
+      const entries=Object.fromEntries(sources[tab].map(item=>[item.key,item]));
+      return constGroups(entries,S.c.editorSettings?.cmsGroups?.[tab]).filter(group=>group.keys.length).map(group=>({id:tab+':'+group.id,label:(tab==='pages'?'Pages':'Collections')+(group.id?' · '+group.name:''),items:group.keys.map(key=>entries[key])}));
+    });
+    $('cmsCatalog').replaceChildren(cmsCatalogView({active:scope,groups,onOpen:openCMSCatalog,collapsed:cmsCatalogCollapsed}));
+    let items=[],selectedId=null;
+    if(page){items=(snapshot.entries || []).filter(item=>cmsEntryState(snapshot.collection,item)!=='deleted').map(item=>({id:item.id,title:resolveConst(snapshot.entry?.id===item.id?snapshot.entry.title:item.title)||'Untitled',archived:cmsEntryState(snapshot.collection,item)==='archived',isPublished:snapshot.entry?.id===item.id?snapshot.entry.isPublished!==false:item.isPublished!==false,status:item.draft?'Draft':'Published'}));if(snapshot.entry && !items.some(item=>item.id===snapshot.entry.id))items.push({id:snapshot.entry.id,title:resolveConst(snapshot.entry.title)||'New item',archived:false,isPublished:snapshot.entry.isPublished!==false,status:'Draft'});selectedId=snapshot.entry?.id || null;}
+    else if(collection){
+      items=collection.items.map((item,index)=>({id:'active:'+index,index,title:CMSStructure.itemTitle(item,index),archived:false}));
+      const archived=S.c.editorSettings?.archivedCollectionItems?.[collection.key] || [];
+      if(S.cmsArchivedItem && !archived.some(entry=>entry.id===S.cmsArchivedItem))S.cmsArchivedItem=null;
+      items.push(...archived.map((entry,index)=>({id:entry.id,index,title:CMSStructure.itemTitle(entry.item,index),archived:true})));
+      selectedId=S.cmsArchivedItem || (S.collectionItem!==null?'active:'+S.collectionItem:null);
+    }
+    const hasDetail=page?Boolean(snapshot.entry):Boolean(S.cmsArchivedItem || collection && S.collectionItem!==null && collection.items[S.collectionItem]);
+    $('adminWorkspace').dataset.cmsDetail=String(hasDetail);$('cmsListResizer').hidden=!hasDetail;cmsLayout.refresh();
+    $('cmsRecords').replaceChildren(cmsRecordsView({label:page?snapshot.label:collection?editorLabel('collection:'+collection.key,collection.label):'',kind:page || collection && collectionMode(collection)==='page'?'CMS Page':'CMS List',items,selectedId,selection:cmsSelection,archived:cmsArchiveFilter,filterMode:cmsFilterMode,onRename:name=>renameCMSCollection(scope,name),onEdit:()=>editCMSCollection(scope),search:cmsManagerSearch,busy:page && (!snapshot.entries && !snapshot.error || snapshot.busy),error:snapshot.error || '',
+      onPublished:(item,value)=>{cmsSelection.clear();cmsSelection.add(item.id);cmsBulkAction(value?'restore':'archive');},onSearch:value=>{cmsManagerSearch=value;queueWorkspaceSave();},onFilter:value=>{cmsFilterMode=value;cmsArchiveFilter=value==='archive';cmsSelection.clear();renderCMSChrome();},
+      onSelect:(id,selected)=>{if(selected)cmsSelection.add(id);else cmsSelection.delete(id);renderCMSChrome();},onSelectAll:(ids,selected)=>{for(const id of ids){if(selected)cmsSelection.add(id);else cmsSelection.delete(id);}renderCMSChrome();},
+      onOpen:item=>{if(page)pageCMS.load(item.id);else{S.cmsArchivedItem=item.archived?item.id:null;S.collectionItem=item.archived?null:item.index;S.activeGroup=null;renderCollections();}},
+      onCreate:()=>{cmsFilterMode='all';cmsArchiveFilter=false;cmsSelection.clear();if(page)pageCMS.create();else{S.cmsArchivedItem=null;createCollectionItem(collection,collection.sections[0]);}},
+      onArchive:archive=>cmsBulkAction(archive?'archive':'restore'),onDelete:()=>cmsBulkAction('delete'),
+      onMove:collection?(item,step)=>{const to=item.index+step;if(to>=0&&to<collection.items.length){cmsSelection.clear();moveCollectionItem(collection,item.index,to);}}:null}));
+    saveWorkspaceView();
+  }
+  function remapArchivedLinks(collection,before,after){
+    const next={};
+    for(const [key,config] of Object.entries(S.c.linkSettings || {})){
+      const path=config.path;
+      if(config.source==='content' && path?.[0]==='editorSettings' && path[1]==='archivedCollectionItems' && path[2]===collection.key && typeof path[3]==='number'){
+        const entry=before[path[3]];if(!entry){next[key]=config;continue;}
+        const archivedIndex=after.indexOf(entry),activeIndex=collection.items.indexOf(entry.item);
+        if(archivedIndex<0 && activeIndex<0)continue;
+        const target=archivedIndex>=0?['editorSettings','archivedCollectionItems',collection.key,archivedIndex,'item',...path.slice(5)]:[...collection.path,activeIndex,...path.slice(5)];
+        next[`${config.page}|content:${target.join('.')}:href`]={...config,path:target};
+      }else next[key]=config;
+    }S.c.linkSettings=next;
+  }
+  async function cmsBulkAction(action){
+    if(!cmsSelection.size)return;
+    const ids=[...cmsSelection],snapshot=pageCMS.snapshot(),collection=snapshot.collection?null:cmsInlineCollection();
+    const apply=async()=>{
+      try{
+        if(snapshot.collection){
+          await pageCMS.flush();
+          const entries=await Promise.all(ids.map(id=>pageCMS.read(id)));
+          recordChange('cms:bulk:'+action+':'+Date.now());
+          const states=((S.c.editorSettings ||= {}).entryStates ||= {});
+          for(const entry of entries)states[snapshot.collection+':'+entry.id]={state:action==='delete'?'deleted':action==='archive'?'archived':'active',publishedRevision:entry.publishedRevision};
+          if(action!=='restore' && ids.includes(snapshot.entry?.id))pageCMS.clearEntry();
+          changed();
+        }else if(collection){
+          if(!cmsArchiveFilter && action==='delete'){
+            const indices=ids.filter(id=>id.startsWith('active:')).map(id=>Number(id.slice(7)));
+            if(Object.values(S.c.linkSettings || {}).some(config=>indices.some(index=>config.pageId===`collection:${collection.key}:${collection.items[index]?.id || 'record-'+(index+1)}`)))throw new Error('Update links to these items before deleting them.');
+          }
+          recordChange('collection:bulk:'+action+':'+Date.now());
+          const archives=(((S.c.editorSettings ||= {}).archivedCollectionItems ||= {})[collection.key] ||= []);
+          const previousArchives=[...archives];
+          const editingItem=S.cmsArchivedItem?archives.find(entry=>entry.id===S.cmsArchivedItem)?.item:collection.items[S.collectionItem];
+          if(ids.some(id=>!id.startsWith('active:'))){
+            const selected=archives.filter(entry=>ids.includes(entry.id));
+            if(action==='restore')for(const entry of selected.sort((a,b)=>a.index-b.index))collection.items.splice(Math.min(entry.index,collection.items.length),0,entry.item);
+            if(action!=='archive')S.c.editorSettings.archivedCollectionItems[collection.key]=archives.filter(entry=>!ids.includes(entry.id));
+            if(action==='restore'){
+              const restoredIndices=[];let old=0;for(let index=0;index<collection.items.length;index++){if(selected.some(entry=>entry.item===collection.items[index]))restoredIndices.push(-1);else restoredIndices.push(old++);}remapCollectionLinks(collection,restoredIndices);for(const entry of selected){const index=collection.items.indexOf(entry.item);for(const config of entry.linkSettings || []){const path=[...config.path];path[collection.path.length]=index;(S.c.linkSettings ||= {})[`${config.page}|content:${path.join('.')}:href`]={...config,path};}}
+            }
+          }
+          if(ids.some(id=>id.startsWith('active:')) && action!=='restore'){
+            const indices=new Set(ids.filter(id=>id.startsWith('active:')).map(id=>Number(id.slice(7))));
+            if(action==='delete'){
+              const linked=Object.values(S.c.linkSettings || {}).some(config=>[...indices].some(index=>config.pageId===`collection:${collection.key}:${collection.items[index]?.id || 'record-'+(index+1)}`));
+              if(linked)throw new Error('Update links to these items before deleting them.');
+            }
+            const sample=collection.items[0];
+            if(sample){const skeleton=(value,key='')=>Array.isArray(value)?[]:value && typeof value==='object'?Object.fromEntries(Object.entries(value).map(([key,value])=>[key,skeleton(value,key)])):typeof value==='string'?(/^\/assets\//.test(value)?'__cms_asset__':/^(type|target)$/.test(key)?value:''):typeof value==='boolean'?false:typeof value==='number'?0:value;(((S.c.editorSettings ||= {}).collectionItemTemplates ||= {})[collection.key]=skeleton(sample));}
+            const order=collection.items.map((_,index)=>index).filter(index=>!indices.has(index));
+            if(action==='archive')for(const index of [...indices].sort((a,b)=>a-b))if(collection.items[index])archives.push({id:crypto.randomUUID(),index,item:clone(collection.items[index]),linkSettings:Object.values(S.c.linkSettings || {}).filter(config=>config.source==='content' && config.path?.slice(0,collection.path.length).join('.')===collection.key && config.path[collection.path.length]===index).map(config=>clone(config))});
+            if(action==='archive')for(let index=previousArchives.length;index<archives.length;index++)for(const config of archives[index].linkSettings || []){
+              const path=['editorSettings','archivedCollectionItems',collection.key,index,'item',...config.path.slice(collection.path.length+1)];
+              (S.c.linkSettings ||= {})[`${config.page}|content:${path.join('.')}:href`]={...config,path};
+            }
+            const next=order.map(index=>collection.items[index]);remapCollectionLinks(collection,order);collection.items.splice(0,collection.items.length,...next);
+          }
+          remapArchivedLinks(collection,previousArchives,S.c.editorSettings.archivedCollectionItems[collection.key]);
+          const editingIndex=collection.items.indexOf(editingItem);S.collectionItem=editingIndex>=0?editingIndex:null;
+          if(!S.c.editorSettings.archivedCollectionItems[collection.key].some(entry=>entry.id===S.cmsArchivedItem))S.cmsArchivedItem=null;
+          S.activeGroup=null;markCollectionStructure(collection);changed();
+        }
+
+        cmsSelection.clear();closeModal();renderCollections();
+      }catch(error){toast(error.message,true);}
+    };
+    if(action==='delete')modal(h('div',null,h('h2',null,`Delete ${ids.length} items?`),h('p',{class:'hint'},'This change stays in the project draft until Publish. You can undo it.'),h('div',{class:'mod-f confirmation-actions'},uiButton('Cancel',{variant:'ghost',onclick:closeModal}),uiButton('Delete',{variant:'danger',onclick:apply}))));else await apply();
+  }
+  function renderArchivedCMSItem(collection){
+    const archives=S.c.editorSettings?.archivedCollectionItems?.[collection.key] || [],index=archives.findIndex(entry=>entry.id===S.cmsArchivedItem);if(index<0){S.cmsArchivedItem=null;return false;}
+    const entry=archives[index],item=entry.item,scope='content:'+collection.key;
+    const write=(key,value)=>{if(same(getPath(item,key),value))return;recordChange('archived-field:'+collection.key+':'+entry.id+':'+key);putPath(item,key,value);changed();renderCMSChrome();};
+    const writeRich=(key,doc)=>{recordChange('archived-rich:'+collection.key+':'+entry.id+':'+key);putPath(item,key,documentText(doc));(item.richText ||= {})[key]=doc;changed();};
+    const fields=configuredProperties(scope,item,inferFields(item),write,writeRich,field=>valueControl({source:'content',path:['editorSettings','archivedCollectionItems',collection.key,index,'item',...field.key.split('.')],mode:field.type==='url'?'href':'text',label:field.label},{multi:field.type==='textarea'}));
+    $('ed').replaceChildren(itemHeader(CMSStructure.itemTitle(item,index),()=>{S.cmsArchivedItem=null;renderCollections();},badge('Archived')),activeStatusField(false,value=>{cmsSelection.clear();cmsSelection.add(entry.id);cmsBulkAction(value?'restore':'archive');}),fields,h('div',{class:'cms-item-footer'},uiButton('Delete',{variant:'danger',onclick:()=>{cmsSelection.clear();cmsSelection.add(entry.id);cmsArchiveFilter=true;cmsBulkAction('delete');}})));return true;
+  }
+
+  function workspaceView(kind) {
+    const cms=S.mode==='cms';
+    $('cmsCatalog').hidden=!cms;$('cmsRecords').hidden=!cms;$('cmsListResizer').hidden=!cms||$('adminWorkspace').dataset.cmsDetail!=='true';
+    $('adminWorkspace').dataset.view = cms?'cms-workspace':kind;
+    if(cms)renderCMSChrome();
+    $('app').dataset.mode = S.mode;
+    $('compactPreview').hidden = S.mode==='cms' || !['editor','cms-index','cms-list','cms-page','cms-record','const'].includes(kind);
+    requestAnimationFrame(fitPreview);
+  }
+  $('compactPreview').addEventListener('click', () => {
+    const active = $('adminWorkspace').dataset.compactPreview !== 'true';
+    $('adminWorkspace').dataset.compactPreview = String(active);
+    $('compactPreview').setAttribute('aria-pressed',String(active));
+    $('compactPreview').title = active ? 'Back to editor' : 'Show preview';
+    $('compactPreview').setAttribute('aria-label',$('compactPreview').title);
+    requestAnimationFrame(fitPreview);
+  });
   async function setMode(mode) {
     if (S.mode === 'cms' && mode !== 'cms' && !await pageCMS.leave()) return;
+    if (mode === 'const' && S.mode !== 'const' && !S.openConstDetail) S.constKey = null;
+    S.openConstDetail = false;
     S.mode = mode;
+    const workspaceURL=new URL(location.href);workspaceURL.hash=mode==='admin'?'':mode;window.history.replaceState(window.history.state,'',workspaceURL);
+    $('app').dataset.mode = mode;
+    delete $('adminWorkspace').dataset.compactPreview;
     document.querySelector('.top-title').textContent = ({ admin: 'Page editor', cms: 'CMS', media: 'Media', const: 'Const', settings: 'Page settings' })[mode] || 'Page editor';
     $('modeCms').classList.toggle('on', mode === 'cms');
     $('modeAdmin').classList.toggle('on', mode === 'admin');
     $('modeMedia').classList.toggle('on', mode === 'media');
     $('modeConst').classList.toggle('on', mode === 'const');
     $('modeSettings').classList.toggle('on', mode === 'settings');
+    for (const id of ['modeAdmin','modeCms','modeMedia','modeConst','modeSettings']) { if ($(id).classList.contains('on')) $(id).setAttribute('aria-current','page'); else $(id).removeAttribute('aria-current'); }
     $('sectionBar').hidden = mode !== 'admin';
+    $('editorBreadcrumbs').hidden = mode !== 'admin' && mode !== 'cms';
+    if (mode !== 'admin') $('editorBreadcrumbs').replaceChildren();
     $('adminWorkspace').hidden = mode === 'media';
     $('workspaceView').hidden = mode !== 'media';
     updateHistoryButtons();
-    if (mode === 'admin') { status(); render(); requestAnimationFrame(fitPreview); }
+    if (mode === 'admin') { ensureEditorPreview(); status(); render(); requestAnimationFrame(fitPreview); }
     if (mode === 'media') {
-      $('workspaceView').replaceChildren(h('p', { class: 'hint' }, 'Loading media library…'));
+      $('workspaceView').replaceChildren(loading('Loading media library…'));
       try { await loadMedia(); renderMedia(); } catch (error) { $('workspaceView').textContent = error.message; }
     }
     if (mode !== 'cms') $('pvF').contentWindow?.postMessage({ type: 'CMS_SELECT_COLLECTION', key: null }, location.origin);
@@ -1686,11 +1685,12 @@ import { inlineConstEditor } from "/admin/inline-const-editor.mjs";
     if (mode === 'settings') renderPageSettings();
     if (mode === 'const') { renderConst(); requestAnimationFrame(fitPreview); }
     else $('pvF').contentWindow?.postMessage({ type: 'CMS_HIGHLIGHT_CONST', key: null }, location.origin);
+    saveWorkspaceView();
   }
   $('modeCms').addEventListener('click', () => setMode('cms'));
   $('modeAdmin').addEventListener('click', () => setMode('admin'));
   $('modeMedia').addEventListener('click', () => setMode('media'));
-  $('modeConst').addEventListener('click', () => setMode('const'));
+  $('modeConst').addEventListener('click', () => { S.constKey = null; setMode('const'); });
   $('modeSettings').addEventListener('click', () => setMode('settings'));
 
   function tabs() {
@@ -1702,7 +1702,7 @@ import { inlineConstEditor } from "/admin/inline-const-editor.mjs";
       title: section.label,
       onclick: () => {
         S.tab = section.id;
-        S.activeGroup = null;
+        S.activeGroup = null; S.editorCMS = null;
         render();
         $('pvF').contentWindow?.postMessage({ type: 'CMS_FOCUS_SECTION', id: section.id }, location.origin);
       }
@@ -1714,7 +1714,7 @@ import { inlineConstEditor } from "/admin/inline-const-editor.mjs";
       if (left < container.scrollLeft) container.scrollLeft = left;
       else if (left + active.offsetWidth > container.scrollLeft + container.clientWidth) container.scrollLeft = left + active.offsetWidth - container.clientWidth;
     }
-    if (!sections.length) container.replaceChildren(h('span', { class: 'hint' }, 'Loading sections...'));
+    if (!sections.length) container.replaceChildren(S.structureFailed || S.structureReady ? h('span',{class:'hint'},S.structureFailed?'Structure unavailable':'No sections') : document.createDocumentFragment());
   }
   $('tabs').addEventListener('wheel', event => {
     if (Math.abs(event.deltaY) <= Math.abs(event.deltaX) || $('tabs').scrollWidth <= $('tabs').clientWidth) return;
@@ -1756,14 +1756,144 @@ import { inlineConstEditor } from "/admin/inline-const-editor.mjs";
         $('pvF').contentWindow?.postMessage({ type: 'CMS_SELECT_GROUP', id: child.id }, location.origin);
       })));
   }
-  function parentBack(group, fallbackLabel, fallbackAction) {
-    const parent = CMSStructure.groups(S.sections.flatMap(section => section.fields), { includeRecords: true }).find(parent => parent.id === group.parentId);
-    return parent ? backButton(editorLabel(`group:${S.page}:${parent.id}`, parent.label), () => { S.activeGroup = parent.id; S.editingMain = false; render(); }) : backButton(fallbackLabel, fallbackAction);
+  function openEditorCMS(section,key,index=null) {
+    S.tab=section.id;S.activeGroup=null;S.activeField=null;S.editingMain=false;
+    S.editorCMS={page:S.page,section:section.id,key,index};
+    if(S.mode==='admin')render();else setMode('admin');
+    $('pvF').contentWindow?.postMessage({type:'CMS_SELECT_COLLECTION',key},location.origin);
+    if(index!==null)$('pvF').contentWindow?.postMessage({type:'CMS_SELECT_RECORD',key,index},location.origin);
+    else $('pvF').contentWindow?.postMessage({type:'CMS_SELECT_GROUP',id:null},location.origin);
+  }
+  const changedCollectionStructure=new Set();
+  function markCollectionStructure(collection){changedCollectionStructure.add(collection.key);const revisions=((S.c.editorSettings ||= {}).collectionStructureRevisions ||= {});revisions[collection.key]=(revisions[collection.key] || 0)+1;}
+  const collectionSourceChanged=collection=>changedCollectionStructure.has(collection.key) || (S.c.editorSettings?.collectionStructureRevisions?.[collection.key] || 0)!==(S.pub.editorSettings?.collectionStructureRevisions?.[collection.key] || 0);
+  function redrawCollection() { if(S.mode==='cms')renderCollections();else render(); }
+  function routeCollection(collection,section,index=null) {
+    if(S.mode==='admin')return openEditorCMS(section,collection.key,index);
+    S.collectionItem=index;S.activeGroup=null;S.editingMain=false;renderCollections();
+  }
+  function remapCollectionLinks(collection,oldIndices) {
+    const remapped={};
+    for(const [key,config] of Object.entries(S.c.linkSettings || {})){
+      const path=config.path,prefix=collection.path;
+      if(config.source==='content' && path?.slice(0,prefix.length).join('.')===collection.key && typeof path[prefix.length]==='number'){
+        const index=oldIndices.indexOf(path[prefix.length]);if(index<0)continue;
+        const next=[...path];next[prefix.length]=index;remapped[`${config.page}|content:${next.join('.')}:href`]={...config,path:next};
+      }else remapped[key]=config;
+    }
+    S.c.linkSettings=remapped;
+  }
+  function duplicateItemDialog(confirm){modal(duplicateDialog({onConfirm:confirm,onClose:closeModal}));}
+  function duplicateCollectionItem(collection,index,section){
+    duplicateItemDialog(name=>{
+      const source=collection.items[index];if(!source)throw new Error('Item no longer exists');
+      recordChange('collection:duplicate:'+collection.key+':'+Date.now());
+      const item=clone(source),key=['question','title','name','stageTitle','label','titleLine1'].find(key=>typeof item[key]==='string')||'title';
+      item[key]=name;item.id=crypto.randomUUID();if(item._id)item._id=crypto.randomUUID();
+      if(collectionMode(collection)==='page'){item.id=crypto.randomUUID();item.slug=uniqueSlug(name,new Set(collection.items.map(item=>item.slug)));item.slugMode='auto';}
+      const target=collection.items.length;collection.items.push(item);
+      for(const config of Object.values({...S.c.linkSettings})){const path=config.path;if(config.source==='content'&&path?.slice(0,collection.path.length).join('.')===collection.key&&path[collection.path.length]===index){const next=[...path];next[collection.path.length]=target;S.c.linkSettings[`${config.page}|content:${next.join('.')}:href`]={...clone(config),path:next};}}
+      markCollectionStructure(collection);changed();routeCollection(collection,section,target);
+    });
+  }
+  function createCollectionItem(collection,section) {
+    const source=collection.items[0] || S.c.editorSettings?.collectionItemTemplates?.[collection.key] || collection.path.reduce((value,key)=>value?.[key],S.pub)?.[0];
+    if(!source)return toast('This empty collection needs an item template in the site source.',true);
+    const titleKey=['question','title','name','stageTitle','label','titleLine1'].find(key=>typeof source[key]==='string') || Object.keys(source).find(key=>typeof source[key]==='string' && !/^(id|_id|num|index|image|src|href|url|target|type)$/i.test(key));
+    const name=h('input',{type:'text',placeholder:'Item name','aria-label':'Item name',maxlength:120});
+    const empty=(value,key='')=>{
+      if(Array.isArray(value))return [];
+      if(value && typeof value==='object')return Object.fromEntries(Object.entries(value).map(([key,value])=>[key,empty(value,key)]));
+      if(typeof value==='string'){
+        if(/^(id|_id)$/.test(key))return crypto.randomUUID();
+        if(value==='__cms_asset__')return S.media?.assets.find(asset=>isImageAsset(asset.url))?.url || '';
+        if(/^\/assets\//.test(value) || /^(type|target)$/.test(key))return value;
+        if(/^(num|index)$/.test(key))return value.replace(/\d+/,String(collection.items.length+1).padStart(2,'0'));
+        return '';
+      }
+      return typeof value==='boolean'?false:typeof value==='number'?0:value;
+    };
+    modal(h('div',null,h('h2',null,'New item'),name,h('div',{class:'mod-f'},uiButton('Cancel',{variant:'ghost',onclick:closeModal}),uiButton('Create item',{variant:'primary',onclick:()=>{
+      if(!name.value.trim())return name.focus();const item=empty(source);if(titleKey)item[titleKey]=name.value.trim();if(collectionMode(collection)==='page'){item.slug=uniqueSlug(name.value,new Set(collection.items.map(item=>item.slug)));item.slugMode='auto';item.seo ||= {title:'',description:''};}
+      recordChange('collection:create:'+collection.key+':'+Date.now());
+      if(collectionMode(collection)==='page' && !item.id)item.id=crypto.randomUUID();
+      collection.items.push(item);markCollectionStructure(collection);changed();closeModal();routeCollection(collection,section,collection.items.length-1);
+    }}))));name.focus();
+  }
+  function deleteCollectionItem(collection,index,section) {
+    const item=collection.items[index];if(!item)return;
+    const pageId=`collection:${collection.key}:${item.id || 'record-'+(index+1)}`;
+    if(Object.values(S.c.linkSettings || {}).some(config=>config.pageId===pageId))return toast('This item is linked from another field. Update that link before deleting it.',true);
+    modal(h('div',null,h('h2',null,'Delete item?'),h('p',{class:'hint'},`Delete “${CMSStructure.itemTitle(item,index)}”? You can undo this change before Publish.`),h('div',{class:'mod-f'},uiButton('Cancel',{variant:'ghost',onclick:closeModal}),uiButton('Delete item',{variant:'danger',onclick:()=>{
+      recordChange('collection:delete:'+collection.key+':'+Date.now());
+      const skeleton=(value,key='')=>Array.isArray(value)?[]:value && typeof value==='object'?Object.fromEntries(Object.entries(value).map(([key,value])=>[key,skeleton(value,key)])):typeof value==='string'?(/^\/assets\//.test(value)?'__cms_asset__':/^(type|target)$/.test(key)?value:''):typeof value==='boolean'?false:typeof value==='number'?0:value;
+      (((S.c.editorSettings ||= {}).collectionItemTemplates ||= {})[collection.key]=skeleton(item));
+      const order=collection.items.map((_,i)=>i).filter(i=>i!==index);remapCollectionLinks(collection,order);collection.items.splice(index,1);
+      markCollectionStructure(collection);changed();closeModal();routeCollection(collection,section);
+    }}))));
+  }
+  function renderCollectionView(collection,{section,index,onBack,backLabel}) {
+    const label=editorLabel('collection:'+collection.key,collection.label),item=index!==null?collection.items[index]:null;
+    if(item){
+      const fields=section?.fields || S.sections.flatMap(section=>section.fields);
+      const groups=collectionSourceChanged(collection)?[]:CMSStructure.groups(fields,{record:{key:collection.key,index}});
+      const selected=groups.find(group=>group.id===S.activeGroup);
+      if(selected?.component)renderComponent(selected,{label:CMSStructure.itemTitle(item,index)},h('div',{class:'sec-h'},renameHeading(selected.label,`group:${S.page}:${selected.id}`,redrawCollection)));
+      else if(selected)$('ed').replaceChildren(parentBack(selected,CMSStructure.itemTitle(item,index),()=>{S.activeGroup=null;redrawCollection();}),h('div',{class:'sec-h'},renameHeading(selected.label,`group:${S.page}:${selected.id}`,redrawCollection)),...selected.fields.map(editorField),childCards(selected));
+      else{
+        const bound=new Set(groups.flatMap(group=>group.fields.filter(field=>field.source==='content').map(field=>field.path.join('.'))));
+        const remaining=CMSStructure.itemFields(item,[...collection.path,index]).filter(field=>!bound.has(field.path.join('.')));
+        $('ed').replaceChildren(...collectionItemView({statusField:S.mode==='cms'?activeStatusField(true,value=>{cmsSelection.clear();cmsSelection.add('active:'+index);cmsBulkAction(value?'restore':'archive');}):null,onClose:S.mode==='cms'?()=>{S.collectionItem=null;S.activeGroup=null;renderCollections();}:null,label:CMSStructure.itemTitle(item,index),backLabel:label,onBack:()=>routeCollection(collection,section),
+          cards:S.mode==='cms'||S.c.editorSettings?.collectionSchemas?.['content:'+collection.key]?[]:rootGroups(groups).map(group=>elementCard(group,()=>{S.activeGroup=group.id;S.editingMain=false;redrawCollection();$('pvF').contentWindow?.postMessage({type:'CMS_SELECT_GROUP',id:group.id},location.origin);})),
+          fields:S.mode==='cms'||S.c.editorSettings?.collectionSchemas?.['content:'+collection.key]?[renderInlineProperties(collection,index)]:remaining.map(editorField),onDuplicate:()=>duplicateCollectionItem(collection,index,section),onArchive:S.mode==='cms'?()=>{cmsSelection.clear();cmsSelection.add('active:'+index);cmsArchiveFilter=false;cmsBulkAction('archive');}:null,onDelete:()=>deleteCollectionItem(collection,index,section)}));
+      }
+      $('pvF').contentWindow?.postMessage({type:'CMS_SELECT_RECORD',key:collection.key,index},location.origin);
+    }else $('ed').replaceChildren(...collectionListView({label,kind:collectionMode(collection)==='page'?'CMS Page':'CMS List',items:collection.items,title:CMSStructure.itemTitle,onBack,backLabel,
+      onOpen:index=>routeCollection(collection,section,index),onMove:(from,to)=>moveCollectionItem(collection,from,to),onAdd:()=>createCollectionItem(collection,section),onSearchBlocked:()=>toast('Clear search to reorder records')}));
+    renderBreadcrumbs(section);status();
+  }
+  function renderEditorCMS(section,context) {
+    const collection=CMSStructure.collections(S.c,S.sections).find(item=>item.key===context.key);if(!collection)return false;
+    if(context.index!==null && !collection.items[context.index])context.index=null;
+    renderCollectionView(collection,{section,index:context.index,backLabel:section.label,onBack:()=>{S.editorCMS=null;S.activeGroup=null;render();$('pvF').contentWindow?.postMessage({type:'CMS_SELECT_COLLECTION',key:null},location.origin);}});return true;
+  }
+  function renderBreadcrumbs(section) {
+    const groups=CMSStructure.groups(section?.fields || [],{includeRecords:true});
+    const chain=[],seen=new Set();let group=groups.find(item=>item.id===S.activeGroup);
+    const record=S.mode==='cms' && S.collectionKey ? {key:S.collectionKey,index:S.collectionItem} : group?.record || (S.editorCMS?.page===S.page && S.editorCMS.section===section?.id?S.editorCMS:null);
+    while(group && !seen.has(group.id)){chain.unshift(group);seen.add(group.id);group=groups.find(item=>item.id===group.parentId);}
+    if(S.mode==='cms' && S.collectionItem===null)chain.length=0;
+    const navigate=id=>{if(!section)return;S.tab=section.id;S.activeGroup=id;S.editingMain=false;if(!id)S.editorCMS=null;setMode('admin');$('pvF').contentWindow?.postMessage({type:id?'CMS_SELECT_GROUP':'CMS_FOCUS_SECTION',id:id || section.id},location.origin);};
+    const nodes=section?[{label:editorLabel(`section:${S.page}:${section.id}`,section.label),onClick:()=>navigate(null)}]:[];
+    if(record){
+      const collection=CMSStructure.collections(S.c,S.sections).find(item=>item.key===record.key);
+      if(collection){
+        nodes.push({label:editorLabel('collection:'+collection.key,collection.label),kind:'cms',onClick:()=>{if(S.mode==='admin' && section)return openEditorCMS(section,collection.key);S.cmsTab=collectionMode(collection)==='page'?'pages':'collections';S.collectionKey=collection.key;S.collectionItem=null;S.activeGroup=null;setMode('cms');}});
+        const item=record.index!=null?collection.items[record.index]:null;
+        if(item)nodes.push({label:CMSStructure.itemTitle(item,record.index),kind:'cms-item',onClick:()=>{if(S.mode==='admin' && section)return openEditorCMS(section,collection.key,record.index);S.cmsTab=collectionMode(collection)==='page'?'pages':'collections';S.collectionKey=collection.key;S.collectionItem=record.index;S.activeGroup=null;setMode('cms');}});
+      }
+    }
+    nodes.push(...chain.map(item=>({label:editorLabel(`group:${S.page}:${item.id}`,item.label),kind:item.type,onClick:()=>navigate(item.id)})));
+    $('editorBreadcrumbs').replaceChildren(nodes.length?breadcrumbs(nodes):document.createDocumentFragment());
+  }
+  function pageBreadcrumbs(collection,entry,onCollection,onEntry) {
+    $('editorBreadcrumbs').replaceChildren(breadcrumbs([{label:collection,kind:'cms',onClick:onCollection},...(entry?[{label:entry,kind:'cms-item',onClick:onEntry}]:[])]));
   }
 
-  function componentIcon() {
-    return h('span', { class: 'component-icon', 'aria-hidden': 'true' }, ...Array.from({ length: 4 }, () => h('i')));
+  function parentBack(group,fallbackLabel,fallbackAction) {
+    const parent=CMSStructure.groups(S.sections.flatMap(section=>section.fields),{includeRecords:true}).find(parent=>parent.id===group.parentId && (!group.record || parent.record?.key===group.record.key && parent.record?.index===group.record.index));
+    if(parent)return backButton(editorLabel(`group:${S.page}:${parent.id}`,parent.label),()=>{S.activeGroup=parent.id;S.editingMain=false;render();});
+    if(S.mode==='admin' && group.record){
+      const section=S.sections.find(section=>section.fields.some(field=>field.groupId===group.id));
+      const collection=CMSStructure.collections(S.c,S.sections).find(item=>item.key===group.record.key);
+      const item=collection?.items[group.record.index];
+      if(section && item)return backButton(CMSStructure.itemTitle(item,group.record.index),()=>openEditorCMS(section,collection.key,group.record.index));
+    }
+    return backButton(fallbackLabel,fallbackAction);
   }
+
+  function componentIcon() { return sharedComponentIcon(); }
+
   function componentFields(group, main = false) {
     const descriptor = group.component;
     const definition = Components.definitions[descriptor.component];
@@ -1791,7 +1921,7 @@ import { inlineConstEditor } from "/admin/inline-const-editor.mjs";
     const top = h('div', { class: 'component-context' }, componentIcon(), h('strong', null, name), h('small', null, main ? 'Main component' : 'Instance'));
     const actions = main
       ? backButton('Back to instance', () => { S.editingMain = false; render(); })
-      : h('div', { class: 'cms-actions' }, h('button', { class: 'btn sm accent', type: 'button', onclick: () => { S.editingMain = true; render(); } }, 'Edit main component'),
+      : h('div', { class: 'cms-actions' }, h('button', { class: 'btn sm ghost', type: 'button', onclick: () => { S.editingMain = true; render(); } }, 'Edit main component'),
         h('button', { class: 'btn sm ghost', type: 'button', onclick: () => {
           recordChange('component:reset-all:' + group.component.id);
           for (const key of Object.keys(definition.defaults)) Components.resetProperty(S.c, group.component, key);
@@ -1799,36 +1929,45 @@ import { inlineConstEditor } from "/admin/inline-const-editor.mjs";
         } }, 'Reset all properties'));
     $('ed').replaceChildren(parentBack(group, section.label, () => { S.activeGroup = null; S.editingMain = false; render(); }), top,
       main ? h('div', { class: 'sec-h' }, h('h1', null, name)) : heading,
-      h('p', { class: 'hint' }, main ? 'Changes update every instance that inherits this property.' : 'Blue labels are overrides for this instance. Reset a property to inherit the main value.'), actions,
-      h('div', { class: 'auto-fields' }, ...componentFields(group, main).map(editorField)), childCards(group));
+      actions,
+      h('div', { class: 'auto-fields' }, ...componentFields(group, main).filter(item=>item.mode!=='target').map(editorField)), childCards(group), disclosure('About component properties', h('p',null,main?'Main values update every instance without an override.':'Blue labels mark overrides for this instance. Reset to inherit the main value.')));
   }
 
   function render() {
     if (S.mode === 'cms') return renderCollections();
+    workspaceView('editor');
     tabs();
     const section = S.sections?.find(item => item.id === S.tab);
     if (!section) {
-      $('ed').replaceChildren(h('p', { class: 'hint' }, 'Loading page structure…'));
+      $('editorBreadcrumbs').replaceChildren();
+      if(!structurePending && !S.structureReady && !S.structureFailed)requestEditorStructure();
+      $('ed').replaceChildren(S.structureFailed || S.structureReady ? h('p',{class:'hint'},S.structureFailed?'Could not load page structure.':'No editable sections on this page.') : loading('Loading page structure…'),
+        S.structureFailed || S.structureReady ? uiButton('Reload preview',{variant:'ghost',icon:'rotate-cw',onclick:()=>$('pvRe').click()}) : null);
       status();
       return;
     }
     const fields = section.fields;
-    const groups = CMSStructure.groups(fields);
-    const selected = groups.find(group => group.id === S.activeGroup);
+    const groups = CMSStructure.groups(fields, { includeRecords: true });
+    let selected=groups.find(group=>group.id===S.activeGroup);
+    if(selected?.record){const owner=CMSStructure.collections(S.c,S.sections).find(collection=>collection.key===selected.record.key);if(owner && collectionSourceChanged(owner)){S.editorCMS={page:S.page,section:section.id,key:owner.key,index:selected.record.index};S.activeGroup=null;selected=null;}}
+    if(selected)S.editorCMS=selected.record?{page:S.page,section:section.id,key:selected.record.key,index:selected.record.index}:null;
+    if(S.editorCMS && (S.editorCMS.page!==S.page || S.editorCMS.section!==section.id))S.editorCMS=null;
+    if(!selected && S.editorCMS && renderEditorCMS(section,S.editorCMS))return;
+    renderBreadcrumbs(section);
     const collections = CMSStructure.collections(S.c, S.sections).filter(collection => collection.sections.some(item => item.id === section.id));
     const heading = h('div', { class: 'sec-h' }, renameHeading(selected ? selected.label : section.label, selected ? `group:${S.page}:${selected.id}` : `section:${S.page}:${section.id}`, render));
     if (selected?.component) {
       renderComponent(selected, section, heading);
     } else if (selected) {
       $('ed').replaceChildren(parentBack(selected, section.label, () => { S.activeGroup = null; render(); }), heading,
-        h('p', { class: 'inspector-eyebrow' }, selected.type === 'component' ? 'COMPONENT · PROPERTIES' : 'ELEMENT · PROPERTIES'),
+
         h('div', { class: 'auto-fields' }, ...selected.fields.map(editorField)), childCards(selected));
     } else {
       $('ed').replaceChildren(heading,
         ...collections.map(collection => h('button', { type: 'button', class: 'collection-card', onclick: () => {
           S.collectionKey = collection.key; S.collectionItem = null; setMode('cms');
-        } }, h('span', { class: 'collection-label' }, uiIcon('database'), editorLabel('collection:' + collection.key, collection.label)), h('small', null, `${collection.items.length} items · CMS →`))),
-        h('div', { class: 'element-list' }, ...rootGroups(groups).map(group => elementCard(group, () => {
+        } }, h('span', { class: 'collection-label' }, uiIcon('database'), editorLabel('collection:' + collection.key, collection.label)), badge(`${collection.items.length}`), uiIcon('chevron-right'))),
+        h('div', { class: 'element-list' }, ...rootGroups(CMSStructure.groups(fields)).map(group => elementCard(group, () => {
           S.activeGroup = group.id; S.editingMain = false; render();
           $('pvF').contentWindow?.postMessage({ type: 'CMS_SELECT_GROUP', id: group.id }, location.origin);
         }))));
@@ -1837,101 +1976,29 @@ import { inlineConstEditor } from "/admin/inline-const-editor.mjs";
   }
 
   function backButton(label, action) {
-    return h('button', { class: 'inspector-back', type: 'button', onclick: action }, '← ' + label);
+    return backAction(label,action);
   }
   function elementCard(group, action) {
     const image = group.fields.find(field => ['src', 'poster'].includes(field.mode));
     const text = group.fields.find(field => field.mode === 'text');
     const componentText = group.component ? Components.propertyValue(S.c, group.component, 'text') ?? Components.propertyValue(S.c, group.component, 'ariaLabel') : null;
-    return h('button', { class: 'element-card', type: 'button', onclick: action },
-      group.type !== 'component' && image ? h('img', { src: resolveConst(fieldValue(image)), alt: '', loading: 'lazy' }) : group.type === 'component' ? componentIcon() : h('span', { class: 'element-symbol' }, group.type === 'link' ? '↗' : 'T'),
-      h('span', { class: 'element-copy' }, h('small', null, editorLabel(`group:${S.page}:${group.id}`, group.label)), h('strong', null, String(componentText != null ? resolveConst(componentText) : text ? resolveConst(fieldValue(text)) : image ? fieldValue(image).split('/').at(-1) : group.label).replace(/<[^>]*>/g, '').slice(0, 75))), h('span', null, '›'));
+    return sharedElementCard({
+      label: editorLabel(`group:${S.page}:${group.id}`,group.label), type: group.type !== 'component' && group.fields.some(field => ConstTokens.references(String(fieldValue(field))).length) ? 'const' : group.type,
+      thumbnail: group.type!=='component'&&image?resolveConst(fieldValue(image)):null,
+      value: String(componentText!=null?resolveConst(componentText):text?resolveConst(fieldValue(text)):image?String(fieldValue(image)).split('/').at(-1):group.label).replace(/<[^>]*>/g,'').slice(0,75), onClick:action
+    });
   }
   function moveCollectionItem(collection, from, to) {
     if (from === to || from < 0 || to < 0 || from >= collection.items.length || to >= collection.items.length) return;
-    // Keep link overrides attached to the record when its array position changes.
-    recordChange('collection:move:' + collection.key + ':' + Date.now());
-    const permutation = collection.items.map((_, index) => index);
-    permutation.splice(to, 0, permutation.splice(from, 1)[0]);
-    const next = permutation.map(index => collection.items[index]);
-    const remapped = {};
-    for (const [key, config] of Object.entries(S.c.linkSettings || {})) {
-      const prefix = collection.path;
-      if (config.source === 'content' && config.path?.slice(0, prefix.length).join('.') === collection.key && typeof config.path[prefix.length] === 'number') {
-        const path = [...config.path]; path[prefix.length] = permutation.indexOf(path[prefix.length]);
-        const id = `content:${path.join('.')}:href`;
-        remapped[`${config.page}|${id}`] = { ...config, path };
-      } else remapped[key] = config;
-    }
-    S.c.linkSettings = remapped;
-    let owner = S.c; for (const key of collection.path.slice(0, -1)) owner = owner[key];
-    owner[collection.path.at(-1)] = next;
-    S.collectionItem = null;
-    changed(); renderCollections();
+    recordChange('collection:move:'+collection.key+':'+Date.now());
+    const selectedItem=S.mode==='cms'?collection.items[S.collectionItem]:null;
+    const order=collection.items.map((_,index)=>index);order.splice(to,0,order.splice(from,1)[0]);
+    const next=order.map(index=>collection.items[index]);remapCollectionLinks(collection,order);
+    let owner=S.c;for(const key of collection.path.slice(0,-1))owner=owner[key];owner[collection.path.at(-1)]=next;
+    markCollectionStructure(collection);S.activeGroup=null;
+    if(S.mode==='admin' && S.editorCMS)S.editorCMS.index=null;else S.collectionItem=selectedItem?next.indexOf(selectedItem):null;
+    changed();redrawCollection();
   }
-  function startRecordDrag(event, row, list, collection) {
-    if (event.button !== 0 || list.querySelector('.record-placeholder')) return;
-    event.preventDefault();
-    const handle = event.currentTarget;
-    const from = Number(row.dataset.index);
-    const bounds = row.getBoundingClientRect();
-    const offsetY = event.clientY - bounds.top;
-    const placeholder = h('div', { class: 'record-placeholder', style: `height:${bounds.height}px`, 'aria-hidden': 'true' });
-    const scrollPane = $('ed');
-    let clientY = event.clientY, frame = 0, finished = false;
-    row.before(placeholder);
-    Object.assign(row.style, { left: bounds.left + 'px', top: bounds.top + 'px', width: bounds.width + 'px', height: bounds.height + 'px' });
-    row.classList.add('record-floating');
-    document.body.append(row);
-    document.body.classList.add('record-dragging');
-    handle.setPointerCapture(event.pointerId);
-    const place = () => {
-      row.style.top = clientY - offsetY + 'px';
-      const siblings = [...list.querySelectorAll('.record-card')];
-      const before = siblings.find(item => { const rect = item.getBoundingClientRect(); return clientY < rect.top + rect.height / 2; });
-      if ((before && placeholder.nextElementSibling === before) || (!before && list.lastElementChild === placeholder)) return;
-      const previous = new Map(siblings.map(item => [item, item.getBoundingClientRect().top]));
-      if (before) before.before(placeholder); else list.append(placeholder);
-      for (const item of siblings) {
-        const delta = previous.get(item) - item.getBoundingClientRect().top;
-        if (delta) item.animate([{ transform: `translateY(${delta}px)` }, { transform: 'translateY(0)' }], { duration: 160, easing: 'ease-out' });
-      }
-    };
-    const tick = () => {
-      if (finished) return;
-      const rect = scrollPane.getBoundingClientRect();
-      const edge = 60;
-      if (clientY < rect.top + edge) scrollPane.scrollTop -= Math.min(18, (rect.top + edge - clientY) / 4);
-      else if (clientY > rect.bottom - edge) scrollPane.scrollTop += Math.min(18, (clientY - rect.bottom + edge) / 4);
-      place(); frame = requestAnimationFrame(tick);
-    };
-    const move = event => { clientY = event.clientY; place(); };
-    const finish = (cancelled = false) => {
-      if (finished) return;
-      finished = true; cancelAnimationFrame(frame);
-      handle.removeEventListener('pointermove', move);
-      handle.removeEventListener('pointerup', up);
-      handle.removeEventListener('pointercancel', cancel);
-      handle.removeEventListener('lostpointercapture', cancel);
-      document.removeEventListener('keydown', keydown);
-      if (handle.hasPointerCapture(event.pointerId)) handle.releasePointerCapture(event.pointerId);
-      placeholder.replaceWith(row);
-      const to = [...list.children].indexOf(row);
-      row.classList.remove('record-floating'); row.removeAttribute('style');
-      document.body.classList.remove('record-dragging');
-      if (cancelled) renderCollections(); else moveCollectionItem(collection, from, to);
-    };
-    const up = () => finish();
-    const cancel = () => finish(true);
-    const keydown = event => { if (event.key === 'Escape') { event.preventDefault(); finish(true); } };
-    handle.addEventListener('pointermove', move);
-    handle.addEventListener('pointerup', up);
-    handle.addEventListener('pointercancel', cancel);
-    handle.addEventListener('lostpointercapture', cancel);
-    document.addEventListener('keydown', keydown);
-    frame = requestAnimationFrame(tick);
-  }
-
   const editorLabel = (key, fallback) => S.c?.editorSettings?.labels?.[key] || fallback;
   function renameHeading(label, key, redraw) {
     const node = h('h1', { class: 'rename-title', tabindex: '0', title: 'Double-click to rename. Enter to edit.', 'aria-label': 'Rename ' + editorLabel(key, label) }, editorLabel(key, label));
@@ -1972,26 +2039,11 @@ import { inlineConstEditor } from "/admin/inline-const-editor.mjs";
       }, label)));
   }
   const collectionMode = collection => S.c?.editorSettings?.collectionModes?.[collection.key] || 'list';
-  function collectionModeControl(collection) {
-    const locked = S.pub?.editorSettings?.collectionModes?.[collection.key] === 'page';
-    const page = collectionMode(collection) === 'page';
-    const toggle = h('input', { type: 'checkbox', role: 'switch', 'aria-label': 'CMS Page' });
-    toggle.checked = page;
-    toggle.disabled = locked;
-    toggle.addEventListener('change', () => {
-      recordChange('collection:mode:' + collection.key);
-      if (toggle.checked) for (const item of collection.items) if (!item.id) item.id = crypto.randomUUID();
-      ((S.c.editorSettings ||= {}).collectionModes ||= {})[collection.key] = toggle.checked ? 'page' : 'list';
-      S.cmsTab = toggle.checked ? 'pages' : 'collections';
-      changed(); renderCollections();
-    });
-    return h('div', { class: 'cms-mode' }, h('label', null, h('span', null, 'CMS List'), toggle, h('span', null, 'CMS Page')),
-      h('p', { class: 'hint' }, locked ? 'This collection creates pages. Its page mode is locked.' : page ? 'Publishing will create a page for each record and lock page mode.' : 'Enable CMS Page to create a page for each record when publishing.'));
-  }
-  var pageCMS = CMSWorkspace({ S, h, $, toast, cmsTabs, renameHeading, editorLabel, recordChange, changed,
+  function collectionModeControl(collection) { return badge(collectionMode(collection)==='page'?'CMS Page':'CMS List','cms'); }
+  var pageCMS = CMSWorkspace({duplicateAction,onDuplicate:()=>duplicateItemDialog(name=>pageCMS.duplicate(name)),pageURLLink,itemHeader,publishedToggle,activeStatusField,dateControl,slugify,uniqueSlug, S, h, $, toast, cmsTabs, renameHeading, editorLabel, recordChange, changed,
     updateHistoryButtons, baseStatus: status, recordEntryChange, api, fitPreview,
-    valueControl, openMediaPicker, saveRootDraft: saveDraftNow,
-    resolveConst,
+    valueControl, openMediaPicker, compactSearch, loading, pageBreadcrumbs, onListChange:()=>{if(S.mode==='cms')renderCMSChrome();}, renderProperties:renderPageProperties, documentText, onItemAction:(action,id)=>{cmsSelection.clear();cmsSelection.add(id);cmsBulkAction(action);}, saveRootDraft: saveDraftNow,
+    resolveConst, onViewChange: workspaceView,
     refreshPages: async pages => {
       S.pages = pages || (await api('pages-list')).pages;
       $('pageSelect').replaceChildren(...S.pages.map(page => h('option', { value: page.path }, `${S.c.pageSettings?.[page.path]?.name || page.title} · ${page.path}`)));
@@ -2000,78 +2052,30 @@ import { inlineConstEditor } from "/admin/inline-const-editor.mjs";
 
   function renderCollections() {
     if (!S.c) return;
-    if (pageCMS.selected()) { pageCMS.render(); return; }
+    if (pageCMS.selected()) { $('editorBreadcrumbs').replaceChildren(); pageCMS.render(); return; }
     const allCollections = CMSStructure.collections(S.c, S.sections).map(item => ({ ...item, label: editorLabel('collection:' + item.key, item.label) }));
     const collection = allCollections.find(item => item.key === S.collectionKey);
     const collections = allCollections.filter(item => (collectionMode(item) === 'page') === (S.cmsTab === 'pages'));
     $('pvF').contentWindow?.postMessage({ type: 'CMS_SELECT_COLLECTION', key: collection?.key || null }, location.origin);
     const head = h('div', { class: 'sec-h' }, collection ? renameHeading(collection.label, 'collection:' + collection.key, renderCollections) : h('h1', null, S.cmsTab === 'pages' ? 'Pages' : 'Collections'));
     if (!collection) {
+      $('editorBreadcrumbs').replaceChildren();
+      workspaceView('cms-index');
       S.collectionItem = null;
-      $('ed').replaceChildren(cmsTabs(), head,
-        ...(S.cmsTab === 'pages' ? pageCMS.cards() : []),
-        ...collections.map(item => h('button', { class: 'collection-card', type: 'button', onclick: () => { S.collectionKey = item.key; renderCollections(); } },
-          h('strong', null, item.label), h('small', null, `${item.items.length} items · ${item.sections.map(section => section.label).join(', ') || 'Page content'} →`))));
+      $('ed').replaceChildren();
       status(); return;
     }
-    const back = backButton(S.cmsTab === 'pages' ? 'All pages' : 'All collections', () => { S.collectionKey = null; S.collectionItem = null; renderCollections(); });
-    const item = S.collectionItem !== null && collection.items[S.collectionItem];
-    if (item) {
-      $('pvF').contentWindow?.postMessage({ type: 'CMS_SELECT_RECORD', key: collection.key, index: S.collectionItem }, location.origin);
-      const title = CMSStructure.itemTitle(item, S.collectionItem);
-      const record = { key: collection.key, index: S.collectionItem };
-      const fields = S.sections.flatMap(section => section.fields);
-      const groups = CMSStructure.groups(fields, { record });
-      const selected = groups.find(group => group.id === S.activeGroup);
-      const heading = h('div', { class: 'sec-h' }, h('h1', null, title));
-      if (selected?.component) {
-        renderComponent(selected, { label: title }, h('div', { class: 'sec-h' }, renameHeading(selected.label, `group:${S.page}:${selected.id}`, renderCollections)));
-      } else if (selected) {
-        $('ed').replaceChildren(parentBack(selected, title, () => { S.activeGroup = null; renderCollections(); }),
-          h('div', { class: 'sec-h' }, renameHeading(selected.label, `group:${S.page}:${selected.id}`, renderCollections)),
-          h('p', { class: 'inspector-eyebrow' }, 'CMS ITEM · ELEMENT PROPERTIES'), ...selected.fields.map(editorField), childCards(selected));
-      } else {
-        const bound = new Set(groups.flatMap(group => group.fields.filter(field => field.source === 'content').map(field => field.path.join('.'))));
-        const remaining = CMSStructure.itemFields(item, [...collection.path, S.collectionItem]).filter(field => !bound.has(field.path.join('.')));
-        $('ed').replaceChildren(backButton(collection.label, () => { S.collectionItem = null; S.activeGroup = null; renderCollections(); }), heading,
-          h('p', { class: 'inspector-eyebrow' }, `CMS RECORD · ${S.collectionItem + 1} / ${collection.items.length}`),
-          h('div', { class: 'element-list' }, ...rootGroups(groups).map(group => elementCard(group, () => {
-            S.activeGroup = group.id; S.editingMain = false; renderCollections();
-            $('pvF').contentWindow?.postMessage({ type: 'CMS_SELECT_GROUP', id: group.id }, location.origin);
-          }))), ...remaining.map(editorField));
-      }
-      status(); return;
-    }
-    const search = h('input', { type: 'search', placeholder: 'Search records…', 'aria-label': 'Search records' });
-    const list = h('div', { class: 'record-list' });
-    const draw = () => {
-      list.replaceChildren(...collection.items.flatMap((item, index) => {
-        const label = CMSStructure.itemTitle(item, index);
-        if (!label.toLowerCase().includes(search.value.toLowerCase())) return [];
-        const row = h('div', { class: 'record-card', 'data-index': index });
-        const grip = h('button', { type: 'button', class: 'drag-grip', title: 'Drag to reorder', 'aria-label': `Reorder ${label}. Use arrow keys or drag.` }, '⠿');
-        grip.addEventListener('pointerdown', event => {
-          if (search.value.trim()) { toast('Clear search to reorder records'); return; }
-          startRecordDrag(event, row, list, collection);
-        });
-        grip.addEventListener('keydown', event => {
-          if (!['ArrowUp', 'ArrowDown'].includes(event.key)) return;
-          event.preventDefault(); moveCollectionItem(collection, index, index + (event.key === 'ArrowUp' ? -1 : 1));
-        });
-        row.append(grip,
-          h('button', { class: 'record-open', type: 'button', onclick: () => { S.collectionItem = index; S.activeGroup = null; S.editingMain = false; renderCollections(); } },
-            h('small', null, String(index + 1).padStart(2, '0')), h('strong', null, label), h('span', null, '›')));
-        return [row];
-      }));
-      if (!list.childElementCount) list.append(h('p', { class: 'hint' }, 'No records found.'));
-    };
-    search.addEventListener('input', draw); draw();
-    $('ed').replaceChildren(back, head, collectionModeControl(collection), h('p', { class: 'hint' }, `${collection.items.length} records · Drag the left handle to reorder. Open a card to edit.`), search, list);
-    status();
+    const section=S.sections.find(section=>section.fields.some(field=>field.record?.key===collection.key)) || collection.sections[0];
+    workspaceView(S.collectionItem!==null && collection.items[S.collectionItem]?'cms-record':'cms-list');
+    if(S.collectionItem!==null && !collection.items[S.collectionItem])S.collectionItem=null;
+    if(S.cmsArchivedItem && renderArchivedCMSItem(collection)){status();return;}
+    if(S.collectionItem===null){$('ed').replaceChildren();status();return;}
+    renderCollectionView(collection,{section,index:S.collectionItem,backLabel:S.cmsTab==='pages'?'All pages':'All collections',onBack:()=>{S.collectionKey=null;S.collectionItem=null;S.activeGroup=null;renderCollections();}});
   }
 
   function renderPageSettings() {
     if (!S.c) return;
+    workspaceView('settings');
     const page = S.pages.find(item => item.path === S.page);
     const settings = S.c.pageSettings?.[S.page] || {};
     const textField = (label, key, options = {}) => {
@@ -2085,7 +2089,7 @@ import { inlineConstEditor } from "/admin/inline-const-editor.mjs";
       return h('div', { class: 'auto-field' }, h('label', { class: 'cap' }, label), control,
         options.hint ? h('p', { class: 'hint' }, options.hint) : null);
     };
-    const pageChooser = h('select', { style: 'width:100%;padding:10px;background:#222;border:1px solid #444;border-radius:8px;' },
+    const pageChooser = h('select', { style: 'width:100%' },
       ...S.pages.map(item => h('option', { value: item.path }, `${S.c.pageSettings?.[item.path]?.name || item.title} · ${item.path}`)));
     pageChooser.value = S.page;
     pageChooser.addEventListener('change', () => switchPage(pageChooser.value));
@@ -2099,25 +2103,18 @@ import { inlineConstEditor } from "/admin/inline-const-editor.mjs";
         textField('Page name', 'name'),
         h('div', { class: 'auto-field' }, h('label', { class: 'cap' }, 'Address'),
           h('input', { type: 'text', value: S.page, readonly: '' }),
-          h('p', { class: 'hint' }, 'The Astro route defines this page URL. Move the route file to change it.'))),
+          h('span',{class:'ui-badge',title:'The page route is defined by its project file.'},'Read only'))),
       h('div', { class: 'settings-group' }, h('h2', null, 'SEO'),
         textField('Title tag', 'seoTitle'), textField('Meta description', 'seoDescription', { multi: true }),
-        textField('Canonical URL', 'canonical', { hint: 'Full URL for the canonical page, if needed.' }),
-        h('label', { style: 'display:flex;gap:8px;align-items:center;margin-top:14px;' }, noIndex, 'Do not index this page')),
+        textField('Canonical URL', 'canonical'),
+        h('label', { style: 'display:flex;gap:var(--ui-space-4);align-items:center;margin-top:var(--ui-space-7);' }, noIndex, 'Do not index this page')),
       h('div', { class: 'settings-group' }, h('h2', null, 'Open Graph'),
         textField('Social title', 'ogTitle'), textField('Social description', 'ogDescription', { multi: true }),
-        h('div', { class: 'auto-field' }, h('span', { class: 'cap' }, 'Social image'),
-          image ? h('img', { class: 'media-preview', src: image, alt: '' }) : h('p', { class: 'hint' }, 'Not selected'),
-          h('div', { class: 'field-actions' },
-            h('button', { class: 'btn sm ghost', type: 'button', onclick: () => openMediaPicker({ source: 'pageSetting', key: 'ogImage', mode: 'src', mediaType: 'image', label: 'Open Graph image' }) }, 'Replace image…'),
-            image ? h('button', { class: 'btn sm ghost', type: 'button', onclick: () => { writeField({ source: 'pageSetting', key: 'ogImage' }, ''); renderPageSettings(); } }, 'Clear') : null))),
-      h('div', { class: 'settings-group' }, h('h2', null, 'Custom code'),
-        h('p', { class: 'hint' }, 'Head and body code is applied after local publishing.'),
-        textField('Inside <head>', 'headCode', { multi: true, rows: 6 }),
-        textField('Before </body>', 'bodyCode', { multi: true, rows: 6 }))
+        h('div',{class:'auto-field'},h('span',{class:'cap'},'Social image'),openGraphEditor({value:image||'',alt:settings.ogImageAlt||'',onChange:media=>{writeField({source:'pageSetting',key:'ogImage'},media.url);writeField({source:'pageSetting',key:'ogImageAlt'},media.alt);},pickAsset:pickCMSAsset,uploadAsset:file=>uploadAsset(file,'/assets'),resolveMedia:url=>S.media?.assets.find(asset=>asset.url===url)?.previewUrl||resolveConst(url)}))),
+      disclosure('Custom code', h('div',null,textField('Inside <head>', 'headCode', {multi:true,rows:6}),textField('Before </body>', 'bodyCode', {multi:true,rows:6})), {note:'Advanced'})
     ];
     $('ed').replaceChildren(h('div', { class: 'settings-view' },
-      h('h1', null, 'Page settings'), ...groups,
+      h('h1', null, 'Page settings'), h('div',{class:'settings-grid'},...groups.slice(0,3)), groups[3],
       h('button', { class: 'btn sm ghost', type: 'button', onclick: async () => {
         try {
           const history = await api('history');
@@ -2129,20 +2126,25 @@ import { inlineConstEditor } from "/admin/inline-const-editor.mjs";
   }
 
   /* Publish modal */
-  $('bPub').addEventListener('click', async () => {
-    try {
-      await pageCMS.flush(); await saveDraftNow();
-      const summary = await api('project-status');
-      S.projectPending = summary.entryChanges > 0;
-      showProjectPublish(summary);
-    } catch(error) { toast(error.message,true); }
+  $('bPub').addEventListener('click',async()=>{
+    if(modalBusy)return;
+    modalBusy=true;
+    // Focus the modal first: this commits focused fields and starts any async blur normalization.
+    modal(h('div',null,h('h2',null,'Preparing publication…'),loading('Saving drafts…')));
+    try{
+      await flushCanvasEditing();await pageCMS.flush();await saveDraftNow();
+      const summary=await api('project-status');
+      summary.expectedDraftRevision=summary.entries.find(entry=>entry.collection==='pages')?.revision || null;
+      S.projectPending=summary.entryChanges>0;
+      modalBusy=false;showProjectPublish(summary);
+    }catch(error){modalBusy=false;closeModal();toast(error.message,true);}
   });
   function showProjectPublish(summary) {
     const msg = h('input', { type: 'text', placeholder: 'What changed? (optional)' });
     modal(h('div', null,
       h('h2', null, 'Publish project changes?'),
-      h('p', { class: 'hint' }, `${summary.entries.length} content drafts${summary.mediaPending ? ' + media changes' : ''}. Publish all project changes locally.`),
-      h('div', { class: 'f', style: 'margin-top:16px;' },
+      h('p', { class: 'hint' }, `${summary.entries.length} content drafts${summary.lifecycleChanges?' + '+summary.lifecycleChanges+' archive/delete changes':''}${summary.mediaPending ? ' + media changes' : ''}. Publish all project changes locally.`),
+      h('div', { class: 'f', style: 'margin-top:var(--ui-space-7);' },
         h('span', { class: 'cap' }, 'Comment'),
         msg
       ),
@@ -2157,6 +2159,7 @@ import { inlineConstEditor } from "/admin/inline-const-editor.mjs";
   }
 
   async function doPublish(message, summary) {
+    if(modalBusy)return;
     const steps = h('div', { class: 'steps' },
       h('div', null, h('i'), 'Saving to local project'),
       h('div', null, h('i'), 'Done')
@@ -2183,7 +2186,8 @@ import { inlineConstEditor } from "/admin/inline-const-editor.mjs";
           if (!sections.some(section => section.id === setting.sectionId)) throw new Error(`Choose an existing section on ${page.title}`);
         }
       }
-      const res = await api('publish', { expectedDraftRevision: S.draftRevision, expectedEntries: summary.entries, message });
+      await pageCMS.flush();await saveChain;
+      const res=await api('publish',{expectedDraftRevision:summary.expectedDraftRevision,expectedMediaRevision:summary.mediaRevision,expectedEntries:summary.entries,message});
       committed = true;
       mark(0, 'ok');
       mark(1, 'on');
@@ -2221,36 +2225,22 @@ import { inlineConstEditor } from "/admin/inline-const-editor.mjs";
     }
   }
 
-  let modalOpener = null, modalBusy = false;
-  function modal(node) {
-    if ($('mod').hidden) modalOpener = document.activeElement;
-    $('modC').style.width = '';
-    $('modC').replaceChildren(node);
-    $('modC').setAttribute('role','dialog'); $('modC').setAttribute('aria-modal','true'); $('modC').tabIndex = -1;
-    const title = $('modC').querySelector('h2,h1');
-    if (title) { title.id = 'modal-title'; $('modC').setAttribute('aria-labelledby',title.id); }
-    else $('modC').setAttribute('aria-label','Editor dialog');
-    $('mod').hidden = false; $('app').inert = true; $('login').inert = true;
-    ($('modC').querySelector('input:not([type=file]),textarea,select,button:not([disabled])') || $('modC')).focus();
+  let modalBusy = false;
+  const modals = createModalController({overlay:$('mod'),content:$('modC'),background:[$('app'),$('login')],isBusy:()=>modalBusy});
+  function modal(node) { modals.open(node); }
+  function closeModal() { modals.close(); }
+  function openQuickFind() {
+    if ($('app').hidden) return;
+    const views=[['Page editor','panels-top-left','admin'],['CMS collections','database','cms'],['Media library','images','media'],['Const','variable','const'],['Page settings','settings-2','settings']];
+    quickFind({open:modal,close:closeModal,items:[
+      ...views.map(([label,icon,mode])=>({label,icon,group:'Workspace',run:()=>setMode(mode)})),
+      ...(S.sections||[]).map(section=>({label:section.label,group:'Section',icon:'panels-top-left',run:async()=>{S.tab=section.id;S.activeGroup=null;await setMode('admin');$('pvF').contentWindow?.postMessage({type:'CMS_FOCUS_SECTION',id:section.id},location.origin);}})),
+      {label:'UI Kit',icon:'swatch-book',group:'Design system',run:()=>window.open('/admin/ui-kit.html','_blank','noopener')}
+    ]});
   }
-  function closeModal() {
-    if (modalBusy) return;
-    $('mod').hidden = true; $('app').inert = false; $('login').inert = false;
-    $('modC').replaceChildren();
-    if (modalOpener?.isConnected) modalOpener.focus();
-    modalOpener = null;
-  }
-  $('mod').addEventListener('mousedown', e => { if (e.target === $('mod')) closeModal(); });
-  document.addEventListener('keydown', event => {
-    if ($('mod').hidden) return;
-    if (event.key === 'Escape') { event.preventDefault(); closeModal(); return; }
-    if (event.key !== 'Tab') return;
-    const items = [...$('modC').querySelectorAll('button:not([disabled]),input:not([disabled]):not([type=file]),textarea:not([disabled]),select:not([disabled]),[tabindex="0"],[contenteditable="true"]')].filter(node=>node.getClientRects().length);
-    const first = items[0], last = items.at(-1);
-    if (!first) { event.preventDefault(); $('modC').focus(); }
-    else if (event.shiftKey && (document.activeElement === first || !$('modC').contains(document.activeElement))) { event.preventDefault(); last.focus(); }
-    else if (!event.shiftKey && (document.activeElement === last || !$('modC').contains(document.activeElement))) { event.preventDefault(); first.focus(); }
-  });
+  $('quickFind').onclick=openQuickFind;
+  document.addEventListener('keydown',event=>{if((event.metaKey||event.ctrlKey)&&event.key.toLowerCase()==='k') {event.preventDefault();if(!$('mod').hidden)closeModal();else openQuickFind();}});
+
 
   /* Auth & Load */
   $('pwForm').addEventListener('submit', async e => {
@@ -2375,13 +2365,16 @@ import { inlineConstEditor } from "/admin/inline-const-editor.mjs";
     if (S.mode === 'const') renderConst(); else render();
     fitPreview();
     preview();
-    try { await loadMedia(); S.projectPending = (await api('project-status')).entryChanges > 0;
-      restoreHistory();
+    const initialContent=clone(S.c);
+    if (location.hash === '#cms') await setMode('cms');
+    if (location.hash === '#media') await setMode('media');
+    if (location.hash === '#const') await setMode('const');
+    if (location.hash === '#settings') await setMode('settings');
+    try { const [,projectStatus] = await Promise.all([loadMedia(),api('project-status')]);S.projectPending=projectStatus.entryChanges>0;
+      restoreHistory(initialContent);
       updateHistoryButtons(); status(); } catch(error) { history.ready = true; updateHistoryButtons(); toast(error.message,true); }
-    $('app').inert = false; $('app').removeAttribute('aria-busy');
-    if (location.hash === '#cms') setMode('cms');
-    if (location.hash === '#media') setMode('media');
-    if (location.hash === '#const') setMode('const');
+    try{await restoreWorkspaceView();}catch(error){toast('Could not reopen the last item: '+error.message,true);}finally{workspaceNavigationReady=true;saveWorkspaceView();$('app').inert=false;$('app').removeAttribute('aria-busy');}
+
   }
 
   (async () => {

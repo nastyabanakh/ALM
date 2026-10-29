@@ -18,6 +18,7 @@ export function cmsJsonLoader(folder) {
         for (const name of names.filter(name => /^[0-9a-f-]{36}\.json$/.test(name))) {
           const file = path.join(directory, name);
           const data = JSON.parse(await readFile(file, 'utf8'));
+          if(folder!=='pages'&&(data.cmsState==='archived'||data.isPublished===false))continue;
           const id = name.slice(0, -5);
           if (data.id !== id) throw new Error(`CMS ID не збігається з іменем файлу: ${name}`);
           const parsed = await parseData({ id, data, filePath: file });

@@ -22,7 +22,7 @@ interface StartingPoint {
 const rawPoints = content.startingPoints?.items || [];
 const startingPoints: StartingPoint[] = rawPoints.map((p, idx) => ({
   ...p,
-  active: idx === 1
+  active: idx === Math.min(1, rawPoints.length - 1)
 }));
 const cmsContent = (Astro.props as any).content;
 ---
@@ -76,9 +76,9 @@ const cmsContent = (Astro.props as any).content;
         <span class="starting-points__note-bullet" aria-hidden="true"></span>
       </div>
 
-      <div class="starting-points__counter" aria-label="Step 2 of 4">
-        <span class="starting-points__counter-current text-m text-color-white" id="sp-counter-current" data-cms-path="sections.startingPoints.counterCurrent">{cmsContent.sections.startingPoints.counterCurrent}</span>
-        <span class="starting-points__counter-total text-m text-opacity-dim text-color-white" data-cms-path="sections.startingPoints.counterTotal">{cmsContent.sections.startingPoints.counterTotal}</span>
+      <div class="starting-points__counter" data-cms-technical="slider-counter" aria-label={`Step ${Math.min(2, startingPoints.length)} of ${startingPoints.length}`}>
+        <span class="starting-points__counter-current text-m text-color-white" id="sp-counter-current">{String(Math.min(2, startingPoints.length)).padStart(2, '0')}</span>
+        <span class="starting-points__counter-total text-m text-opacity-dim text-color-white" id="sp-counter-total">{'/ ' + String(startingPoints.length).padStart(2, '0')}</span>
       </div>
     </div>
 
@@ -129,7 +129,7 @@ const cmsContent = (Astro.props as any).content;
   const counterCurrent = document.getElementById('sp-counter-current');
   const list = document.getElementById('sp-list');
 
-  let persistentIndex = 1; // Default selected state: step 02
+  let persistentIndex = Math.min(1, cards.length - 1); // Default selected state: step 02
 
   const updateActiveUI = (targetIndex: number) => {
     cards.forEach((card, idx) => {
@@ -145,13 +145,13 @@ const cmsContent = (Astro.props as any).content;
       img.classList.toggle('is-active', idx === targetIndex);
     });
 
-    const activeCard = cards[targetIndex];
-    if (activeCard) {
-      if (counterCurrent && activeCard.dataset.stepNum) {
-        counterCurrent.textContent = activeCard.dataset.stepNum;
-      }
-    }
+    if (counterCurrent) counterCurrent.textContent = String(Math.max(0, targetIndex + 1)).padStart(2, '0');
+    const total = document.getElementById('sp-counter-total');
+    if (total) total.textContent = '/ ' + String(cards.length).padStart(2, '0');
+    counterCurrent?.parentElement?.setAttribute('aria-label', `Step ${Math.max(0, targetIndex + 1)} of ${cards.length}`);
   };
+
+  updateActiveUI(persistentIndex);
 
   const isDesktop = () => window.matchMedia('(hover: hover) and (min-width: 480px)').matches;
 

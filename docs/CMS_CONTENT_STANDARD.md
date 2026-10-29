@@ -114,3 +114,19 @@ CMS Pages підтримують inline Const для редагованого к
 Стан відкликаних сесій та throttle зберігається в `.cms/security`, поза public. Поточна реалізація розрахована на один локальний API process. Для кількох API instances потрібне центральне транзакційне сховище сесій/throttle; проста спільна директорія або ephemeral serverless storage не забезпечує атомарності між instances. `CMS_TRUSTED_ORIGINS` — необов’язковий список додаткових точних origins через кому; за замовчуванням дозволено origin самого запиту. `CMS_TRUST_PROXY=1` дозволяє довіряти перезаписаному reverse proxy заголовку протоколу; вмикати лише за довіреним proxy.
 
 Абсолютні URL сторонніх серверів не є локальними asset references, навіть якщо шлях після домену збігається з `/assets/...`. Для власного публічного домену можна задати `CMS_SITE_ORIGIN=https://example.com` (або список origins через кому): лише ці абсолютні URL переписуються разом із локальними root-relative/relative references. Те саме визначення власника використовується для захисту від видалення використаних файлів.
+
+## Глобальна область Const
+
+Усі Const визначаються на рівні проєкту в `content.consts`, а не в окремій сторінці чи CMS-записі. Будь-яка сторінка, компоненти, налаштування сторінок і записи колекцій використовують спільні `{{const.key}}` посилання. Зміна визначення поширюється на всі зв’язані поля сайту через спільну чернетку та Publish. Не створювати page-local копії визначень.
+
+## Технічні / обчислювані елементи
+
+Використовувати `data-cms-technical="причина"` на найменшому спільному контейнері обчислюваного UI, наприклад `<div data-cms-technical="slider-counter">…</div>`. Усі нащадки виключаються з явних і автоматичних CMS-прив’язок, структури, hover і inline editing. Усередині не додавати editable data-cms-path/data-cms-instance. Це контракт для похідних значень (поточний індекс, загальна кількість, pagination/progress/status), а не спосіб приховати авторський текст. Текст картки чи її номер лишається редагованим, якщо є авторським контентом.
+
+Starting Points: current = active index + 1, total = кількість карток; форматування й aria-label створює код. Лічильник більше не читає sections.startingPoints.counterCurrent/counterTotal. Старі значення контенту не видаляються з робочих чернеток, але більше не керують цим UI.
+
+### Configurable collection fields
+
+Collection definitions live in the home content's `editorSettings.collectionSchemas[scope]`, with `scope` set to `content:<path>` for inline lists or `page:posts` / `page:projects` for page entries. Fields have stable `id` and `key`, a type, group and order. Custom fields use `custom.<id>` inside each item; rich documents use `richText[<field key>]` alongside a legacy plain-text mirror. Removing a field from layout preserves item data for Undo/recovery. A rename changes the display name, not the source path.
+
+References store the target record ID, multireferences an ordered array of unique target IDs. They never copy the target title. Resolve the title and public URL from the current target collection when displaying it. Exclude archived/deleted targets; reject missing or invalid targets before the shared project Publish. New inline reference targets receive persistent IDs in the project draft. Public rich text uses the allowlisted block renderer and escaped text/URLs, never raw authored HTML.

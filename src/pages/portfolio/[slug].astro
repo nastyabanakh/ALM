@@ -1,7 +1,10 @@
 ---
 import { getCollection, getEntry } from 'astro:content';
 import { HOME_PAGE_ID } from '../../../cms/model.mjs';
-import { resolveEntryConstants } from '../../../cms/constants.mjs';
+import { resolveEntryConstants, resolveContentConstants } from '../../../cms/constants.mjs';
+import SinglePointContactSection from '../../sections/SinglePointContactSection.astro';
+import {configuredFieldsHTML,linkedAccordionItems} from '../../../cms/published-fields.mjs';
+import {renderRichText} from '../../../public/admin/rich-text-model.mjs';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
 export async function getStaticPaths() {
@@ -10,16 +13,23 @@ export async function getStaticPaths() {
 
 const { project: entry } = Astro.props;
 const home = await getEntry('pages', HOME_PAGE_ID);
-const project = { ...entry, data: resolveEntryConstants(entry.data, home?.data.content.consts || {}) };
+const content=home?.data.content||{};
+const resolvedContent=resolveContentConstants(content);
+const project = { ...entry, data: resolveEntryConstants(entry.data, content.consts || {}) };
+const bodyHTML=project.data.richText?.body?renderRichText(project.data.richText.body):renderRichText(project.data.body);
+const accordionItems=linkedAccordionItems(resolvedContent,'page:projects',project.data);
+const extraHTML=configuredFieldsHTML(resolvedContent,'page:projects',project.data,{posts:(await getCollection('posts')).map(item=>resolveEntryConstants(item.data,content.consts||{})),projects:(await getCollection('projects')).map(item=>resolveEntryConstants(item.data,content.consts||{}))},'custom',['content:sections.singlePointContact.accordionItems']);
 ---
-<BaseLayout title={project.data.seo.title} description={project.data.seo.description}>
+<BaseLayout title={project.data.seo.title} description={project.data.seo.description} ogImage={project.data.ogImage} ogImageAlt={project.data.ogImageAlt}>
   <main class="cms-entry">
     <a href="/portfolio/">← Всі проєкти</a>
     <article>
       <h1>{project.data.title}</h1>
       <p>{project.data.summary}</p>
       {project.data.cover && <img src={project.data.cover.src} alt={project.data.cover.alt} />}
-      {project.data.body && <p>{project.data.body}</p>}
+      <div class="cms-rich-content" set:html={bodyHTML} />
+      {extraHTML && <div class="cms-extra-content" set:html={extraHTML} />}
+      {accordionItems.length>0 && <SinglePointContactSection content={resolvedContent} items={accordionItems} accordionOnly />}
       <div class="gallery">
         {project.data.gallery.map(image => <img src={image.src} alt={image.alt} />)}
       </div>

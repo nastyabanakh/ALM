@@ -1,4 +1,3 @@
-import path from 'node:path';
 /** Run the existing Vercel handler inside Astro's local dev server. */
 export function cmsDevApi() {
   return {
@@ -13,26 +12,21 @@ export function cmsDevApi() {
             plugins: [{
               name: 'cms-local-api',
               configureServer(server) {
-                // Astro computes static paths at startup; refresh them when an entry is created.
-                let restartTimer, pendingRestart = false, activeRequests = 0;
-                const scheduleRestart = () => {
-                  clearTimeout(restartTimer);
-                  if (pendingRestart && !activeRequests) restartTimer = setTimeout(() => {
-                    if (activeRequests) return scheduleRestart();
-                    pendingRestart = false;
-                    server.restart();
-                  }, 1000);
-                };
-                server.watcher.on('all', (event, file) => {
-                  const relative = path.relative(process.cwd(), file).split(path.sep).join('/');
-                  if (!['add', 'change', 'unlink'].includes(event) || !/^src\/content\/(pages|posts|projects)\/.+\.json$/.test(relative)) return;
-                  pendingRestart = true; scheduleRestart();
+                // Public admin modules are served as static files: do not retain stale editor code.
+                server.middlewares.use((req,res,next)=>{
+                  const pathname=new URL(req.url||'/','http://localhost').pathname;
+                  if(/^\/(admin|cms)(?:\/|$)/.test(pathname)){
+                    const setHeader=res.setHeader;
+                    res.setHeader=function(name,value){return setHeader.call(this,name,String(name).toLowerCase()==='cache-control'?'no-store':value);};
+                    res.setHeader('Cache-Control','no-store');
+                    delete req.headers['if-none-match'];delete req.headers['if-modified-since'];
+                  }
+                  next();
                 });
+                // Astro's own watcher clears its route cache on content file changes.
+                // Restarting the container here closes its listener after Publish and can
+                // leave the local site offline if restarting encounters an error.
                 server.middlewares.use('/api', async (req, res) => {
-                  activeRequests++; clearTimeout(restartTimer);
-                  let finished = false;
-                  const finish = () => { if (!finished) { finished = true; activeRequests--; scheduleRestart(); } };
-                  res.once('finish', finish); res.once('close', finish);
                   try {
                     const endpoint = new URL(req.url || '/', 'http://localhost').pathname;
                     if (endpoint !== '/admin' && endpoint !== '/cms') {

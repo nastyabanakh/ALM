@@ -1,6 +1,7 @@
 import { createHash, randomUUID } from 'node:crypto';
 import { mkdir, readFile, readdir, rename, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
+import {slugify,uniqueSlug} from '../public/cms/slug.mjs';
 import { collectionSchemas, validateEntry } from './model.mjs';
 
 const root = process.cwd();
@@ -82,6 +83,9 @@ export async function listEntries(collection) {
       const entry = label === 'draft' ? data.data : data;
       item.title = entry.title || item.title;
       item.slug = entry.slug || item.slug;
+      item.cmsState=entry.cmsState || 'active';
+      item.isPublished=entry.isPublished!==false;
+      (item.slugs ||= []).push(entry.slug);
       item[label] = true;
       result.set(id, item);
     }
@@ -120,7 +124,7 @@ export async function restoreHistoryToDraft(collection, { id, revision: targetRe
 
 export async function saveDraft(collection, params) {
   const id = params.id || randomUUID();
-  return serializeEntry(`${collection}/${id}`, () => saveDraftUnlocked(collection, { ...params, id }));
+  return serializeEntry(`slug/${collection}`,()=>serializeEntry(`${collection}/${id}`, () => saveDraftUnlocked(collection, { ...params, id })));
 }
 
 async function saveDraftUnlocked(collection, { id, data, expectedDraftRevision = null }) {
@@ -131,12 +135,24 @@ async function saveDraftUnlocked(collection, { id, data, expectedDraftRevision =
   const current = await readJson(files.draft);
   if (current && current.revision !== expectedDraftRevision) throw new CmsError(409, 'Draft was changed elsewhere');
   if (!current && expectedDraftRevision) throw new CmsError(409, 'Draft was deleted');
+  // Preserve optimistic locking above, but do not invalidate publication snapshots for a no-op save.
+  const nextData={...data,id};
+  if(collection!=='pages'){
+    const others=await listEntries(collection),used=new Set(others.filter(item=>item.id!==id).flatMap(item=>item.slugs||[item.slug]).filter(Boolean));
+    if(nextData.slugMode==='auto')nextData.slug=uniqueSlug(nextData.title,used);
+    else if(typeof nextData.slug==='string'&&nextData.slug){
+      nextData.slug=slugify(nextData.slug);
+      if(!nextData.slug)throw new CmsError(422,'Enter a URL using letters or numbers');
+      if(used.has(nextData.slug))throw new CmsError(409,'This URL is already used in this collection. Choose another slug.');
+    }
+  }
+  if(current && revision(current.data)===revision(nextData))return {id,draft:current};
   const published = await readJson(files.published);
   const next = {
     revision: randomUUID(),
     basePublishedRevision: current ? current.basePublishedRevision : revision(published),
     updatedAt: new Date().toISOString(),
-    data: { ...data, id }
+    data: nextData
   };
   await atomicJson(files.draft, next);
   return { id, draft: next };
@@ -174,7 +190,7 @@ async function publishDraftUnlocked(collection, { id, expectedDraftRevision }) {
   const checked = validateEntry(collection, draft.data);
   if (!checked.success) throw new CmsError(422, 'Fix fields before publishing', checked.issues);
   const others = await listEntries(collection);
-  if (others.some(item => item.id !== id && item.published && item.slug === checked.data.slug)) {
+  if (others.some(item => item.id !== id && (item.published||item.draft) && (item.slugs||[item.slug]).includes(checked.data.slug))) {
     throw new CmsError(409, 'This URL is already in use');
   }
   if (current) await atomicJson(path.join(files.history, `${Date.now()}-${revision(current)}.json`), current);
@@ -190,5 +206,17 @@ export async function discardDraft(collection, { id, expectedDraftRevision }) {
     const draft = await readJson(file);
     if (!draft || draft.revision !== expectedDraftRevision) throw new CmsError(409,'Draft changed elsewhere');
     await rm(file,{force:true}); return {id};
+  });
+}
+
+// Invoked only inside the shared project publication transaction and its full recovery snapshot.
+export async function applyEntryLifecycle(collection,id,state) {
+  if(!['posts','projects'].includes(collection) || !['active','archived','deleted'].includes(state))throw new CmsError(400,'Invalid entry lifecycle operation');
+  return serializeEntry(`${collection}/${id}`,async()=>{
+    const files=paths(collection,id),current=await readJson(files.published);
+    if(current)await atomicJson(path.join(files.history,`${Date.now()}-${revision(current)}.json`),current);
+    if(state==='deleted'){await rm(files.published,{force:true});await rm(files.draft,{force:true});return;}
+    if(!current)throw new CmsError(404,'Entry not found');
+    await atomicJson(files.published,{...current,cmsState:state,isPublished:state==='active'});
   });
 }

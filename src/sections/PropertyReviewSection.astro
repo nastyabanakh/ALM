@@ -110,11 +110,11 @@ const reviewStepsJson = JSON.stringify(cmsContent.sections.propertyReview.review
 
           <div class="property-review__overlay-inner">
             <div class="property-review__overlay-row" data-cms-item="0" id="pr-record">
-              <h3 class="property-review__overlay-title" id="pr-overlay-title" set:html={cmsContent.sections.propertyReview.reviewSteps[0].title} data-cms-path="sections.propertyReview.reviewSteps.0.title" data-cms-html-lines />
+              <h3 class="property-review__overlay-title" id="pr-overlay-title" set:html={cmsContent.sections.propertyReview.reviewSteps[0]?.title || ''} data-cms-path="sections.propertyReview.reviewSteps.0.title" data-cms-html-lines />
 
               <GlassCard
-                tag={cmsContent.sections.propertyReview.reviewSteps[0].tag}
-                text={cmsContent.sections.propertyReview.reviewSteps[0].text}
+                tag={cmsContent.sections.propertyReview.reviewSteps[0]?.tag || ''}
+                text={cmsContent.sections.propertyReview.reviewSteps[0]?.text || ''}
                 buttonText={cmsContent.sections.propertyReview.cardButtonText}
                 buttonHref={cmsContent.sections.propertyReview.cardButtonHref}
                 cmsPaths={{

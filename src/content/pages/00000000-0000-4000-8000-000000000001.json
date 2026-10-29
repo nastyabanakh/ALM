@@ -26,33 +26,336 @@
           "target",
           "text"
         ]
+      },
+      "/|sections.headerNav.ctaText": {
+        "overrides": {
+          "text": "REQUEST A CONSULTATION"
+        },
+        "inherited": []
       }
     },
     "editorSettings": {
       "labels": {
         "group:/:hero:element:16": "First Screen Visual",
-        "group:/:hero:dom:0.0": "Image & Video"
+        "group:/:hero:dom:0.0": "Image & Video",
+        "pageCollection:projects": "Projects",
+        "pageCollection:posts": "Blog"
+      },
+      "collectionStructureRevisions": {
+        "sections.headerNav.navItems": 5,
+        "startingPoints.items": 3,
+        "sections.footer.legalLinks": 6,
+        "sections.process.steps": 3,
+        "sections.singlePointContact.accordionItems": 1,
+        "builderAccountability.commitments": 6
+      },
+      "collectionSchemas": {
+        "page:projects": {
+          "name": "Projects",
+          "groups": [
+            {
+              "id": "content",
+              "label": "Main"
+            },
+            {
+              "id": "seo",
+              "label": "SEO"
+            },
+            {
+              "id": "writing",
+              "label": "Content"
+            },
+            {
+              "id": "media",
+              "label": "Media"
+            },
+            {
+              "id": "properties",
+              "label": "Properties"
+            }
+          ],
+          "fields": [
+            {
+              "id": "title",
+              "key": "title",
+              "label": "Project name",
+              "type": "text",
+              "group": "content",
+              "builtin": true,
+              "required": true,
+              "hidden": false
+            },
+            {
+              "id": "slug",
+              "key": "slug",
+              "label": "URL slug",
+              "type": "slug",
+              "group": "content",
+              "builtin": true,
+              "required": true,
+              "hidden": false
+            },
+            {
+              "id": "summary",
+              "key": "summary",
+              "label": "Short description",
+              "type": "textarea",
+              "group": "content",
+              "builtin": true,
+              "required": false,
+              "hidden": false
+            },
+            {
+              "id": "cover.src",
+              "key": "cover.src",
+              "label": "Cover image",
+              "type": "image",
+              "group": "media",
+              "builtin": true,
+              "required": false,
+              "hidden": false
+            },
+            {
+              "id": "gallery",
+              "key": "gallery",
+              "label": "Gallery",
+              "type": "gallery",
+              "group": "media",
+              "builtin": true,
+              "required": false,
+              "hidden": false
+            },
+            {
+              "id": "body",
+              "key": "body",
+              "label": "Project description",
+              "type": "richtext",
+              "group": "writing",
+              "builtin": true,
+              "required": false,
+              "hidden": false
+            },
+            {
+              "id": "seo.title",
+              "key": "seo.title",
+              "label": "SEO title",
+              "type": "text",
+              "group": "seo",
+              "builtin": true,
+              "required": true,
+              "hidden": false
+            },
+            {
+              "id": "seo.description",
+              "key": "seo.description",
+              "label": "SEO description",
+              "type": "textarea",
+              "group": "seo",
+              "builtin": true,
+              "required": true,
+              "hidden": false
+            },
+            {
+              "id": "ogImage",
+              "key": "ogImage",
+              "label": "Open Graph image",
+              "type": "image",
+              "group": "seo",
+              "builtin": true,
+              "required": false,
+              "hidden": false
+            },
+            {
+              "id": "9e25dcf5-f810-4ebe-ab89-e83e742f34a0",
+              "key": "custom.ref",
+              "label": "Ref",
+              "type": "multireference",
+              "group": "properties",
+              "required": false,
+              "hidden": false,
+              "help": "",
+              "collection": "content:sections.singlePointContact.accordionItems"
+            }
+          ]
+        },
+        "page:posts": {
+          "name": "Blog",
+          "groups": [
+            {
+              "id": "content",
+              "label": "Details"
+            },
+            {
+              "id": "writing",
+              "label": "Content"
+            },
+            {
+              "id": "media",
+              "label": "Media"
+            },
+            {
+              "id": "seo",
+              "label": "SEO"
+            },
+            {
+              "id": "properties",
+              "label": "Properties"
+            }
+          ],
+          "fields": [
+            {
+              "id": "title",
+              "key": "title",
+              "label": "Title",
+              "type": "text",
+              "group": "content",
+              "builtin": true,
+              "required": true,
+              "hidden": false
+            },
+            {
+              "id": "slug",
+              "key": "slug",
+              "label": "URL slug",
+              "type": "slug",
+              "group": "content",
+              "builtin": true,
+              "required": true,
+              "hidden": false
+            },
+            {
+              "id": "excerpt",
+              "key": "excerpt",
+              "label": "Short description",
+              "type": "textarea",
+              "group": "content",
+              "builtin": true,
+              "required": false,
+              "hidden": false
+            },
+            {
+              "id": "body",
+              "key": "body",
+              "label": "Post body",
+              "type": "richtext",
+              "group": "writing",
+              "builtin": true,
+              "required": true,
+              "hidden": false
+            },
+            {
+              "id": "publishedAt",
+              "key": "publishedAt",
+              "label": "Publish date",
+              "type": "datetime",
+              "group": "content",
+              "builtin": true,
+              "required": false,
+              "hidden": false
+            },
+            {
+              "id": "cover.src",
+              "key": "cover.src",
+              "label": "Cover image",
+              "type": "image",
+              "group": "media",
+              "builtin": true,
+              "required": false,
+              "hidden": false
+            },
+            {
+              "id": "seo.title",
+              "key": "seo.title",
+              "label": "SEO title",
+              "type": "text",
+              "group": "seo",
+              "builtin": true,
+              "required": true,
+              "hidden": false
+            },
+            {
+              "id": "seo.description",
+              "key": "seo.description",
+              "label": "SEO description",
+              "type": "textarea",
+              "group": "seo",
+              "builtin": true,
+              "required": false,
+              "hidden": false
+            }
+          ]
+        }
+      },
+      "entryStates": {},
+      "archivedCollectionItems": {
+        "sections.headerNav.navItems": [],
+        "sections.footer.legalLinks": [],
+        "builderAccountability.commitments": []
+      },
+      "collectionItemTemplates": {
+        "sections.headerNav.navItems": {
+          "num": "",
+          "label": "",
+          "href": ""
+        },
+        "sections.footer.legalLinks": {
+          "label": "",
+          "href": ""
+        },
+        "builderAccountability.commitments": {
+          "titleLine1": "",
+          "titleLine2": "",
+          "description": ""
+        }
       },
       "collectionModes": {
-        "sections.process.steps": "list"
-      }
+        "sections.process.steps": "list",
+        "sections.finishedStandard.showcaseItems": "list"
+      },
+      "cmsGroups": {
+        "collections": [
+          {
+            "id": "",
+            "name": "Ungrouped",
+            "keys": [
+              "content:sections.finishedStandard.showcaseItems",
+              "content:sections.budgetSelections.choices",
+              "content:sections.footer.navLinks",
+              "content:sections.footer.legalLinks",
+              "content:sections.process.steps",
+              "content:sections.propertyReview.reviewSteps",
+              "content:sections.singlePointContact.accordionItems",
+              "content:sections.headerNav.navItems",
+              "content:startingPoints.items",
+              "content:featuredHome.specs",
+              "content:featuredHome.stages",
+              "content:completedHome.specs",
+              "content:faq",
+              "content:localManagement.principles",
+              "content:builderAccountability.commitments"
+            ]
+          }
+        ]
+      },
+      "constGroups": [
+        {
+          "id": "fdaefe15-2bf7-4743-8196-3c226b70ae99",
+          "name": "Main",
+          "keys": [
+            "companyPhone",
+            "email",
+            "address",
+            "serviceArea"
+          ]
+        },
+        {
+          "id": "",
+          "name": "Ungrouped",
+          "keys": []
+        }
+      ]
     },
     "linkSettings": {
-      "/|content:sections.headerNav.navItems.0.href:href": {
-        "page": "/",
-        "source": "content",
-        "path": [
-          "sections",
-          "headerNav",
-          "navItems",
-          0,
-          "href"
-        ],
-        "type": "url",
-        "target": "_self",
-        "pageId": "route:index.astro",
-        "sectionId": ""
-      },
       "/|content:featuredHome.cardCtaHref:href": {
         "page": "/",
         "source": "content",
@@ -77,6 +380,33 @@
         "target": "_self",
         "pageId": "route:index.astro",
         "sectionId": "footer"
+      },
+      "/|content:sections.headerNav.phoneHref:href": {
+        "page": "/",
+        "source": "content",
+        "path": [
+          "sections",
+          "headerNav",
+          "phoneHref"
+        ],
+        "type": "phone",
+        "target": "_self",
+        "pageId": "route:index.astro"
+      },
+      "/|content:sections.headerNav.navItems.0.href:href": {
+        "page": "/",
+        "source": "content",
+        "path": [
+          "sections",
+          "headerNav",
+          "navItems",
+          0,
+          "href"
+        ],
+        "type": "url",
+        "target": "_self",
+        "pageId": "route:index.astro",
+        "sectionId": ""
       }
     },
     "consts": {
@@ -350,13 +680,6 @@
         "span6": "APPROVAL",
         "steps": [
           {
-            "id": "step-02",
-            "num": "02//",
-            "title": "Site & Plan Audit",
-            "desc": "ALM reviews property conditions and plans to identify needed engineering or design specialists.",
-            "image": "/assets/section-06/step-02.webp"
-          },
-          {
             "id": "step-01",
             "num": "01//",
             "title": "Consultation",
@@ -364,11 +687,18 @@
             "image": "/assets/section-06/step-01.webp"
           },
           {
-            "id": "step-03",
-            "num": "03//",
-            "title": "Engineering & Permits",
-            "desc": "Existing plans are adapted with local architects and engineers to secure city approvals.",
-            "image": "/assets/section-06/step-03.webp"
+            "id": "step-02",
+            "num": "02//",
+            "title": "Site & Plan Audit",
+            "desc": "ALM reviews property conditions and plans to identify needed engineering or design specialists.",
+            "image": "/assets/section-06/step-02.webp"
+          },
+          {
+            "id": "step-05",
+            "num": "05//",
+            "title": "Construction",
+            "desc": "ALM manages on-site execution, subcontractors, and mandatory city inspections.",
+            "image": "/assets/section-06/step-05.webp"
           },
           {
             "id": "step-04",
@@ -378,11 +708,11 @@
             "image": "/assets/section-06/step-04.webp"
           },
           {
-            "id": "step-05",
-            "num": "05//",
-            "title": "Construction",
-            "desc": "ALM manages on-site execution, subcontractors, and mandatory city inspections.",
-            "image": "/assets/section-06/step-05.webp"
+            "id": "step-03",
+            "num": "03//",
+            "title": "Engineering & Permits",
+            "desc": "Existing plans are adapted with local architects and engineers to secure city approvals.",
+            "image": "/assets/section-06/step-03.webp"
           },
           {
             "id": "step-06",
@@ -435,15 +765,6 @@
         "desc": "ALM handles every permit, trade, and municipal inspection. You communicate strictly with one dedicated team.",
         "accordionItems": [
           {
-            "id": "accordion-01",
-            "num": "01//",
-            "title": "PLANS &\nOther",
-            "shortTitle": "Plans & Engineering",
-            "description": "Use your existing plans or bring in the local architects and engineers needed to adapt them.",
-            "image": "/assets/section-04/plans-engineering.webp",
-            "active": true
-          },
-          {
             "id": "accordion-02",
             "num": "02//",
             "title": "PERMITS &\nCITY REVIEWS",
@@ -451,6 +772,15 @@
             "description": "ALM coordinates directly with local building departments, managing plan submissions, zoning approvals, and permit issuance.",
             "image": "/assets/section-04/permits-city-reviews.webp",
             "active": false
+          },
+          {
+            "id": "accordion-01",
+            "num": "01//",
+            "title": "PLANS &\nOther",
+            "shortTitle": "Plans & Engineering",
+            "description": "Use your existing plans or bring in the local architects and engineers needed to adapt them.",
+            "image": "/assets/section-04/plans-engineering.webp",
+            "active": true
           },
           {
             "id": "accordion-03",
@@ -484,7 +814,7 @@
       },
       "headerNav": {
         "logo": "ALM",
-        "phone": "{{const.companyPhone}}",
+        "phone": "{{const.companyPhone}} ",
         "ctaText": "DISCUSS YOUR PROJECT",
         "ctaHref": "#contact",
         "navItems": [
@@ -519,7 +849,7 @@
             "href": "#contact"
           }
         ],
-        "phoneHref": "{{const.companyPhone|tel}}"
+        "phoneHref": "tel:{{const.companyPhone}}"
       }
     },
     "pageSettings": {
@@ -552,18 +882,18 @@
       "barTitle": "You Can Start Before Everything Is Decided",
       "items": [
         {
-          "id": "step-1",
-          "num": "01.",
-          "title": "Still looking for property",
-          "image": "/assets/images/property-search.webp",
-          "note": "Tell us the area and vision you have in mind. We can assess potential land and parcels before you commit."
-        },
-        {
           "id": "step-2",
           "num": "02.",
           "title": "You already own a lot",
           "image": "/assets/images/property-aerial.webp",
           "note": "ALM will evaluate your property topography, zoning, utilities, and orientation to shape your custom build."
+        },
+        {
+          "id": "step-1",
+          "num": "01.",
+          "title": "Still looking for property",
+          "image": "/assets/images/property-search.webp",
+          "note": "Tell us the area and vision you have in mind. We can assess potential land and parcels before you commit."
         },
         {
           "id": "step-3",
@@ -752,14 +1082,14 @@
           "description": "If an adjustment affects cost, scope, or schedule, it is formally reviewed and signed off before any work begins."
         },
         {
-          "titleLine1": "Inspections",
-          "titleLine2": "& Closeout",
-          "description": "Every required city inspection is scheduled, managed, and passed through to final permit completion and legal occupancy."
-        },
-        {
           "titleLine1": "Builder",
           "titleLine2": "Warranty",
           "description": "Coverage details, timeframes, exclusions, and warranty claim procedures are fully defined in the signed agreement."
+        },
+        {
+          "titleLine1": "Inspections",
+          "titleLine2": "& Closeout",
+          "description": "Every required city inspection is scheduled, managed, and passed through to final permit completion and legal occupancy."
         }
       ],
       "ctaText": "SCHEDULE A CONSULTATION"

@@ -100,14 +100,14 @@ const steps: ProcessStep[] = cmsContent.sections.process.steps;
       <div class="process-section__preview-card" id="process-preview" aria-hidden="true">
         <div class="process-section__preview-mask" id="process-preview-mask">
           <img
-            src={steps[0].image}
+            src={steps[0]?.image || undefined}
             alt=""
             class="process-section__preview-img process-section__preview-img--active"
             id="process-preview-img-active"
-            data-current={steps[0].image}
+            data-current={steps[0]?.image || undefined}
           />
           <img
-            src={steps[0].image}
+            src={steps[0]?.image || undefined}
             alt=""
             class="process-section__preview-img process-section__preview-img--next"
             id="process-preview-img-next"

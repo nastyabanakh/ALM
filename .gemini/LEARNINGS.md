@@ -776,3 +776,116 @@
   - CMS Pages використовують той самий inline Const editor; source/alt обкладинки та gallery image мають один медіаблок. Константи зберігаються як токени і розв’язуються на preview/render; перед спільним Publish перевіряються також посилання у вже опублікованих CMS entries.
   - Хронологічна історія проєкту зберігається для reload і відновлюється лише при збігу published baseline, контенту, Media revision та CMS entry revisions. Квота браузерного storage не повинна приховано вимикати попередження про втрату історії.
   - Модальні вікна мають dialog semantics, фокус усередині, Escape/Tab і inert background. Статус та toast — live regions. Logout відкликає токен; невдалі входи мають throttle, а записи API перевіряють Origin/Fetch Metadata.
+
+- **2026-10-28 — Дизайн адмінки та UI Kit:**
+  - Вимога користувача: біла навігація в сайдбарі, вся робоча область адмінки темна. Не міняти на темний сайдбар зі світлим контентом.
+  - Єдині кольори та шкали оформлення: `public/admin/design-tokens.css`. Кольори компонентів задавати через семантичні `--ui-color-*`, типографіку та відступи — через відповідні токени. Не додавати локальні HEX/RGB або окремі випадкові gap/padding/font-size.
+  - Живий UI Kit `/admin/ui-kit.html` використовує спільні CSS і базові компоненти адмінки. При зміні компонента синхронізувати його приклад і стани. Принципи й дослідження: `docs/ADMIN_DESIGN_SYSTEM.md`.
+
+- **2026-10-28 — Глобальні Const та навігація структури:**
+  - Const — глобальні змінні всього сайту, спільні для всіх сторінок і CMS-записів; визначення живуть у project-level content.consts.
+  - Back і хлібні крихти залишаються в редакторі; canvas selection не відкриває CMS автоматично. Колекція відкривається явно з CMS-картки структури або через навігацію CMS.
+  - Крихти містять тільки видимі в редакторі секції та групи, без технічних DOM-wrapper. Кожен елемент — мінімалістична картка з легкою обводкою, Link має іконку ланцюжка. На canvas усі типи мають hover-іконку.
+  - Семантика: фіолетовий CMS, зелений компонент, оранжевий Const, синій прості елементи. UI Kit є джерелом істини дизайну; будь-які замовлені зміни дизайну одночасно вносяться в його приклади й спільні компоненти.
+
+- **2026-10-28 — Компактні CMS та групування Const:**
+  - Не додавати пояснення «Global variable · Updates connected fields across every page.». Увесь видимий неймінг — Const. Спочатку список, вибір відкриває окремі деталі з Back; не вибирати перший Const автоматично.
+  - CMS має лишатися лівою панеллю з canvas праворуч, включно зі списком колекцій і записів. Вкладені картки потребують видимого проміжку.
+  - Const групуються у мінімалістичні згортані секції, підтримують drag and drop між ними й порядок усередині. Організація — metadata editorSettings.constGroups у спільній чернетці/історії, а не локальне незалежне сховище або зміна ключів.
+  - Адреса сторінки центрується відносно всього toolbar canvas, а не лише вільного простору після page selector. Зміни включати в UI Kit.
+
+- **2026-10-28 — Єдина взаємодія списків та стабільне повернення в Editor:**
+  - Усі місця сортування мають використовувати CMS-item pointer-патерн через sortable.mjs, без альтернативного native HTML drag для Const. Collections і Pages групуються та сортуються тим самим browser, що Const; metadata окрема для кожної вкладки.
+  - Back — quiet-кнопка як Cancel: прозора до hover. Page-icon усередині dropdown, chevron не притиснутий до краю. Звичайні іконки інспектора нейтральні; спеціальні CMS/component/Const зберігають акцент.
+  - Override виділяє синім фоном саме назву параметра. Reset — rotate-ccw, Alt + click на назві також скидає значення. Зберігати приклади в UI Kit.
+  - Структура iframe може надійти раніше синхронізації S.page; після load/ready та повернення у редактор потрібен request/response handshake. CMS entry preview має іншу URL й при виході потребує відновлення editor preview. Не залишати нескінченний loading без retry/error.
+
+- **2026-10-28 — Одна hover-рамка й доступний інспектор:**
+  - Не поєднувати DOM-outline та overlay border на одному hover. Const має власника рамки, тому generic element-overlay для нього не показується.
+  - Тип Phone/Email уже визначає протокол: не показувати tel:/mailto: або |tel/|mailto у полі, зберігати семантику у source. Раніше valueControl ігнорував options.display — застосовувати display до видимого значення.
+  - Back: іконка на одному рівні з текстом, лівий край іконки вирівняний з контентом, прозорий стан і повноцінний hover. New group — після списку під лінією, не над ним і не зі зсувом вправо; спільні backAction/groupFooter у UI Kit.
+  - Не тримати всю app inert під час завантаження Media/status після готовності основних даних. Гідратація історії не повинна стирати дії, зроблені під час очікування; лише Undo/Redo чекають відновлення. Ідентична структура не має перемальовувати контрол під першим кліком.
+
+- **2026-10-28 — Повторне виправлення CMS drag і подвійної рамки:**
+  - Floating row переноситься в body й втрачає ancestor-specific CSS. Семантику data-kind та правило кольору задавати на самій картці; CMS має лишатися фіолетовим протягом drag.
+  - Попереднє приглушення DOM-outline через hover-класи було недостатнім. Прибрати дублюючі нативні hover-outline з preview-fields/static-text; selected/editing-outline приглушувати за фактично видимим frame через :has. Const frame має пріоритет над generic, а element/Const — над collection frame.
+
+- **2026-10-28 — Компактні інспектори та derived UI:**
+  - CMS Page/List показувати незмінною badge, без switch. Search — спершу іконка, поле за запитом. Collections/Pages поруч із заголовком, якщо поміщається.
+  - Group edit action — лише на hover/focus summary. Вирівнювати padding над/під роздільниками й резерв місця під дії. Усі select потребують відступу між стрілкою й краєм.
+  - Компонентний target не є окремим dropdown Open in: перемикач This tab/New tab входить у Link-групу. Back має однакову компенсацію верхнього й лівого padding.
+  - Обчислювані лічильники позначати data-cms-technical=reason і не виводити в editor, навіть за явних bindings. Starting Points counter тепер походить від active index та кількості карток, а не редагованих counterCurrent/counterTotal.
+  - Breadcrumbs показують CMS list та item. Loading — анімована іконка. Media tree має окреме згортання лише для папок із дітьми. Усі патерни зберігати в UI Kit.
+
+- **2026-10-28 — CMS item/list як батьківські рівні Editor:**
+  - Користувач уточнив: Back із кореневого елемента CMS-запису повинен показувати CMS item, наступний Back — CMS list, потім секцію, усе у вкладці Editor. Не пропускати ці рівні та не переводити breadcrumb у CMS workspace.
+  - Контекст record має бути незалежним від activeGroup, інакше після очищення activeGroup пропадає рівень запису. Вкладені parents обмежувати тим самим record.
+  - CMS item має окрему file-text іконку; list — database. Обидва використовують CMS purple. Приклад навігації й іконки оновлювати у UI Kit.
+
+- **2026-10-28 — Центрований loader із квадратів:**
+  - Loader має бути по центру робочої області, а не зверху. П’ять квадратів поступово заповнюються білим по одному, потім цикл повторюється. Використовувати один shared loading() із токенами та прикладом UI Kit; у section tabs не дублювати loader інспектора.
+
+- **2026-10-28 — Без резерву місця під group options:**
+  - На вимогу користувача group edit прихований через display:none, не opacity. На hover/focus з’являється й зсуває лічильник вліво. Не додавати spacer для Ungrouped.
+  - Старий summary>span:not(...) випадково давав spacer flex:1 і відсував count від правого краю; flex-розтягування задавати тільки явному const-group-name.
+  - Collections/Pages мав старий margin-bottom навіть усередині горизонтального header. У cms-index-heading обнуляти margin перемикача для вертикального вирівнювання.
+
+- **2026-10-28 — Спільні collection views та CRUD:**
+  - Вимога користувача: однакові CMS list/item у Editor та CMS. Item — на основі Editor, list — на основі CMS зі зміною порядку. New item у списку, Delete item всередині запису.
+  - Використовувати shared collection-views.mjs і спільний renderCollectionView, а не дві копії UI. Підтримувати спільні Undo/Redo/Publish; після reorder/delete remap indexed links і не використовувати старі DOM component descriptors для іншого запису.
+  - Після видалення останнього item порожня колекція має залишатися відновлюваною через збережений skeleton полів; шаблон не тримає видалений текст, Const або реальні media paths. Рендер секцій із прямим array[0] повинен витримувати порожній масив.
+
+- **2026-10-28 — Діалог редагування групи:**
+  - Лише Delete зліва та Save справа, однакові розміри. Delete потребує окремого підтвердження. Cancel-кнопку прибрати: скасування — клік поза діалогом/Escape. Реальний UI та UI Kit використовують спільний openGroupDialog.
+
+- **2026-10-28 — Enter/Escape та відсутність scroll під час canvas editing:**
+  - Після одного кліку текст можна редагувати через Enter; Escape виходить із режиму зі збереженням, Shift+Enter додає рядок. Double-click також входить у editing.
+  - Не відповідати на canvas-origin вибір поля прокруткою iframe: scroll:false має пройти через parent selectField і CMS_HIGHLIGHT_FIELD. Focus — preventScroll. Усередині editing не повторювати group selection на кожен клік.
+  - Використовувати спільний canvas-text-edit.js для статичних і bound полів та UI Kit. Const не розгортати в редагований літерал.
+
+- **2026-10-28 — CMS як простір даних без canvas:**
+  - Користувач змінив вимогу для CMS tab: після відкриття колекції canvas прихований; колекції зліва, таблиця item поруч, редактор справа. Обидва списки видимі під час редагування. Editor tab зберігає canvas.
+  - Прибрати перевантаження Blog articles: один header із назвою, badge й New item; пошук компактний, bulk controls лише після checkbox selection. Не дублювати Back та Save draft у редакторі item.
+  - Archive/Restore/Delete мусять бути реальними draft-операціями зі спільною історією та Publish, а не декоративними кнопками. Для inline архіву зберігати контент і linkSettings; для Posts/projects lifecycle перевіряти publishedRevision й застосовувати фізичні зміни тільки в project recovery transaction.
+  - Autosave CMS entry має серіалізувати запити й не замінювати свіжий текст відповіддю старого запиту. При переходах/публікації дочекатися черги. UI Kit використовує реальні компоненти manager.
+
+- **2026-10-28 — Хибний конфлікт CMS drafts changed під час Publish:**
+  - Snapshot ревізій збирався до відкриття confirmation modal; blur нормалізація slug/inline edits могла запустити autosave вже після snapshot. Додатково no-op save щоразу змінював draft revision.
+  - Спочатку busy modal, потім canvas flush acknowledgement, очікування pending normalizations і обох save queues, тоді project-status і confirmation. Root/media/entry expected revisions брати з одного snapshot.
+  - На сервері no-op save лишає ревізію лише після перевірки expectedRevision. Справжні конфлікти не ігнорувати, автоматично Publish не повторювати.
+
+29 October 2026 — CMS collection schema and rich articles: Collection layout is persisted in `editorSettings.collectionSchemas[scope]`, with stable field keys and group order. Custom values live on each item under `custom.*`; rich documents live under `richText[fieldKey]` with a plain-text mirror for existing integrations. Reference fields store target IDs, not copied titles. The project Publish validates configured values and references against active target records. Public article and collection renderers use allowlisted escaped rich blocks. The UI Kit demonstrates the collection designer, grouped form and block editor. Keep editing narrow lists visible but give article forms the main width in the CMS workspace. Per current user request, do not run tests without renewed instruction; syntax and compile parsing are permissible checks.
+
+- 2026-10-29 — Уточнення користувача: rich text має виглядати легше, як Notion. Не підсвічувати фон усього блоку на hover/focus; підсвічувати лише явне виділення. Форматування та зміна типу блоку з’являються в контекстному меню біля виділення. Показувати лише + і grip біля блоку. Floating toolbar має виходити за межі scroll-контейнера без обрізання. CMS item rows не обрізають назви й статуси: прибрати порожній grip-стовпець, дати назві перенесення, на вузьких панелях переносити status на наступний рядок.
+
+- **2026-10-29 — Rich text: Markdown та блокові взаємодії:** Порожній contenteditable може містити службовий BR; Backspace має видаляти порожній paragraph, включно з першим, залишаючи один доступний рядок у порожньому документі. `/` не забирає фокус із тексту; `+` одразу відкриває меню типів, без попереднього створення блока. Меню з пошуком, ↑/↓, Enter та Escape живе над scroll-карткою. Окремий нижній Add block не потрібний. Checkbox вирівнюється з першим рядком, link використовує спільний This tab / New tab. Markdown insertion перетворюється на allowlisted blocks/runs; reorder використовує sortable.mjs. CMS item rows мають власну округлену рамку. Оновлювати приклади UI Kit разом із реалізацією.
+
+- **2026-10-29 — Маршрути CMS pages та посилання біля slug:** Імпорт `cms-rich.css` має вести до `src/styles`: для `src/pages/blog/[slug].astro` та portfolio це `../../styles`, для вкладеного collections route — `../../../styles`. Помилковий зайвий `../` блокує SSR усієї сторінки. Під URL slug показувати клікабельний маршрут через спільний pageURLLink, оновлювати після введення і нормалізації slug; посилання відкривається в новій вкладці. Нові draft URL стають публічними після спільного Publish.
+
+- **2026-10-29 — Базова типографіка публічного сайту:** Fluid scale `--size-font` застосовувати тільки до html. Body має реальний розмір із text-m token, інакше неоформлений текст, toggle, code, caption та table успадковують приблизно 1px. CMS rich styles підключати глобально після reset/typography у BaseLayout; контейнер задає prose font-size і line-height, усі типи блоків мають успадкування, видимі list markers та нормальну геометрію порожніх таблиць. Не виправляти лише p: від цього інші блоки лишаються мікроскопічними.
+
+- **2026-10-29 — CMS editing: selection, images, slug and publication controls:** Шість крапок відкривають дії над усім вибором; click відрізняється від drag порогом активації у спільному sortable helper. Shift-click вибирає діапазон, Cmd/Ctrl-click перемикає окремі блоки, gutter drag вибирає групу; Duplicate/Delete застосовуються до всієї групи. Фото використовує спільний imageEditor: Upload/Library/Link/Settings; alt та caption у діалозі, не постійними інпутами. Справжнє завантаження йде через існуючу Media draft/history операцію, preview читає previewUrl. Нові CMS pages мають auto slug із title, ручний slug не перезаписується; резервувати published і draft URL в одній колекції, нормалізувати й перевіряти на сервері. Published — isPublished, а не archive і не наявність draft; тумблер стає ефективним лише через спільний Publish. CMS item/page має Close у правому верхньому куті й повертає до того самого списку. Групи форми розділяти відступами, без border для кожного поля/групи/повторного footer.
+
+- **2026-10-29 — Уточнення CMS status, groups і gallery:** Користувач скасував окремий Published та collapsible groups. Є лише Active / Archive; тумблер — окреме поле Status для page та inline item і той самий archive/restore у рядку. Використовувати наявний project lifecycle/history, не додавати незалежного publication state. Legacy isPublished:false трактувати як Archive; restore при спільному Publish узгоджує cmsState та legacy flag. Групи завжди видимі, section heading + тонка лінія лише між групами; rich text має власну рамку поля. Gallery sorter повинен враховувати X і Y, тримати Add tile останнім, а placeholder — у сітці; зображення не мають запускати native drag. Не передавати null у native append/replaceChildren: він стає видимим текстом; використовувати helper або фільтрацію.
+
+- **2026-10-29 — Кеш локальної адмінки:** Static public JS modules можуть залишатися старими у браузері навіть після оновлення сторінки. У local dev middleware для /admin і /cms примусово зберігати Cache-Control:no-store (static middleware може перезаписати header), прибирати conditional request validators. Після першого такого виправлення потрібне Cmd+Shift+R, щоб прибрати вже наявний кеш.
+
+- **2026-10-29 — Уточнення CMS UX: automatic slug, field types, metadata, date:** Прибрати Generate from title: зміна title сама оновлює slug, поки не було явного manual override; legacy mode без позначки теж auto при наступній зміні title. Active/Inactive показувати без додаткового Status label. Спільний switch реалізовано button role=switch із явно обмеженими track/thumb, без ненадійного input pseudo-element. Delete confirmations мають Cancel зліва та destructive action справа. Image dialog має спільні alt/caption для Upload/Library/Link і явний Save image; вибір джерела не прибирає metadata. Date/datetime використовують спільний calendar/time popover та коректне локальне відображення ISO UTC. Нове поле: спершу картки типів з іконками, потім name/group/typed default/help/required; без Hide in form, без disclosure для key. Key показувати приглушено; для нового field виводити з name, після збереження не змінювати. Collection list: filters по центру header, search поруч Edit, без зайвої лінії в table heading. Контракт для сайтів/агентів описано в docs/CMS_FIELD_ARCHITECTURE.md і додано до AGENTS.md.
+
+- **2026-10-29 — Hover handles, divider, permanent page fields and OG:** Не показувати rich block handles через focus-within тексту — тільки hovered row (keyboard focus самого handle лишається доступним). HR у flex container потребує flex:1/width:100%/height:0 і явної border-top, інакше стискається в крапку. Кожна CMS Page завжди має required primary title/name, slug, SEO title та SEO description; adapter відновлює їх для старих схем і забороняє видалення/зміну типу. Open Graph image optional у CMS Page та Page settings, зі спільною політикою 1200×630 PNG/JPG: замалі відхиляти, більші кадрувати без апскейлу; джерело не перезаписувати, результат іде в Media draft. Validate actual bytes/dimensions at shared Publish, include image/alt/width/height/type in public OG tags. Metadata не рендерити в тілі статті. Див. docs/CMS_FIELD_ARCHITECTURE.md.
+
+
+- CMS workspace continuity: keep selected mode/hash, collection, item identity, filter/search and pane scroll in versioned local navigation preferences; restore after drafts/history load. Never store content in that preference. Resolve page IDs and inline IDs (unique legacy title fallback), never reopen an unrelated record by stale index.
+- CMS status filters now live under the Filters icon, defaulting to All items. Visible Active/Archive tabs are superseded. The shared list separator starts at 360px and clamps to available space; preserve editor width and keyboard resizing.
+- Reference controls use compact selected chips plus a searchable popover of button options and checkmarks. Native radio controls inside stretched labels caused the giant-control layout; avoid that pattern. Keep filled examples for every field type in UI Kit.
+
+- Const availability alone must not color a text field or insert button orange; preserve orange for actual tokens/bindings. Insert Const uses the shared two-line `constPickerList` so long values never squeeze labels.
+- Datetime calendars expose Add time, off for new/date-only values and on for existing timestamps. Publish date accepts date-only strings too. Formatting toolbars follow their live range/block geometry during pane scroll and hide as anchors leave clipping bounds.
+
+- Fix CMS drag distortion by preserving computed row/descendant appearance before moving the live row out of its table. Ancestor-scoped sortable grid columns were lost in the body floating layer, squeezing names and relocating switches. Restore all original inline styles on drop/cancel; retain the same nodes and contents.
+- CMS gutters are equal: catalog→list and list→item both 8px; the resizing hit area lives inside the latter gutter.
+- Do not force `viteServer.restart()` after publishing JSON entries. Astro's own watcher already clears the route cache for content file changes. A container restart closes the live listener and a restart error can leave localhost unavailable. The CMS plugin now relies on normal Astro content/module invalidation, retaining `.cms` watch exclusions.
+
+- When leaving CMS, hide cmsListResizer explicitly. Its persisted hidden=false state introduced an extra Editor grid item, narrowing the inspector and pushing the preview into another row. Guard it in both workspaceView and non-CMS CSS.
+- Portfolio renders the shared homepage contact accordion only for selected stable IDs from its configured accordion references, in selection order; never fall back to every source item for an empty selection. Reuse the component in accordion-only mode and retain original source indices.
+- Duplicate item asks only for a new name, copies values/media/reference IDs, creates a new record ID and unique automatic page slug, copies owned inline link metadata, and stays within project draft/history/Publish. Keep the shared dialog in UI Kit.

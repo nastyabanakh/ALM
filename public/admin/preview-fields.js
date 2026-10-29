@@ -26,8 +26,10 @@
     } else element.textContent = String(value);
   };
   const bindElement = (element, resolved, mode = 'text', category = 'static') => {
+      if(element.closest('[data-cms-technical],[data-cms-ignore]'))return;
       bindings.push({ element, path: resolved, mode });
       const fieldId = () => `content:${resolved.join('.')}:${mode}`;
+      let editingPath=null;
       element.dataset.cmsFieldId = fieldId();
       if (mode !== 'text') element.addEventListener('dblclick', event => {
         const ref = constReference(lookup(resolved));
@@ -39,62 +41,17 @@
       if (mode === 'text') {
         element.classList.add('cms-editable');
         element.classList.add(`cms-${category}`);
-        element.title = 'Double-click to edit text';
-        element.addEventListener('dblclick', event => {
-          event.preventDefault();
-          event.stopPropagation();
-          const ref = constReference(lookup(resolved));
-          if (ref) {
-            event.stopImmediatePropagation();
-            parent.postMessage({ type: 'CMS_CONST_FOCUS', key: ref.key }, parentOrigin);
-            return;
-          }
-          if (/\{\{const\./.test(String(lookup(resolved) ?? ''))) {
-            parent.postMessage({ type: 'CMS_FIELD_FOCUS', id: fieldId() }, parentOrigin); return;
-          }
-          if (resolved.some(part => typeof part === 'number')) {
-            parent.postMessage({ type: 'CMS_FIELD_FOCUS', id: fieldId() }, parentOrigin); return;
-          }
-          parent.postMessage({ type: 'CMS_FIELD_FOCUS', id: fieldId() }, parentOrigin);
-          if (element.hasAttribute('data-cms-html-lines')) {
-            element.textContent = String(lookup(resolved) ?? '').replace(/<br\s*\/?\s*>/gi, '\n');
-            element.style.whiteSpace = 'pre-line';
-          }
-          element.contentEditable = 'plaintext-only';
-          element.classList.add('cms-editing');
-          element.focus();
-          const selection = getSelection();
-          const range = document.createRange();
-          range.selectNodeContents(element);
-          selection?.removeAllRanges();
-          selection?.addRange(range);
-        });
-        element.addEventListener('keydown', event => {
-          if (element.contentEditable === 'inherit') return;
-          if (event.key === 'Escape') {
-            event.preventDefault();
-            element.contentEditable = 'inherit';
-            element.classList.remove('cms-editing');
-            element.style.whiteSpace = '';
-            displayText(element, lookup(resolved) ?? '');
-            element.blur();
-          } else if (event.key === 'Enter' && !event.shiftKey) {
-            event.preventDefault();
-            element.blur();
-          }
-        });
-        element.addEventListener('blur', () => {
-          if (element.contentEditable === 'inherit') return;
-          const value = (element.textContent || '').trim().replace(/\n/g, element.hasAttribute('data-cms-html-lines') ? '<br />' : '\n');
-          element.contentEditable = 'inherit';
-          element.classList.remove('cms-editing');
-          if (element.hasAttribute('data-cms-html-lines')) {
-            element.style.whiteSpace = '';
-            displayText(element, value);
-          }
-          if (value !== String(lookup(resolved) ?? '')) {
-            parent.postMessage({ type: 'CMS_INLINE_EDIT', path: resolved, value }, parentOrigin);
-          }
+        window.CMSTextEditing.register(element,{
+          read:()=>lookup(resolved) ?? '',htmlLines:element.hasAttribute('data-cms-html-lines'),
+          notify:()=>{editingPath=[...resolved];parent.postMessage({type:'CMS_FIELD_FOCUS',id:fieldId(),scroll:false},parentOrigin);},
+          canEdit:()=>{
+            const value=String(lookup(resolved) ?? ''),ref=constReference(value);
+            if(ref){parent.postMessage({type:'CMS_CONST_FOCUS',key:ref.key},parentOrigin);return false;}
+            if(/\{\{const\./.test(value)){parent.postMessage({type:'CMS_FIELD_FOCUS',id:fieldId(),scroll:false},parentOrigin);return false;}
+            return true;
+          },
+          render:value=>displayText(element,value),
+          write:value=>parent.postMessage({type:'CMS_INLINE_EDIT',path:editingPath || [...resolved],value},parentOrigin)
         });
       }
   };
@@ -174,8 +131,10 @@
   // existing collection bindings, rather than from a second list in /admin.
   window.__cmsPreviewBindings = bindings;
 
+
+  if (!document.querySelector('link[data-cms-ui-tokens]')) { const tokens=document.createElement('link'); tokens.rel='stylesheet'; tokens.href='/admin/design-tokens.css'; tokens.dataset.cmsUiTokens=''; document.head.append(tokens); }
   const style = document.createElement('style');
-  style.textContent = '.cms-editable:hover{outline:2px dashed #3b82f6!important;outline-offset:3px;cursor:text!important}.cms-editable:empty::before{content:"Edit text";opacity:.35}.cms-editing{outline:3px solid #3b82f6!important;outline-offset:3px;cursor:text!important;user-select:text!important}.cms-component:hover,.cms-component.cms-editing{outline-color:#a855f7!important}.cms-record:hover,.cms-record.cms-editing{outline-color:#22c55e!important}.cms-field-selected{outline:3px solid #fff!important;outline-offset:4px!important}.cms-variable:hover{outline:none!important}.cms-variable::after{content:none!important}.cms-const-selected{outline:2px solid #b780ff!important;outline-offset:4px!important;background-color:#a15ce91c!important}';
+  style.textContent = '.cms-editable:hover{cursor:text!important}.cms-editable:empty::before{content:"Edit text";opacity:.35}.cms-editing{outline:3px solid var(--ui-preview-media)!important;outline-offset:3px;cursor:text!important;user-select:text!important}.cms-component:hover,.cms-component.cms-editing{outline-color:var(--ui-preview-component)!important}.cms-record:hover,.cms-record.cms-editing{outline-color:var(--ui-preview-collection)!important}.cms-field-selected{outline:3px solid var(--ui-color-element)!important;outline-offset:4px!important}.cms-variable:hover{outline:none!important}.cms-variable::after{content:none!important}.cms-const-selected{outline:2px solid var(--ui-color-const)!important;outline-offset:4px!important;background-color:var(--ui-color-const-soft)!important}';
   document.head.append(style);
 
   window.addEventListener('message', event => {

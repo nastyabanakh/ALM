@@ -17,10 +17,12 @@ interface AccordionItem {
 }
 
 const cmsContent = (Astro.props as any).content;
-const accordionItems: AccordionItem[] = cmsContent.sections.singlePointContact.accordionItems;
+const accordionOnly = Boolean(Astro.props.accordionOnly);
+const accordionItems: AccordionItem[] = Astro.props.items ?? cmsContent.sections.singlePointContact.accordionItems;
 ---
 
-<section data-cms-section="singlePointContact" class="spc-section" id="single-point-of-contact" aria-label="Single Point of Contact">
+<section data-cms-section="singlePointContact" class:list={["spc-section", {"spc-section--accordion-only":accordionOnly}]} id="single-point-of-contact" aria-label="Single Point of Contact">
+  {!accordionOnly && <>
   <!-- Top Sub-Header Bar (Figma Frame 433) -->
   <div class="spc-section__bar">
     <div class="spc-section__bar-left">
@@ -55,9 +57,10 @@ const accordionItems: AccordionItem[] = cmsContent.sections.singlePointContact.a
     {cmsContent.sections.singlePointContact.desc}
   </p>
 
+  </>}
   <!-- Accordion List (node 125:702 - 125:747) -->
   <div class="spc-section__accordion" data-cms-collection="sections.singlePointContact.accordionItems" data-cms-collection-label="Contact accordion" id="spc-accordion">
-    {accordionItems.map((item, index) => (
+    {accordionItems.map(item=>({item,index:cmsContent.sections.singlePointContact.accordionItems.findIndex(source=>source.id===item.id)})).map(({item,index}) => (
       <article
         class={`spc-accordion__item ${item.active ? 'spc-accordion__item--active' : ''}`}
         data-index={index}
@@ -730,4 +733,5 @@ const accordionItems: AccordionItem[] = cmsContent.sections.singlePointContact.a
       height: 160rem;
     }
   }
+  .spc-section--accordion-only{padding:0;min-height:0}
 </style>

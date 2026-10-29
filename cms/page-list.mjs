@@ -25,7 +25,7 @@ export async function listSitePages() {
     for (const entry of await listEntries(collection)) {
       if (!entry.published) continue;
       const { published } = await getEntry(collection, entry.id);
-      if (published?.slug) pages.push({ id: `${collection}:${entry.id}`, path: `/${prefix}/${published.slug}/`, title: published.title, kind: collection });
+      if (published?.slug && published.cmsState!=='archived' && published.isPublished!==false) pages.push({ id: `${collection}:${entry.id}`, path: `/${prefix}/${published.slug}/`, title: published.title, kind: collection });
     }
   }
   const home = await getEntry('pages', HOME_PAGE_ID);

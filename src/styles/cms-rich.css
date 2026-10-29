@@ -1,0 +1,163 @@
+/* Shared authored-content defaults. Loaded after the site reset by BaseLayout.
+   html owns fluid rem scaling; content inherits a real text size from its parent. */
+.cms-rich-content,
+.cms-extra-content {
+  min-width: 0;
+  font-family: var(--font-body);
+  font-size: var(--font-size-prose);
+  font-weight: var(--text-m-font-weight);
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.cms-rich-content > *,
+.cms-extra-content > * {
+  margin-top: var(--gap-p);
+  margin-bottom: var(--gap-p);
+}
+.cms-rich-content > :first-child,
+.cms-extra-content > :first-child { margin-top: 0; }
+.cms-rich-content > :last-child,
+.cms-extra-content > :last-child { margin-bottom: 0; }
+
+.cms-rich-content :is(p, li, blockquote, summary, td, th, details) {
+  font-size: inherit;
+  line-height: inherit;
+}
+.cms-rich-content :is(h1, h2, h3, h4, h5, h6) {
+  margin-top: var(--gap-r);
+  margin-bottom: var(--gap-s);
+  text-transform: none;
+}
+.cms-rich-content :is(h4, h5, h6) { font-size: inherit; }
+.cms-rich-content p { white-space: pre-line; }
+.cms-rich-content a,
+.cms-extra-content a {
+  text-decoration: underline;
+  text-decoration-thickness: 1rem;
+  text-underline-offset: .18em;
+}
+.cms-rich-content a:hover,
+.cms-extra-content a:hover { color: var(--color-accent); }
+.cms-rich-content a:focus-visible,
+.cms-extra-content a:focus-visible {
+  outline: 2rem solid var(--color-accent);
+  outline-offset: var(--gap-3xs);
+}
+
+.cms-rich-content :is(ul, ol) {
+  padding-left: var(--gap-p);
+  list-style-position: outside;
+}
+.cms-rich-content ul { list-style-type: disc; }
+.cms-rich-content ol { list-style-type: decimal; }
+.cms-rich-content li + li { margin-top: var(--gap-2xs); }
+.cms-rich-content blockquote {
+  margin-left: 0;
+  margin-right: 0;
+  padding-left: var(--gap-s);
+  border-left: 2rem solid var(--color-text-subtle);
+}
+.cms-rich-content .cms-callout {
+  padding: var(--gap-s);
+  border-radius: var(--radius-m);
+  background-color: var(--bg-glass);
+}
+.cms-rich-content code {
+  font-size: .9em;
+  padding: var(--gap-3xs);
+  border-radius: var(--radius-xs);
+  background-color: var(--bg-glass);
+}
+.cms-rich-content pre {
+  max-width: 100%;
+  overflow-x: auto;
+  padding: var(--gap-s);
+  border: 1rem solid var(--color-border-subtle);
+  border-radius: var(--radius-m);
+  background-color: var(--bg-dark);
+  font-size: inherit;
+  line-height: inherit;
+  white-space: pre;
+}
+.cms-rich-content pre code {
+  padding: 0;
+  background: none;
+  font-size: inherit;
+}
+.cms-rich-content hr {
+  border: 0;
+  border-top: 1rem solid var(--color-border-subtle);
+}
+
+.cms-rich-content :is(img, video) {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius-m);
+}
+.cms-rich-content figure { margin-left: 0; margin-right: 0; }
+.cms-rich-content figcaption {
+  margin-top: var(--gap-2xs);
+  font-size: var(--font-size-text-m);
+  color: var(--color-text-muted);
+}
+.cms-rich-content details > summary {
+  cursor: pointer;
+  list-style: disclosure-closed;
+}
+.cms-rich-content details[open] > summary { list-style: disclosure-open; }
+.cms-rich-content details > p {
+  margin-top: var(--gap-2xs);
+  padding-left: var(--gap-p);
+}
+.cms-rich-content table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+  border-collapse: collapse;
+  font-size: inherit;
+  line-height: inherit;
+}
+.cms-rich-content :is(td, th) {
+  min-width: 100rem;
+  height: var(--gap-t);
+  padding: var(--gap-2xs);
+  border: 1rem solid var(--color-border-subtle);
+  text-align: left;
+  vertical-align: top;
+}
+.cms-rich-content [data-indent='1'] { margin-left: var(--gap-p); }
+.cms-rich-content [data-indent='2'] { margin-left: calc(var(--gap-p) * 2); }
+.cms-rich-content [data-indent='3'] { margin-left: calc(var(--gap-p) * 3); }
+.cms-rich-content .cms-todo {
+  display: flex;
+  align-items: flex-start;
+  column-gap: var(--gap-2xs);
+}
+.cms-rich-content .cms-todo input {
+  flex: none;
+  width: 1em;
+  height: 1em;
+  margin: 0;
+  margin-top: .3em;
+  accent-color: var(--color-accent);
+}
+.cms-related {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap-2xs);
+}
+.cms-related :is(a, span) {
+  display: inline-block;
+  padding: var(--gap-2xs);
+  border: 1rem solid var(--color-border-subtle);
+  border-radius: var(--radius-s);
+}
+.cms-field-label {
+  margin-bottom: var(--gap-2xs);
+  font-size: var(--font-size-text-l);
+}
+.cms-extra-content { margin-top: var(--gap-r); }
+
+.cms-todo-text { flex: 1; min-width: 0; }

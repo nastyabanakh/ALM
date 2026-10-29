@@ -146,3 +146,19 @@ h3, .h3 {
 .text-opacity-dim {
   opacity: 0.3;
 }
+
+
+/* Semantic fallbacks for authored content without typography utility classes. */
+h4, .h4,
+h5, .h5,
+h6, .h6 {
+  font-family: var(--font-heading);
+  font-weight: var(--h3-font-weight);
+  line-height: var(--h3-line-height);
+  letter-spacing: var(--h3-letter-spacing);
+  color: inherit;
+}
+h4, .h4 { font-size: var(--font-size-text-l); }
+h5, .h5 { font-size: var(--font-size-text-m); }
+h6, .h6 { font-size: var(--font-size-text-s); }
+pre, code, kbd, samp { font-family: var(--font-mono); }
