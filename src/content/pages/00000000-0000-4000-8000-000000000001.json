@@ -891,7 +891,7 @@
         {
           "id": "step-1",
           "num": "01.",
-          "title": "Still looking for property",
+          "title": "Still looking for a property",
           "image": "/assets/images/property-search.webp",
           "note": "We can help evaluate potential properties before you buy, so you can make an informed decision about where to build."
         },
@@ -905,7 +905,7 @@
         {
           "id": "step-4",
           "num": "04.",
-          "title": "You have plans or a reference",
+          "title": "You have plans or references",
           "image": "/assets/images/property-plans.webp",
           "note": "Bring your existing sketches, architectural drafts, or inspirational references for early feasibility review."
         }

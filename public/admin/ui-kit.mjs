@@ -37,7 +37,7 @@ sections.push(section('canvas-toolbar','Canvas toolbar','The page URL is centere
     h('div',{class:'pv-address'},h('div',{class:'page-select'},icon('file'),h('select',{'aria-label':'Demo page'},h('option',null,'Home · /')),h('span',{class:'ui-icon page-select-chevron',style:"--icon:url('/admin/icons/chevron-down.svg')"}))),
     h('code',{class:'page-url'},'http://127.0.0.1:3001/'),
     h('div',{class:'pv-bar'},...['rotate-cw','external-link','monitor'].map(name=>h('button',{type:'button',class:'icon-btn','aria-label':name},icon(name))))))),
-  panel('Nested element spacing',h('div',{class:'nested-elements'},h('p',{class:'cap'},'Inside this element'),elementCard({label:'Text',value:'01.'}),elementCard({label:'Heading',value:'Still looking for property'}),elementCard({label:'Circle arrow',type:'component',value:'Select: Still looking for property'})))));
+  panel('Nested element spacing',h('div',{class:'nested-elements'},h('p',{class:'cap'},'Inside this element'),elementCard({label:'Text',value:'01.'}),elementCard({label:'Heading',value:'Still looking for a property'}),elementCard({label:'Circle arrow',type:'component',value:'Select: Still looking for a property'})))));
 const tokenOutput=h('pre',{class:'kit-output'},'Hello {{const.brand}}');
 const consts={brand:{label:'Brand',value:'ALM Studio',type:'text'}};
 const chipEditor=inlineConstEditor({value:'Hello {{const.brand}}',label:'Inline Const example',multiline:false,consts:()=>consts,onChange:value=>tokenOutput.textContent=value,onFocus:()=>{},onEditConst:()=>toast('Brand · ALM Studio')});
@@ -124,15 +124,15 @@ sections.push(section('inspector-patterns','Inspector patterns','Read-only CMS t
   h('div',{class:'kit-grid'},panel('Collection header',h('div',{class:'cms-index-heading'},h('h3',null,'Collections'),tabsDemo(['Collections','Pages'])),row(badge('CMS List','cms'),badge('CMS Page','cms')),h('div',{class:'list-toolbar'},h('span',{class:'hint'},'4 records'),compactSearch(searchDemo))),
   panel('Link group',field('Link',input({value:'#contact'})),targetDemo),
   panel('Media folders',folderTree({paths:['/assets','/assets/images','/assets/images/projects','/assets/images/team','/assets/video'],selected:'/assets/images',onSelect:path=>toast(path),collapsed:new Set()})),panel('Loading · five squares',h('div',{class:'kit-loader-preview'},loading()))),
-  panel('CMS breadcrumbs',breadcrumbs([{label:'Starting Points',onClick:()=>toast('Section')},{label:'Starting Points',kind:'cms',onClick:()=>toast('CMS List')},{label:'Still looking for property',kind:'cms-item',onClick:()=>toast('CMS item')},{label:'Heading',onClick:()=>toast('Element')}]))));
+  panel('CMS breadcrumbs',breadcrumbs([{label:'Starting Points',onClick:()=>toast('Section')},{label:'Starting Points',kind:'cms',onClick:()=>toast('CMS List')},{label:'Still looking for a property',kind:'cms-item',onClick:()=>toast('CMS item')},{label:'Heading',onClick:()=>toast('Element')}]))));
 const editorDrilldown=h('div',{class:'kit-panel'});let editorDemoLevel=3;
-const editorDemoNodes=[{label:'Starting Points',kind:'text'},{label:'Starting Points',kind:'cms'},{label:'Still looking for property',kind:'cms-item'},{label:'Heading',kind:'text'}];
+const editorDemoNodes=[{label:'Starting Points',kind:'text'},{label:'Starting Points',kind:'cms'},{label:'Still looking for a property',kind:'cms-item'},{label:'Heading',kind:'text'}];
 function drawEditorDrilldown(){
   const nodes=editorDemoNodes.slice(0,editorDemoLevel+1).map((node,index)=>({...node,onClick:()=>{editorDemoLevel=index;drawEditorDrilldown();}}));
   const next=editorDemoNodes[editorDemoLevel+1];
   editorDrilldown.replaceChildren(editorDemoLevel?backAction(editorDemoNodes[editorDemoLevel-1].label,()=>{editorDemoLevel--;drawEditorDrilldown();}):null,
     h('h3',null,editorDemoNodes[editorDemoLevel].label),
-    next?elementCard({label:editorDemoLevel===0?'CMS List':editorDemoLevel===1?'CMS item':'Heading',value:next.label,type:next.kind,onClick:()=>{editorDemoLevel++;drawEditorDrilldown();}}):field('Text',input({value:'Still looking for property'})),breadcrumbs(nodes));
+    next?elementCard({label:editorDemoLevel===0?'CMS List':editorDemoLevel===1?'CMS item':'Heading',value:next.label,type:next.kind,onClick:()=>{editorDemoLevel++;drawEditorDrilldown();}}):field('Text',input({value:'Still looking for a property'})),breadcrumbs(nodes));
 }
 drawEditorDrilldown();
 sections.push(section('editor-cms-navigation','CMS parents in Editor','Back follows element → CMS item → CMS list → section, within the Editor tab. A list uses the database icon; an item uses file-text. Both stay purple.',editorDrilldown));

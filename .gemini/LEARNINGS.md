@@ -10,6 +10,11 @@
 - **Компоненти:** SFC — стилі виключно всередині блоку `<style>` у відповідному `.astro` файлі.
 
 ## 📝 Журнал виправлень (Corrections & Learnings)
+- **2026-11-04 — Текстові формулювання карток у секції 01.5 (Starting Points):**
+  - Оновлено назву кроку 01: «Still looking for property» → «Still looking for a property».
+  - Оновлено назву кроку 04: «You have plans or a reference» → «You have plans or references».
+  - Збережено синхронізацію з UI Kit у `public/admin/ui-kit.mjs`.
+
 - **2026-11-04 — Балансування вертикальних відступів у секції 12 (Built & Managed Locally):**
   - **Зменшення відступу перед «Our background»:** Замість `justify-content: space-between; min-height: 489rem;`, яка штучно скидала весь залишок висоти (~120rem) у проміжок перед «Our background», для правої колонки `.local-management__details` встановлено `justify-content: flex-start; row-gap: 56rem;`. Відступ скорочено більш ніж удвічі до збалансованого розміру `56rem`.
   - **Збільшення відступів між текстом і лініями:** Відступ між описами принципів та їхніми розділювачами `.local-management__principle-desc-wrap` збільшено з `24rem` до `32rem;`, а проміжок між картками принципів `.local-management__principles` — з `32rem` до `36rem;`, завдяки чому принципи отримали більше простору і дихають набагато природніше.
