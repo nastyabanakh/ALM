@@ -228,8 +228,8 @@ const cmsContent = (Astro.props as any).content;
     min-width: 0;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
-    row-gap: 56rem;
+    justify-content: space-between;
+    height: 489rem;
   }
 
   .local-management__principles {
@@ -350,6 +350,8 @@ const cmsContent = (Astro.props as any).content;
     }
 
     .local-management__details {
+      height: auto;
+      justify-content: flex-start;
       row-gap: var(--gap-l);
     }
 
