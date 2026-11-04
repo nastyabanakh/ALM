@@ -596,7 +596,8 @@ const accordionItems: AccordionItem[] = Astro.props.items ?? cmsContent.sections
     line-height: 1.4;
     color: #FCFAEF;
     opacity: 0.8;
-    max-width: 260rem;
+    width: 342rem;
+    max-width: 100%;
     margin-top: 0;
     margin-right: 0;
     margin-bottom: 0;
@@ -753,6 +754,11 @@ const accordionItems: AccordionItem[] = Astro.props.items ?? cmsContent.sections
 
     .spc-accordion__expanded-title {
       font-size: 32rem;
+    }
+
+    .spc-accordion__expanded-desc {
+      width: 100%;
+      max-width: 100%;
     }
 
     .spc-accordion__thumb-box {

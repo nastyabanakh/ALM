@@ -10,6 +10,16 @@
 - **Компоненти:** SFC — стилі виключно всередині блоку `<style>` у відповідному `.astro` файлі.
 
 ## 📝 Журнал виправлень (Corrections & Learnings)
+- **2026-11-04 — Коригування кількості рядків в акордеоні секції 04 та заголовку секції 06:**
+  - **Секція 04 (Single Point of Contact / Accordion — Фото 1, 2, 3, 4):**
+    - Для описів карток акордеону `.spc-accordion__expanded-desc` ширину збільшено з `260rem` до точного значення з Figma node `172:315` — `width: 342rem; max-width: 100%;`.
+    - Завдяки цьому тексти всіх трьох карток («Plans & Engineering», «Permits and City Revision», «Construction») тепер автоматично та строго переносяться рівно в 4 рядки за макетом та фото 2/3/4 замість переповнення у 5 рядків.
+    - Для мобільних екранів (<480px) додано `width: 100%; max-width: 100%;` для збереження адаптивності.
+  - **Секція 06 (Budget, Selections & Changes — Фото 5):**
+    - Лівий контейнер `.budget-selections__left` розширено з `413rem` до точного розміру з Figma node `172:382`/`172:424` — `width: 497rem;`.
+    - Обгортку кнопки `.budget-selections__btn-wrap` налаштовано на `width: 472rem; max-width: 100%;` за Figma node `172:384`.
+    - Завдяки розширенню до `497rem` заголовок «A PERSONALIZED / APPROACH TO EVERY / HOME.» тепер рендериться строго у 3 рядки, а рядок «APPROACH TO EVERY» більше не розривається.
+
 - **2026-11-04 — Оновлення секції 02 (New Construction) та секції 03 (Property Review):**
   - **Секція 02 (New Construction) Частина 1:**
     - У галерею правої колонки додано 3-тє фото (`/assets/images/house-composite.webp`) згідно з Figma node `172:243` (3 фото: велике 266×308rem та два компактних 147×149rem з `column-gap: 10rem` та `align-items: flex-end`).
