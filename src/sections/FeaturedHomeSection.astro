@@ -753,6 +753,20 @@ const cmsContent = (Astro.props as any).content;
     width: 100%;
   }
 
+  .featured-home-section__card-btn :global(.btn-composite__main),
+  .featured-home-section__card-btn :global(.btn-composite__connector),
+  .featured-home-section__card-btn :global(.btn-composite__icon-box) {
+    background-color: #ffffff;
+  }
+
+  .featured-home-section__card-btn :global(.btn-composite__label) {
+    color: #131313;
+  }
+
+  .featured-home-section__card-btn :global(.btn-composite__icon-box) {
+    color: #131313;
+  }
+
   /* Vertical Divider */
   .featured-home-section__v-divider {
     width: 1rem;
