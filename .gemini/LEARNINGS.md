@@ -10,6 +10,10 @@
 - **Компоненти:** SFC — стилі виключно всередині блоку `<style>` у відповідному `.astro` файлі.
 
 ## 📝 Журнал виправлень (Corrections & Learnings)
+- **2026-11-04 — Оптимізація опису кроку 06 (Welcome Home) у секції 07 (Process) строго у 2 рядки:**
+  - **Скорочення та збільшення ширини:** Текст опису кроку 06 скорочено зі 171 до 118 символів зі збереженням повного змісту («We conduct a final walkthrough together, ensure every detail meets our standards, and deliver your move-in ready home.»).
+  - Для `.process-step__desc-box` ширину збільшено з `340rem` до `390rem; max-width: 100%;`, завдяки чому опис кроку 06 (як і всі інші 5 кроків процесу) тепер займає рівно 2 збалансовані рядки без переповнення.
+
 - **2026-11-04 — Текстове вирівнювання justify та геометрія секції 02 (New Construction):**
   - **Вирівнювання justify за Figma:** Для обох колонок тексту розповіді `.construction__story-col` встановлено `text-align: justify; text-justify: inter-word;`, ширини колонок зафіксовано за Figma node `340:1301` (`266rem` ліва та `298rem` права при `column-gap: 27rem`), а саб-хедер оновлено на `Custom Single-Family New Construction` з розривом підзаголовка на 2 рядки (`width: 286rem`).
   - **Зменшення проміжку між блоками та вирівнювання кнопки за нижнім краєм фото:** Проміжний відступ між галереєю та другою частиною `.construction__content` зменшено з `120rem` до `64rem`. Для `.construction__part2-wrap` встановлено `min-height: calc(100vh - 30rem); justify-content: space-between; row-gap: 64rem;`, а нижній відступ блоку скинуто до `0`. Завдяки цьому блок автоматично заповнює екран, а кнопка CTA («DISCUSS YOUR PROJECT») на десктопі розташовується строго на одному рівні з нижнім краєм фотографії зліва.
