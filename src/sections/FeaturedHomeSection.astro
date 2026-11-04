@@ -149,8 +149,8 @@ const cmsContent = (Astro.props as any).content;
               <!-- Content Column (Frame 503, 311rem) -->
               <div class="featured-home-section__card-content">
                 <div class="featured-home-section__card-copy">
-                  <h3 class="featured-home-section__card-title">{stage.title}</h3>
-                  <p class="featured-home-section__card-desc">{stage.desc}</p>
+                  <h3 class="featured-home-section__card-title" data-cms-path={`sections.featuredHome.stages.${idx}.title`}>{stage.title}</h3>
+                  <p class="featured-home-section__card-desc" data-cms-path={`sections.featuredHome.stages.${idx}.desc`}>{stage.desc}</p>
                 </div>
 
                 <div class="featured-home-section__card-btn">

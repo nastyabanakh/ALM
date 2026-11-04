@@ -10,6 +10,10 @@
 - **Компоненти:** SFC — стилі виключно всередині блоку `<style>` у відповідному `.astro` файлі.
 
 ## 📝 Журнал виправлень (Corrections & Learnings)
+- **2026-11-04 — Оновлення заголовка 3-ї картки у Project Breakdown (Section 09 Featured Home):**
+  - **Виправлення:** У `src/content/pages/00000000-0000-4000-8000-000000000001.json` заголовок 3-ї картки (`stage-03`) замінено з «Exterior Craftsmanship & Protection» на **«Built for the Elements»**.
+  - Додано CMS-прив'язку `data-cms-path={`sections.featuredHome.stages.${idx}.title`}` для повної підтримки редагування через CMS.
+
 - **2026-11-04 — Фіксація чистого відступу 120px між секціями 12 та 13 (Builder Accountability):**
   - **Проблема:** Через `padding-bottom: 60rem` у `.local-management__container` разом із `.builder-accountability__top-spacer` (`120rem`) сумарний відступ між контентом секції 12 та підзаголовком секції 13 становив 180px замість передбачених дизайнером 120px.
   - **Виправлення:** Для `.local-management__container` скинуто нижній відступ `padding-bottom: 0;`. Відступ між секцією 12 та саб-хедером 13 тепер задається виключно системним спейсером `120rem` (Figma `Space/S` node `207:934` = 120px).
