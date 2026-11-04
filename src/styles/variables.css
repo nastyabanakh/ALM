@@ -8,23 +8,23 @@
      1. COLOR TOKENS (text, icons, borders, accents)
      ---------------------------------------------------------- */
   --color-brand:         #131313;
-  --color-white:         #ffffff;
+  --color-white:         #FCFAEF;
   --color-dark:          #131313;
   --color-accent:        #23996d;
-  --color-border:        rgba(255, 255, 255, 0.1);
-  --color-border-subtle: rgba(255, 255, 255, 0.2);
-  --color-text-subtle:   rgba(255, 255, 255, 0.5);
-  --color-text-muted:    rgba(255, 255, 255, 0.6);
-  --color-text-dim:      rgba(255, 255, 255, 0.3);
+  --color-border:        rgba(252, 250, 239, 0.1);
+  --color-border-subtle: rgba(252, 250, 239, 0.2);
+  --color-text-subtle:   rgba(252, 250, 239, 0.5);
+  --color-text-muted:    rgba(252, 250, 239, 0.6);
+  --color-text-dim:      rgba(252, 250, 239, 0.3);
 
   /* ----------------------------------------------------------
      2. BACKGROUND TOKENS
      ---------------------------------------------------------- */
   --bg-brand:            #131313;
   --bg-dark:             #131313;
-  --bg-white:            #ffffff;
-  --bg-glass:            rgba(255, 255, 255, 0.07);
-  --bg-glass-phone:      rgba(255, 255, 255, 0.1);
+  --bg-white:            #FCFAEF;
+  --bg-glass:            rgba(252, 250, 239, 0.07);
+  --bg-glass-phone:      rgba(252, 250, 239, 0.1);
   --bg-card-active:      linear-gradient(90deg, rgba(35, 153, 109, 0) 0%, rgba(35, 153, 109, 0.5) 100%);
   --bg-pattern-dark:     url('/assets/patterns/dark-pattern.svg');
 

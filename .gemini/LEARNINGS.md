@@ -10,6 +10,10 @@
 - **Компоненти:** SFC — стилі виключно всередині блоку `<style>` у відповідному `.astro` файлі.
 
 ## 📝 Журнал виправлень (Corrections & Learnings)
+- **2026-11-04 — Заміна базового білого кольору на кремовий відтінок #FCFAEF:**
+  - **Коригування:** Оновлено глобальні токени `--color-white: #FCFAEF;` та `--bg-white: #FCFAEF;` у `src/styles/variables.css`, а також усі напівпрозорі похідні `rgba(252, 250, 239, ...)`.
+  - **Компоненти та секції:** Усі прямі входження `#ffffff`, `fill="white"`, `stroke="white"` та відповідні фони у світлих секціях (Finished Standard, Single Point of Contact, Budget & Selections, The Completed Home, Built & Managed Locally, Footer) та кнопках замінено на колір `#FCFAEF`.
+
 - **2026-11-04 — Оновлення копірайту та структури карток секцій 04, 05, 06, 07, 09, 11, 12:**
   - **Секція 04 (Single Point of Contact):** Оновлено заголовок на «FROM FIRST MEETING TO / CERTIFICATE OF OCCUPANCY.» зі зменшенням розміру шрифту до `68rem` (desktop) / `26rem` (mobile) для гармонійного розміщення у 2 рядки без переповнення; підзаголовок розширено описом повного циклу управління проєктом; оновлено описи та назви трьох карток акордеону (Plans & Engineering, Permits and City Revision, Construction).
   - **Секція 05 (The Finished Standard):** Заголовок змінено на «Luxury Is in Every Detail», оновлено підзаголовок та 4 картки персоналізації (Daily Layout, Thoughtful Interiors, Refined Finishes, Outdoor Living).
