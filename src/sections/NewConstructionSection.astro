@@ -363,7 +363,7 @@ const cmsContent = (Astro.props as any).content;
   .construction__content {
     display: flex;
     flex-direction: column;
-    row-gap: 120rem;
+    row-gap: 64rem;
     padding-top: 32rem;
     padding-right: 40rem;
     padding-bottom: 0;
@@ -451,14 +451,25 @@ const cmsContent = (Astro.props as any).content;
   }
 
   .construction__story-col {
-    flex: 1;
     line-height: 1.4;
     letter-spacing: 0;
+    text-align: justify;
+    text-justify: inter-word;
     word-break: break-word;
     margin-top: 0;
     margin-right: 0;
     margin-bottom: 0;
     margin-left: 0;
+  }
+
+  .construction__story-col:first-child {
+    width: 266rem;
+    flex-shrink: 0;
+  }
+
+  .construction__story-col:last-child {
+    width: 298rem;
+    flex-shrink: 0;
   }
 
   .construction__subhead-row {
@@ -478,7 +489,8 @@ const cmsContent = (Astro.props as any).content;
     letter-spacing: 0;
     color: var(--color-white);
     text-transform: uppercase;
-    max-width: 320rem;
+    width: 286rem;
+    max-width: 100%;
     margin-top: 0;
     margin-right: 0;
     margin-bottom: 0;
@@ -546,14 +558,16 @@ const cmsContent = (Astro.props as any).content;
     width: 100%;
     padding-top: 0;
     padding-right: 0;
-    padding-bottom: 80rem;
+    padding-bottom: 0;
     padding-left: 0;
   }
 
   .construction__part2-wrap {
     display: flex;
     flex-direction: column;
-    row-gap: 36rem;
+    justify-content: space-between;
+    min-height: calc(100vh - 30rem);
+    row-gap: 64rem;
     width: 100%;
     max-width: 594rem;
     align-items: flex-end;
@@ -725,6 +739,12 @@ const cmsContent = (Astro.props as any).content;
       row-gap: var(--gap-xs);
     }
 
+    .construction__story-col:first-child,
+    .construction__story-col:last-child {
+      width: 100%;
+      text-align: left;
+    }
+
     .construction__desc {
       width: 100%;
     }
@@ -763,6 +783,8 @@ const cmsContent = (Astro.props as any).content;
     .construction__part2-wrap {
       width: 100%;
       max-width: 100%;
+      min-height: auto;
+      row-gap: var(--gap-l);
       align-items: flex-start;
     }
 

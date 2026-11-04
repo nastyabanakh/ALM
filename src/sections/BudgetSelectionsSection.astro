@@ -57,7 +57,7 @@ const choices: ChoiceItem[] = cmsContent.sections.budgetSelections.choices;
             <div class="budget-selections__item-content">
               <div class="budget-selections__item-copy">
                 <h3 class="budget-selections__item-title" data-cms-path={`sections.budgetSelections.choices.${idx}.title`}>{item.title}</h3>
-                <p class="budget-selections__item-desc" data-cms-path={`sections.budgetSelections.choices.${idx}.desc`}>{item.desc}</p>
+                <p class="budget-selections__item-desc" data-cms-path={`sections.budgetSelections.choices.${idx}.desc`} set:html={item.desc} />
               </div>
               <span class="budget-selections__item-bullet" aria-hidden="true"></span>
             </div>

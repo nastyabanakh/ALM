@@ -440,15 +440,15 @@
         "choices": [
           {
             "title": "Real-Project Pricing",
-            "desc": "Through in-depth consultation and detailed project review, we explore different design and building options to tailor a transparent, accurate proposal for your home."
+            "desc": "Through detailed consultation and project<br />review, we explore options to tailor an<br />accurate proposal for your home."
           },
           {
             "title": "Early Selections",
-            "desc": "Cabinetry, tile, fixtures, and appliances are chosen early to keep procurement on schedule and budget."
+            "desc": "Cabinetry, tile, fixtures, and appliances<br />are chosen early to keep procurement<br />on schedule and budget."
           },
           {
             "title": "Approved Changes Only",
-            "desc": "Any design or scope update is priced, timeline-checked, and approved in writing before work begins."
+            "desc": "Any design or scope update is priced,<br />timeline-checked, and approved in<br />writing before work begins."
           }
         ],
         "ctaText": "SCHEDULE A CONSULTATION",
@@ -652,7 +652,7 @@
         "photoAlt": "Custom luxury home architecture by ALEM - Left View",
         "photoSrc2": "/assets/images/hero-house-right.webp",
         "photoAlt2": "Custom luxury home architecture by ALEM - Right View",
-        "barTitle": "About ALEM Homes",
+        "barTitle": "Custom Single-Family New Construction",
         "barNum": "02//",
         "title": "BUILT ON EXPERIENCE.<br />INSPIRED BY LIFE.",
         "desc": "Our journey began with years of experience in the construction industry and a shared passion for creating beautiful, thoughtfully built homes. As a husband-and-wife team, we've always believed that a home is more than just a house.",
