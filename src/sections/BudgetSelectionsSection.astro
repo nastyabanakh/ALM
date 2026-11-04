@@ -38,12 +38,8 @@ const choices: ChoiceItem[] = cmsContent.sections.budgetSelections.choices;
     <!-- Left Column (Heading + Description + ButtonComposite) -->
     <div class="budget-selections__left">
       <div class="budget-selections__copy">
-        <h2 class="budget-selections__title" data-cms-path="sections.budgetSelections.title">
-          {cmsContent.sections.budgetSelections.title}
-        </h2>
-        <p class="budget-selections__desc" data-cms-path="sections.budgetSelections.desc">
-          {cmsContent.sections.budgetSelections.desc}
-        </p>
+        <h2 class="budget-selections__title" data-cms-path="sections.budgetSelections.title" set:html={cmsContent.sections.budgetSelections.title} />
+        <p class="budget-selections__desc" data-cms-path="sections.budgetSelections.desc" set:html={cmsContent.sections.budgetSelections.desc} />
       </div>
 
       <div class="budget-selections__btn-wrap">
@@ -220,8 +216,8 @@ const choices: ChoiceItem[] = cmsContent.sections.budgetSelections.choices;
     margin-right: 0;
     margin-bottom: 0;
     margin-left: 0;
-    width: 265rem;
-    max-width: 100%;
+    max-width: 360rem;
+    width: 100%;
   }
 
   .budget-selections__btn-wrap {

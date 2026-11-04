@@ -102,9 +102,7 @@ const cmsContent = (Astro.props as any).content;
           {hero.badgeText}
         </span>
       </div>
-      <h1 class="hero__title h1 text-color-white">
-        {hero.title}
-      </h1>
+      <h1 class="hero__title h1 text-color-white" set:html={hero.title} />
     </div>
 
     <!-- Glassmorphic About Card (Figma Frame 361 — 385x261px) -->
@@ -114,7 +112,7 @@ const cmsContent = (Astro.props as any).content;
       buttonText={hero.ctaText}
       buttonHref={hero.ctaHref}
       cmsPaths={{ tag: 'hero.aboutTag', text: 'hero.aboutText', buttonText: 'hero.ctaText', buttonHref: 'hero.ctaHref' }}
-      ariaLabel="About ALM summary"
+      ariaLabel="About ALEM summary"
     />
   </div>
 </section>

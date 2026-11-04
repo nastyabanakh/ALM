@@ -67,12 +67,22 @@ const cmsContent = (Astro.props as any).content;
 
             <!-- Main Heading & Paragraph (Frame 518) -->
             <div class="construction__heading-group">
-              <h2 class="construction__title h2 text-color-white" data-cms-path="sections.newConstruction.title">
-                {cmsContent.sections.newConstruction.title}
-              </h2>
-              <p class="construction__desc text-m text-opacity-subtle" data-cms-path="sections.newConstruction.desc">
-                {cmsContent.sections.newConstruction.desc}
-              </p>
+              <h2 class="construction__title h2 text-color-white" data-cms-path="sections.newConstruction.title" set:html={cmsContent.sections.newConstruction.title} />
+              <div class="construction__story-grid">
+                <p class="construction__story-col text-m text-opacity-subtle" data-cms-path="sections.newConstruction.desc">
+                  {cmsContent.sections.newConstruction.desc}
+                </p>
+                {cmsContent.sections.newConstruction.desc2 && (
+                  <p class="construction__story-col text-m text-opacity-subtle" data-cms-path="sections.newConstruction.desc2">
+                    {cmsContent.sections.newConstruction.desc2}
+                  </p>
+                )}
+              </div>
+              {cmsContent.sections.newConstruction.storySubhead && (
+                <p class="construction__story-subhead" data-cms-path="sections.newConstruction.storySubhead">
+                  {cmsContent.sections.newConstruction.storySubhead}
+                </p>
+              )}
             </div>
 
             <!-- Asymmetric Dual Photo Gallery (Frame 521) -->
@@ -106,9 +116,7 @@ const cmsContent = (Astro.props as any).content;
                 <span class="construction__feature-num text-m text-opacity-subtle" aria-hidden="true" data-cms-path="sections.newConstruction.featureNum">
                   {cmsContent.sections.newConstruction.featureNum}
                 </span>
-                <h3 class="construction__feature-title text-color-white" data-cms-path="sections.newConstruction.featureTitle">
-                  {cmsContent.sections.newConstruction.featureTitle}
-                </h3>
+                <h3 class="construction__feature-title text-color-white" data-cms-path="sections.newConstruction.featureTitle" set:html={cmsContent.sections.newConstruction.featureTitle.replace(/\n/g, '<br />')} />
               </div>
 
               <div class="construction__feature-divider" aria-hidden="true"></div>
@@ -132,9 +140,8 @@ const cmsContent = (Astro.props as any).content;
 
             <!-- CTA Box (Frame 538) -->
             <div class="construction__cta">
-              <p class="construction__cta-prompt">
-                <span data-cms-path="sections.newConstruction.ctaPrompt">{cmsContent.sections.newConstruction.ctaPrompt}</span><br />
-                <span data-cms-path="sections.newConstruction.ctaPrompt2">{cmsContent.sections.newConstruction.ctaPrompt2}</span>
+              <p class="construction__cta-prompt" data-cms-path="sections.newConstruction.ctaPrompt">
+                {cmsContent.sections.newConstruction.ctaPrompt}
               </p>
               <div class="construction__cta-button">
                 <ButtonComposite text={cmsContent.sections.newConstruction.ctaText} href={cmsContent.sections.newConstruction.ctaHref} cmsTextPath="sections.newConstruction.ctaText" cmsHrefPath="sections.newConstruction.ctaHref" fullWidth={true} />
@@ -408,6 +415,37 @@ const cmsContent = (Astro.props as any).content;
     word-break: break-word;
   }
 
+  .construction__story-grid {
+    display: flex;
+    column-gap: 24rem;
+    width: 100%;
+  }
+
+  .construction__story-col {
+    flex: 1;
+    line-height: 1.45;
+    letter-spacing: 0;
+    word-break: break-word;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+  }
+
+  .construction__story-subhead {
+    font-family: var(--font-heading);
+    font-size: 13rem;
+    font-weight: 700;
+    line-height: 1.35;
+    letter-spacing: 0.04em;
+    color: var(--color-white);
+    text-transform: uppercase;
+    margin-top: 12rem;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+  }
+
   .construction__desc {
     width: 266rem;
     max-width: 100%;
@@ -615,6 +653,11 @@ const cmsContent = (Astro.props as any).content;
     .construction__title {
       font-size: 24rem;
       line-height: 1.15;
+    }
+
+    .construction__story-grid {
+      flex-direction: column;
+      row-gap: var(--gap-xs);
     }
 
     .construction__desc {

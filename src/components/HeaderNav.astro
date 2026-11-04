@@ -13,7 +13,7 @@ const navItems: NavItem[] = header.navItems;
 
 <header class="header-nav" role="banner">
   <div class="header-nav__left">
-    <a href="/" class="header-nav__logo text-logo text-color-white" aria-label="ALM Home" data-cms-path="sections.headerNav.logo">
+    <a href="/" class="header-nav__logo text-logo text-color-white" aria-label={header.logoAriaLabel ?? "ALEM Home"} data-cms-path="sections.headerNav.logo">
       {header.logo}
     </a>
 

@@ -2,12 +2,12 @@
   "id": "00000000-0000-4000-8000-000000000001",
   "slug": "home",
   "template": "alm-home",
-  "title": "Головна сторінка ALM",
+  "title": "Головна сторінка ALEM Homes",
   "content": {
     "components": {
       "main-button": {
         "defaults": {
-          "text": "REQUEST A CONSULTATION"
+          "text": "DISCUSS YOUR PROJECT"
         }
       }
     },
@@ -418,7 +418,7 @@
       "email": {
         "label": "Email",
         "type": "email",
-        "value": "ALMStudio@gmail.com"
+        "value": "ALEMStudio@gmail.com"
       },
       "serviceArea": {
         "label": "Service area",
@@ -435,8 +435,8 @@
       "budgetSelections": {
         "barTitle": "The finished standard",
         "barIndex": "06//",
-        "title": "Clear Upfront Choices Prevent Cost Surprises",
-        "desc": "Scope, site prep, and finishes are fully defined upfront so costs stay predictable.",
+        "title": "CLEAR UPFRONT<br />CHOICES PREVENT<br />COST SURPRISES",
+        "desc": "Scope, site prep, and finishes are fully<br />defined upfront so costs stay predictable.",
         "choices": [
           {
             "title": "Real-Project Pricing",
@@ -451,7 +451,7 @@
             "desc": "Any design or scope update is priced, timeline-checked, and approved in writing before work begins."
           }
         ],
-        "ctaText": "Schedule a Consultation",
+        "ctaText": "SCHEDULE A CONSULTATION",
         "ctaHref": "#footer"
       },
       "builderAccountability": {
@@ -472,7 +472,7 @@
       },
       "faq": {
         "photoSrc": "/assets/section-14/faq-kitchen.webp",
-        "photoAlt": "Custom kitchen with dining area built by ALM",
+        "photoAlt": "Custom kitchen with dining area built by ALEM",
         "title": "What to Know Before You Build",
         "ctaText": "SCHEDULE A CONSULTATION",
         "ctaHref": "#contact"
@@ -489,7 +489,7 @@
         "barLabel": "Start the conversation",
         "barIndex": "15//",
         "title": "Tell Us What You Have. We’ll Tell You What Comes Next.",
-        "desc": "Share the property, plans, or references you have now. ALM will review them before the consultation and identify what still needs to be checked.",
+        "desc": "Share the property, plans, or references you have now. ALEM will review them before the consultation and identify what still needs to be checked.",
         "stepTitle": "Step 1 — Required fields",
         "stepDesc": "Your contact details and current starting point",
         "label": "Name",
@@ -544,7 +544,7 @@
         "option29": "Reference only",
         "backBtn": "← Back to Step 1",
         "successTitle": "Thank you!",
-        "successText": "ALM will review your project details and contact you to arrange the consultation.",
+        "successText": "ALEM will review your project details and contact you to arrange the consultation.",
         "specLabel": "DOCUMENTATION:",
         "specValue": "No completed plans required",
         "specLabel2": "STARTING POINT:",
@@ -552,7 +552,7 @@
         "specLabel3": "ESTIMATION:",
         "specValue3": "Pricing and scope tailored individually",
         "photoSrc": "/assets/section-15-patio.webp",
-        "photoAlt": "Custom home living area and patio built by ALM",
+        "photoAlt": "Custom home living area and patio built by ALEM",
         "nextStepButtonText": "NEXT STEP",
         "submitButtonText": "SCHEDULE A CONSULTATION"
       },
@@ -597,8 +597,8 @@
         ]
       },
       "footer": {
-        "copyright": "© ALM — YEAR TO ADD",
-        "brandLogo": "ALM",
+        "copyright": "© ALEM — YEAR TO ADD",
+        "brandLogo": "ALEM",
         "brandTrademark": "®",
         "navLinks": [
           {
@@ -614,7 +614,7 @@
             "href": "#projects"
           },
           {
-            "label": "ABOUT ALM",
+            "label": "ABOUT ALEM",
             "href": "#about"
           },
           {
@@ -640,34 +640,36 @@
         "ctaHref": "#contact"
       },
       "hero": {
-        "serviceMarker": "SERVICE AREA ",
-        "serviceMarker2": "SERVICE AREA"
+        "serviceMarker": "GREATER SEATTLE AREA",
+        "serviceMarker2": "GREATER SEATTLE AREA"
       },
       "localManagement": {
         "barIndex": "12//",
-        "photoAlt": "ALM founder and leadership"
+        "photoAlt": "ALEM founder and leadership"
       },
       "newConstruction": {
         "photoSrc": "/assets/images/hero-house-left.webp",
-        "photoAlt": "Custom luxury home architecture by ALM - Left View",
+        "photoAlt": "Custom luxury home architecture by ALEM - Left View",
         "photoSrc2": "/assets/images/hero-house-right.webp",
-        "photoAlt2": "Custom luxury home architecture by ALM - Right View",
-        "barTitle": "Custom Single-Family New Construction",
+        "photoAlt2": "Custom luxury home architecture by ALEM - Right View",
+        "barTitle": "About ALEM Homes",
         "barNum": "02//",
-        "title": "A NEW HOME, NOT A RENOVATION",
-        "desc": "If an older house sits on the property, the project can begin with teardown and site preparation. The result is a completely new home, completed inside and out through final permit closeout.",
+        "title": "BUILT ON EXPERIENCE.<br />INSPIRED BY LIFE.",
+        "desc": "Our journey began with years of experience in the construction industry and a shared passion for creating beautiful, thoughtfully built homes. As a husband-and-wife team, we've always believed that a home is more than just a house.",
         "galleryImgSrc": "/assets/images/construction-backyard.webp",
         "galleryImgAlt": "Finished landscaped backyard and custom exterior",
         "galleryImgSrc2": "/assets/images/construction-patio.webp",
         "galleryImgAlt2": "Cozy illuminated outdoor living patio",
         "featureNum": "02//",
-        "featureTitle": "ALM BUILDS PREMIUM SINGLE-FAMILY HOMES FROM THE GROUND UP",
-        "featureText": "Built around the approved plans and your family’s priorities",
-        "featureText2": "Managed from exterior to finishes and final approval",
-        "ctaPrompt": "OWN AN OLDER HOME?",
-        "ctaPrompt2": "TELL US ABOUT THE PROPERTY AND THE NEW HOME YOU ARE CONSIDERING.",
-        "ctaText": "SCHEDULE A CONSULTATION",
-        "ctaHref": "#consultation"
+        "featureTitle": "CREATING PLACES<br />WHERE LIFE FEELS<br />AT HOME.",
+        "featureText": "We believe everyone deserves a place that feels truly their own. A place to find comfort, celebrate milestones, and create lasting memories. A home where everyday moments become something special.",
+        "featureText2": "Whether we're building our own thoughtfully designed homes or bringing a client's vision to life, we bring the same care, passion, and attention to detail to every project. Because we don't just build houses. We create places for life to happen.",
+        "ctaPrompt": "ALEM HOMES — WHERE LIFE FEELS AT HOME.",
+        "ctaPrompt2": "",
+        "ctaText": "DISCUSS YOUR PROJECT",
+        "ctaHref": "#consultation",
+        "desc2": "As our own family grew, so did our understanding of what home truly means. We discovered that life's simplest moments — laughter filling the rooms, little footsteps down the hallway, and quiet mornings together — are what turn a house into a home.",
+        "storySubhead": "THAT FEELING BECAME THE INSPIRATION BEHIND ALEM HOMES."
       },
       "process": {
         "barTitle": "Process",
@@ -690,14 +692,14 @@
             "id": "step-02",
             "num": "02//",
             "title": "Site & Plan Audit",
-            "desc": "ALM reviews property conditions and plans to identify needed engineering or design specialists.",
+            "desc": "ALEM reviews property conditions and plans to identify needed engineering or design specialists.",
             "image": "/assets/section-06/step-02.webp"
           },
           {
             "id": "step-05",
             "num": "05//",
             "title": "Construction",
-            "desc": "ALM manages on-site execution, subcontractors, and mandatory city inspections.",
+            "desc": "ALEM manages on-site execution, subcontractors, and mandatory city inspections.",
             "image": "/assets/section-06/step-05.webp"
           },
           {
@@ -726,8 +728,8 @@
       "propertyReview": {
         "barTitle": "Before construction",
         "barNum": "03//",
-        "title": "REVIEW THE PROPERTY BEFORE THE PROJECT GETS EXPENSIVE",
-        "desc": "A vacant lot, an older home, and an existing plan require different checks. Reviewing them early can expose site, approval, and cost issues before construction starts.",
+        "title": "EVERY PROPERTY IS UNIQUE.<br />MAKE THE RIGHT DECISION<br />BEFORE YOU BUILD.",
+        "desc": "From topography and trees to utilities and local regulations, every property has unique challenges. We help you assess these factors early and understand the land's potential before making a major investment.",
         "fallbackImgSrc": "/assets/video-frames/frame_001.jpg",
         "fallbackImgAlt": "Aerial view of residential neighborhood and property for custom home review",
         "reviewSteps": [
@@ -762,14 +764,14 @@
         "span2": "BUILDER.ZERO",
         "span3": "CONTRACTOR",
         "span4": "CHAOS.",
-        "desc": "ALM handles every permit, trade, and municipal inspection. You communicate strictly with one dedicated team.",
+        "desc": "ALEM handles every permit, trade, and municipal inspection. You communicate strictly with one dedicated team.",
         "accordionItems": [
           {
             "id": "accordion-02",
             "num": "02//",
             "title": "PERMITS &\nCITY REVIEWS",
             "shortTitle": "Permits & city reviews",
-            "description": "ALM coordinates directly with local building departments, managing plan submissions, zoning approvals, and permit issuance.",
+            "description": "ALEM coordinates directly with local building departments, managing plan submissions, zoning approvals, and permit issuance.",
             "image": "/assets/section-04/permits-city-reviews.webp",
             "active": false
           },
@@ -790,15 +792,6 @@
             "description": "A single dedicated team oversees site work, trade contractors, material deliveries, and schedule adherence from groundbreak to finish.",
             "image": "/assets/section-04/contractors-construction.webp",
             "active": false
-          },
-          {
-            "id": "accordion-04",
-            "num": "04//",
-            "title": "INSPECTIONS &\nCLOSEOUT",
-            "shortTitle": "Inspections & closeout",
-            "description": "We schedule and walk all required municipal inspections, resolve punch lists, and deliver a clean, move-in ready home.",
-            "image": "/assets/section-04/inspections-closeout.webp",
-            "active": false
           }
         ]
       },
@@ -806,14 +799,14 @@
         "barTitle": "You Can Start Before Everything Is Decided",
         "barIndex": "01//",
         "title": "Bring the Property, Plans, References, or Idea You Have",
-        "desc": "You do not need a finished plan before the first call. Show ALM what you have, and the team will explain what needs to happen next.",
+        "desc": "You don’t need to have everything figured out before reaching out. If you’re thinking about building a custom home, let’s talk. We’ll guide you through the process, answer your questions, and help you understand where to start.",
         "counterCurrent": "02",
         "counterTotal": "/ 04",
         "ctaText": "REQUEST A CONSULTATION",
         "ctaHref": "#consultation"
       },
       "headerNav": {
-        "logo": "ALM",
+        "logo": "ALEM",
         "phone": "{{const.companyPhone}} ",
         "ctaText": "DISCUSS YOUR PROJECT",
         "ctaHref": "#contact",
@@ -835,7 +828,7 @@
           },
           {
             "num": "04/",
-            "label": "ABOUT ALM",
+            "label": "ABOUT ALEM",
             "href": "#about"
           },
           {
@@ -849,7 +842,8 @@
             "href": "#contact"
           }
         ],
-        "phoneHref": "tel:{{const.companyPhone}}"
+        "phoneHref": "tel:{{const.companyPhone}}",
+        "logoAriaLabel": "ALEM Home"
       }
     },
     "pageSettings": {
@@ -858,8 +852,9 @@
       }
     },
     "meta": {
-      "title": "ALM — Local, Family-Owned Custom Home Builder",
-      "description": "Build the home you want—without managing the build yourself. Custom single-family new construction shaped around your property, plans, and priorities."
+      "title": "ALEM Homes — Local, Family-Owned Custom Home Builder",
+      "description": "Build the home you want—without managing the build yourself. Custom single-family new construction shaped around your property, plans, and priorities.",
+      "ogTitle": "ALEM Homes — Local, Family-Owned Custom Home Builder"
     },
     "contacts": {
       "email": "{{const.email}}",
@@ -870,10 +865,10 @@
     },
     "hero": {
       "badgeText": "Local, Family-Owned Custom Home Builder",
-      "title": "Build the Home You Want—Without Managing the Build Yoursel",
+      "title": "ALEM HOMES. MORE<br />THAN A HOUSE. A HOME.",
       "aboutTag": "About //",
-      "aboutText": "ALM builds custom single-family homes in Service Area to Confirm, shaped around your property, plans, and priorities.",
-      "ctaText": "REQUEST A CONSULTATION",
+      "aboutText": "ALEM Homes builds custom single-family homes throughout the Greater Seattle area.",
+      "ctaText": "DISCUSS YOUR PROJECT",
       "ctaHref": "#contact",
       "videoPoster": "/assets/test/e9ba6f9d-09ca-4765-b2c1-e0f990a78e3d.png",
       "videoUrl": "/assets/hero-video/hero-video-2.mp4"
@@ -886,21 +881,21 @@
           "num": "02.",
           "title": "You already own a lot",
           "image": "/assets/images/property-aerial.webp",
-          "note": "ALM will evaluate your property topography, zoning, utilities, and orientation to shape your custom build."
+          "note": "We can help evaluate potential properties before you buy, so you can make an informed decision about where to build."
         },
         {
           "id": "step-1",
           "num": "01.",
           "title": "Still looking for property",
           "image": "/assets/images/property-search.webp",
-          "note": "Tell us the area and vision you have in mind. We can assess potential land and parcels before you commit."
+          "note": "We can help evaluate potential properties before you buy, so you can make an informed decision about where to build."
         },
         {
           "id": "step-3",
           "num": "03.",
-          "title": "There is an older home",
+          "title": "There is an existing home",
           "image": "/assets/images/property-teardown.webp",
-          "note": "Assess teardown scope, permit paths, site clearing, and infrastructure before designing your new home."
+          "note": "We can help evaluate potential properties before you buy, so you can make an informed decision about where to build."
         },
         {
           "id": "step-4",
@@ -966,9 +961,9 @@
           "id": "stage-03",
           "num": "03//",
           "stageTitle": "Envelope & Rough-ins",
-          "title": "High-Efficiency Enclosure",
-          "desc": "Weather-tight barrier, triple-pane architectural glazing, and complete MEP integration.",
-          "image": "/assets/section-09/breakdown-card-03.webp"
+          "title": "Exterior Craftsmanship & Protection",
+          "desc": "Premium architectural siding, weather-resistant building envelope, precision rainscreen system, and custom exterior finishes built to endure Pacific Northwest seasons.",
+          "image": "/assets/section-09/exterior-craftsmanship.webp"
         },
         {
           "id": "stage-04",
@@ -990,39 +985,39 @@
       },
       "specs": [
         {
-          "label": "SURFACES & ENVELOPE:",
-          "value": "Interior walls, hardwood flooring, and exterior siding"
+          "label": "SURFACE AND ENVELOPE",
+          "value": "Beautifully finished interiors, quality flooring, and thoughtfully selected exterior materials."
         },
         {
-          "label": "CABINETRY & KITCHEN:",
-          "value": "Custom millwork, countertops, and agreed appliances"
+          "label": "KITCHEN AND CABINETRY",
+          "value": "Custom cabinetry, elegant countertops, and carefully selected appliances."
         },
         {
-          "label": "BATHROOMS & FIXTURES:",
-          "value": "Designer plumbing, tilework, mirrors, and lighting"
+          "label": "BATHROOM",
+          "value": "Quality tilework, premium plumbing fixtures, lighting, and carefully coordinated finishes."
         },
         {
-          "label": "MECHANICAL SYSTEMS:",
-          "value": "Fully connected HVAC, electrical, and plumbing"
+          "label": "MECHANICAL",
+          "value": "Efficient heating and cooling, modern electrical systems, and fully integrated plumbing."
         },
         {
-          "label": "PERMITS & CLOSEOUT:",
-          "value": "Passed city inspections and final sign-off for move-in"
+          "label": "FINAL INSPECTIONS & MOVE-IN READINESS",
+          "value": "Required inspections completed, final approvals obtained, and your new home ready to welcome you."
         }
       ]
     },
     "faq": [
       {
-        "question": "Do I need to own land before contacting ALM?",
-        "answer": "No. You can contact ALM while you are still looking. The team can discuss potential lots or teardown properties, but a specific property still needs project-level review."
+        "question": "Do I need to own land before contacting ALEM?",
+        "answer": "No. You can contact ALEM while you are still looking. The team can discuss potential lots or teardown properties, but a specific property still needs project-level review."
       },
       {
-        "question": "Can ALM work with plans I already have?",
-        "answer": "Yes. If you already have architectural drawings, engineering, or conceptual plans, ALM can review them, assess site feasibility, and provide an accurate construction quote."
+        "question": "Can ALEM work with plans I already have?",
+        "answer": "Yes. If you already have architectural drawings, engineering, or conceptual plans, ALEM can review them, assess site feasibility, and provide an accurate construction quote."
       },
       {
-        "question": "What happens if there is an older home on the property?",
-        "answer": "ALM handles full teardown, site preparation, utility disconnections, and grading as part of the overall build agreement."
+        "question": "What happens if there is an existing home on the property?",
+        "answer": "ALEM handles full teardown, site preparation, utility disconnections, and grading as part of the overall build agreement."
       },
       {
         "question": "How is the construction cost determined?",
@@ -1030,7 +1025,7 @@
       },
       {
         "question": "Who handles permits and city inspections?",
-        "answer": "ALM manages all municipal filings, architectural submissions, structural reviews, inspections, and final occupancy certificate closeout."
+        "answer": "ALEM manages all municipal filings, architectural submissions, structural reviews, inspections, and final occupancy certificate closeout."
       },
       {
         "question": "Can I change materials or finishes?",
@@ -1041,8 +1036,8 @@
         "answer": "Every agreed interior and exterior finish—flooring, cabinetry, countertops, fixtures, appliances, mechanical connections, and paint—is fully resolved for move-in."
       },
       {
-        "question": "Does ALM provide a builder warranty?",
-        "answer": "Yes. Every ALM custom home includes a comprehensive builder warranty package covering structural components, mechanical systems, and workmanship."
+        "question": "Does ALEM provide a builder warranty?",
+        "answer": "Yes. Every ALEM custom home includes a comprehensive builder warranty package covering structural components, mechanical systems, and workmanship."
       }
     ],
     "localManagement": {
@@ -1052,7 +1047,7 @@
       "principles": [
         {
           "title": "Family-owned",
-          "description": "The owners take personal accountability for every home bearing the ALM name."
+          "description": "The owners take personal accountability for every home bearing the ALEM name."
         },
         {
           "title": "Locally focused",
@@ -1064,7 +1059,7 @@
         }
       ],
       "backgroundLabel": "Our background",
-      "backgroundText": "While ALM is a new brand, our leadership brings over 8 years of dedicated hands-on exterior construction expertise."
+      "backgroundText": "While ALEM is a new brand, our leadership brings over 8 years of dedicated hands-on exterior construction expertise."
     },
     "builderAccountability": {
       "barLabel": "Builder accountability",

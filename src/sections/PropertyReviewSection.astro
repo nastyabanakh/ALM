@@ -45,9 +45,7 @@ const reviewStepsJson = JSON.stringify(cmsContent.sections.propertyReview.review
       <div class="property-review__content-flow">
         <!-- Center Editorial Block (Figma Frame 140:1613) -->
         <div class="property-review__header" id="pr-header">
-          <h2 class="property-review__title text-color-white" data-cms-path="sections.propertyReview.title">
-            {cmsContent.sections.propertyReview.title}
-          </h2>
+          <h2 class="property-review__title text-color-white" data-cms-path="sections.propertyReview.title" set:html={cmsContent.sections.propertyReview.title} />
           <p class="property-review__desc text-opacity-subtle" data-cms-path="sections.propertyReview.desc">
             {cmsContent.sections.propertyReview.desc}
           </p>
@@ -314,27 +312,17 @@ const reviewStepsJson = JSON.stringify(cmsContent.sections.propertyReview.review
       frames.push(img);
     }
 
-    // 2. Draw frame maintaining object-fit: cover
-    function drawFrame(frameIdx: number) {
-      if (!ctx || !canvas) return;
-      const img = frames[frameIdx - 1];
-      if (!img || !img.complete || img.naturalWidth === 0) {
-        // Fallback to nearest loaded frame
-        for (let offset = 1; offset < TOTAL_FRAMES; offset++) {
-          const prev = frames[Math.max(0, frameIdx - 1 - offset)];
-          if (prev && prev.complete && prev.naturalWidth > 0) {
-            renderCover(prev);
-            return;
-          }
-          const next = frames[Math.min(TOTAL_FRAMES - 1, frameIdx - 1 + offset)];
-          if (next && next.complete && next.naturalWidth > 0) {
-            renderCover(next);
-            return;
-          }
-        }
-        return;
+    // 2. Frame retrieval with fallback to nearest loaded frame
+    function getLoadedFrame(idx: number): HTMLImageElement | null {
+      const target = frames[idx - 1];
+      if (target && target.complete && target.naturalWidth > 0) return target;
+      for (let offset = 1; offset < TOTAL_FRAMES; offset++) {
+        const prev = frames[Math.max(0, idx - 1 - offset)];
+        if (prev && prev.complete && prev.naturalWidth > 0) return prev;
+        const next = frames[Math.min(TOTAL_FRAMES - 1, idx - 1 + offset)];
+        if (next && next.complete && next.naturalWidth > 0) return next;
       }
-      renderCover(img);
+      return null;
     }
 
     function renderCover(img: HTMLImageElement) {
@@ -364,6 +352,38 @@ const reviewStepsJson = JSON.stringify(cmsContent.sections.propertyReview.review
       }
 
       ctx.drawImage(img, offX, offY, drawW, drawH);
+    }
+
+    function drawFrame(frameIdx: number) {
+      if (!ctx || !canvas) return;
+      const img = getLoadedFrame(frameIdx);
+      if (img) {
+        ctx.globalAlpha = 1;
+        renderCover(img);
+      }
+    }
+
+    // Smooth continuous frame blending to eliminate discrete stepping between frames
+    function drawSmoothFrame(frameFloat: number) {
+      if (!ctx || !canvas) return;
+      const f1 = Math.max(1, Math.min(TOTAL_FRAMES, Math.floor(frameFloat)));
+      const f2 = Math.min(TOTAL_FRAMES, f1 + 1);
+      const frac = frameFloat - f1;
+
+      const img1 = getLoadedFrame(f1);
+      if (!img1) return;
+
+      ctx.globalAlpha = 1;
+      renderCover(img1);
+
+      if (f2 !== f1 && frac > 0.01) {
+        const img2 = getLoadedFrame(f2);
+        if (img2 && img2 !== img1) {
+          ctx.globalAlpha = frac;
+          renderCover(img2);
+          ctx.globalAlpha = 1;
+        }
+      }
     }
 
     // 3. Resize canvas to match display size with devicePixelRatio
@@ -398,11 +418,10 @@ const reviewStepsJson = JSON.stringify(cmsContent.sections.propertyReview.review
     window.addEventListener('scroll', updateScrollProgress, { passive: true });
     updateScrollProgress();
 
-    // 5. Responsive, immediate 60fps render loop
+    // 5. Responsive, immediate 60fps render loop with smooth frame transitions
     function tick() {
-      // Snappy 0.22 lerp: zero trailing lag, instant response to scrolling
-      currentProgress += (targetProgress - currentProgress) * 0.22;
-      if (Math.abs(targetProgress - currentProgress) < 0.0002) {
+      currentProgress += (targetProgress - currentProgress) * 0.12;
+      if (Math.abs(targetProgress - currentProgress) < 0.0001) {
         currentProgress = targetProgress;
       }
 
@@ -491,16 +510,12 @@ const reviewStepsJson = JSON.stringify(cmsContent.sections.propertyReview.review
         }
 
         const scrubProgress = (currentProgress - EXPAND_END) / (1 - EXPAND_END);
-        // Instant handoff: from the very first pixel above EXPAND_END, new frames begin advancing!
-        const frameIdx = Math.min(
+        // Continuous smooth frame interpolation
+        const frameFloat = Math.min(
           TOTAL_FRAMES,
-          Math.max(1, 1 + Math.floor(scrubProgress * (TOTAL_FRAMES - 1)))
+          Math.max(1, 1 + scrubProgress * (TOTAL_FRAMES - 1))
         );
-
-        if (frameIdx !== currentFrameIndex) {
-          currentFrameIndex = frameIdx;
-          drawFrame(currentFrameIndex);
-        }
+        drawSmoothFrame(frameFloat);
 
         // Evenly distribute 4 cards across all 100 frames (25 frames / 25% per card)
         const targetStep = Math.min(
