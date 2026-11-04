@@ -214,9 +214,9 @@ const accordionItems: AccordionItem[] = Astro.props.items ?? cmsContent.sections
     margin-bottom: 0;
     margin-left: 0;
     padding-top: 120rem; /* Space/S 120px */
-    padding-right: 40rem;
+    padding-right: 0;
     padding-bottom: 120rem; /* Space/S 120px */
-    padding-left: 40rem;
+    padding-left: 0;
   }
 
   /* ----------------------------------------------------------
@@ -232,9 +232,9 @@ const accordionItems: AccordionItem[] = Astro.props.items ?? cmsContent.sections
     margin-bottom: 16rem;
     margin-left: 0;
     padding-top: 0;
-    padding-right: 0;
+    padding-right: 40rem;
     padding-bottom: 0;
-    padding-left: 0;
+    padding-left: 40rem;
   }
 
   .spc-section__bar-left {
@@ -270,7 +270,7 @@ const accordionItems: AccordionItem[] = Astro.props.items ?? cmsContent.sections
   }
 
   .spc-section__divider {
-    width: 100%;
+    width: calc(100% - 80rem);
     border-top-width: 1rem;
     border-top-style: solid;
     border-top-color: rgba(19, 19, 19, 0.15);
@@ -278,9 +278,9 @@ const accordionItems: AccordionItem[] = Astro.props.items ?? cmsContent.sections
     border-bottom-width: 0;
     border-left-width: 0;
     margin-top: 0;
-    margin-right: 0;
+    margin-right: 40rem;
     margin-bottom: 76rem;
-    margin-left: 0;
+    margin-left: 40rem;
   }
 
   /* ----------------------------------------------------------
@@ -290,8 +290,12 @@ const accordionItems: AccordionItem[] = Astro.props.items ?? cmsContent.sections
     width: 100%;
     margin-top: 0;
     margin-right: 0;
-    margin-bottom: 36rem;
+    margin-bottom: 32rem;
     margin-left: 0;
+    padding-top: 0;
+    padding-right: 40rem;
+    padding-bottom: 0;
+    padding-left: 40rem;
   }
 
   .spc-section__title {
@@ -300,8 +304,8 @@ const accordionItems: AccordionItem[] = Astro.props.items ?? cmsContent.sections
     width: 100%;
     font-family: var(--font-display, 'Syne', sans-serif);
     font-weight: 700;
-    font-size: 68rem;
-    line-height: 1.05;
+    font-size: 76rem;
+    line-height: 1;
     letter-spacing: -0.02em;
     text-transform: uppercase;
     color: #131313;
@@ -327,20 +331,20 @@ const accordionItems: AccordionItem[] = Astro.props.items ?? cmsContent.sections
   .spc-section__desc {
     font-family: var(--font-display, 'Syne', sans-serif);
     font-weight: 400;
-    font-size: 14rem;
-    line-height: 1.5;
+    font-size: 18rem;
+    line-height: 1.4;
     color: #131313;
-    opacity: 0.9;
+    opacity: 0.5;
     text-align: center;
-    max-width: 600rem;
+    max-width: 522rem;
     margin-top: 0;
     margin-right: auto;
-    margin-bottom: 72rem;
+    margin-bottom: 99rem;
     margin-left: auto;
     padding-top: 0;
-    padding-right: 0;
+    padding-right: 40rem;
     padding-bottom: 0;
-    padding-left: 0;
+    padding-left: 40rem;
   }
 
   /* ----------------------------------------------------------
@@ -349,7 +353,7 @@ const accordionItems: AccordionItem[] = Astro.props.items ?? cmsContent.sections
   .spc-section__accordion {
     display: flex;
     flex-direction: column;
-    row-gap: 6rem;
+    row-gap: 1rem;
     width: 100%;
   }
 
@@ -533,9 +537,9 @@ const accordionItems: AccordionItem[] = Astro.props.items ?? cmsContent.sections
     align-items: flex-end;
     justify-content: space-between;
     width: 100%;
-    padding-top: 36rem;
+    padding-top: 49rem;
     padding-right: 30rem;
-    padding-bottom: 50rem;
+    padding-bottom: 104rem;
     padding-left: 30rem;
     margin-top: 0;
     margin-right: 0;
@@ -652,20 +656,31 @@ const accordionItems: AccordionItem[] = Astro.props.items ?? cmsContent.sections
   @media (max-width: 479px) {
     .spc-section {
       padding-top: 60rem;
-      padding-right: var(--grid-margin);
+      padding-right: 0;
       padding-bottom: 60rem;
+      padding-left: 0;
+    }
+
+    .spc-section__bar {
       padding-left: var(--grid-margin);
+      padding-right: var(--grid-margin);
     }
 
     .spc-section__divider {
+      margin-left: var(--grid-margin);
+      margin-right: var(--grid-margin);
+      width: calc(100% - calc(var(--grid-margin) * 2));
       margin-bottom: 40rem;
     }
 
     .spc-section__title-wrapper {
+      padding-left: var(--grid-margin);
+      padding-right: var(--grid-margin);
       display: flex;
       justify-content: center;
       text-align: center;
       width: 100%;
+      margin-bottom: 24rem;
     }
 
     .spc-section__title {
@@ -695,13 +710,20 @@ const accordionItems: AccordionItem[] = Astro.props.items ?? cmsContent.sections
     }
 
     .spc-section__desc {
-      font-size: 16rem;
+      font-size: 15rem;
       max-width: 100%;
       text-align: center;
       margin-top: 0;
       margin-right: auto;
       margin-bottom: 40rem;
       margin-left: auto;
+      padding-left: var(--grid-margin);
+      padding-right: var(--grid-margin);
+    }
+
+    .spc-section__accordion {
+      row-gap: 1rem;
+      width: 100%;
     }
 
     .spc-accordion__header {
