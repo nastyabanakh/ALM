@@ -736,8 +736,8 @@
         "fallbackImgAlt": "Aerial view of residential neighborhood and property for custom home review",
         "reviewSteps": [
           {
-            "title": "APPROVALPATH",
-            "tag": "Teardown scope //",
+            "title": "PROPERTY<br />ASSESSMENT",
+            "tag": "Property assessment //",
             "text": "Compare the property with the size and type of home you want to build."
           },
           {

@@ -10,6 +10,10 @@
 - **Компоненти:** SFC — стилі виключно всередині блоку `<style>` у відповідному `.astro` файлі.
 
 ## 📝 Журнал виправлень (Corrections & Learnings)
+- **2026-11-04 — Заміна назви кроку 01 у секції 03 (Property Review):**
+  - Помилковий напис `APPROVALPATH` (дублікат кроку 04) у першому кроці огляду ділянки замінено на **`PROPERTY ASSESSMENT`** (`PROPERTY<br />ASSESSMENT`), а тег — на `Property assessment //`.
+  - Оновлено доступні мітки `aria-label` у навігаційному індикаторі та картці.
+
 - **2026-11-04 — Текстові формулювання карток у секції 01.5 (Starting Points):**
   - Оновлено назву кроку 01: «Still looking for property» → «Still looking for a property».
   - Оновлено назву кроку 04: «You have plans or a reference» → «You have plans or references».
