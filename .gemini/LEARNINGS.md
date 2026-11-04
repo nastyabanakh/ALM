@@ -10,6 +10,19 @@
 - **Компоненти:** SFC — стилі виключно всередині блоку `<style>` у відповідному `.astro` файлі.
 
 ## 📝 Журнал виправлень (Corrections & Learnings)
+- **2026-11-04 — Оновлення секції 02 (New Construction) та секції 03 (Property Review):**
+  - **Секція 02 (New Construction) Частина 1:**
+    - У галерею правої колонки додано 3-тє фото (`/assets/images/house-composite.webp`) згідно з Figma node `172:243` (3 фото: велике 266×308rem та два компактних 147×149rem з `column-gap: 10rem` та `align-items: flex-end`).
+    - Заголовок `.construction__title` розширено до `max-width: 594rem;` та відформатовано строго у 2 рядки: «BUILT ON EXPERIENCE. / INSPIRED BY LIFE.» без паразитного переносу слова «EXPERIENCE.».
+    - Текст розповіді збалансовано у 2 колонки (`column-gap: 27rem; max-width: 594rem;`), під текстом додано рядок із заголовком «THAT FEELING BECAME THE INSPIRATION BEHIND ALEM HOMES.» та квадратним маркером `6×6rem` праворуч (`display: flex; justify-content: space-between; align-items: flex-end;`).
+  - **Секція 02 (New Construction) Частина 2:**
+    - Оновлено геометрію блоку `02//` за Figma node `172:246` та фото користувача: заголовок «CREATING PLACES / WHERE LIFE FEELS / AT HOME.» (25rem, line-height 1.15, max-width 352rem), під ним тонкий розділювач на 352rem.
+    - Обидва абзаци вишикувано вертикально в одну колонку шириною 352rem (`row-gap: 43rem;`) з маркерами `6×6rem` над кожним, під ними підзаголовок «ALEM HOMES — WHERE LIFE FEELS AT HOME.» та кнопка «DISCUSS YOUR PROJECT».
+    - Зменшено нижній відступ до `padding-bottom: 80rem;` та відстань до CTA до `row-gap: 36rem;`, завдяки чому весь блок ідеально вміщується в один екран без випадання кнопки за межі в'юпорту.
+  - **Секція 03 (Property Review):**
+    - Ширину заголовка `.property-review__title` та хедера збільшено з `633rem` до `720rem;` за Figma node `172:272`, завдяки чому заголовок розбивається строго у 3 рядки: «EVERY PROPERTY IS UNIQUE. / MAKE THE RIGHT DECISION / BEFORE YOU BUILD.».
+    - Ширину опису `.property-review__desc` оновлено до `427rem;` за Figma node `172:273`.
+
 - **2026-11-04 — Вирівнювання геометрії та відступів у секції 04 (Single Point of Contact) за макетом Figma:**
   - **Повноширинні картки (Edge-to-Edge):** Для секції `.spc-section` бічні відступи скинуто до `0`, а відступи `40rem` винесено на рівень саб-хедера, розділювача, заголовка та опису, завдяки чому чорні картки акордеону розтягуються на всю ширину секції строго за макетом (node `172:299`).
   - **Однакові відступи між картками:** Встановлено `row-gap: 1rem;` для `.spc-section__accordion` замість надмірного `6rem`, що створює однаковий, витончений 1px розділювач кольору `#FCFAEF` між усіма розгорнутими й згорнутими картками.

@@ -79,13 +79,16 @@ const cmsContent = (Astro.props as any).content;
                 )}
               </div>
               {cmsContent.sections.newConstruction.storySubhead && (
-                <p class="construction__story-subhead" data-cms-path="sections.newConstruction.storySubhead">
-                  {cmsContent.sections.newConstruction.storySubhead}
-                </p>
+                <div class="construction__subhead-row">
+                  <p class="construction__story-subhead" data-cms-path="sections.newConstruction.storySubhead">
+                    {cmsContent.sections.newConstruction.storySubhead}
+                  </p>
+                  <span class="construction__subhead-bullet" aria-hidden="true"></span>
+                </div>
               )}
             </div>
 
-            <!-- Asymmetric Dual Photo Gallery (Frame 521) -->
+            <!-- Three Photo Gallery (Figma node 172:243) -->
             <div class="construction__gallery">
               <div class="construction__gallery-item construction__gallery-item--large">
                 <img
@@ -105,46 +108,58 @@ const cmsContent = (Astro.props as any).content;
                   decoding="async"
                  data-cms-path-src="sections.newConstruction.galleryImgSrc2" data-cms-path-alt="sections.newConstruction.galleryImgAlt2"/>
               </div>
+              <div class="construction__gallery-item construction__gallery-item--small">
+                <img
+                  src={cmsContent.sections.newConstruction.galleryImgSrc3 || '/assets/images/house-composite.webp'}
+                  alt={cmsContent.sections.newConstruction.galleryImgAlt3 || 'Custom home exterior'}
+                  class="construction__gallery-img"
+                  loading="lazy"
+                  decoding="async"
+                 data-cms-path-src="sections.newConstruction.galleryImgSrc3" data-cms-path-alt="sections.newConstruction.galleryImgAlt3"/>
+              </div>
             </div>
           </div>
 
-          <!-- Bottom Editorial & CTA Block (Frame 524) -->
+          <!-- Bottom Editorial & CTA Block (Frame 524 / Figma node 172:246) -->
           <div class="construction__block-bottom" id="construction-part-2">
-            <!-- Section 02 Subheading & Features Group (Frame 525) -->
-            <div class="construction__feature-group">
-              <div class="construction__feature-header">
-                <span class="construction__feature-num text-m text-opacity-subtle" aria-hidden="true" data-cms-path="sections.newConstruction.featureNum">
-                  {cmsContent.sections.newConstruction.featureNum}
-                </span>
-                <h3 class="construction__feature-title text-color-white" data-cms-path="sections.newConstruction.featureTitle" set:html={cmsContent.sections.newConstruction.featureTitle.replace(/\n/g, '<br />')} />
+            <div class="construction__part2-wrap">
+              <!-- Section 02 Subheading & Features Group (Frame 525) -->
+              <div class="construction__feature-group">
+                <div class="construction__feature-header">
+                  <span class="construction__feature-num text-m text-opacity-subtle" aria-hidden="true" data-cms-path="sections.newConstruction.featureNum">
+                    {cmsContent.sections.newConstruction.featureNum}
+                  </span>
+                  <div class="construction__feature-header-right">
+                    <h3 class="construction__feature-title text-color-white" data-cms-path="sections.newConstruction.featureTitle" set:html={cmsContent.sections.newConstruction.featureTitle.replace(/\n/g, '<br />')} />
+                    <div class="construction__feature-divider" aria-hidden="true"></div>
+                  </div>
+                </div>
+
+                <!-- Two Feature Rows Stacked Vertically (Figma node 172:253) -->
+                <div class="construction__features">
+                  <div class="construction__feature-col">
+                    <span class="construction__bullet" aria-hidden="true"></span>
+                    <p class="construction__feature-text text-m text-opacity-subtle" data-cms-path="sections.newConstruction.featureText">
+                      {cmsContent.sections.newConstruction.featureText}
+                    </p>
+                  </div>
+                  <div class="construction__feature-col">
+                    <span class="construction__bullet" aria-hidden="true"></span>
+                    <p class="construction__feature-text text-m text-opacity-subtle" data-cms-path="sections.newConstruction.featureText2">
+                      {cmsContent.sections.newConstruction.featureText2}
+                    </p>
+                  </div>
+                </div>
               </div>
 
-              <div class="construction__feature-divider" aria-hidden="true"></div>
-
-              <!-- Two Feature Columns (Frame 531) -->
-              <div class="construction__features">
-                <div class="construction__feature-col">
-                  <span class="construction__bullet" aria-hidden="true"></span>
-                  <p class="construction__feature-text text-m text-opacity-subtle" data-cms-path="sections.newConstruction.featureText">
-                    {cmsContent.sections.newConstruction.featureText}
-                  </p>
+              <!-- CTA Box (Frame 538 / Figma node 172:260) -->
+              <div class="construction__cta">
+                <p class="construction__cta-prompt" data-cms-path="sections.newConstruction.ctaPrompt">
+                  {cmsContent.sections.newConstruction.ctaPrompt}
+                </p>
+                <div class="construction__cta-button">
+                  <ButtonComposite text={cmsContent.sections.newConstruction.ctaText} href={cmsContent.sections.newConstruction.ctaHref} cmsTextPath="sections.newConstruction.ctaText" cmsHrefPath="sections.newConstruction.ctaHref" fullWidth={true} />
                 </div>
-                <div class="construction__feature-col">
-                  <span class="construction__bullet" aria-hidden="true"></span>
-                  <p class="construction__feature-text text-m text-opacity-subtle" data-cms-path="sections.newConstruction.featureText2">
-                    {cmsContent.sections.newConstruction.featureText2}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <!-- CTA Box (Frame 538) -->
-            <div class="construction__cta">
-              <p class="construction__cta-prompt" data-cms-path="sections.newConstruction.ctaPrompt">
-                {cmsContent.sections.newConstruction.ctaPrompt}
-              </p>
-              <div class="construction__cta-button">
-                <ButtonComposite text={cmsContent.sections.newConstruction.ctaText} href={cmsContent.sections.newConstruction.ctaHref} cmsTextPath="sections.newConstruction.ctaText" cmsHrefPath="sections.newConstruction.ctaHref" fullWidth={true} />
               </div>
             </div>
           </div>
@@ -399,31 +414,38 @@ const cmsContent = (Astro.props as any).content;
     flex-direction: column;
     row-gap: 27rem;
     width: 100%;
-    max-width: 427rem;
+    max-width: 594rem;
     margin-top: 80rem;
     margin-right: 0;
-    margin-bottom: 120rem;
+    margin-bottom: 80rem;
     margin-left: 0;
   }
 
   .construction__title {
+    font-size: 37rem;
+    font-weight: 700;
+    line-height: 1.1;
+    text-transform: uppercase;
+    width: 100%;
+    max-width: 594rem;
+    letter-spacing: 0;
+    word-break: break-word;
     margin-top: 0;
     margin-right: 0;
     margin-bottom: 0;
     margin-left: 0;
-    letter-spacing: 0;
-    word-break: break-word;
   }
 
   .construction__story-grid {
     display: flex;
-    column-gap: 24rem;
+    column-gap: 27rem;
     width: 100%;
+    max-width: 594rem;
   }
 
   .construction__story-col {
     flex: 1;
-    line-height: 1.45;
+    line-height: 1.4;
     letter-spacing: 0;
     word-break: break-word;
     margin-top: 0;
@@ -432,18 +454,37 @@ const cmsContent = (Astro.props as any).content;
     margin-left: 0;
   }
 
+  .construction__subhead-row {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 594rem;
+    margin-top: 10rem;
+  }
+
   .construction__story-subhead {
     font-family: var(--font-heading);
-    font-size: 13rem;
+    font-size: 12rem;
     font-weight: 700;
-    line-height: 1.35;
-    letter-spacing: 0.04em;
+    line-height: 1.2;
+    letter-spacing: 0;
     color: var(--color-white);
     text-transform: uppercase;
-    margin-top: 12rem;
+    max-width: 320rem;
+    margin-top: 0;
     margin-right: 0;
     margin-bottom: 0;
     margin-left: 0;
+  }
+
+  .construction__subhead-bullet {
+    display: block;
+    width: 6rem;
+    height: 6rem;
+    background-color: var(--color-white);
+    flex-shrink: 0;
+    margin-bottom: 2rem;
   }
 
   .construction__desc {
@@ -458,12 +499,13 @@ const cmsContent = (Astro.props as any).content;
     margin-left: 0;
   }
 
-  /* Asymmetric Dual Photo Gallery (Frame 521) */
+  /* Three Photo Gallery (Figma node 172:243) */
   .construction__gallery {
     display: flex;
     align-items: flex-end;
     column-gap: 10rem;
     width: 100%;
+    max-width: 591rem;
   }
 
   .construction__gallery-item--large {
@@ -474,8 +516,8 @@ const cmsContent = (Astro.props as any).content;
   }
 
   .construction__gallery-item--small {
-    width: 136.5rem;
-    height: 158rem;
+    width: 147rem;
+    height: 149rem;
     flex-shrink: 0;
     overflow: hidden;
   }
@@ -488,24 +530,32 @@ const cmsContent = (Astro.props as any).content;
   }
 
   /* ----------------------------------------------------------
-     Bottom Editorial & CTA Block (Frame 524)
+     Bottom Editorial & CTA Block (Frame 524 / Figma node 172:246)
      ---------------------------------------------------------- */
   .construction__block-bottom {
     display: flex;
     flex-direction: column;
-    row-gap: 212rem;
+    align-items: flex-end;
     width: 100%;
     padding-top: 0;
     padding-right: 0;
-    padding-bottom: 200rem;
+    padding-bottom: 80rem;
     padding-left: 0;
+  }
+
+  .construction__part2-wrap {
+    display: flex;
+    flex-direction: column;
+    row-gap: 36rem;
+    width: 100%;
+    max-width: 594rem;
     align-items: flex-end;
   }
 
   .construction__feature-group {
     display: flex;
     flex-direction: column;
-    row-gap: 24rem;
+    row-gap: 32rem;
     width: 100%;
     align-items: flex-end;
   }
@@ -522,6 +572,13 @@ const cmsContent = (Astro.props as any).content;
     letter-spacing: 0;
     line-height: 1.2;
     padding-top: 4rem;
+  }
+
+  .construction__feature-header-right {
+    display: flex;
+    flex-direction: column;
+    row-gap: 32rem;
+    width: 352rem;
   }
 
   .construction__feature-title {
@@ -545,10 +602,11 @@ const cmsContent = (Astro.props as any).content;
     background-color: var(--color-border);
   }
 
-  /* Two Feature Columns (Frame 531: 352rem total, gap 43rem) */
+  /* Two Feature Columns Stacked Vertically (Figma node 172:253: width 352rem, gap 43rem) */
   .construction__features {
     display: flex;
-    column-gap: 43rem;
+    flex-direction: column;
+    row-gap: 43rem;
     width: 352rem;
   }
 
@@ -556,7 +614,7 @@ const cmsContent = (Astro.props as any).content;
     display: flex;
     flex-direction: column;
     row-gap: 15rem;
-    width: 165rem;
+    width: 100%;
   }
 
   .construction__feature-text {
@@ -569,7 +627,7 @@ const cmsContent = (Astro.props as any).content;
     word-break: break-word;
   }
 
-  /* CTA Box (Frame 538) */
+  /* CTA Box (Frame 538 / Figma node 172:260) */
   .construction__cta {
     display: flex;
     flex-direction: column;
@@ -585,7 +643,7 @@ const cmsContent = (Astro.props as any).content;
     letter-spacing: 0;
     color: var(--color-white);
     text-transform: uppercase;
-    width: 286rem;
+    width: 100%;
     margin-top: 0;
     margin-right: 0;
     margin-bottom: 0;
@@ -666,16 +724,24 @@ const cmsContent = (Astro.props as any).content;
 
     .construction__gallery {
       column-gap: var(--gap-2xs);
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .construction__gallery::-webkit-scrollbar {
+      display: none;
     }
 
     .construction__gallery-item--large {
-      width: 65%;
-      height: 220rem;
+      width: 50%;
+      height: 180rem;
+      flex-shrink: 0;
     }
 
     .construction__gallery-item--small {
-      width: 35%;
-      height: 120rem;
+      width: 25%;
+      height: 110rem;
+      flex-shrink: 0;
     }
 
     .construction__block-bottom {
@@ -687,6 +753,12 @@ const cmsContent = (Astro.props as any).content;
       align-items: flex-start;
     }
 
+    .construction__part2-wrap {
+      width: 100%;
+      max-width: 100%;
+      align-items: flex-start;
+    }
+
     .construction__feature-group {
       align-items: flex-start;
     }
@@ -694,6 +766,10 @@ const cmsContent = (Astro.props as any).content;
     .construction__feature-header {
       flex-direction: column;
       row-gap: var(--gap-xs);
+    }
+
+    .construction__feature-header-right {
+      width: 100%;
     }
 
     .construction__feature-title {
