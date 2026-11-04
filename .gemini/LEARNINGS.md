@@ -10,6 +10,15 @@
 - **Компоненти:** SFC — стилі виключно всередині блоку `<style>` у відповідному `.astro` файлі.
 
 ## 📝 Журнал виправлень (Corrections & Learnings)
+- **2026-11-04 — Оновлення копірайту та структури карток секцій 04, 05, 06, 07, 09, 11, 12:**
+  - **Секція 04 (Single Point of Contact):** Оновлено заголовок на «FROM FIRST MEETING TO / CERTIFICATE OF OCCUPANCY.» зі зменшенням розміру шрифту до `68rem` (desktop) / `26rem` (mobile) для гармонійного розміщення у 2 рядки без переповнення; підзаголовок розширено описом повного циклу управління проєктом; оновлено описи та назви трьох карток акордеону (Plans & Engineering, Permits and City Revision, Construction).
+  - **Секція 05 (The Finished Standard):** Заголовок змінено на «Luxury Is in Every Detail», оновлено підзаголовок та 4 картки персоналізації (Daily Layout, Thoughtful Interiors, Refined Finishes, Outdoor Living).
+  - **Секція 06 (Budget & Selections):** Заголовок адаптовано до трирядкової композиції «A PERSONALIZED / APPROACH TO EVERY / HOME.», опис адаптовано для індивідуального підходу, картку «Real-Project Pricing» сфокусовано на персональній консультації та прозорому узгодженні рішень.
+  - **Секція 07 (Process):** Впорядковано кроки від 01 до 06, оновлено кроки 01 (Consultation), 05 (Construction) та 06 (Welcome Home).
+  - **Секція 09 (Featured Home Breakdown):** Оновлено описи етапів 02 (Architectural Framing) та 03 (Exterior Craftsmanship & Protection).
+  - **Секція 11 (Completed Home):** Оновлено заголовок «BUILT TO COMPLETION. READY FOR LIVING.» та супровідний опис готовності до заселення.
+  - **Секція 12 (Local Management):** Оновлено описи 3 принципів (Family-owned, Locally focused, Field experience) та текст блоку «Our background» про багаторічний досвід ALEM Homes.
+
 - **2026-09-08 — Максимальна ширина контейнера та верхній брейкпоінт скейлінгу:**
   - **Проблема:** При дефолтному значенні `--size-container-max: 1440px;` на широких моніторах (1920px+) скейлінг зупинявся на 1440px, залишаючи широкі порожні чорні поля з боків сторінки.
   - **Коригування:** Встановлено `--size-container-max: 2000px;` та розширено максимальну ширину контейнера `--grid-width: 2000rem;` (або `100%` до 2000px), щоб інтерфейс пропорційно масштабувався на всю ширину екрана аж до 2000px без бічних відступів.

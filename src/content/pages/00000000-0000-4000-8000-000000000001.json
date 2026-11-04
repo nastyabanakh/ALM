@@ -435,12 +435,12 @@
       "budgetSelections": {
         "barTitle": "The finished standard",
         "barIndex": "06//",
-        "title": "CLEAR UPFRONT<br />CHOICES PREVENT<br />COST SURPRISES",
-        "desc": "Scope, site prep, and finishes are fully<br />defined upfront so costs stay predictable.",
+        "title": "A PERSONALIZED<br />APPROACH TO EVERY<br />HOME.",
+        "desc": "Every home is unique. We take time to understand your priorities, explore options, and create a clear, detailed proposal tailored to your project.",
         "choices": [
           {
             "title": "Real-Project Pricing",
-            "desc": "Every quote is grounded in your actual site conditions and plans, locked into a signed agreement."
+            "desc": "Through in-depth consultation and detailed project review, we explore different design and building options to tailor a transparent, accurate proposal for your home."
           },
           {
             "title": "Early Selections",
@@ -461,8 +461,8 @@
       "completedHome": {
         "barLabel": "The completed home",
         "barIndex": "11//",
-        "title": "MOVE IN AFTER HANDOFF, NOT AFTER MORE CONSTRUCTION",
-        "desc": "Every major finish is complete before you turn the key. We deliver homes ready for living, with all interior, exterior, and mechanical systems fully resolved.",
+        "title": "BUILT TO COMPLETION. READY FOR LIVING.",
+        "desc": "From beautifully finished interiors and exteriors to fully functioning home systems, every detail is thoughtfully completed before we hand over the keys. Your new home is ready for you to enjoy from day one.",
         "photoAlt": "Designer custom bathroom with vanity and ambient lighting",
         "photoAlt2": "Luxury custom home private office with large windows",
         "photoAlt3": "High-end modern kitchen with integrated appliances",
@@ -559,37 +559,37 @@
       "finishedStandard": {
         "barTitle": "The finished standard",
         "barIndex": "05//",
-        "title": "Premium Means Finished Details, Not Left for Later",
-        "desc": "Premium is not a label. It is the layout, materials, kitchen, bathrooms, lighting, exterior work, and how those decisions fit together.",
+        "title": "Luxury Is in Every Detail",
+        "desc": "True luxury brings together thoughtful design, quality materials, craftsmanship, and everyday comfort to create a home that feels exceptional.",
         "showcaseItems": [
           {
             "id": "daily-layout",
             "title": "Daily<br />Layout",
-            "subtitle": "Living, private, and outdoor spaces shaped for how your family actually lives.",
+            "subtitle": "Spaces planned around the way your family lives, gathers, and grows.",
             "cardTitle": "Daily Layout",
             "image": "/assets/section-05/daily-layout.webp",
             "active": true
           },
           {
             "id": "turnkey-interiors",
-            "title": "Turnkey<br />Interiors",
-            "subtitle": "Cabinetry, fixtures, surfaces, and lighting delivered fully complete.",
-            "cardTitle": "Turnkey Interiors",
+            "title": "Thoughtful<br />Interiors",
+            "subtitle": "Coordinated textures, materials, and finishes create a cohesive, welcoming home.",
+            "cardTitle": "Thoughtful Interiors",
             "image": "/assets/section-05/turnkey-interiors.webp",
             "active": false
           },
           {
             "id": "cohesive-finishes",
-            "title": "Cohesive<br />Finishes",
-            "subtitle": "Key finishes are chosen with the full interior and exterior in view.",
-            "cardTitle": "Cohesive Finishes",
+            "title": "Refined<br />Finishes",
+            "subtitle": "From cabinetry and flooring to lighting and fixtures, each choice contributes to the whole.",
+            "cardTitle": "Refined Finishes",
             "image": "/assets/section-05/cohesive-finishes.webp",
             "active": false
           },
           {
             "id": "outdoor-living",
             "title": "Outdoor<br />Living",
-            "subtitle": "Facades, glazing, and terraces planned together—never as afterthoughts.",
+            "subtitle": "Purposeful transitions extend comfort and everyday living beyond the walls of your home.",
             "cardTitle": "Outdoor Living",
             "image": "/assets/section-05/outdoor-living.webp",
             "active": false
@@ -685,7 +685,7 @@
             "id": "step-01",
             "num": "01//",
             "title": "Consultation",
-            "desc": "We discuss the property, plans, preferred home, priorities, and known constraints.",
+            "desc": "We start by learning about your vision, property, priorities, and goals. Whether you’re just exploring the idea or ready to build, we’ll help you understand the next steps.",
             "image": "/assets/section-06/step-01.webp"
           },
           {
@@ -696,11 +696,11 @@
             "image": "/assets/section-06/step-02.webp"
           },
           {
-            "id": "step-05",
-            "num": "05//",
-            "title": "Construction",
-            "desc": "ALEM manages on-site execution, subcontractors, and mandatory city inspections.",
-            "image": "/assets/section-06/step-05.webp"
+            "id": "step-03",
+            "num": "03//",
+            "title": "Engineering & Permits",
+            "desc": "Existing plans are adapted with local architects and engineers to secure city approvals.",
+            "image": "/assets/section-06/step-03.webp"
           },
           {
             "id": "step-04",
@@ -710,17 +710,17 @@
             "image": "/assets/section-06/step-04.webp"
           },
           {
-            "id": "step-03",
-            "num": "03//",
-            "title": "Engineering & Permits",
-            "desc": "Existing plans are adapted with local architects and engineers to secure city approvals.",
-            "image": "/assets/section-06/step-03.webp"
+            "id": "step-05",
+            "num": "05//",
+            "title": "Construction",
+            "desc": "Our team coordinates the building process, from site preparation and foundation work to finishing details, inspections, and completion.",
+            "image": "/assets/section-06/step-05.webp"
           },
           {
             "id": "step-06",
             "num": "06//",
-            "title": "Final Handover",
-            "desc": "We walk the finished home together, resolve punch-list details, and close out all permits.",
+            "title": "Welcome Home",
+            "desc": "We conduct a comprehensive final walkthrough together, ensure every detail meets our exacting standards, and deliver a clean, fully finished home ready for you to move in.",
             "image": "/assets/section-06/step-06.webp"
           }
         ]
@@ -760,40 +760,43 @@
       "singlePointContact": {
         "barTitle": "Single point of contact",
         "barIndex": "04//",
-        "span": "ONE",
-        "span2": "BUILDER.ZERO",
-        "span3": "CONTRACTOR",
-        "span4": "CHAOS.",
-        "desc": "ALEM handles every permit, trade, and municipal inspection. You communicate strictly with one dedicated team.",
+        "span": "FROM",
+        "span2": "FIRST",
+        "span3": "MEETING",
+        "span4": "TO",
+        "desc": "ALEM Homes manages every stage of your custom home project, from initial consultation and planning to permits, construction, inspections, and the final Certificate of Occupancy.",
         "accordionItems": [
-          {
-            "id": "accordion-02",
-            "num": "02//",
-            "title": "PERMITS &\nCITY REVIEWS",
-            "shortTitle": "Permits & city reviews",
-            "description": "ALEM coordinates directly with local building departments, managing plan submissions, zoning approvals, and permit issuance.",
-            "image": "/assets/section-04/permits-city-reviews.webp",
-            "active": false
-          },
           {
             "id": "accordion-01",
             "num": "01//",
-            "title": "PLANS &\nOther",
+            "title": "PLANS &\nENGINEERING",
             "shortTitle": "Plans & Engineering",
-            "description": "Use your existing plans or bring in the local architects and engineers needed to adapt them.",
+            "description": "Whether you have existing plans, sketches, or just an idea, we work with architects and engineers to develop a design that reflects your vision and meets local requirements.",
             "image": "/assets/section-04/plans-engineering.webp",
             "active": true
           },
           {
+            "id": "accordion-02",
+            "num": "02//",
+            "title": "PERMITS AND\nCITY REVISION",
+            "shortTitle": "Permits and City Revision",
+            "description": "We coordinate permit applications, required reports, documentation, and inspections while working with local building departments throughout the approval process.",
+            "image": "/assets/section-04/permits-city-reviews.webp",
+            "active": false
+          },
+          {
             "id": "accordion-03",
             "num": "03//",
-            "title": "CONTRACTORS &\nCONSTRUCTION",
-            "shortTitle": "Contractors & construction",
-            "description": "A single dedicated team oversees site work, trade contractors, material deliveries, and schedule adherence from groundbreak to finish.",
+            "title": "CONSTRUCTION",
+            "shortTitle": "Construction",
+            "description": "We oversee construction schedules, subcontractors, material deliveries, quality control, and required inspections to keep every stage organized and moving forward.",
             "image": "/assets/section-04/contractors-construction.webp",
             "active": false
           }
-        ]
+        ],
+        "span5": "CERTIFICATE",
+        "span6": "OF",
+        "span7": "OCCUPANCY."
       },
       "startingPoints": {
         "barTitle": "You Can Start Before Everything Is Decided",
@@ -954,7 +957,7 @@
           "num": "02//",
           "stageTitle": "Framing & Structural Core",
           "title": "Architectural Framing",
-          "desc": "Heavy timber beams, steel-reinforced spans, and soaring ceiling volumes taking shape.",
+          "desc": "Structural details are coordinated with engineered plans and local building requirements.",
           "image": "/assets/section-09/breakdown-02.webp"
         },
         {
@@ -962,7 +965,7 @@
           "num": "03//",
           "stageTitle": "Envelope & Rough-ins",
           "title": "Exterior Craftsmanship & Protection",
-          "desc": "Premium architectural siding, weather-resistant building envelope, precision rainscreen system, and custom exterior finishes built to endure Pacific Northwest seasons.",
+          "desc": "Thoughtfully installed siding and weather-resistant assemblies are designed for the Pacific Northwest climate, balancing lasting performance with architectural appeal.",
           "image": "/assets/section-09/exterior-craftsmanship.webp"
         },
         {
@@ -1047,19 +1050,19 @@
       "principles": [
         {
           "title": "Family-owned",
-          "description": "The owners take personal accountability for every home bearing the ALEM name."
+          "description": "As a family-owned company, we take pride in every home we build, earning trust through attention to detail and lasting relationships with our clients."
         },
         {
           "title": "Locally focused",
-          "description": "We build nearby so owners can stay actively involved on-site and manage approvals."
+          "description": "Based in Greater Seattle, we understand local building requirements, permits, and the unique construction challenges of the Pacific Northwest."
         },
         {
           "title": "Field experience",
-          "description": "We build nearby so owners can stay actively involved on-site and manage approvals."
+          "description": "Our team combines years of hands-on construction experience, skilled craftsmanship, and careful project coordination to build quality homes."
         }
       ],
       "backgroundLabel": "Our background",
-      "backgroundText": "While ALEM is a new brand, our leadership brings over 8 years of dedicated hands-on exterior construction expertise."
+      "backgroundText": "WITH YEARS OF CONSTRUCTION EXPERIENCE, ALEM HOMES COMBINES CRAFTSMANSHIP, TECHNICAL EXPERTISE, AND ATTENTION TO DETAIL TO BUILD QUALITY HOMES THAT LAST."
     },
     "builderAccountability": {
       "barLabel": "Builder accountability",

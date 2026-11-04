@@ -44,10 +44,13 @@ const accordionItems: AccordionItem[] = Astro.props.items ?? cmsContent.sections
       <span class="spc-section__title-row spc-section__title-row--1">
         <span data-cms-path="sections.singlePointContact.span">{cmsContent.sections.singlePointContact.span}</span>
         <span data-cms-path="sections.singlePointContact.span2">{cmsContent.sections.singlePointContact.span2}</span>
-      </span>
-      <span class="spc-section__title-row spc-section__title-row--2">
         <span data-cms-path="sections.singlePointContact.span3">{cmsContent.sections.singlePointContact.span3}</span>
         <span data-cms-path="sections.singlePointContact.span4">{cmsContent.sections.singlePointContact.span4}</span>
+      </span>
+      <span class="spc-section__title-row spc-section__title-row--2">
+        <span data-cms-path="sections.singlePointContact.span5">{cmsContent.sections.singlePointContact.span5}</span>
+        <span data-cms-path="sections.singlePointContact.span6">{cmsContent.sections.singlePointContact.span6}</span>
+        <span data-cms-path="sections.singlePointContact.span7">{cmsContent.sections.singlePointContact.span7}</span>
       </span>
     </h2>
   </div>
@@ -297,8 +300,8 @@ const accordionItems: AccordionItem[] = Astro.props.items ?? cmsContent.sections
     width: 100%;
     font-family: var(--font-display, 'Syne', sans-serif);
     font-weight: 700;
-    font-size: 103rem;
-    line-height: 0.95;
+    font-size: 68rem;
+    line-height: 1.05;
     letter-spacing: -0.02em;
     text-transform: uppercase;
     color: #131313;
@@ -324,12 +327,12 @@ const accordionItems: AccordionItem[] = Astro.props.items ?? cmsContent.sections
   .spc-section__desc {
     font-family: var(--font-display, 'Syne', sans-serif);
     font-weight: 400;
-    font-size: 18rem;
-    line-height: 1.4;
+    font-size: 14rem;
+    line-height: 1.5;
     color: #131313;
     opacity: 0.9;
     text-align: center;
-    max-width: 287rem;
+    max-width: 600rem;
     margin-top: 0;
     margin-right: auto;
     margin-bottom: 72rem;
@@ -666,8 +669,8 @@ const accordionItems: AccordionItem[] = Astro.props.items ?? cmsContent.sections
     }
 
     .spc-section__title {
-      font-size: 30rem;
-      line-height: 1.05;
+      font-size: 26rem;
+      line-height: 1.15;
       letter-spacing: -0.02em;
       text-align: center;
       align-items: center;
@@ -677,11 +680,13 @@ const accordionItems: AccordionItem[] = Astro.props.items ?? cmsContent.sections
     }
 
     .spc-section__title-row {
-      flex-direction: column;
+      flex-direction: row;
+      flex-wrap: wrap;
       align-items: center;
       justify-content: center;
       text-align: center;
-      row-gap: 4rem;
+      column-gap: 8rem;
+      row-gap: 2rem;
       width: 100%;
     }
 
