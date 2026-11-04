@@ -123,8 +123,8 @@ const cmsContent = (Astro.props as any).content;
               <div class="completed-home__specs">
                 {specs.map((item) => (
                   <div class="completed-home__spec-row">
-                    <span class="completed-home__spec-label text-m">{item.label}</span>
-                    <span class="completed-home__spec-value text-m">{item.value}</span>
+                    <span class="completed-home__spec-label text-m" set:html={item.label} />
+                    <span class="completed-home__spec-value text-m" set:html={item.value} />
                   </div>
                 ))}
               </div>
@@ -490,11 +490,15 @@ const cmsContent = (Astro.props as any).content;
     opacity: 0.5;
     text-transform: uppercase;
     flex-shrink: 0;
+    width: 220rem;
+    max-width: 45%;
+    line-height: 1.35;
   }
 
   .completed-home__spec-value {
     color: var(--color-dark);
     text-align: right;
+    line-height: 1.4;
   }
 
   .completed-home__right-cta {

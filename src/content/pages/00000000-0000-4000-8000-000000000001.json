@@ -687,7 +687,7 @@
             "id": "step-01",
             "num": "01//",
             "title": "Consultation",
-            "desc": "We start by learning about your vision, property, priorities, and goals. Whether you’re just exploring the idea or ready to build, we’ll help you understand the next steps.",
+            "desc": "We learn about your vision, property, and goals to help you understand the next steps.",
             "image": "/assets/section-06/step-01.webp"
           },
           {
@@ -715,7 +715,7 @@
             "id": "step-05",
             "num": "05//",
             "title": "Construction",
-            "desc": "Our team coordinates the building process, from site preparation and foundation work to finishing details, inspections, and completion.",
+            "desc": "Our team coordinates the building process from site preparation to final completion.",
             "image": "/assets/section-06/step-05.webp"
           },
           {
@@ -967,7 +967,7 @@
           "num": "03//",
           "stageTitle": "Envelope & Rough-ins",
           "title": "Exterior Craftsmanship & Protection",
-          "desc": "Thoughtfully installed siding and weather-resistant assemblies are designed for the Pacific Northwest climate, balancing lasting performance with architectural appeal.",
+          "desc": "Weather-resistant siding built for the Pacific Northwest, balancing lasting performance with architectural appeal.",
           "image": "/assets/section-09/exterior-craftsmanship.webp"
         },
         {
@@ -990,24 +990,24 @@
       },
       "specs": [
         {
-          "label": "SURFACE AND ENVELOPE",
-          "value": "Beautifully finished interiors, quality flooring, and thoughtfully selected exterior materials."
+          "label": "SURFACE AND ENVELOPE:",
+          "value": "Beautifully finished interiors, quality flooring, and<br />thoughtfully selected exterior materials."
         },
         {
-          "label": "KITCHEN AND CABINETRY",
-          "value": "Custom cabinetry, elegant countertops, and carefully selected appliances."
+          "label": "KITCHEN AND CABINETRY:",
+          "value": "Custom cabinetry, elegant countertops, and<br />carefully selected appliances."
         },
         {
-          "label": "BATHROOM",
-          "value": "Quality tilework, premium plumbing fixtures, lighting, and carefully coordinated finishes."
+          "label": "BATHROOM:",
+          "value": "Quality tilework, premium plumbing fixtures,<br />lighting, and carefully coordinated finishes."
         },
         {
-          "label": "MECHANICAL",
-          "value": "Efficient heating and cooling, modern electrical systems, and fully integrated plumbing."
+          "label": "MECHANICAL:",
+          "value": "Efficient heating and cooling, modern electrical<br />systems, and fully integrated plumbing."
         },
         {
-          "label": "FINAL INSPECTIONS & MOVE-IN READINESS",
-          "value": "Required inspections completed, final approvals obtained, and your new home ready to welcome you."
+          "label": "FINAL INSPECTIONS &<br />MOVE-IN READINESS:",
+          "value": "Required inspections completed, final approvals<br />obtained, and your new home ready to welcome you."
         }
       ]
     },

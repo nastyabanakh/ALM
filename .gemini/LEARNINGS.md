@@ -10,6 +10,22 @@
 - **Компоненти:** SFC — стилі виключно всередині блоку `<style>` у відповідному `.astro` файлі.
 
 ## 📝 Журнал виправлень (Corrections & Learnings)
+- **2026-11-04 — Оптимізація довжини описів у секціях 07, 09 та 11 за макетом:**
+  - **Секція 07 (Process — Фото 1 та 2):**
+    - Скорочено опис кроку 01 (Consultation) до 2 рядків зі збереженням суті: «We learn about your vision, property, and goals to help you understand the next steps.».
+    - Скорочено опис кроку 05 (Construction) до 2 рядків: «Our team coordinates the building process from site preparation to final completion.».
+  - **Секція 09 (Featured Home Breakdown — Фото 3):**
+    - Скорочено опис картки етапу 03 (Exterior Craftsmanship & Protection) вдвічі без втрати змісту: «Weather-resistant siding built for the Pacific Northwest, balancing lasting performance with architectural appeal.».
+  - **Секція 11 (The Completed Home — Фото 4 та 5):**
+    - Усі назви лівої колонки (`label`) оновлено відповідно до Figma (Фото 5) з двокрапкою наприкінці: `SURFACE AND ENVELOPE:`, `KITCHEN AND CABINETRY:`, `BATHROOM:`, `MECHANICAL:`, а останню назву розбито на 2 рядки: `FINAL INSPECTIONS &<br />MOVE-IN READINESS:`.
+    - Усі значення правої колонки (`value`) вирівняно строго у 2 рядки 1:1 за макетом:
+      - 1: «Beautifully finished interiors, quality flooring, and<br />thoughtfully selected exterior materials.»
+      - 2: «Custom cabinetry, elegant countertops, and<br />carefully selected appliances.»
+      - 3: «Quality tilework, premium plumbing fixtures,<br />lighting, and carefully coordinated finishes.»
+      - 4: «Efficient heating and cooling, modern electrical<br />systems, and fully integrated plumbing.»
+      - 5: «Required inspections completed, final approvals<br />obtained, and your new home ready to welcome you.»
+    - У `CompletedHomeSection.astro` додано `set:html` та задано ширину лівої колонки `width: 220rem; max-width: 45%;`.
+
 - **2026-11-04 — Коригування кількості рядків в акордеоні секції 04 та заголовку секції 06:**
   - **Секція 04 (Single Point of Contact / Accordion — Фото 1, 2, 3, 4):**
     - Для описів карток акордеону `.spc-accordion__expanded-desc` ширину збільшено з `260rem` до точного значення з Figma node `172:315` — `width: 342rem; max-width: 100%;`.
