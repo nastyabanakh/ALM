@@ -521,7 +521,7 @@ const cmsContent = (Astro.props as any).content;
   /* Three Photo Gallery (Figma node 172:243) */
   .construction__gallery {
     display: flex;
-    align-items: flex-end;
+    align-items: stretch;
     column-gap: 10rem;
     width: 100%;
     max-width: 591rem;
@@ -535,8 +535,9 @@ const cmsContent = (Astro.props as any).content;
   }
 
   .construction__gallery-item--small {
-    width: 147rem;
-    height: 149rem;
+    flex: 1;
+    width: 152rem;
+    height: 308rem;
     flex-shrink: 0;
     overflow: hidden;
   }
@@ -764,8 +765,8 @@ const cmsContent = (Astro.props as any).content;
     }
 
     .construction__gallery-item--small {
-      width: 25%;
-      height: 110rem;
+      width: 30%;
+      height: 180rem;
       flex-shrink: 0;
     }
 
