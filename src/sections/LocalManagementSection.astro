@@ -116,7 +116,7 @@ const cmsContent = (Astro.props as any).content;
   /* ─── 120rem Top Spacer (Figma node 203:651 Space/S) ─── */
   .local-management__top-spacer {
     width: 100%;
-    height: 120rem;
+    height: 48rem;
     background-color: var(--bg-white);
   }
 
@@ -129,7 +129,7 @@ const cmsContent = (Astro.props as any).content;
     margin-left: auto;
     padding-top: 0;
     padding-right: 40rem;
-    padding-bottom: 0;
+    padding-bottom: 60rem;
     padding-left: 40rem;
   }
 
@@ -175,7 +175,7 @@ const cmsContent = (Astro.props as any).content;
     background-color: rgba(19, 19, 19, 0.15);
     margin-top: var(--gap-2xs);
     margin-right: 0;
-    margin-bottom: 99rem;
+    margin-bottom: 40rem;
     margin-left: 0;
   }
 
@@ -185,7 +185,7 @@ const cmsContent = (Astro.props as any).content;
     max-width: 1358rem;
     margin-top: 0;
     margin-right: auto;
-    margin-bottom: 99rem;
+    margin-bottom: 48rem;
     margin-left: auto;
     text-align: center;
   }
@@ -228,13 +228,14 @@ const cmsContent = (Astro.props as any).content;
     min-width: 0;
     display: flex;
     flex-direction: column;
-    row-gap: 105rem;
+    justify-content: space-between;
+    min-height: 489rem;
   }
 
   .local-management__principles {
     display: flex;
     flex-direction: column;
-    row-gap: 40rem;
+    row-gap: 32rem;
     width: 100%;
   }
 
@@ -260,14 +261,16 @@ const cmsContent = (Astro.props as any).content;
     min-width: 0;
     display: flex;
     flex-direction: column;
-    row-gap: 32rem;
+    row-gap: 24rem;
   }
 
   .local-management__principle-desc {
     color: var(--color-dark);
     opacity: 0.5;
+    font-size: 14rem;
     line-height: 1.5;
-    max-width: 311rem;
+    width: 100%;
+    max-width: 506rem;
     text-align: left;
   }
 
@@ -282,7 +285,6 @@ const cmsContent = (Astro.props as any).content;
     display: flex;
     flex-direction: row;
     align-items: flex-start;
-    column-gap: 142rem;
     width: 100%;
   }
 
@@ -292,6 +294,7 @@ const cmsContent = (Astro.props as any).content;
     font-size: 14rem;
     line-height: 1.2;
     color: var(--color-dark);
+    width: 268rem;
     white-space: nowrap;
     flex-shrink: 0;
   }
@@ -300,10 +303,11 @@ const cmsContent = (Astro.props as any).content;
     font-family: var(--font-heading);
     font-weight: 700;
     font-size: 18rem;
-    line-height: 1.2;
+    line-height: 1.25;
     text-transform: uppercase;
     color: var(--color-dark);
-    max-width: 401rem;
+    width: 100%;
+    max-width: 500rem;
   }
 
   /* ─── MOBILE ADAPTATION (max-width: 479px) ─── */
