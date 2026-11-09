@@ -291,6 +291,16 @@
       "alt": "",
       "updatedAt": "2026-10-13T18:00:22.953Z"
     },
+    "/assets/section-09/breakdown-framing.png": {
+      "name": "breakdown-framing",
+      "alt": "",
+      "updatedAt": "2026-11-09T16:00:00.000Z"
+    },
+    "/assets/section-09/breakdown-framing.webp": {
+      "name": "breakdown-framing",
+      "alt": "",
+      "updatedAt": "2026-11-09T16:00:00.000Z"
+    },
     "/assets/section-09/breakdown-card-01.jpg": {
       "name": "breakdown-card-01",
       "alt": "",
@@ -1028,6 +1038,8 @@
     "/assets/section-06/step-06.webp": "/assets/section-06",
     "/assets/section-09/breakdown-02.png": "/assets/section-09",
     "/assets/section-09/breakdown-02.webp": "/assets/section-09",
+    "/assets/section-09/breakdown-framing.png": "/assets/section-09",
+    "/assets/section-09/breakdown-framing.webp": "/assets/section-09",
     "/assets/section-09/breakdown-card-01.jpg": "/assets/section-09",
     "/assets/section-09/breakdown-card-01.webp": "/assets/section-09",
     "/assets/section-09/breakdown-card-03.jpg": "/assets/section-09",
@@ -1228,6 +1240,8 @@
     "/assets/section-06/step-06.webp": "step-06.webp",
     "/assets/section-09/breakdown-02.png": "breakdown-02.png",
     "/assets/section-09/breakdown-02.webp": "breakdown-02.webp",
+    "/assets/section-09/breakdown-framing.png": "breakdown-framing.png",
+    "/assets/section-09/breakdown-framing.webp": "breakdown-framing.webp",
     "/assets/section-09/breakdown-card-01.jpg": "breakdown-card-01.jpg",
     "/assets/section-09/breakdown-card-01.webp": "breakdown-card-01.webp",
     "/assets/section-09/breakdown-card-03.jpg": "breakdown-card-03.jpg",
