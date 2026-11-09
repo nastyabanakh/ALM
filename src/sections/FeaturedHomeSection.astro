@@ -330,9 +330,10 @@ const cmsContent = (Astro.props as any).content;
     margin-bottom: 0;
     margin-left: 0;
     padding-top: 0;
-    padding-right: 0;
+    padding-right: 16rem;
     padding-bottom: 0;
-    padding-left: 0;
+    padding-left: 16rem;
+    box-sizing: border-box;
   }
 
   /* Light Cream Container: From "Featured completed home" through "Project Breakdown" */
@@ -342,6 +343,7 @@ const cmsContent = (Astro.props as any).content;
     color: var(--color-dark, #131313);
     position: relative;
     padding-top: 120rem;
+    box-sizing: border-box;
   }
 
   /* Full-width Wide Photo with strictly 16rem offset from edges */
@@ -349,13 +351,13 @@ const cmsContent = (Astro.props as any).content;
     width: 100%;
     box-sizing: border-box;
     padding-top: 0;
-    padding-right: 16rem;
+    padding-right: 0;
     padding-bottom: 0;
-    padding-left: 16rem;
+    padding-left: 0;
     margin-top: 0;
-    margin-right: auto;
+    margin-right: 0;
     margin-bottom: 0;
-    margin-left: auto;
+    margin-left: 0;
   }
 
   .featured-home-section__hero-media {

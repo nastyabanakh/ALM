@@ -331,7 +331,7 @@ const accordionItems: AccordionItem[] = Astro.props.items ?? cmsContent.sections
   .spc-section__desc {
     font-family: var(--font-display, 'Syne', sans-serif);
     font-weight: 400;
-    font-size: 18rem;
+    font-size: clamp(16px, calc(10px + 0.4167vw), 18px);
     line-height: 1.4;
     color: #131313;
     opacity: 0.5;
