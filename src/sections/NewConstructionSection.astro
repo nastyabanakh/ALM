@@ -28,26 +28,6 @@ const cmsContent = (Astro.props as any).content;
            data-cms-path-src="sections.newConstruction.photoSrc2" data-cms-path-alt="sections.newConstruction.photoAlt2"/>
         </div>
 
-        <!-- Sticky Indicator / Navigation Lines (Figma Frame 542: 43x3rem, gap 8rem) -->
-        <nav class="construction__indicator" id="construction-indicator" aria-label="Section scroll navigation">
-          <button
-            type="button"
-            class="construction__indicator-btn is-active"
-            data-target="construction-part-1"
-            aria-label="Scroll to A NEW HOME, NOT A RENOVATION"
-          >
-            <span class="construction__indicator-line"></span>
-          </button>
-          <button
-            type="button"
-            class="construction__indicator-btn"
-            data-target="construction-part-2"
-            aria-label="Scroll to ALM BUILDS PREMIUM SINGLE-FAMILY HOMES FROM THE GROUND UP"
-          >
-            <span class="construction__indicator-line"></span>
-          </button>
-        </nav>
-
         <!-- Scrolling Content Area -->
         <div class="construction__content">
           <!-- Top Editorial Block (Frame 509) -->
@@ -169,46 +149,6 @@ const cmsContent = (Astro.props as any).content;
   </div>
 </section>
 
-<script>
-  // Sticky Indicator Controller with Scroll Spy & Click Navigation
-  const indicatorNav = document.getElementById('construction-indicator');
-  if (indicatorNav) {
-    const buttons = indicatorNav.querySelectorAll<HTMLButtonElement>('.construction__indicator-btn');
-    const part1 = document.getElementById('construction-part-1');
-    const part2 = document.getElementById('construction-part-2');
-
-    // Click navigation with smooth scroll
-    buttons.forEach((btn) => {
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        const targetId = btn.getAttribute('data-target');
-        if (!targetId) return;
-        const target = document.getElementById(targetId);
-        if (!target) return;
-
-        const rect = target.getBoundingClientRect();
-        const scrollTop = window.scrollY + rect.top - 40;
-        window.scrollTo({ top: scrollTop, behavior: 'smooth' });
-      });
-    });
-
-    // Scroll spy: toggle active class based on section visibility
-    function updateActiveLine() {
-      if (!part2) return;
-      const rect2 = part2.getBoundingClientRect();
-      const isPart2Active = rect2.top <= window.innerHeight * 0.55;
-
-      if (buttons[0] && buttons[1]) {
-        buttons[0].classList.toggle('is-active', !isPart2Active);
-        buttons[1].classList.toggle('is-active', isPart2Active);
-      }
-    }
-
-    window.addEventListener('scroll', updateActiveLine, { passive: true });
-    updateActiveLine();
-  }
-</script>
-
 <style>
   /* ----------------------------------------------------------
      Section Layout
@@ -218,11 +158,11 @@ const cmsContent = (Astro.props as any).content;
     width: 100%;
     background-color: var(--bg-white, #FCFAEF);
     color: var(--color-dark, #131313);
-    margin-top: 24rem;
+    margin-top: 0;
     margin-right: 0;
-    margin-bottom: 0;
+    margin-bottom: 120rem;
     margin-left: 0;
-    padding-top: 15rem;
+    padding-top: 0;
     padding-right: 0;
     padding-bottom: var(--space-m);
     padding-left: 0;
@@ -255,9 +195,9 @@ const cmsContent = (Astro.props as any).content;
   .construction__col-left {
     position: -webkit-sticky;
     position: sticky;
-    top: 15rem;
+    top: 0;
     width: 708rem;
-    height: calc(100vh - 30rem);
+    height: 100vh;
     flex-shrink: 0;
     align-self: flex-start;
     overflow: hidden;
@@ -294,66 +234,9 @@ const cmsContent = (Astro.props as any).content;
   .construction__top-photo-box {
     position: relative;
     width: 708rem;
-    height: calc(100vh - 30rem);
+    height: 100vh;
     overflow: hidden;
     flex-shrink: 0;
-  }
-
-  /* Sticky Indicator / Navigation (Figma Frame 542: 43x3rem, gap 8rem) */
-  .construction__indicator {
-    position: -webkit-sticky;
-    position: sticky;
-    top: calc(100vh - 69rem);
-    align-self: flex-end;
-    margin-top: -54rem;
-    margin-right: 40rem;
-    margin-bottom: 40rem;
-    margin-left: 0;
-    z-index: 15;
-    display: flex;
-    flex-direction: column;
-    row-gap: 8rem;
-    width: 43rem;
-  }
-
-  .construction__indicator-btn {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    width: 43rem;
-    min-height: 44px;
-    padding-top: 10rem;
-    padding-right: 0;
-    padding-bottom: 10rem;
-    padding-left: 0;
-    margin-top: 0;
-    margin-right: 0;
-    margin-bottom: 0;
-    margin-left: 0;
-    background-color: transparent;
-    border-top-width: 0;
-    border-right-width: 0;
-    border-bottom-width: 0;
-    border-left-width: 0;
-    cursor: pointer;
-    outline: none;
-  }
-
-  .construction__indicator-line {
-    display: block;
-    width: 43rem;
-    height: 3rem;
-    background-color: var(--color-dark, #131313);
-    opacity: 0.3;
-    transition: opacity 0.25s ease, background-color 0.25s ease;
-  }
-
-  .construction__indicator-btn:hover .construction__indicator-line {
-    opacity: 0.7;
-  }
-
-  .construction__indicator-btn.is-active .construction__indicator-line {
-    opacity: 1;
   }
 
   /* Content area below top image */
@@ -519,7 +402,7 @@ const cmsContent = (Astro.props as any).content;
   /* Three Photo Gallery (Figma node 172:243) */
   .construction__gallery {
     display: flex;
-    align-items: stretch;
+    align-items: flex-end;
     column-gap: 10rem;
     width: 100%;
     max-width: 591rem;
@@ -535,7 +418,7 @@ const cmsContent = (Astro.props as any).content;
   .construction__gallery-item--small {
     flex: 1;
     width: 152rem;
-    height: 308rem;
+    height: 158rem;
     flex-shrink: 0;
     overflow: hidden;
   }
@@ -765,7 +648,7 @@ const cmsContent = (Astro.props as any).content;
 
     .construction__gallery-item--small {
       width: 30%;
-      height: 180rem;
+      height: 95rem;
       flex-shrink: 0;
     }
 

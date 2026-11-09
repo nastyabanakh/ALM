@@ -59,8 +59,10 @@ const cmsContent = (Astro.props as any).content;
     </div>
   </div>
 
-  <!-- Part A Specifications & Overview Content -->
-  <div class="featured-home-section__inner">
+  <!-- Light Content Wrapper: Featured completed home + Specs + Project Breakdown -->
+  <div class="featured-home-section__light-wrap">
+    <!-- Part A Specifications & Overview Content -->
+    <div class="featured-home-section__inner">
     <div class="featured-home-section__hero-block">
       <!-- Sub-Header Bar (Frame 437) -->
       <div class="featured-home-section__bar">
@@ -160,6 +162,7 @@ const cmsContent = (Astro.props as any).content;
                     cmsTextPath="featuredHome.cardCtaText"
                     cmsHrefPath="featuredHome.cardCtaHref"
                     fullWidth={true}
+                    variant="dark"
                   />
                 </div>
               </div>
@@ -174,6 +177,7 @@ const cmsContent = (Astro.props as any).content;
       </div>
 
     </div>
+  </div>
   </div>
 
 </section>
@@ -319,21 +323,25 @@ const cmsContent = (Astro.props as any).content;
   .featured-home-section {
     position: relative;
     width: 100%;
-    background-color: #131313;
-    background-image: var(--bg-pattern-dark);
-    background-repeat: repeat;
-    background-position: 0 0;
-    background-size: 30rem 30rem;
-    background-attachment: scroll;
-    color: var(--color-white, #FCFAEF);
-    margin-top: 0;
+    background-color: transparent;
+    color: var(--color-dark, #131313);
+    margin-top: 120rem;
     margin-right: 0;
     margin-bottom: 0;
     margin-left: 0;
-    padding-top: 120rem;
+    padding-top: 0;
     padding-right: 0;
     padding-bottom: 0;
     padding-left: 0;
+  }
+
+  /* Light Cream Container: From "Featured completed home" through "Project Breakdown" */
+  .featured-home-section__light-wrap {
+    width: 100%;
+    background-color: var(--bg-white, #FCFAEF);
+    color: var(--color-dark, #131313);
+    position: relative;
+    padding-top: 53rem;
   }
 
   /* Full-width Wide Photo with strictly 15rem offset from edges */
@@ -346,7 +354,7 @@ const cmsContent = (Astro.props as any).content;
     padding-left: 15rem;
     margin-top: 0;
     margin-right: auto;
-    margin-bottom: 40rem;
+    margin-bottom: 0;
     margin-left: auto;
   }
 
@@ -433,7 +441,7 @@ const cmsContent = (Astro.props as any).content;
     font-weight: 400;
     font-size: 14rem;
     line-height: 1.2;
-    color: var(--color-white, #FCFAEF);
+    color: var(--color-dark, #131313);
     opacity: 0.5;
     letter-spacing: 0;
     white-space: nowrap;
@@ -444,7 +452,7 @@ const cmsContent = (Astro.props as any).content;
     font-weight: 400;
     font-size: 14rem;
     line-height: 1.2;
-    color: var(--color-white, #FCFAEF);
+    color: var(--color-dark, #131313);
     opacity: 0.5;
     letter-spacing: 0;
     white-space: nowrap;
@@ -455,7 +463,7 @@ const cmsContent = (Astro.props as any).content;
     width: 100%;
     max-width: 1416rem;
     height: 1rem;
-    background-color: rgba(252, 250, 239, 0.1);
+    background-color: rgba(19, 19, 19, 0.15);
     margin-top: 0;
     margin-right: 0;
     margin-bottom: 76rem;
@@ -483,7 +491,7 @@ const cmsContent = (Astro.props as any).content;
     font-size: 37rem;
     line-height: 1.15;
     text-transform: uppercase;
-    color: var(--color-white, #FCFAEF);
+    color: var(--color-dark, #131313);
     width: 627rem;
     margin-top: 0;
     margin-right: 0;
@@ -499,7 +507,7 @@ const cmsContent = (Astro.props as any).content;
     flex-direction: column;
     border-top-width: 1rem;
     border-top-style: solid;
-    border-top-color: rgba(252, 250, 239, 0.1);
+    border-top-color: rgba(19, 19, 19, 0.15);
   }
 
   .featured-home-section__spec-row {
@@ -512,7 +520,7 @@ const cmsContent = (Astro.props as any).content;
     padding-left: 0;
     border-bottom-width: 1rem;
     border-bottom-style: solid;
-    border-bottom-color: rgba(252, 250, 239, 0.1);
+    border-bottom-color: rgba(19, 19, 19, 0.15);
   }
 
   .featured-home-section__spec-left {
@@ -525,7 +533,7 @@ const cmsContent = (Astro.props as any).content;
     font-weight: 400;
     font-size: 14rem;
     line-height: 1.2;
-    color: var(--color-white, #FCFAEF);
+    color: var(--color-dark, #131313);
     opacity: 0.5;
   }
 
@@ -540,7 +548,7 @@ const cmsContent = (Astro.props as any).content;
     font-size: 14rem;
     line-height: 1.2;
     text-transform: uppercase;
-    color: var(--color-white, #FCFAEF);
+    color: var(--color-dark, #131313);
     white-space: nowrap;
   }
 
@@ -594,7 +602,7 @@ const cmsContent = (Astro.props as any).content;
     font-size: 67rem;
     line-height: 1.05;
     text-transform: uppercase;
-    color: var(--color-white, #FCFAEF);
+    color: var(--color-dark, #131313);
     margin-top: 0;
     margin-right: 0;
     margin-bottom: 0;
@@ -603,9 +611,9 @@ const cmsContent = (Astro.props as any).content;
   }
 
   .featured-home-section__breakdown-bullet {
-    width: 6rem;
-    height: 6rem;
-    background-color: var(--color-white, #FCFAEF);
+    width: 8rem;
+    height: 8rem;
+    background-color: var(--color-dark, #131313);
     display: block;
     margin-top: 14rem;
   }
@@ -635,12 +643,7 @@ const cmsContent = (Astro.props as any).content;
     flex-direction: column;
     justify-content: flex-end;
     overflow: visible;
-    background-color: #131313;
-    background-image: var(--bg-pattern-dark);
-    background-repeat: repeat;
-    background-position: 0 0;
-    background-size: 30rem 30rem;
-    background-attachment: scroll;
+    background-color: var(--bg-white, #FCFAEF);
     z-index: 5;
   }
 
@@ -728,7 +731,7 @@ const cmsContent = (Astro.props as any).content;
     font-size: 24rem;
     line-height: 1.1;
     text-transform: uppercase;
-    color: var(--color-white, #FCFAEF);
+    color: var(--color-dark, #131313);
     margin-top: 0;
     margin-right: 0;
     margin-bottom: 0;
@@ -740,7 +743,7 @@ const cmsContent = (Astro.props as any).content;
     font-weight: 400;
     font-size: 14rem;
     line-height: 1.5;
-    color: var(--color-white, #FCFAEF);
+    color: var(--color-dark, #131313);
     opacity: 0.5;
     text-align: justify;
     margin-top: 0;
@@ -753,25 +756,11 @@ const cmsContent = (Astro.props as any).content;
     width: 100%;
   }
 
-  .featured-home-section__card-btn :global(.btn-composite__main),
-  .featured-home-section__card-btn :global(.btn-composite__connector),
-  .featured-home-section__card-btn :global(.btn-composite__icon-box) {
-    background-color: #ffffff;
-  }
-
-  .featured-home-section__card-btn :global(.btn-composite__label) {
-    color: #131313;
-  }
-
-  .featured-home-section__card-btn :global(.btn-composite__icon-box) {
-    color: #131313;
-  }
-
   /* Vertical Divider */
   .featured-home-section__v-divider {
     width: 1rem;
     height: 100%;
-    background-color: rgba(252, 250, 239, 0.1);
+    background-color: rgba(19, 19, 19, 0.15);
     flex-shrink: 0;
     align-self: stretch;
   }
@@ -781,7 +770,7 @@ const cmsContent = (Astro.props as any).content;
      ============================================================ */
   @media (max-width: 479px) {
     .featured-home-section {
-      padding-top: 15rem;
+      padding-top: 0;
     }
 
     .featured-home-section__hero-media-wrap {
