@@ -341,17 +341,17 @@ const cmsContent = (Astro.props as any).content;
     background-color: var(--bg-white, #FCFAEF);
     color: var(--color-dark, #131313);
     position: relative;
-    padding-top: 53rem;
+    padding-top: 120rem;
   }
 
-  /* Full-width Wide Photo with strictly 15rem offset from edges */
+  /* Full-width Wide Photo with strictly 16rem offset from edges */
   .featured-home-section__hero-media-wrap {
     width: 100%;
     box-sizing: border-box;
     padding-top: 0;
-    padding-right: 15rem;
+    padding-right: 16rem;
     padding-bottom: 0;
-    padding-left: 15rem;
+    padding-left: 16rem;
     margin-top: 0;
     margin-right: auto;
     margin-bottom: 0;
@@ -362,8 +362,6 @@ const cmsContent = (Astro.props as any).content;
     position: relative;
     width: 100%;
     height: 791rem;
-    max-height: calc(100vh - 30rem);
-    min-height: 480rem;
     overflow: hidden;
     background-color: #131313;
     margin-top: 0;
@@ -374,12 +372,12 @@ const cmsContent = (Astro.props as any).content;
 
   .featured-home-section__hero-img {
     width: 100%;
-    height: 120%;
+    height: 100%;
     object-fit: cover;
     object-position: center;
     display: block;
     will-change: transform;
-    transform: translate3d(0, -10%, 0) scale(1.05);
+    transform: translate3d(0, 0, 0) scale(1.05);
   }
 
   /* Standard Grid Container for Part A Overview */
