@@ -447,6 +447,11 @@ const steps: ProcessStep[] = cmsContent.sections.process.steps;
     border-bottom-color: rgba(252, 250, 239, 0.1);
   }
 
+  .process-step--hovered,
+  .process-step:hover {
+    background-image: var(--bg-card-active);
+  }
+
   .process-step__main {
     display: flex;
     align-items: center;
