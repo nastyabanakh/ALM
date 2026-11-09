@@ -10,6 +10,10 @@
 - **Компоненти:** SFC — стилі виключно всередині блоку `<style>` у відповідному `.astro` файлі.
 
 ## 📝 Журнал виправлень (Corrections & Learnings)
+- **2026-11-09 — Оновлення кольору квадратних булетів на світлому фоні на `#EED18D`:**
+  - **Проблема:** Квадратні маркери списків та саб-хедерів на світлому тлі (зокрема в Секції 02 New Construction та Секції 09 Featured Home) мали застарілий гірчично-жовтий колір `#dda713`. Користувач надіслав скріншот з червоною стрілкою на маркер у блоці «We believe everyone deserves...» із запитом замінити колір усіх квадратиків на білому фоні на благородний золотий `#EED18D`.
+  - **Виправлення:** У `src/styles/variables.css` токени `--color-bullet` та `--color-accent` оновлено на `#EED18D`. У всіх секціях з білим фоном (`NewConstructionSection`, `FeaturedHomeSection`, `SinglePointContactSection`, `FinishedStandardSection`, `BudgetSelectionsSection`, `CompletedHomeSection`, `LocalManagementSection`, `BuilderAccountabilitySection`) колір булетів переведено на `var(--color-bullet, #EED18D)`.
+
 - **2026-11-09 — Оновлення кольору hover/active карток за Figma 399:755 (Шампань/античне золото):**
   - **Проблема:** Раніше для градієнта стану наведення/активності карток у Starting Points (Секція 01) та Process (Секція 06) було встановлено яскраво-жовтий тон `linear-gradient(90deg, rgba(221, 167, 19, 0) 0%, rgba(221, 167, 19, 0.8) 100%)`. На доданих користувачем скріншотах та в актуальному макеті Figma `399:755` колір ховеру є благородним стриманим золотом (шампань / античне золото).
   - **Виправлення:** За даними Figma Dev Mode AST для ноди `399:755` (ноди `399:852` у Starting Points та `399:1074` у Process) витягнуто точний код градієнта `from-[rgba(238,209,141,0)] to-[rgba(238,209,141,0.8)]`. Токен `--bg-card-active` у `src/styles/variables.css` оновлено до:
